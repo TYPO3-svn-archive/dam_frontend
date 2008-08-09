@@ -13,7 +13,8 @@ Important:
 Language issue: currently there is no language overlay for the dam itsself. So if you're displaying categories or records from the dam, it is displayed as it is stored in the dam.
 
 Roadmap:
-* RealURL Support
 * Upload Feature
+* RealURL Support
 
-relase 0.1.1 / 25.07.2008
+
+release 0.1.1 / 25.07.2008

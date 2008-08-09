@@ -1,4 +1,4 @@
-a:2:{s:4:"meta";a:3:{s:5:"title";s:12:"DAM Frontend";s:5:"descr";s:50:"Using the category tree ot the dam in the frontend";s:7:"options";a:2:{s:10:"usageCount";N;s:19:"includeCodeAbstract";N;}}s:5:"files";a:12:{s:14:"MD5_c02975ddc6";a:4:{s:8:"filename";s:19:"tx_dam_flexFunc.php";s:8:"filesize";i:737;s:6:"header";N;s:3:"DAT";a:2:{i:1;a:4:{s:6:"header";s:45:"class tx_dam_flexFunc extends tx_dam_tceFunc{";s:5:"class";i:1;s:11:"parentClass";s:15:"tx_dam_flexFunc";s:6:"atLine";i:5;}i:3;a:6:{s:6:"header";s:50:"function  getSingleField_selectTree($PA, &$fObj) {";s:11:"parentClass";s:15:"tx_dam_flexFunc";s:7:"content";s:0:"";s:12:"content_size";i:552;s:13:"content_lines";i:22;s:6:"atLine";i:8;}}}s:14:"MD5_7bed6dfaa2";a:4:{s:8:"filename";s:43:"DAL/class.tx_damfrontend_DAL_categories.php";s:8:"filesize";i:10866;s:6:"header";a:5:{s:4:"text";s:237:"
+a:2:{s:4:"meta";a:3:{s:5:"title";s:12:"DAM Frontend";s:5:"descr";s:50:"Using the category tree ot the dam in the frontend";s:7:"options";a:2:{s:10:"usageCount";N;s:19:"includeCodeAbstract";N;}}s:5:"files";a:12:{s:14:"MD5_c02975ddc6";a:4:{s:8:"filename";s:19:"tx_dam_flexFunc.php";s:8:"filesize";i:940;s:6:"header";N;s:3:"DAT";a:2:{i:1;a:4:{s:6:"header";s:45:"class tx_dam_flexFunc extends tx_dam_tceFunc{";s:5:"class";i:1;s:11:"parentClass";s:15:"tx_dam_flexFunc";s:6:"atLine";i:5;}i:3;a:6:{s:6:"header";s:50:"function  getSingleField_selectTree($PA, &$fObj) {";s:11:"parentClass";s:15:"tx_dam_flexFunc";s:7:"content";s:0:"";s:12:"content_size";i:756;s:13:"content_lines";i:21;s:6:"atLine";i:7;}}}s:14:"MD5_7bed6dfaa2";a:4:{s:8:"filename";s:43:"DAL/class.tx_damfrontend_DAL_categories.php";s:8:"filesize";i:11120;s:6:"header";a:5:{s:4:"text";s:237:"
 
 
 class.tx_damfrontend_DAL_categories.php
@@ -73,7 +73,7 @@ records with the same uid exists in the list
 
 searches for an uid in an given array and returns the found row. If multiple
 records with the same uid exists in the list
-";s:5:"param";a:2:{i:0;a:2:{i:0;s:5:"array";i:1;s:28:"$list: various kind of array";}i:1;a:2:{i:0;s:3:"int";i:1;s:30:"$id: uid to search in the list";}}s:6:"return";a:2:{i:0;s:5:"array";i:1;s:33:"returns the resultrow as an array";}}s:7:"content";s:0:"";s:12:"content_size";i:354;s:13:"content_lines";i:18;s:6:"atLine";i:316;}}}s:14:"MD5_cc2565802b";a:4:{s:8:"filename";s:42:"DAL/class.tx_damfrontend_DAL_documents.php";s:8:"filesize";i:17093;s:6:"header";a:5:{s:4:"text";s:115:"
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:5:"array";i:1;s:28:"$list: various kind of array";}i:1;a:2:{i:0;s:3:"int";i:1;s:30:"$id: uid to search in the list";}}s:6:"return";a:2:{i:0;s:5:"array";i:1;s:33:"returns the resultrow as an array";}}s:7:"content";s:0:"";s:12:"content_size";i:608;s:13:"content_lines";i:19;s:6:"atLine";i:316;}}}s:14:"MD5_cc2565802b";a:4:{s:8:"filename";s:42:"DAL/class.tx_damfrontend_DAL_documents.php";s:8:"filesize";i:17347;s:6:"header";a:5:{s:4:"text";s:115:"
 
 
 class.tx_damfrontend_DAL_documents.php
@@ -153,7 +153,7 @@ returns a searchword transfered to int
 ";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"string";i:1;s:35:"$searchword: blank separated string";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:55:"where clause, ready for adding it to the document array";}}s:6:"atLine";i:440;}i:27;a:7:{s:6:"header";s:45:"function evalDateError($day, $month, $year) {";s:11:"parentClass";s:28:"tx_damfrontend_DAL_documents";s:4:"cDat";a:3:{s:4:"text";s:101:"
 
 evaluates the given Date and returns true if the date is in correct form to covert it to timestamp
-";s:5:"param";a:3:{i:0;a:2:{i:0;s:3:"int";i:1;s:18:"$day: day of month";}i:1;a:2:{i:0;s:3:"int";i:1;s:21:"$month: month of year";}i:2;a:2:{i:0;s:3:"int";i:1;s:14:"$year: year in";}}s:6:"return";a:2:{i:0;s:4:"bool";i:1;s:92:"if the given date is correct - return  true, if something is wrong or missing - return false";}}s:7:"content";s:0:"";s:12:"content_size";i:190;s:13:"content_lines";i:10;s:6:"atLine";i:452;}}}s:14:"MD5_7c3fa3dc87";a:4:{s:8:"filename";s:44:"DAL/class.tx_damfrontend_baseSessionData.php";s:8:"filesize";i:2531;s:6:"header";a:5:{s:4:"text";s:245:"
+";s:5:"param";a:3:{i:0;a:2:{i:0;s:3:"int";i:1;s:18:"$day: day of month";}i:1;a:2:{i:0;s:3:"int";i:1;s:21:"$month: month of year";}i:2;a:2:{i:0;s:3:"int";i:1;s:14:"$year: year in";}}s:6:"return";a:2:{i:0;s:4:"bool";i:1;s:92:"if the given date is correct - return  true, if something is wrong or missing - return false";}}s:7:"content";s:0:"";s:12:"content_size";i:444;s:13:"content_lines";i:13;s:6:"atLine";i:452;}}}s:14:"MD5_7c3fa3dc87";a:4:{s:8:"filename";s:44:"DAL/class.tx_damfrontend_baseSessionData.php";s:8:"filesize";i:2789;s:6:"header";a:5:{s:4:"text";s:245:"
 
 
 class.tx_dam_frontend_baseSessionData.php
@@ -182,7 +182,7 @@ returns the data that hos been stored by the key
 ";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:6:"atLine";i:66;}i:7;a:7:{s:6:"header";s:33:"function setArrayToUser($array) {";s:11:"parentClass";s:30:"tx_damfrontend_baseSessionData";s:4:"cDat";a:3:{s:4:"text";s:33:"
 
 sets an array by the given var
-";s:5:"param";a:1:{i:0;a:2:{i:0;s:5:"array";i:1;s:50:"$array: array whith values in any form you want to";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:7:"content";s:0:"";s:12:"content_size";i:65;s:13:"content_lines";i:4;s:6:"atLine";i:77;}}}s:14:"MD5_10930c1059";a:4:{s:8:"filename";s:36:"DAL/class.tx_damfrontend_catList.php";s:8:"filesize";i:5145;s:6:"header";a:5:{s:4:"text";s:190:"
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:5:"array";i:1;s:50:"$array: array whith values in any form you want to";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:7:"content";s:0:"";s:12:"content_size";i:323;s:13:"content_lines";i:7;s:6:"atLine";i:77;}}}s:14:"MD5_10930c1059";a:4:{s:8:"filename";s:36:"DAL/class.tx_damfrontend_catList.php";s:8:"filesize";i:5388;s:6:"header";a:5:{s:4:"text";s:190:"
 
 
 class.tx_damfrontend_catList.php
@@ -206,7 +206,7 @@ Deletes the current selection an makes the given catID the only selected categor
 ";s:5:"param";a:2:{i:0;a:2:{i:0;s:3:"int";i:1;s:41:"$catID: catID to be the current selection";}i:1;a:2:{i:0;s:3:"int";i:1;s:44:"$treeID: ID of the used cat Tree Mount Point";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:6:"atLine";i:121;}i:11;a:7:{s:6:"header";s:28:"function getCatSelection() {";s:11:"parentClass";s:22:"tx_damfrontend_catList";s:4:"cDat";a:3:{s:4:"text";s:44:"
 
 returns a list of all selected categories
-";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:5:"array";i:1;s:31:"list of all selected categories";}}s:7:"content";s:0:"";s:12:"content_size";i:59;s:13:"content_lines";i:5;s:6:"atLine";i:138;}}}s:14:"MD5_bf8825f347";a:4:{s:8:"filename";s:36:"DAL/class.tx_damfrontend_docList.php";s:8:"filesize";i:1612;s:6:"header";a:5:{s:4:"text";s:109:"
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:5:"array";i:1;s:31:"list of all selected categories";}}s:7:"content";s:0:"";s:12:"content_size";i:302;s:13:"content_lines";i:9;s:6:"atLine";i:138;}}}s:14:"MD5_bf8825f347";a:4:{s:8:"filename";s:36:"DAL/class.tx_damfrontend_docList.php";s:8:"filesize";i:1855;s:6:"header";a:5:{s:4:"text";s:109:"
 
 
 class.tx_damfrontend_docList.php
@@ -225,7 +225,7 @@ Depends on:		--";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:".
 
 TOTAL FUNCTIONS: 0
 (This index is automatically created/updated by the extension "extdeveval")
-";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:6;s:13:"content_lines";i:3;s:6:"atLine";i:50;}}}s:14:"MD5_f931826b1f";a:4:{s:8:"filename";s:40:"DAL/class.tx_damfrontend_filterState.php";s:8:"filesize";i:5475;s:6:"header";a:5:{s:4:"text";s:167:"
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:249;s:13:"content_lines";i:7;s:6:"atLine";i:50;}}}s:14:"MD5_f931826b1f";a:4:{s:8:"filename";s:40:"DAL/class.tx_damfrontend_filterState.php";s:8:"filesize";i:5726;s:6:"header";a:5:{s:4:"text";s:167:"
 
 
 class.tx_damfrontend_filterState.php
@@ -282,7 +282,7 @@ function loads the filter with the given ID from the database into the session
 ";s:5:"param";a:1:{i:0;a:2:{i:0;s:3:"int";i:1;s:53:"$filterID: uid of the filter to load into the session";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}s:5:"other";a:1:{i:0;s:45:"@todo function loadFilter is not finished yet";}s:11:"other_index";a:1:{s:5:"@todo";a:1:{i:0;s:39:"function loadFilter is not finished yet";}}}s:6:"atLine";i:172;}i:19;a:7:{s:6:"header";s:34:"function deleteFilter($filterID) {";s:11:"parentClass";s:26:"tx_damfrontend_filterState";s:4:"cDat";a:5:{s:4:"text";s:54:"
 
 deletes a filter with the given uid from the server
-";s:5:"param";a:1:{i:0;a:2:{i:0;s:3:"int";i:1;s:59:"$filterID: deletes the given uid from the filterState table";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}s:5:"other";a:1:{i:0;s:47:"@todo function deleteFilter is not finished yet";}s:11:"other_index";a:1:{s:5:"@todo";a:1:{i:0;s:41:"function deleteFilter is not finished yet";}}}s:7:"content";s:0:"";s:12:"content_size";i:8;s:13:"content_lines";i:3;s:6:"atLine";i:183;}}}s:14:"MD5_c18bb6acf1";a:4:{s:8:"filename";s:38:"DAL/class.tx_damfrontend_listState.php";s:8:"filesize";i:3502;s:6:"header";a:5:{s:4:"text";s:168:"
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:3:"int";i:1;s:59:"$filterID: deletes the given uid from the filterState table";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}s:5:"other";a:1:{i:0;s:47:"@todo function deleteFilter is not finished yet";}s:11:"other_index";a:1:{s:5:"@todo";a:1:{i:0;s:41:"function deleteFilter is not finished yet";}}}s:7:"content";s:0:"";s:12:"content_size";i:259;s:13:"content_lines";i:7;s:6:"atLine";i:183;}}}s:14:"MD5_c18bb6acf1";a:4:{s:8:"filename";s:38:"DAL/class.tx_damfrontend_listState.php";s:8:"filesize";i:3748;s:6:"header";a:5:{s:4:"text";s:168:"
 
 
 class.tx_damfrontend_listState.php
@@ -321,7 +321,7 @@ loads the listarray
 ";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:7:"[array]";i:1;s:3:"...";}}s:6:"atLine";i:96;}i:11;a:7:{s:6:"header";s:37:"function syncListState(&$listState) {";s:11:"parentClass";s:24:"tx_damfrontend_listState";s:4:"cDat";a:3:{s:4:"text";s:77:"
 
 Synchronzises the liststate in the usersession with the internal liststate
-";s:5:"param";a:1:{i:0;a:2:{i:0;s:7:"[array]";i:1;s:15:"$listState: ...";}}s:6:"return";a:2:{i:0;s:6:"[void]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:415;s:13:"content_lines";i:14;s:6:"atLine";i:106;}}}s:14:"MD5_7dd633b1ee";a:4:{s:8:"filename";s:45:"frontend/class.tx_damfrontend_catTreeView.php";s:8:"filesize";i:10884;s:6:"header";a:5:{s:4:"text";s:112:"
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:7:"[array]";i:1;s:15:"$listState: ...";}}s:6:"return";a:2:{i:0;s:6:"[void]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:661;s:13:"content_lines";i:17;s:6:"atLine";i:106;}}}s:14:"MD5_7dd633b1ee";a:4:{s:8:"filename";s:45:"frontend/class.tx_damfrontend_catTreeView.php";s:8:"filesize";i:11145;s:6:"header";a:5:{s:4:"text";s:112:"
 
 
 class.tx_damfrontend_catTreeView.php
@@ -379,7 +379,7 @@ Renders the +-= buttons with corresponding commands
 ";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"string";i:1;s:11:"$title: ...";}i:1;a:2:{i:0;s:11:"resultslist";i:1;s:9:"$row: ...";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:11:"HTML Output";}}s:7:"content";s:0:"";s:12:"content_size";i:250;s:13:"content_lines";i:6;s:6:"atLine";i:228;}i:19;a:3:{s:6:"header";s:33:"function printTree($treeArr='')	{";s:11:"parentClass";s:26:"tx_damfrontend_catTreeView";s:6:"atLine";i:289;}i:21;a:7:{s:6:"header";s:29:"function getBrowsableTree() {";s:11:"parentClass";s:26:"tx_damfrontend_catTreeView";s:4:"cDat";a:3:{s:4:"text";s:45:"
 
 calls the parrent methoad getBrowsableTree
-";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:73;s:13:"content_lines";i:5;s:6:"atLine";i:348;}}}s:14:"MD5_6ac1a8a809";a:4:{s:8:"filename";s:43:"frontend/class.tx_damfrontend_rendering.php";s:8:"filesize";i:19252;s:6:"header";a:5:{s:4:"text";s:168:"
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:334;s:13:"content_lines";i:9;s:6:"atLine";i:348;}}}s:14:"MD5_6ac1a8a809";a:4:{s:8:"filename";s:43:"frontend/class.tx_damfrontend_rendering.php";s:8:"filesize";i:19232;s:6:"header";a:5:{s:4:"text";s:168:"
 
 
 class.tx_damfrontend_rendering.php
@@ -416,61 +416,61 @@ Depends on:		--";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:".
 
 TOTAL FUNCTIONS: 18
 (This index is automatically created/updated by the extension "extdeveval")
-";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:416;s:13:"content_lines";i:10;s:6:"atLine";i:71;}i:3;a:7:{s:6:"header";s:17:"function init() {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:48:"
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:446;s:13:"content_lines";i:11;s:6:"atLine";i:71;}i:3;a:7:{s:6:"header";s:17:"function init() {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:48:"
 
 inits this class (loading the locallang file)
-";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[void]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:28;s:13:"content_lines";i:4;s:6:"atLine";i:87;}i:5;a:7:{s:6:"header";s:32:"function setFileRef($filePath) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:37:"
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[void]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:87;s:13:"content_lines";i:5;s:6:"atLine";i:88;}i:5;a:7:{s:6:"header";s:32:"function setFileRef($filePath) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:37:"
 
 sets the paths for file references
-";s:5:"param";a:1:{i:0;a:2:{i:0;s:8:"[string]";i:1;s:14:"$filePath: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:100;s:13:"content_lines";i:5;s:6:"atLine";i:98;}i:7;a:7:{s:6:"header";s:69:"function renderFileList($list, $resultcount, $pointer, $listLength) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:61:"
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:8:"[string]";i:1;s:14:"$filePath: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:100;s:13:"content_lines";i:5;s:6:"atLine";i:100;}i:7;a:7:{s:6:"header";s:69:"function renderFileList($list, $resultcount, $pointer, $listLength) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:61:"
 
 function renderes a list of all files, which are availible
-";s:5:"param";a:4:{i:0;a:2:{i:0;s:5:"array";i:1;s:10:"$list: ...";}i:1;a:2:{i:0;s:8:"rowcount";i:1;s:17:"$resultcount: ...";}i:2;a:2:{i:0;s:6:"[type]";i:1;s:13:"$pointer: ...";}i:3;a:2:{i:0;s:6:"[type]";i:1;s:16:"$listLength: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:3700;s:13:"content_lines";i:69;s:6:"atLine";i:113;}i:9;a:7:{s:6:"header";s:67:"function renderBrowseResults($resultcount, $pointer, $listLength) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:100:"
+";s:5:"param";a:4:{i:0;a:2:{i:0;s:5:"array";i:1;s:10:"$list: ...";}i:1;a:2:{i:0;s:8:"rowcount";i:1;s:17:"$resultcount: ...";}i:2;a:2:{i:0;s:6:"[type]";i:1;s:13:"$pointer: ...";}i:3;a:2:{i:0;s:6:"[type]";i:1;s:16:"$listLength: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:3298;s:13:"content_lines";i:60;s:6:"atLine";i:115;}i:9;a:7:{s:6:"header";s:67:"function renderBrowseResults($resultcount, $pointer, $listLength) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:100:"
 
 renders a listbrowser which divides the resultlist of the selected files in better viewable parts
-";s:5:"param";a:3:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:17:"$resultcount: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:13:"$pointer: ...";}i:2;a:2:{i:0;s:6:"[type]";i:1;s:16:"$listLength: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:801;s:13:"content_lines";i:19;s:6:"atLine";i:191;}i:11;a:7:{s:6:"header";s:31:"function renderSortLink($key) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:24:"
+";s:5:"param";a:3:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:17:"$resultcount: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:13:"$pointer: ...";}i:2;a:2:{i:0;s:6:"[type]";i:1;s:16:"$listLength: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:801;s:13:"content_lines";i:19;s:6:"atLine";i:184;}i:11;a:7:{s:6:"header";s:31:"function renderSortLink($key) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:24:"
 
 Renders the sortlinks
-";s:5:"param";a:1:{i:0;a:2:{i:0;s:3:"int";i:1;s:9:"$key: ...";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:8:"Html	...";}}s:7:"content";s:0:"";s:12:"content_size";i:505;s:13:"content_lines";i:11;s:6:"atLine";i:217;}i:13;a:7:{s:6:"header";s:36:"function renderCatSelection($list) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:63:"
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:3:"int";i:1;s:9:"$key: ...";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:8:"Html	...";}}s:7:"content";s:0:"";s:12:"content_size";i:505;s:13:"content_lines";i:11;s:6:"atLine";i:210;}i:13;a:7:{s:6:"header";s:36:"function renderCatSelection($list) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:63:"
 
 transforms the list of selected categories to an html output
-";s:5:"param";a:1:{i:0;a:2:{i:0;s:5:"array";i:1;s:32:"$list: list of selected elements";}}s:6:"return";a:2:{i:0;s:4:"html";i:1;s:43:"rendered category selection content element";}}s:7:"content";s:0:"";s:12:"content_size";i:839;s:13:"content_lines";i:21;s:6:"atLine";i:235;}i:15;a:7:{s:6:"header";s:36:"function renderSingleView($record) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:26:"
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:5:"array";i:1;s:32:"$list: list of selected elements";}}s:6:"return";a:2:{i:0;s:4:"html";i:1;s:43:"rendered category selection content element";}}s:7:"content";s:0:"";s:12:"content_size";i:839;s:13:"content_lines";i:21;s:6:"atLine";i:228;}i:15;a:7:{s:6:"header";s:36:"function renderSingleView($record) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:26:"
 
 Renders the single View
-";s:5:"param";a:1:{i:0;a:2:{i:0;s:5:"array";i:1;s:75:"$record: data of the single record, that shall be rendered by this function";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:7:"content";s:0:"";s:12:"content_size";i:1319;s:13:"content_lines";i:19;s:6:"atLine";i:263;}i:17;a:7:{s:6:"header";s:45:"function renderError($errormsg = 'deflaut') {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:27:"
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:5:"array";i:1;s:75:"$record: data of the single record, that shall be rendered by this function";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:7:"content";s:0:"";s:12:"content_size";i:1319;s:13:"content_lines";i:19;s:6:"atLine";i:256;}i:17;a:7:{s:6:"header";s:45:"function renderError($errormsg = 'deflaut') {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:27:"
 
 Renders an error message
-";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"string";i:1;s:14:"$errormsg: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:824;s:13:"content_lines";i:26;s:6:"atLine";i:289;}i:19;a:7:{s:6:"header";s:39:"function recordToMarkerArray($record) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:85:"
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"string";i:1;s:14:"$errormsg: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:824;s:13:"content_lines";i:26;s:6:"atLine";i:282;}i:19;a:7:{s:6:"header";s:39:"function recordToMarkerArray($record) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:85:"
 
 converts an associative array to an Marker Array in the form ### $KEY ### => value
-";s:5:"param";a:1:{i:0;a:2:{i:0;s:5:"array";i:1;s:38:"$record: array that shall be converted";}}s:6:"return";a:2:{i:0;s:5:"array";i:1;s:34:"Markerarray ready for substitution";}}s:7:"content";s:0:"";s:12:"content_size";i:460;s:13:"content_lines";i:16;s:6:"atLine";i:322;}i:21;a:7:{s:6:"header";s:59:"function renderFilterView($filterArray, $errorArray = '') {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:26:"
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:5:"array";i:1;s:38:"$record: array that shall be converted";}}s:6:"return";a:2:{i:0;s:5:"array";i:1;s:34:"Markerarray ready for substitution";}}s:7:"content";s:0:"";s:12:"content_size";i:521;s:13:"content_lines";i:16;s:6:"atLine";i:315;}i:21;a:7:{s:6:"header";s:59:"function renderFilterView($filterArray, $errorArray = '') {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:26:"
 
 Renders the filter view
-";s:5:"param";a:2:{i:0;a:2:{i:0;s:7:"[array]";i:1;s:17:"$filterArray: ...";}i:1;a:2:{i:0;s:7:"[array]";i:1;s:16:"$errorArray: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:1828;s:13:"content_lines";i:35;s:6:"atLine";i:346;}i:23;a:7:{s:6:"header";s:40:"function renderFileTypeList($filetype) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:28:"
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:7:"[array]";i:1;s:17:"$filterArray: ...";}i:1;a:2:{i:0;s:7:"[array]";i:1;s:16:"$errorArray: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:1828;s:13:"content_lines";i:35;s:6:"atLine";i:339;}i:23;a:7:{s:6:"header";s:40:"function renderFileTypeList($filetype) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:28:"
 
 Renders the filetype list
-";s:5:"param";a:1:{i:0;a:2:{i:0;s:8:"[string]";i:1;s:14:"$filetype: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:885;s:13:"content_lines";i:36;s:6:"atLine";i:388;}i:25;a:7:{s:6:"header";s:40:"function renderFilterError($errorCode) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:5:{s:4:"text";s:25:"
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:8:"[string]";i:1;s:14:"$filetype: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:885;s:13:"content_lines";i:36;s:6:"atLine";i:381;}i:25;a:7:{s:6:"header";s:40:"function renderFilterError($errorCode) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:5:{s:4:"text";s:25:"
 
 Renders a Filter Error
-";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:15:"$errorCode: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:28:"@todo 	Function not finished";}s:11:"other_index";a:1:{s:5:"@todo";a:1:{i:0;s:21:"Function not finished";}}}s:7:"content";s:0:"";s:12:"content_size";i:8;s:13:"content_lines";i:4;s:6:"atLine";i:432;}i:27;a:7:{s:6:"header";s:29:"function renderUploadForm() {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:5:{s:4:"text";s:19:"
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:15:"$errorCode: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:28:"@todo 	Function not finished";}s:11:"other_index";a:1:{s:5:"@todo";a:1:{i:0;s:21:"Function not finished";}}}s:7:"content";s:0:"";s:12:"content_size";i:8;s:13:"content_lines";i:4;s:6:"atLine";i:425;}i:27;a:7:{s:6:"header";s:29:"function renderUploadForm() {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:5:{s:4:"text";s:19:"
 
 renderUploadForm
-";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:30:"@todo function is not finished";}s:11:"other_index";a:1:{s:5:"@todo";a:1:{i:0;s:24:"function is not finished";}}}s:7:"content";s:0:"";s:12:"content_size";i:8;s:13:"content_lines";i:4;s:6:"atLine";i:443;}i:29;a:7:{s:6:"header";s:40:"function renderFilterList($filterList) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:5:{s:4:"text";s:19:"
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:30:"@todo function is not finished";}s:11:"other_index";a:1:{s:5:"@todo";a:1:{i:0;s:24:"function is not finished";}}}s:7:"content";s:0:"";s:12:"content_size";i:8;s:13:"content_lines";i:4;s:6:"atLine";i:436;}i:29;a:7:{s:6:"header";s:40:"function renderFilterList($filterList) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:5:{s:4:"text";s:19:"
 
 renderFilterList
-";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:16:"$filterList: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:42:"@todo renderFilterList is not finished yet";}s:11:"other_index";a:1:{s:5:"@todo";a:1:{i:0;s:36:"renderFilterList is not finished yet";}}}s:7:"content";s:0:"";s:12:"content_size";i:479;s:13:"content_lines";i:14;s:6:"atLine";i:455;}i:31;a:7:{s:6:"header";s:37:"function renderFilterCreationForm() {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:5:{s:4:"text";s:35:"
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:16:"$filterList: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:42:"@todo renderFilterList is not finished yet";}s:11:"other_index";a:1:{s:5:"@todo";a:1:{i:0;s:36:"renderFilterList is not finished yet";}}}s:7:"content";s:0:"";s:12:"content_size";i:479;s:13:"content_lines";i:14;s:6:"atLine";i:448;}i:31;a:7:{s:6:"header";s:37:"function renderFilterCreationForm() {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:5:{s:4:"text";s:35:"
 
 Renders the Filter Creation form
-";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:28:"@todo complete this function";}s:11:"other_index";a:1:{s:5:"@todo";a:1:{i:0;s:22:"complete this function";}}}s:7:"content";s:0:"";s:12:"content_size";i:161;s:13:"content_lines";i:7;s:6:"atLine";i:476;}i:33;a:7:{s:6:"header";s:37:"function renderFilterCreationLink() {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:42:"
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:28:"@todo complete this function";}s:11:"other_index";a:1:{s:5:"@todo";a:1:{i:0;s:22:"complete this function";}}}s:7:"content";s:0:"";s:12:"content_size";i:161;s:13:"content_lines";i:7;s:6:"atLine";i:469;}i:33;a:7:{s:6:"header";s:37:"function renderFilterCreationLink() {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:42:"
 
 Renders a filter creation creation link
-";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:111;s:13:"content_lines";i:4;s:6:"atLine";i:489;}i:35;a:4:{s:6:"header";s:51:"function getFileIconHref($mimeType, $mimeSubType) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:74:"
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:111;s:13:"content_lines";i:4;s:6:"atLine";i:482;}i:35;a:4:{s:6:"header";s:51:"function getFileIconHref($mimeType, $mimeSubType) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:74:"
 
 Returns the reference to the image file associated to given mime types.
-";s:5:"param";a:2:{i:0;a:2:{i:0;s:8:"[string]";i:1;s:21:"$mimeType: mime type.";}i:1;a:2:{i:0;s:8:"[string]";i:1;s:28:"$mimeSubType: mime sub type.";}}s:6:"return";a:2:{i:0;s:8:"[string]";i:1;s:48:"href attribute value, pointing to an image file.";}}s:6:"atLine";i:501;}i:37;a:7:{s:6:"header";s:31:"function getIconBaseAddress() {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:28:"
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:8:"[string]";i:1;s:21:"$mimeType: mime type.";}i:1;a:2:{i:0;s:8:"[string]";i:1;s:28:"$mimeSubType: mime sub type.";}}s:6:"return";a:2:{i:0;s:8:"[string]";i:1;s:48:"href attribute value, pointing to an image file.";}}s:6:"atLine";i:494;}i:37;a:7:{s:6:"header";s:31:"function getIconBaseAddress() {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:28:"
 
 Returns the path to Icons
-";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:193;s:13:"content_lines";i:8;s:6:"atLine";i:528;}}}s:14:"MD5_765a6a221e";a:4:{s:8:"filename";s:32:"pi1/class.tx_damfrontend_pi1.php";s:8:"filesize";i:18227;s:6:"header";a:5:{s:4:"text";s:143:"
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:424;s:13:"content_lines";i:12;s:6:"atLine";i:521;}}}s:14:"MD5_765a6a221e";a:4:{s:8:"filename";s:32:"pi1/class.tx_damfrontend_pi1.php";s:8:"filesize";i:18227;s:6:"header";a:5:{s:4:"text";s:143:"
 
 
 class.tx_damfrontend_pi1.php
@@ -552,7 +552,7 @@ function is responsible for rendering of a list with all availible filters
 ";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:34:"html list of all availible filters";}}s:6:"atLine";i:499;}i:31;a:7:{s:6:"header";s:23:"function uploadForm() {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:3:{s:4:"text";s:24:"
 
 Shows the upload form
-";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:8:"[string]";i:1;s:34:"$content the html code of the form";}}s:7:"content";s:0:"";s:12:"content_size";i:314;s:13:"content_lines";i:11;s:6:"atLine";i:527;}}}s:14:"MD5_730c3e71c0";a:4:{s:8:"filename";s:32:"pi2/class.tx_damfrontend_pi2.php";s:8:"filesize";i:11271;s:6:"header";a:5:{s:4:"text";s:140:"
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:8:"[string]";i:1;s:34:"$content the html code of the form";}}s:7:"content";s:0:"";s:12:"content_size";i:314;s:13:"content_lines";i:11;s:6:"atLine";i:527;}}}s:14:"MD5_730c3e71c0";a:4:{s:8:"filename";s:32:"pi2/class.tx_damfrontend_pi2.php";s:8:"filesize";i:11245;s:6:"header";a:5:{s:4:"text";s:140:"
 
 Plugin 'DAM Frontend Filelist' for the 'dam_frontend' extension.
 based on dam_downloadlist by Davide Principi <d.principi@provincia.ps.it
@@ -584,7 +584,7 @@ Building the Details for a DAM record
 ";s:5:"param";a:1:{i:0;a:2:{i:0;s:7:"[array]";i:1;s:31:"$damRecord: DAM database record";}}s:6:"return";a:2:{i:0;s:7:"[array]";i:1;s:40:"an array containing processed DAM fields";}}s:7:"content";s:0:"";s:12:"content_size";i:2037;s:13:"content_lines";i:59;s:6:"atLine";i:258;}i:17;a:7:{s:6:"header";s:31:"function getIconBaseAddress() {";s:11:"parentClass";s:18:"tx_damfrontend_pi2";s:4:"cDat";a:3:{s:4:"text";s:25:"
 
 [Describe function...]
-";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:190;s:13:"content_lines";i:7;s:6:"atLine";i:323;}i:19;a:4:{s:6:"header";s:51:"function getFileIconHref($mimeType, $mimeSubType) {";s:11:"parentClass";s:18:"tx_damfrontend_pi2";s:4:"cDat";a:3:{s:4:"text";s:74:"
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:164;s:13:"content_lines";i:7;s:6:"atLine";i:323;}i:19;a:4:{s:6:"header";s:51:"function getFileIconHref($mimeType, $mimeSubType) {";s:11:"parentClass";s:18:"tx_damfrontend_pi2";s:4:"cDat";a:3:{s:4:"text";s:74:"
 
 Returns the reference to the image file associated to given mime types.
 ";s:5:"param";a:2:{i:0;a:2:{i:0;s:8:"[string]";i:1;s:21:"$mimeType: mime type.";}i:1;a:2:{i:0;s:8:"[string]";i:1;s:28:"$mimeSubType: mime sub type.";}}s:6:"return";a:2:{i:0;s:8:"[string]";i:1;s:48:"href attribute value, pointing to an image file.";}}s:6:"atLine";i:338;}i:21;a:7:{s:6:"header";s:20:"function log($msg) {";s:11:"parentClass";s:18:"tx_damfrontend_pi2";s:4:"cDat";a:3:{s:4:"text";s:25:"
