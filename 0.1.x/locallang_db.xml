@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>database</type>
+		<description>Language labels for database tables/fields belonging to extension 'dam_frontend'</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="tt_content.list_type_pi1">DAM Frontend</label>
+			<label index="tt_content.list_type_pi2">DAM Frontend Filelist</label>
+			<label index="tx_dam_cat.downloadaccess">Downloadaccess for:</label>
+			<label index="tx_dam_cat.readaccess">Readaccess for:</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="tt_content.list_type_pi1">DAM Frontend</label>
+			<label index="tt_content.list_type_pi2">DAM Frontend Dateiliste</label>
+			<label index="tx_dam_cat.downloadaccess">Downloadzugriff Frontend für:</label>
+			<label index="tx_dam_cat.readaccess">Darstellung im Frontend für:</label>
+		</languageKey>
+	</data>
+</T3locallang>
