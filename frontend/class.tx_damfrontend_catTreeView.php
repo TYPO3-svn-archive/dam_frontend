@@ -45,15 +45,15 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  *
  *   62: class tx_damfrontend_catTreeView extends tx_dam_selectionCategory
  *   75:     function tx_damfrontend_catTreeView()
- *  112:     function init($treeID='')
- *  127:     function expandNext($id)
- *  139:     function initializePositionSaving()
- *  160:     function savePosition()
- *  174:     function wrapTitle($title,$row,$bank=0)
- *  207:     function PM_ATagWrap($icon,$cmd,$bMark='treeroot')
- *  226:     function getControl($title,$row)
- *  287:     function printTree($treeArr='')
- *  346:     function getBrowsableTree()
+ *  113:     function init($treeID='')
+ *  128:     function expandNext($id)
+ *  140:     function initializePositionSaving()
+ *  164:     function savePosition()
+ *  178:     function wrapTitle($title,$row,$bank=0)
+ *  211:     function PM_ATagWrap($icon,$cmd,$bMark='treeroot')
+ *  230:     function getControl($title,$row)
+ *  291:     function printTree($treeArr='')
+ *  350:     function getBrowsableTree()
  *
  * TOTAL FUNCTIONS: 10
  * (This index is automatically created/updated by the extension "extdeveval")
@@ -153,7 +153,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 				}
 			}
 		}
-		
+
  	}
 
 	/**
@@ -352,4 +352,8 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 		return  parent::getBrowsableTree();
 	}
 }
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_catTreeView.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_catTreeView.php']);
+}
+
 ?>

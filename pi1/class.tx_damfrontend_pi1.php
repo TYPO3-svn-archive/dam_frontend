@@ -59,18 +59,18 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  *  101:     function init()
  *  120:     function initFilter()
  *  156:     function initList()
- *  193:     function initUpload()
- *  202:     function convertPiVars()
- *  243:     function loadFlexForm()
- *  264:     function main($content,$conf)
- *  346:     function catTree()
- *  359:     function getTree($mount= '')
- *  378:     function fileList()
- *  424:     function filterView()
- *  437:     function catSelection()
- *  466:     function singleView()
- *  488:     function filterList()
- *  516:     function uploadForm()
+ *  197:     function initUpload()
+ *  206:     function convertPiVars()
+ *  247:     function loadFlexForm()
+ *  268:     function main($content,$conf)
+ *  353:     function catTree()
+ *  366:     function getTree($mount= '')
+ *  385:     function fileList()
+ *  431:     function filterView()
+ *  444:     function catSelection()
+ *  473:     function singleView()
+ *  501:     function filterList()
+ *  529:     function uploadForm()
  *
  * TOTAL FUNCTIONS: 15
  * (This index is automatically created/updated by the extension "extdeveval")
@@ -166,9 +166,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
  			if ($postvalue == 'DESC' || $postvalue == 'ASC') {
  				if (substr($postvar, 0, 5) == 'sort_') {
  					$this->internal['list']['sorting'] = strip_tags(substr($postvar, 5).' '.$postvalue);
- 				}	
+ 				}
  			}
- 			
+
 		}
 
 		$this->listState->syncListState($this->internal['list']);
@@ -288,10 +288,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			if ($this->internal['catPlus']) {
 				// first check, if the user has access to the category
 				//if ($this->catLogic->checkCategoryAccess($GLOBALS['TSFE']->fe_user->user['uid'],$this->internal['catPlus'])) {
-					$this->catList->op_Plus($this->internal['catPlus'], $this->internal['incomingtreeID']);	
+					$this->catList->op_Plus($this->internal['catPlus'], $this->internal['incomingtreeID']);
 				//}
 			}
-			else if ($this->internal['catMinus']) {	
+			else if ($this->internal['catMinus']) {
 				$this->catList->op_Minus($this->internal['catMinus'], $this->internal['incomingtreeID']);
 			}
 			else if ($this->internal['catEquals']) {
@@ -476,7 +476,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			if (intval($singleID) && $singleID != 0) {
 				$record = $this->docLogic->getDocument($singleID);
 				$content = $this->renderer->renderSingleView($record);
-	
+
 				if ($this->docLogic->checkAccess($singleID, 2)) {
 					$_SESSION['fileRef'] = $record['file_path'].$record['file_name'];
 				}
@@ -489,7 +489,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		else {
 			return $this->renderer->renderError('noDocAccess');
 		}
-		
+
 	}
 
 

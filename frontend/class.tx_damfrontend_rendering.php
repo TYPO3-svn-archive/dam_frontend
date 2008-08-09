@@ -47,24 +47,24 @@
  *
  *
  *   73: class tx_damfrontend_rendering extends tslib_pibase
- *   89:     function init()
- *  100:     function setFileRef($filePath)
- *  115:     function renderFileList($list, $resultcount, $pointer, $listLength)
- *  193:     function renderBrowseResults($resultcount, $pointer, $listLength)
- *  219:     function renderSortLink($key)
- *  237:     function renderCatSelection($list)
- *  265:     function renderSingleView($record)
- *  291:     function renderError($errormsg = 'deflaut')
- *  324:     function recordToMarkerArray($record)
- *  348:     function renderFilterView($filterArray, $errorArray = '')
- *  390:     function renderFileTypeList($filetype)
- *  434:     function renderFilterError($errorCode)
- *  445:     function renderUploadForm()
- *  457:     function renderFilterList($filterList)
- *  478:     function renderFilterCreationForm()
- *  491:     function renderFilterCreationLink()
- *  503:     function getFileIconHref($mimeType, $mimeSubType)
- *  530:     function getIconBaseAddress()
+ *   90:     function init()
+ *  102:     function setFileRef($filePath)
+ *  117:     function renderFileList($list, $resultcount, $pointer, $listLength)
+ *  186:     function renderBrowseResults($resultcount, $pointer, $listLength)
+ *  212:     function renderSortLink($key)
+ *  230:     function renderCatSelection($list)
+ *  258:     function renderSingleView($record)
+ *  284:     function renderError($errormsg = 'deflaut')
+ *  317:     function recordToMarkerArray($record)
+ *  341:     function renderFilterView($filterArray, $errorArray = '')
+ *  383:     function renderFileTypeList($filetype)
+ *  427:     function renderFilterError($errorCode)
+ *  438:     function renderUploadForm()
+ *  450:     function renderFilterList($filterList)
+ *  471:     function renderFilterCreationForm()
+ *  484:     function renderFilterCreationLink()
+ *  496:     function getFileIconHref($mimeType, $mimeSubType)
+ *  523:     function getIconBaseAddress()
  *
  * TOTAL FUNCTIONS: 18
  * (This index is automatically created/updated by the extension "extdeveval")
@@ -80,6 +80,7 @@
  	var $filePath; // contains the physical path to the filereference
  	var $fileContent; // HTML content of the given filepath
 
+	var $iconBaseAddress = null;
 
 	/**
 	 * inits this class (loading the locallang file)
@@ -88,6 +89,7 @@
 	 */
 	function init() {
 		$this->pi_loadLL();
+		$this->iconBaseAddress = $this->conf['iconBaseAddress'];
 	}
 
 
@@ -129,22 +131,13 @@
  			$elem['crdate'] = date('d.m.Y', $elem['crdate']);
 
  			$markerArray = $this->recordToMarkerArray($elem);
- 			// changes in the content of the marker arrays @todo what ist done here?
+ 			// changes in the content of the marker arrays @todo what is done here?
  			$this->piVars['showUid'] = $elem['uid'];
- 			#$markerArray['###TITLE###'] = $this->pi_linkTP_keepPiVars($elem['title']);
- 			$markerArray['###TITLE###'] = '<a href="typo3conf/ext/dam_frontend/pushfile.php?docID='.$elem['uid'].'" >'. $elem['title'] .'</a>';
- 			// replacing the  filesize by an readable output
-//			$filesize = $elem['file_size'];
-// 			if ($filesize > 1048576) {
-//		      $order = "M";
-//		      $filesize = (float) $filesize / 1048576.0;
-//		    }
-//		    else if ($filesize > 1024) {
-//		      $order = "K";
-//		      $filesize = (float) $filesize / 1024.0;
-//		    }
 
- 			$markerArray['###FILE_SIZE###'] = t3lib_div::formatSize($filesize,' bytes | kb| mb| gb');
+ 			$markerArray['###TITLE###'] = '<a href="typo3conf/ext/dam_frontend/pushfile.php?docID='.$elem['uid'].'" >'. $elem['title'] .'</a>';
+
+
+ 			$markerArray['###FILE_SIZE###'] = t3lib_div::formatSize($elem['file_size'],' bytes | kb| mb| gb');
  			#$filesize.' '.$order;
 
  			// adding Markers for links to download and single View
@@ -331,7 +324,7 @@
  				else {
  					$valueReturn=strip_tags($value);
  				}
- 				$markerArray['###'.strtoupper($key).'###'] = $valueReturn ;
+ 				$markerArray['###'.strtoupper($key).'###'] = $this->cObj->stdWrap($valueReturn, $this->conf['renderFields.'][$key.'.']);
 	 		}
 	 		return $markerArray;
  		}
@@ -529,10 +522,14 @@
 	 */
   function getIconBaseAddress() {
     if($this->iconBaseAddress) {
-      return $BACK_PATH . $this->iconBaseAddress;
+      return $this->iconBaseAddress;
     } else {
-      return $BACK_PATH . t3lib_extMgm::siteRelPath($this->extKey) . 'res/ico/';
+      return t3lib_extMgm::siteRelPath($this->extKey) . 'res/ico/';
     }
   }
  }
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_rendering.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_rendering.php']);
+}
+
 ?>

@@ -6,11 +6,7 @@ require_once(t3lib_extmgm::extPath('dam').'lib/class.tx_dam_tcefunc.php');
 
 class tx_dam_flexFunc extends tx_dam_tceFunc{
 
-
 	function  getSingleField_selectTree($PA, &$fObj) {
-
-
-
 		/********************************************
 		*
 		* you cannot pass values via flexform datastructure (I was to lazy to find a way)
@@ -28,6 +24,8 @@ class tx_dam_flexFunc extends tx_dam_tceFunc{
 
 }
 
-
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/tx_dam_flexFunc.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/tx_dam_flexFunc.php']);
+}
 
 ?>

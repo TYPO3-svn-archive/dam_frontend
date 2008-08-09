@@ -186,4 +186,8 @@ class tx_damfrontend_filterState extends tx_damfrontend_baseSessionData{
 
 	}
 }
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/DAL/class.tx_damfrontend_filterState.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/DAL/class.tx_damfrontend_filterState.php']);
+}
+
 ?>
