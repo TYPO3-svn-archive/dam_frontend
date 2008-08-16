@@ -1,3 +1,6 @@
+v.0.1.2: stdWrap for all fields (pi1)
+Thanks to Frank NŠgler. Now it is posible to use typoscript for the views "single view" and "file list". Each database field, wich is used in the view can be customized with typoscript.
+
 v.0.1.1: Security Bugfix  [Ticket#2008052210000041] 
 - fixed multiple vulnerabilities in extension  dam_frontend. Thanks to the security team and Marcus Krause
 
