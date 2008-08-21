@@ -113,6 +113,15 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 		$this->setArrayToUser($catarray);
 	}
 
+	
+	/**
+	* Operation for removing all categories from sessio
+	* @return void
+	*/
+	function unsetAllCategories() {
+		 $this->setArrayToUser(null);
+	}
+
 	/**
 	 * Deletes the current selection an makes the given catID the only selected category
 	 *

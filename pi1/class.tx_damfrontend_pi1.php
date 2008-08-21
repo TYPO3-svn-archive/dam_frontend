@@ -14,7 +14,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2006-2007 BUS Netzwerk (typo3@in2form.com)
+*  (c) 2006-2008 BUS Netzwerk (typo3@in2form.com)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -255,6 +255,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		$this->internal['treeName'] = strip_tags($this->pi_getFFvalue($flexform, 'treeName', 'sSelection'));
 		$this->internal['treeID'] = $this->cObj->data['uid'];
+		
+		$this->internal['useStaticCatSelection'] = strip_tags($this->pi_getFFvalue($flexform, 'useStaticCatSelection', 'sSelection'));
 	}
 
 
@@ -309,8 +311,21 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					$this->catList->op_Plus($sub['uid'], $this->internal['incomingtreeID']);
 				}
 			}
-//		debug($this->catList->getCatSelection());
 		}
+		if ($this->internal['useStaticCatSelection']) {
+			$this->catList->unsetAllCategories();
+			if (is_array($this->internal['catMounts'])) {
+				foreach ($this->internal['catMounts'] as $catMount) {
+					if (strlen($catMount)) {
+						$subs = $this->catLogic->getSubCategories($catMount);
+						foreach ($subs as $sub) {
+							$this->catList->op_Plus($sub['uid'], $this->internal['incomingtreeID']);
+						}
+					}
+				}
+			}
+		}
+		//debug($this->catList->getCatSelection());
 
 		// Mapping the ViewIds - selected in the Flexform to the content
 		// that shall be rendered
