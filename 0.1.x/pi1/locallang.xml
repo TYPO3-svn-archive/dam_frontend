@@ -46,7 +46,32 @@
 			<label index="CHOOSEN_CAT_HEADER">Choosen cat header</label>	
 			<label index="TITLE_SINGLEVIEW_HEADER">Title</label>	
 			<label index="COPYRIGHT_HEADER">Copyright</label>	
-			<label index="LINK_HEADER">Link</label>	
+			<label index="LINK_HEADER">Link</label>
+			<label index="no_title">No title</label>	
+			<label index="REQUEST_FORM_LEGEND">Requestform</label>
+			<label index="REQUEST_FORM_TEXT">Bitte bestaetigen Sie uns Ihre Anforderung der Spezialinformation:</label>
+			<label index="REQUEST_FORM_ADRESS_HEADER">Bitte geben Sie Ihre E-Mail Adresse und Versandanschrift an: </label>
+			<label index="REQUEST_FORM_FIRST_NAME_DESCRIPTION">First Name: </label>
+			<label index="REQUEST_FORM_LAST_NAME_DESCRIPTION">Last Name: </label>
+			<label index="REQUEST_FORM_SEND_BUTTON">Send request</label>
+			<label index="REQUEST_FORM_BACK_URL_TEXT">Back</label>
+			<label index="REQUEST_FORM_EMail_DESCRIPTION">email</label>
+			<label index="REQUEST_FORM_ADRESS_DESCRIPTION">adress</label>
+			<label index="REQUEST_FORM_TOWN_DESCRIPTION">zip / town</label>
+			<label index="MAIL_REQUEST_HEADER_TEXT">Sie haben folgende BUS - Spezialinformation angefordert: </label>
+			<label index="MAIL_REQUEST_FOOTER_TEXT">Wir werden Ihre Anfrage schnellstmoeglichst bearbeiten.Vielen Dank Ihr BUS-Team</label>
+			<label index="MAIL_REQUEST_ADRESS_INFO">Ihre Bestellung wird an folgende Adresse versandt:</label>
+			<label index="REQUEST_USER_TITLE">File request</label>
+			<label index="REQUEST_USER_TEXT">Vielen Dank fuer Ihr Interesse!<br/>Bitte bestaetigen Sie uns die Anforderung der SI: </label>
+			<label index="REQUEST_USER_TEXT2">Ihre Anfrage wird umgehend bearbeitet!</label>
+			<label index="REQUEST_USER_SEND">Send!</label>
+			<label index="CATEGORISATION_TEXT_HEADER">Bitte ordnen Sie dem neuen Dokument geeignete Kategorien zu. <br /></label>
+			<label index="CATEGORISATION_TEXT_TITLE">title</label>	
+			<label index="CATEGORISATION_TEXT_DESCRIPTION">Beschreibung</label>
+			<label index="CATEGORISATION_TEXT_SEND">Auswahl bestaetigen</label>
+			<label index="MAIL_REQUES_TEXT1">Der BUS Portal Benutzer</label>			
+			<label index="MAIL_REQUES_TEXT2">hat folgende SI angefordert:</label>
+			<label index="MAIL_REQUES_TEXT3">the user's data</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="list_mode_1">Modus 1</label>
@@ -89,7 +114,14 @@
 			<label index="CHOOSEN_CAT_HEADER">gewählte Kategorien</label>	
 			<label index="TITLE_SINGLEVIEW_HEADER">Titel</label>	
 			<label index="COPYRIGHT_HEADER">Copyright</label>	
-			<label index="LINK_HEADER">Link</label>				
+			<label index="LINK_HEADER">Link</label>
+			<label index="no_title">Kein Titel</label>
+			<label index="REQUEST_FORM_LEGEND">Requestform</label>
+			<label index="REQUEST_FORM_TEXT">Bitte bestaetigen Sie uns Ihre Anforderung der Spezialinformation:</label>
+			<label index="REQUEST_FORM_ADRESS_HEADER">Bitte geben Sie Ihre E-Mail Adresse und Versandanschrift an: </label>
+			<label index="REQUEST_FORM_FIRST_NAME_DESCRIPTION">First Name: </label>
+			<label index="REQUEST_FORM_FIRST_NAME">First Name: </label>
+			
 		</languageKey>
 	</data>
 </T3locallang>

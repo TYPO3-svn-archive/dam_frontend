@@ -3,7 +3,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2006-2007 BUS Netzwerk (typo3@in2form.com)
+*  (c) 2006-2008 in2form.com (typo3@in2form.com)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -66,6 +66,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	var $selectedCats;										// Array of currently selected cats
 	var $catLogic;											// array which holds all selected categories
 	var $treeID;											// ID Number of the tree given from the flexform configuration
+	var $plugin;											// Back-reference to the calling plugin
 
 	/**
 	 * prepares the category tree
@@ -110,13 +111,14 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	 * @param	[type]		$treeID: ...
 	 * @return	void
 	 */
- 	function init($treeID='') {
+ 	function init($treeID = '', $plugin = null) {
  		parent::init();
  		$this->treeID = $treeID;
  		$this->user =& $GLOBALS['TSFE']->fe_user;
  		$this->backPath = 'typo3/';
 // 		$this->renderer = t3lib_div::makeInstance("tx_damfrontend_rendering");
- 	}
+		if (isset($plugin)) $this->plugin = $plugin; 
+	}
 
 	/**
 	 * expands the category tree
@@ -153,7 +155,6 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 				}
 			}
 		}
-
  	}
 
 	/**
@@ -202,6 +203,8 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 
 	/**
 	 * PM_ATagWrap
+	 *
+	 * renders the plus or minus sign
 	 *
 	 * @param	string		$icon: html (img Tag)
 	 * @param	string		$cmd: ...
@@ -341,6 +344,24 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 		}
 	}
 
+	/**
+	 * Returns the title for the input record. If blank, a "no title" label (localized) will be returned.
+	 * Do NOT htmlspecialchar the string from this function - has already been done.
+	 *
+	 * This is an overload of the parent's method which uses BE objects not available in the FE
+	 *
+	 * @param	array		The input row array (where the key "title" is used for the title)
+	 * @param	integer		Title length (30)
+	 * @return	string		The title.
+	 */
+	function getTitleStr($row, $titleLen = 30)	{
+		$conf['sys_language_uid'] = $GLOBALS['TSFE']->sys_language_uid;
+		// this line can be used for DAM Version 1.1+
+		//$row = tx_dam_db::getRecordOverlay($this->table, $row, $conf); 
+		$title = trim($row['title']);
+		if (empty($title)) $title = '<em>['.$this->plugin->pi_getLL('no_title').']</em>';
+		return $title;
+	}
 
 	/**
 	 * calls the parrent methoad getBrowsableTree
