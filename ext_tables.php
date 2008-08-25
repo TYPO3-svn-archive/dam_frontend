@@ -52,13 +52,14 @@ t3lib_extMgm::addStaticFile($_EXTKEY,"static/","DAM Frontend Static Template");
 $tempColumns = Array (
 	"tx_damtree_fe_groups_readaccess" => Array (		
 		"exclude" => 1,		
-		"label" => "LLL:EXT:dam_frontend/locallang_db.xml:tx_dam_cat.readaccess",
+		"label" => "LLL:EXT:dam_frontend/locallang_db.php:tx_dam_cat.tx_damtree_fe_groups_readaccess",
 		"config" => Array (
 			"items" => Array(
-				Array("alle Gruppen freigeben", -1),
-				Array("keine Gruppe freigeben", -2),
-				Array("-----einzelne Gruppen------", '--div--')
+				Array("LLL:EXT:dam_frontend/locallang_db.php:tx_damtree_fe_groups_all", -1),
+				Array("LLL:EXT:dam_frontend/locallang_db.php:tx_damtree_fe_groups_none", -2),
+				Array("LLL:EXT:dam_frontend/locallang_db.php:tx_damtree_fe_groups", '--div--')
 			), 	
+			'exclusiveKeys' => '-1,-2',
 			"type" => "select",
 			"foreign_table" =>"fe_groups",	
 			"internal_type" => "db",	
@@ -70,13 +71,14 @@ $tempColumns = Array (
 	),
 	"tx_damtree_fe_groups_downloadaccess" => Array (		
 		"exclude" => 1,		
-		"label" => "LLL:EXT:dam_frontend/locallang_db.xml:tx_dam_cat.downloadaccess",		
+		"label" => "LLL:EXT:dam_frontend/locallang_db.php:tx_dam_cat.tx_damtree_fe_groups_downloadaccess",		
 		"config" => Array (
 			"items" => Array(
 				Array("alle Gruppen freigeben", -1),
 				Array("keine Gruppe freigeben", -2),
 				Array("-----einzelne Gruppen------", '--div--')
 			), 	
+			'exclusiveKeys' => '-1,-2',
 			"type" => "select",	
 			"internal_type" => "db",
 			"foreign_table" => "fe_groups",	
@@ -87,6 +89,7 @@ $tempColumns = Array (
 		)
 	),
 );
+
 // adding the configuration to the dam - categorie table
 t3lib_div::loadTCA("tx_dam_cat");
 t3lib_extMgm::addTCAcolumns("tx_dam_cat",$tempColumns,1);
@@ -153,6 +156,44 @@ t3lib_extMgm::addTCAcolumns("tt_content",$tempColumns,1);
 $TCA["tt_content"]["types"]["list"]["subtypes_excludelist"][$_EXTKEY."_pi2"]="layout,select_key,pages";
 $TCA["tt_content"]["types"]["list"]["subtypes_addlist"][$_EXTKEY."_pi2"]="tx_damdownloadlist_records;;;;1-1-1";
 
+
+#########
+#
+# Adding additional fields to the DAM
+#
+#############
+
+$tempColumns = Array (
+	"tx_damfrontend_use_request_form" => Array (		
+		"exclude" => 0,		
+		"label" => "LLL:EXT:dam_frontend/locallang_tca.php:tx_damfrontend_use_request_form",		
+		"config" => Array (	
+			'type' => 'check',
+			'default' => '0',
+		),
+	),
+);
+
+/*   for upload user */
+t3lib_div::loadTCA("tx_dam");
+t3lib_extMgm::addTCAcolumns("tx_dam",$tempColumns,1);
+t3lib_extMgm::addToAllTCAtypes("tx_dam","tx_damfrontend_use_request_form;;;;1-1-1",'','after:category');
+
+/*
+$tempColumns = Array (
+	"tx_damfrontend_feuser_upload" => Array (		
+		"exclude" => 0,		
+		"label" => "LLL:EXT:dam_frontend/locallang_tca.php:tx_damfrontend_feuser_upload",		
+		"config" => Array (	
+			'type' => 'int',
+			'default' => '0',
+		),
+	),
+);
+
+t3lib_div::loadTCA("tx_dam");
+t3lib_extMgm::addTCAcolumns("tx_dam",$tempColumns,1);
+t3lib_extMgm::addToAllTCAtypes("tx_dam","tx_damfrontend_feuser_upload;;;;1-1-1");*/
 
 /**********************************************
  * 

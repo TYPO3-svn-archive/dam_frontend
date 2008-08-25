@@ -16,8 +16,8 @@ $EM_CONF[$_EXTKEY] = array(
 	'category' => 'plugin',
 	'shy' => 0,
 	'version' => '0.1.2',
-	'dependencies' => 'dam',
-	'conflicts' => '',
+	'dependencies' => 'fileupload,dam,dam_catedit',
+	'conflicts' => 'realurl',
 	'priority' => '',
 	'loadOrder' => '',
 	'module' => '',
@@ -34,11 +34,13 @@ $EM_CONF[$_EXTKEY] = array(
 	'CGLcompliance_note' => '',
 	'constraints' => array(
 		'depends' => array(
-			'dam' => '0.0.0-1.0.99',
+			'dam' => '1.0.0-1.0.99',
 			'php' => '4.0.0-0.0.0',
 			'typo3' => '4.0.0-0.0.0',
+			'fileupload' => '1.1.0-0.0.0',
 		),
 		'conflicts' => array(
+			'realurl' => '0.0.0-0.0.0',
 		),
 		'suggests' => array(
 		),

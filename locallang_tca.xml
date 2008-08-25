@@ -17,7 +17,9 @@
 			<label index="flexform_selection_cats">Category Selection</label>
 			<label index="flexform_treeName">Tree Name</label>
 			<label index="flexform_treeID">Tree ID</label>
-			<label index="flexform_useStaticCatSelection">use category selection as default cats</label>
+			<label index="flexform_uploadForm">Upload Form</label>
+			<label index="flexform_requstForm">Request Form</label>
+			<label index="tx_damfrontend_use_request_form">Use a request form for this file</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="flexform_display_title">Was soll angezeigt werden</label>
@@ -32,6 +34,8 @@
 			<label index="flexform_treeName">Baum Name</label>
 			<label index="flexform_treeID">Baum ID</label>
 			<label index="flexform_uploadForm">Upload Formular</label>
+			<label index="flexform_requstForm">Anforderung Formular</label>
+			<label index="tx_damfrontend_use_request_form">Use a request form for this file</label>
 			<label index="flexform_useStaticCatSelection">Kategorieauswahl als Standard verwenden</label>
 		</languageKey>
 	</data>
