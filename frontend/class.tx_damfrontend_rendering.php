@@ -1,11 +1,12 @@
 <?php
- require_once(PATH_tslib.'class.tslib_content.php');
- require_once(PATH_tslib.'class.tslib_pibase.php');
+require_once(PATH_tslib.'class.tslib_content.php');
+require_once(PATH_tslib.'class.tslib_pibase.php');
+require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfrontend_categorisationTree.php');
 
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2006-2007 BUS Netzwerk (typo3@in2form.com)
+*  (c) 2006-2008 in2form.com (typo3@in2form.com)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -112,9 +113,10 @@
 	 * @param	rowcount		$resultcount: ...
 	 * @param	[type]		$pointer: ...
 	 * @param	[type]		$listLength: ...
+	 * @param	[boolean]	$useRequestForm: if true, a request form will be rendered, where a FE User has to fill out a form
 	 * @return	[type]		...
 	 */
- 	function renderFileList($list, $resultcount, $pointer, $listLength) {
+ 	function renderFileList($list, $resultcount, $pointer, $listLength, $useRequestForm) {
 
  		if(!is_array($list)) die($this->pi_getLL('error_renderFileList_emptyArray'));
 		if(!intval($resultcount) || $resultcount < 1) die($this->pi_getLL('error_renderFileList_resultcount'));
@@ -125,14 +127,18 @@
  		// reading the filecontent just one time
  		$record_Code = tslib_CObj::getSubpart($this->fileContent,'###FILELIST_RECORD###');
  		$list_Code = tsLib_CObj::getSubpart($this->fileContent,'###FILELIST###');
+ 		$countElement = 1;
+ 		
  		foreach ($list as $elem) {
  			// converting timestamps
  			$elem['tstamp'] = date('d.m.Y', $elem['tstamp']);
  			$elem['crdate'] = date('d.m.Y', $elem['crdate']);
-
+			$elem['count_id'] = $countElement++;
+			
  			$markerArray = $this->recordToMarkerArray($elem);
  			// changes in the content of the marker arrays @todo what is done here?
  			$this->piVars['showUid'] = $elem['uid'];
+ 			$markerArray['###TITLE###'] = $this->pi_linkTP_keepPiVars($elem['title']);
 
  			$markerArray['###TITLE###'] = '<a href="typo3conf/ext/dam_frontend/pushfile.php?docID='.$elem['uid'].'" >'. $elem['title'] .'</a>';
 
@@ -142,7 +148,27 @@
 
  			// adding Markers for links to download and single View
  			$markerArray['###LINK_SINGLE###'] = $this->pi_linkTP_keepPiVars('<img src="'.$this->iconPath.'zoom.gif'.'" style="border-width: 0px"/>');
- 			$markerArray['###LINK_DOWNLOAD###'] = '<a href="typo3conf/ext/dam_frontend/pushfile.php?docID='.$elem['uid'].'" ><img src="'.$this->iconPath.'clip_pasteafter.gif" style="border-width: 0px"/></a>';
+ 			
+ 			
+
+ 			// this is a field in the database, if true, then the fe user has
+ 			// to fill out a request form
+ 			if ($useRequestForm==1 ) {
+ 				if ($elem['tx_damfrontend_use_request_form'] == 1) {
+	 				$paramAnforderung = array(
+	 					'docID' => $elem['uid'],
+	 					'showRequestform' => 1
+	 				);
+	 				$markerArray['###LINK_DOWNLOAD###'] = $this->pi_linkTP('request', $paramAnforderung);
+	 			}
+	 			else {
+	 				$markerArray['###LINK_DOWNLOAD###'] = '<a href="typo3conf/ext/dam_frontend/pushfile.php?docID='.$elem['uid'].'" ><img src="'.$this->iconPath.'clip_pasteafter.gif" style="border-width: 0px"/></a>';
+	 			}
+ 			}
+ 			else {
+ 				$markerArray['###LINK_DOWNLOAD###'] = '<a href="typo3conf/ext/dam_frontend/pushfile.php?docID='.$elem['uid'].'" ><img src="'.$this->iconPath.'clip_pasteafter.gif" style="border-width: 0px"/></a>';
+ 			}
+ 			
  			$markerArray['###FILEICON###'] = '<img src="'.$this->getFileIconHref($elem['file_mime_type'],$elem['file_mime_subtype'] ).'" title="'.$elem['title'].'"  alt="'.$elem['title'].'"/>';
 
  			$newcontent = $record_Code;
@@ -227,7 +253,7 @@
 	 * @param	array		$list: list of selected elements
 	 * @return	html		rendered category selection content element
 	 */
- 	function renderCatSelection($list) {
+ 	function renderCatSelection($list, $treeID='') {
  		$wholeCode = tslib_CObj::getSubpart($this->fileContent,'###CATSELECTION###');
  		$listCode = '';
  		foreach ($list as $category) {
@@ -239,9 +265,12 @@
 				'catPlus_Rec' => null,
 				'catEquals' => null
 			);
+			$urlVars['treeID'] = $treeID != '' ?   $treeID : null; 
 			$url = t3lib_div::linkThisScript($urlVars);
+ 			// static markers of the list
  			$listElem = tslib_cObj::substituteMarker($listElem, '###DELETE_URL###', $url);
  			$listElem = tslib_cObj::substituteMarker($listElem, '###TITLE###', $category['title']);
+ 			
  			$markerArray = $this->recordToMarkerArray($category);
  			$listCode .= tslib_cObj::substituteMarkerArray($listElem, $markerArray);
  		}
@@ -257,10 +286,14 @@
 	 */
  	function renderSingleView($record) {
  		$single_Code = tslib_CObj::getSubpart($this->fileContent,'###SINGLEVIEW###');
- 		// Formating Timefields
+ 		// Formating Timefields and filesize
  		$record['tstamp'] = date('d.m.Y', $record['tstamp']);
  		$record['crdate'] = date('d.m.Y', $record['crdate']);
+ 		$record['file_size'] = t3lib_div::formatSize($record['file_size'],' bytes | kb| mb| gb');
+ 		
+ 		// converting all fields in the record to marker (recordfields and markername must match)
  		$markerArray = $this->recordToMarkerArray($record);
+ 		
  		$this->pi_loadLL();
  		$content=tslib_cObj::substituteMarkerArray($single_Code, $markerArray);
  		$content = tslib_cObj::substituteMarker($content, '###TITLE_SINGLEVIEW###',$record['title']);
@@ -281,7 +314,7 @@
 	 * @param	string		$errormsg: ...
 	 * @return	[type]		...
 	 */
- 	function renderError($errormsg = 'deflaut') {
+ 	function renderError($errormsg = 'default', $customMessage="") {
  		$this->pi_loadLL();
  		switch ($errormsg) {
  			case 'noSingleID':
@@ -298,6 +331,9 @@
  				break;
  			case 'noFilterStates':
  				$message = $this->pi_getLL('noFilterStates');
+ 				break;
+ 			case 'custom':
+ 				$message = strip_tags($customMessage);
  				break;
  			default:
  				$message = $this->pi_getLL('standardErrorMessage');
@@ -436,7 +472,15 @@
 	 * @todo function is not finished
 	 */
  	function renderUploadForm() {
-
+		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###UPLOADFORM###');
+		$markerArray['###BUTTON_UPLOAD###'] = 'upload';
+		$markerArray['###TITLE_FILEUPLOAD###'] = 'Datei upload';
+		$markerArray['###LABEL_FILE###'] = 'Dateiupload';
+		$markerArray['###LABEL_TITLE###'] = 'Titel';
+		$markerArray['###LABEL_COPYRIGHT###'] = 'Copyright Inhaber';
+		$markerArray['###LABEL_AUTHOR###'] = 'Author der Datei';
+		$markerArray['###LABEL_DESCRIPTION###'] = 'Beschreibungstext';
+		return tslib_cObj::substituteMarkerArray($formCode, $markerArray);
  	}
 
 
@@ -527,6 +571,125 @@
       return t3lib_extMgm::siteRelPath($this->extKey) . 'res/ico/';
     }
   }
+  
+  
+  	/**
+  	 * 
+  	 * rendert das Formular zur Eingabe der Anforderung fŸr eine SI
+  	 * 
+  	 * 
+  	 */
+	function renderRequest($formData, $docArray, $errorArray=''){
+		
+		
+		$docArray = array_merge($formData, $docArray);
+		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###ANFORDERUNG###');
+		$markerArray  = $this->recordToMarkerArray($docArray);
+		$markerArray['###FORM_TARGET###'] = $this->pi_getPageLink($this->cObj->data['pid'],null, array('sendRequestform' => 1));
+
+		// Es traten fehler bei den Formulareingaben auf
+		foreach ($formData as $name => $data) {			
+			$markerArray['###ERROR_'.strtoupper($name).'###'] = '';
+		}
+		if (is_array($errorArray)) {
+			if ($errorArray['error_email']) {
+				$markerArray['###ERROR_EMAIL###'] = 'Die Email Adresse wurde nich korrekt angegeben';
+			}
+			if ($errorArray['error_plz']) {
+				$markerArray['###ERROR_PLZ###'] = 'Die Postleitzahl fehlt noch';
+			} 
+			if ($errorArray['error_ort']) {
+				$markerArray['###ERROR_ORT###'] = 'Der Ort fehlt noch';
+			}
+			if ($errorArray['error_vorname']) {
+				$markerArray['###ERROR_VORNAME###'] = 'Der Vorname fehlt noch';
+			}
+			if ($errorArray['error_nachname']) {
+				$markerArray['###ERROR_NACHNAME###'] = 'Der Nachname fehlt noch';
+			}
+			if ($errorArray['error_anschrift']) {
+				$markerArray['###ERROR_ANSCHRIFT###'] = 'Die Anschrift fehlt noch';
+			}
+		}
+		
+		// FŸge die bisher eingegebenen Daten ein
+		foreach($formData as $name => $data) {
+
+			$markerArray['###'.strtoupper($name).'###'] = $data;
+		}
+		$markerArray['###BACK_URL###'] = $this->pi_GetPageLink($this->cObj->data['pid']);
+		
+		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
+		return $formCode;
+	}
+	
+	/*
+	 * 
+	 */
+	function renderMailMessage($formData, $docData)
+	{
+		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###MAIL_ANFORDER###');
+		$wholeData = array_merge($formData, $docData);
+		$markerArray = $this->recordToMarkerArray($wholeData);
+		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
+		return $formCode;
+		
+	}
+	
+	/*
+	 * 
+	 */
+	function renderRequestUser($docArray) {
+		$formCode = tslib_CObj::getSubpart($this->fileContent, '###ANFORDERUNG_USER###');
+		$markerArray = $this->recordToMarkerArray($docArray);
+		$markerArray['###FORM_URL###'] = $this->pi_getPageLink($this->cObj->data['pid'],null, array('sendRequestform' => 1, 'docID' => $docArray['uid']));
+		$markerArray['###BACK_URL###'] = $this->pi_GetPageLink($this->cObj->data['pid']);
+		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
+		return $formCode;
+	}
+	
+	/*
+	 * 
+	 */
+	function renderAnforderMailUser($userData, $docData) {
+		
+		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###MAIL_ANFORDER_USER###');
+		$wholeData = array_merge($userData, $docData);
+		$markerArray = $this->recordToMarkerArray($wholeData);
+		if (t3lib_extMgm::isLoaded('sr_feuser_register')) {
+			$markerArray['###NAME###'] = $wholeData['first_name'] + $wholeData['last_name'];
+		}
+		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
+		return $formCode;
+	}
+	
+	/*
+	 * 
+	 */
+	function renderCategorisationForm($docData, $selectedCats='') {
+		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###CATEGORISATION###');
+		$tree = t3lib_div::makeInstance('tx_damfrontend_categorisationTree');
+		$tree->init('categorisation');
+		$tree->title = 'categorisation tree';
+		$markerArray = $this->recordToMarkerArray($docData);
+		$markerArray['###CATTREE###'] = $tree->getBrowsableTree();
+		$markerArray['###CATLIST###'] = '';
+		if (is_array($selectedCats)) {
+			$catCode = $this->renderCatSelection($selectedCats, 'categorisation');
+		}
+		else {
+			$catCode = $this->renderError('noCatSelected');
+		}
+		$markerArray['###CATLIST###'] = $catCode;
+		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
+		return $formCode;
+	}
+	
+	
+	function renderUploadSuccess() {
+		return 'Dokument erfolgreich hochgeladen';
+	}
+	
  }
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_rendering.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_rendering.php']);

@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2006-2007 BUS Netzwerk (typo3@in2form.com)
+*  (c) 2006-2008 in2form.com (typo3@in2form.com)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -85,11 +85,13 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 			if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function op_Plus: for the treeID only integer values are allowed. Given value was:' .$treeID, 'dam_frontend',3);
 		}
 		$catarray = $this->getArrayFromUser();
+		
 		if (!is_array($catarray)) $catarray = array();
-		if(!is_array($catarray[$treeID])) $catarray[$treeID] = array();
-		if (!array_search($catID, $catarray[$treeID])) {
-			$catarray[$treeID][] = $catID;
-			$this->setArrayToUser($catarray);
+		$treeArray = is_array($catarray[$treeID]) ? array_unique($catarray[$treeID]) : array();
+		if (!array_search($catID, $treeArray)) {
+			$treeArray[] = $catID;
+			$catarray[$treeID] = $treeArray;
+ 			$this->setArrayToUser($catarray);
 		}
 	}
 
@@ -146,9 +148,22 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 	 *
 	 * @return	array		list of all selected categories
 	 */
-	function getCatSelection() {
+	function getCatSelection($treeID = '') {
 			$ar = $this->getArrayFromUser();
-			return $ar;
+			if ($treeID != '') {
+				return is_array($ar[$treeID]) ? array_unique($ar[$treeID]) : null;	
+			}
+			else {
+				return is_array($ar) ? array_unique($ar) : null;
+			}
+			
+	}
+	
+	function clearCatSelection($treeID) {
+		$ar = $this->getArrayFromUser();
+		unset($ar[$treeID]);
+		$this->setArrayToUser($ar);
+		
 	}
 }
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/DAL/class.tx_damfrontend_catList.php'])	{
