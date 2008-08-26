@@ -154,6 +154,7 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 				return is_array($ar[$treeID]) ? array_unique($ar[$treeID]) : null;	
 			}
 			else {
+				#t3lib_div::debug('getCatSelection: ');t3lib_div::debug($ar);
 				return is_array($ar) ? array_unique($ar) : null;
 			}
 			
@@ -162,8 +163,7 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 	function clearCatSelection($treeID) {
 		$ar = $this->getArrayFromUser();
 		unset($ar[$treeID]);
-		$this->setArrayToUser($ar);
-		
+		$this->setArrayToUser($ar);	
 	}
 }
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/DAL/class.tx_damfrontend_catList.php'])	{
