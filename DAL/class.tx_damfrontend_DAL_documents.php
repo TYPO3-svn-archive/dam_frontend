@@ -524,9 +524,9 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		
 		
 		function categoriseDocument($uid, $catArray) {
-			if (!intval($uid) || !is_array($catArray)) die('Parameterfehler bei categoriseDocument');
+			if (!intval($uid) || !is_array($catArray)) die('Parametererror in categoryDocument: Check DatabaseID:' . $uid);
 			foreach($catArray as $catID) {
-				if (!intval($catID)) die('eine Kategorie wurde nicht als Integer ausgeliefert');
+				if (!intval($catID)) die('one categoryID was not delivered as Integer');
 				$newrow = array(
 					'uid_local' => $uid,
 					'uid_foreign' => $catID
