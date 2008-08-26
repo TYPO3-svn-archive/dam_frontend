@@ -45,10 +45,6 @@
 										<numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_uploadForm</numIndex>
 										<numIndex index="1">7</numIndex>
 									</numIndex>
-									<numIndex index="8" type="array">
-										<numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_requstForm</numIndex>
-										<numIndex index="1">8</numIndex>
-									</numIndex>
 								</items>
 								<maxitems>1</maxitems>
 								<size>1</size>
