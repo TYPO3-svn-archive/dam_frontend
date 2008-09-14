@@ -65,22 +65,24 @@
 			<label index="REQUEST_USER_TEXT">Vielen Dank fuer Ihr Interesse!<br/>Bitte bestaetigen Sie uns die Anforderung der SI: </label>
 			<label index="REQUEST_USER_TEXT2">Ihre Anfrage wird umgehend bearbeitet!</label>
 			<label index="REQUEST_USER_SEND">Send!</label>
-			<label index="CATEGORISATION_TEXT_HEADER">Bitte ordnen Sie dem neuen Dokument geeignete Kategorien zu.</label>
+			<label index="CATEGORISATION_TEXT_HEADER">Here you can asign categories for this document.</label>
 			<label index="CATEGORISATION_TEXT_TITLE">title</label>	
-			<label index="CATEGORISATION_TEXT_DESCRIPTION">Beschreibung</label>
-			<label index="CATEGORISATION_TEXT_SEND">Auswahl bestaetigen</label>
+			<label index="CATEGORISATION_TEXT_DESCRIPTION">description</label>
+			<label index="CATEGORISATION_TEXT_SEND">confirm</label>
 			<label index="CATEGORISATION_TREE_NAME">Categorisation tree</label>			
-			<label index="MAIL_REQUES_TEXT1">Der BUS Portal Benutzer</label>			
-			<label index="MAIL_REQUES_TEXT2">hat folgende SI angefordert:</label>
+			<label index="MAIL_REQUES_TEXT1">The user</label>			
+			<label index="MAIL_REQUES_TEXT2">has required this file:</label>
 			<label index="MAIL_REQUES_TEXT3">the user's data</label>
-			<label index="TITLE_FILEUPLOAD">TITLE_FILEUPLOAD</label>
-			<label index="LABEL_TITLE">LABEL_TITLE</label>
-			<label index="LABEL_COPYRIGHT">LABEL_COPYRIGHT</label>
-			<label index="LABEL_AUTHOR">LABEL_AUTHOR</label>
-			<label index="LABEL_DESCRIPTION">LABEL_DESCRIPTION</label>
-			<label index="LABEL_FILE">LABEL_FILE</label>
-			<label index="BUTTON_UPLOAD">BUTTON_UPLOAD</label>
+			<label index="TITLE_FILEUPLOAD">Fileupload</label>
+			<label index="LABEL_TITLE">Title</label>
+			<label index="LABEL_COPYRIGHT">copyright</label>
+			<label index="LABEL_AUTHOR">author</label>
+			<label index="LABEL_DESCRIPTION">description</label>
+			<label index="LABEL_FILE">filname</label>
+			<label index="BUTTON_UPLOAD">upload</label>
 			<label index="UPLOAD_SUCCESS">Fileupload was sucessful</label>
+			<label index="uploadFormFieldError">Please take care at the field '</label>
+			<label index="uploadFormFieldErrorLength">'. You are only allowed to use this number of character: </label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="list_mode_1">Modus 1</label>
@@ -138,14 +140,17 @@
 			<label index="MAIL_REQUES_TEXT1">Der BUS Portal Benutzer</label>			
 			<label index="MAIL_REQUES_TEXT2">hat folgende SI angefordert:</label>
 			<label index="MAIL_REQUES_TEXT3">the user's data</label>
-			<label index="TITLE_FILEUPLOAD">TITLE_FILEUPLOAD</label>
-			<label index="LABEL_TITLE">LABEL_TITLE</label>
-			<label index="LABEL_COPYRIGHT">LABEL_COPYRIGHT</label>
-			<label index="LABEL_AUTHOR">LABEL_AUTHOR</label>
-			<label index="LABEL_DESCRIPTION">LABEL_DESCRIPTION</label>
-			<label index="LABEL_FILE">LABEL_FILE</label>
-			<label index="BUTTON_UPLOAD">BUTTON_UPLOAD</label>
+			<label index="TITLE_FILEUPLOAD">Dateiinformationen ergänzen</label>
+			<label index="LABEL_TITLE">Titel</label>
+			<label index="LABEL_COPYRIGHT">Copyright</label>
+			<label index="LABEL_AUTHOR">Autor</label>
+			<label index="LABEL_DESCRIPTION">Beschreibung</label>
+			<label index="LABEL_FILE">Dateiname</label>
+			<label index="BUTTON_UPLOAD">Hochladen</label>
 			<label index="UPLOAD_SUCCESS">Die Datei wurde erfolgreich hochgeladen.</label>
+			<label index="uploadFormFieldError">Bitte beachten Sie die Einschränkung für das Feld '</label>
+			<label index="uploadFormFieldErrorLength">'. Sie dürfen maximal diese Anzahl von Zeichen verwenden: </label>
+			
 		</languageKey>
 	</data>
 </T3locallang>
