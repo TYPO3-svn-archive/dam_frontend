@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2006-2007 BUS Netzwerk (typo3@bus-netzwerk.de)
+*  (c) 2006-2008 in2form.com (typo3@bus-netzwerk.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -232,7 +232,7 @@ class tx_damfrontend_DAL_categories {
 			if (!isset($userID) || !isset($relID) || $userID == '' || $relID == '') {
 				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getCategories: userID and relID must be set and empty strings are not allowed! Given value were$userID:' .$userID .' and relID: ' . $relID, 'dam_frontend',2);
 			}
-			$mm_table = 'tx_dam_cat_'.$this->relations[$relID].'_mm';
+			$mm_table = 'tx_dam_cat_tx_damtree_fe_groups_'.$this->relations[$relID].'_mm';
 			// executing database search
 			$local_table = $this->catTable;
 			$foreign_table = 'fe_groups';
@@ -331,7 +331,8 @@ class tx_damfrontend_DAL_categories {
 				}
 			}
 		}
-
-
 	}
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/DAL/class.tx_damfrontend_DAL_categories.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/DAL/class.tx_damfrontend_DAL_categories.php']);
+}
 ?>

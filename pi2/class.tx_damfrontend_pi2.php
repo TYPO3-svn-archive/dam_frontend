@@ -324,9 +324,9 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 	 */
   function getIconBaseAddress() {
     if($this->iconBaseAddress) {
-      return $BACK_PATH . $this->iconBaseAddress;
+      return $this->iconBaseAddress;
     } else {
-      return $BACK_PATH . t3lib_extMgm::siteRelPath($this->extKey) . 'res/ico/';
+      return t3lib_extMgm::siteRelPath($this->extKey) . 'res/ico/';
     }
   }
 

@@ -6,6 +6,15 @@ plugin.tx_damfrontend_pi1 {
 	filter {
 		errorWrap = {$plugin.tx_damfrontend_pi1.filter.errorWrap}
 	}
+	renderFields {
+	# set stdWrap config for each field
+		file_size {
+			setContentToCurrent = 1
+			if.isTrue.current = 1
+			bytes = 1
+			bytes.labels = "Bytes| Kilobyte| Megabyte| Gigabyte" 
+		}
+	}
 	mediaTypes {
 	    DEFAULT {
 	      DEFAULT = default.png
