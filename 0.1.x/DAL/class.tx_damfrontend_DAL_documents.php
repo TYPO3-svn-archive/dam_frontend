@@ -45,22 +45,24 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
  *
  *
  *
- *   66: class tx_damfrontend_DAL_documents
- *   97:     function tx_damfrontend_DAL_documents()
- *  108:     function getCategoriesbyDoc($docID)
- *  133:     function checkAccess_fileRef($filePath)
- *  155:     function checkAccess($docID, $relID)
- *  180:     function getResultCount()
- *  204:     function createCatString()
- *  218:     function getDocumentFEGroups($docID, $relID)
- *  258:     function getDocument($docID)
- *  277:     function getDocumentList()
- *  353:     function getCategoriesByDoc_Rootline($docID)
- *  399:     function setFilter($filterArray)
- *  442:     function getSearchwordWhereString($searchword)
- *  454:     function evalDateError($day, $month, $year)
+ *   69: class tx_damfrontend_DAL_documents
+ *  100:     function tx_damfrontend_DAL_documents()
+ *  111:     function getCategoriesbyDoc($docID)
+ *  136:     function checkAccess_fileRef($filePath)
+ *  158:     function checkAccess($docID, $relID)
+ *  183:     function getResultCount()
+ *  207:     function createCatString()
+ *  221:     function getDocumentFEGroups($docID, $relID)
+ *  261:     function getDocument($docID)
+ *  280:     function getDocumentList()
+ *  365:     function getCategoriesByDoc_Rootline($docID)
+ *  411:     function setFilter($filterArray)
+ *  454:     function getSearchwordWhereString($searchword)
+ *  466:     function evalDateError($day, $month, $year)
+ *  484:     function addDocument($path, $docData='')
+ *  535:     function categoriseDocument($uid, $catArray)
  *
- * TOTAL FUNCTIONS: 13
+ * TOTAL FUNCTIONS: 15
  * (This index is automatically created/updated by the extension "extdeveval")
  *
  */
@@ -254,7 +256,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 * Retuns the resultlist of a requestet DAM Document
 	 *
 	 * @param	[int]		$docID: the UID of a document
-	 * @return	[SQL		Result]
+	 * @return	[SQL]		Result
 	 */
 		function getDocument($docID) {
 			$select = '*';
@@ -273,7 +275,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 * selection is filterd by the given list of categories and the
 	 * access restrictions  -> relation "READ ACCESS" defined for the document
 	 *
-	 * @return	[type]		returns an array which contains all selected records
+	 * @return	[array]		returns an array which contains all selected records
 	 */
 		function getDocumentList() {
 			if(!is_array($this->categories)) {
@@ -285,8 +287,8 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 
 			/*
 			 * Building the from clause manually by joining the DAM tables
-			 * 
-			 * 
+			 *
+			 *
 			 */
 			$select = $this->docTable.'.uid';
 			$from = $this->docTable.' INNER JOIN '.$this->mm_Table.' ON '.$this->mm_Table.'.uid_local  = '.$this->docTable.
@@ -306,9 +308,9 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$z = 0;
 			/**
 			 * every element in the categories array stores a list of cats that are associated with an array
-			 * 
-			 * 
-			 * 
+			 *
+			 *
+			 *
 			 */
 			foreach($this->categories as $number => $catList) {
 				$catString = '( '.$this->catTable.'.uid='.implode(' OR '.$this->catTable.'.uid=',$catList).')';
@@ -469,16 +471,18 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 					return true;
 				}
 		}
-		
-		
+
+	
 		/**
-		 * @todo get the pid for the indexer = media folder  
-		 * 
 		 * adding an document to the index
-		 * 
+		 *
+		 * @param	[string]		$path: ...
+		 * @param	[array]		$docData: ...
+		 * @return	[int]		...
+		 * @todo get the pid for the indexer = media folder
 		 */
 		function addDocument($path, $docData='') {
-			
+
 			// the indexer gets the metadata from the document
 			$indexer = t3lib_div::makeInstance('tx_dam_indexing');
 			$indexer->init();
@@ -488,21 +492,21 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$indexer->setDryRun(true); // just getting metadata from the dock
 			$indexer->setPID(0);
 			$indexer->setRunType("man");
-			
+
 			$data = $indexer->indexfile($path,0,1);
 			$newrecord = $data['fields'];
-			
-			
+
+
 			// adding the data from the form to the new indexed data
 			if (is_array($docData)) {
 				foreach($docData as $key => $value) {
 					$newrecord[$key] = $value;
-				}	
+				}
 			}
-			
+
 			if (!is_array($GLOBALS['TSFE']->fe_user->user)) die('no frontend user logged in');
 			$newrecord['tx_damfrontend_feuser_upload'] = $GLOBALS['TSFE']->fe_user->user['uid'];
-			
+
 			// unsetting all array elements, which are not used
 			unset($newrecord['__type']);
 			unset($newrecord['__exists']);
@@ -513,16 +517,21 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			unset($newrecord['file_perms']);
 			unset($newrecord['file_writable']);
 			unset($newrecord['file_readable']);
-			
+
 			// executing the insert operation for the database
 			$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_dam', $newrecord);
 			if ($GLOBALS['TYPO3_DB']->sql_error() != '') debug($GLOBALS['TYPO3_DB']->sql_error());
 			$newID = $GLOBALS['TYPO3_DB']->sql_insert_id();
 			return $newID;
 		}
-		
-		
-		
+
+	/**
+	 * Insert the category selection in the mm table of the dam
+	 *
+	 * @param	[int]		$uid: ...
+	 * @param	[array]		$catArray: ...
+	 * @return	[void]		...
+	 */
 		function categoriseDocument($uid, $catArray) {
 			if (!intval($uid) || !is_array($catArray)) die('Parametererror in categoryDocument: Check DatabaseID:' . $uid);
 			foreach($catArray as $catID) {
@@ -533,7 +542,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				);
 				$GLOBALS['TYPO3_DB']->exec_INSERTquery($this->mm_Table, $newrow);
 			}
-				
+
 		}
 
 	}
