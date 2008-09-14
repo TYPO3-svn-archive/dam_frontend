@@ -52,7 +52,7 @@ t3lib_extMgm::addStaticFile($_EXTKEY,"static/","DAM Frontend Static Template");
 $tempColumns = Array (
 	"tx_damtree_fe_groups_readaccess" => Array (		
 		"exclude" => 1,		
-		"label" => "LLL:EXT:dam_frontend/locallang_db.php:tx_dam_cat.tx_damtree_fe_groups_readaccess",
+		"label" => "LLL:EXT:dam_frontend/locallang_db.php:tx_dam_cat.readaccess",
 		"config" => Array (
 			"items" => Array(
 				Array("LLL:EXT:dam_frontend/locallang_db.php:tx_damtree_fe_groups_all", -1),
@@ -71,7 +71,7 @@ $tempColumns = Array (
 	),
 	"tx_damtree_fe_groups_downloadaccess" => Array (		
 		"exclude" => 1,		
-		"label" => "LLL:EXT:dam_frontend/locallang_db.php:tx_dam_cat.tx_damtree_fe_groups_downloadaccess",		
+		"label" => "LLL:EXT:dam_frontend/locallang_db.php:tx_dam_cat.downloadaccess",		
 		"config" => Array (
 			"items" => Array(
 				Array("alle Gruppen freigeben", -1),
@@ -144,7 +144,7 @@ $tempColumns = Array (
 			"allowed" => "tx_dam",	
 			"size" => 10,	
 			"minitems" => 1,
-			"maxitems" => 25,
+			"maxitems" => 100,
 			"show_thumbs" => 1,
 		)
 	),

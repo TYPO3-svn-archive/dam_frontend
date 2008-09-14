@@ -1,7 +1,8 @@
 Version	0.2.0
-+ Static category selection in pi1
-+ Fileupload and categorisation in pi1
-+ Counter feature
++ feature 1297: Static category selection in pi1 (thanks to Frank NŠgler)
++ feature 1261: Fileupload and categorisation in pi1 
++ feature 1319: Counter feature in filelist in pi1 (thanks to Tom Ruether)
++ feature 1370: increase max upload files in pi2 (thanks to Joe Berger)
 
 Version	0.1.2: stdWrap for all fields (pi1)
 Thanks to Frank NŠgler. Now it is posible to use typoscript for the views "single view" and "file list". Each database field, wich is used in the view can be customized with typoscript.
