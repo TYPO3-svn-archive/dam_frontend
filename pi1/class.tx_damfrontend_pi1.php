@@ -55,24 +55,32 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  *
  *
  *
- *   79: class tx_damfrontend_pi1 extends tslib_pibase
- *  101:     function init()
- *  120:     function initFilter()
- *  156:     function initList()
- *  197:     function initUpload()
- *  206:     function convertPiVars()
- *  247:     function loadFlexForm()
- *  268:     function main($content,$conf)
- *  353:     function catTree()
- *  366:     function getTree($mount= '')
- *  385:     function fileList()
- *  431:     function filterView()
- *  444:     function catSelection()
- *  473:     function singleView()
- *  501:     function filterList()
- *  529:     function uploadForm()
+ *   87: class tx_damfrontend_pi1 extends tslib_pibase
+ *  117:     function init()
+ *  136:     function initFilter()
+ *  172:     function initList()
+ *  214:     function initUpload()
+ *  223:     function convertPiVars()
+ *  283:     function loadFlexForm()
+ *  306:     function main($content,$conf)
+ *  416:     function getInputTree()
+ *  447:     function catTree()
+ *  460:     function getTree($mount= '')
+ *  480:     function fileList($useRequestForm)
+ *  527:     function filterView()
+ *  540:     function catSelection()
+ *  569:     function singleView()
+ *  597:     function filterList()
  *
- * TOTAL FUNCTIONS: 15
+ *              SECTION: FILE UPLOAD AND CATEGORISATION
+ *  743:     function uploadForm()
+ *  804:     function handleUpload()
+ *  864:     function loadFileUploadTS()
+ *  880:     function getIncomingDocData()
+ *  925:     function categoriseForm()
+ *  947:     function saveCategorisation()
+ *
+ * TOTAL FUNCTIONS: 21
  * (This index is automatically created/updated by the extension "extdeveval")
  *
  */
@@ -92,7 +100,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	var $renderer; // handeles the frontend rendering
 	var $filterState; // stores the current filter state in the session, provides synchronisation with the $internal['filter'] array
 	var $listState; // stores the current state of the list
-	
+
 	var $formData; // stores the data of the Anforderungsform
 	var $userLoggedIn; // determines if an user is logged in or not
 	var $upload; // determines, if an incoming upload shall be handeled
@@ -100,7 +108,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	var $documentData; // contains the incoming data from the user
 	var $categorise; // determines, if the categorisation view shall be shown
 	var $saveCategorisation; // true if the categorisation selection of an uploaded document shall be saved
-	
+
 	/**
 	 * Inits this class and instanceates all nescessary classes
 	 *
@@ -162,7 +170,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @return	[void]		...
 	 */
 	function initList() {
-		
+
 		// setting internal values for pagebrowsing from the incoming request
  		if (t3lib_div::_GP('setListLength')) {
 			$this->internal['list']['listLength'] = t3lib_div::_GP('listLength') != null ? intval(t3lib_div::_GP('listLength')) : 10;
@@ -241,10 +249,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		// Requstform
 		$this->internal['showRequestform'] = intval(t3lib_div::_GET('showRequestform'));
 		$this->internal['docID'] = intval(t3lib_div::_GET('docID'));
-		
+
 		//gets Data - If a requestform must be rendered
 		$this->internal['sendRequestform'] = intval(t3lib_div::_POST('sendRequestform'));
-		
+
 		// values for searching
 		// Setting new values
  		if ($this->internal['viewID'] == 1  ) {
@@ -258,13 +266,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		if (t3lib_div::_POST('upload_file')) {
 			$this->upload = true;
 		}
-		
+
 		// incoming command of saving the current category selection
 		$this->saveCategorisation = strip_tags(t3lib_div::_POST('catOK')) != '' ? true : false;
-		
-		
+
+
 		// if the session var for categorisation is set, render set the categorise var
-		$this->categorise = $GLOBALS['TSFE']->fe_user->getKey('ses','categoriseID') != '' ? true:false;	
+		$this->categorise = $GLOBALS['TSFE']->fe_user->getKey('ses','categoriseID') != '' ? true:false;
  	}
 
 	/**
@@ -283,7 +291,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		$this->internal['treeName'] = strip_tags($this->pi_getFFvalue($flexform, 'treeName', 'sSelection'));
 		$this->internal['treeID'] = $this->cObj->data['uid'];
-		
+
 		$this->internal['useStaticCatSelection'] = strip_tags($this->pi_getFFvalue($flexform, 'useStaticCatSelection', 'sSelection'));
 	}
 
@@ -314,7 +322,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		// Processing and distribution of input data
 		// Mapping input parameters to actions
-		
+
 		// check if an user is logged in or not
 		$user = $GLOBALS['TSFE']->fe_user;
 		if (is_array($user->user)) {
@@ -323,33 +331,33 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		else {
 			$this->userLoggedIn = false;
 		}
-		
+
 		/***************
 		 * Handling of an fileUpload
-		 * 
+		 *
 		 * if the viewID is treevirew or categorisation - get Input from category tree
-		 */ 
-		if (($this->internal['viewID'] == 2 && $this->internal['treeID'] == $this->internal['incomingtreeID']) 
+		 */
+		if (($this->internal['viewID'] == 2 && $this->internal['treeID'] == $this->internal['incomingtreeID'])
 					|| $this->internal['viewID'] == 7) {
 			$this->getInputTree();
 		}
-		
-		
+
+
 //		/***************
 //		 * Handling of a request form
-//		 * 
+//		 *
 //		 * Einbindung des Aufrufs zum Senden einer Anforderung
-//		 */ 				
+//		 */
 //		if ($this->internal['viewID'] == 8 && $this->internal['sendRequestform']) {
 //			$returnform = $this->sendRequestform();
 //			if ($returnform != '') return $returnform;
 //		}
-//		
+//
 //		if ($this->internal['viewID'] == 8 &&  $this->internal['showRequestform'] == 1 && t3lib_div::_GET('docID') != null) {
 //			return $this->pi_wrapInBaseClass($this->anforderForm());
 //		}
-//		
-		
+//
+
 		if ($this->internal['useStaticCatSelection']) {
 			$this->catList->unsetAllCategories();
 			if (is_array($this->internal['catMounts'])) {
@@ -399,8 +407,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		// select the view to be created
 		return $this->pi_wrapInBaseClass($content);
 	}
-	
-	
+
+	/**
+	 * [Describe function...]
+	 *
+	 * @return	[type]		...
+	 */
 	function getInputTree() {
 		if ($this->internal['catPlus']) {
 			$this->catList->op_Plus($this->internal['catPlus'], $this->internal['incomingtreeID']);
@@ -424,7 +436,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 		}
 	}
-	
+
 
 
 	/**
@@ -462,6 +474,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * all documents are contained, which nat filtered and the user has
 	 * After that, the list is converted to an html view, rendered by the renderer instance
 	 *
+	 * @param	[type]		$useRequestForm: ...
 	 * @return	html		HTML - list of all selected documents
 	 */
 	function fileList($useRequestForm) {
@@ -604,16 +617,16 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		return $content;
 	}
 
-	
+
 //	/*************************************
-//	 * 
+//	 *
 //	 * Requestform feature
-//	 * 
+//	 *
 //	 *************************************/
-//	
+//
 //	/*
 //	 * renders a Form to request a file
-//	 * 
+//	 *
 //	 */
 //	function requestForm($formData = null) {
 //		// getting incoming form data from the request
@@ -627,57 +640,57 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 //			return $this->renderer->renderAnforderungUser($docArray);
 //		}
 //		else {
-//			return $this->renderer->renderAnforderung($this->formData, $docArray, $this->internal['errorAnforderung']);	
+//			return $this->renderer->renderAnforderung($this->formData, $docArray, $this->internal['errorAnforderung']);
 //		}
 //	}
-	
-	
-	
-	
+
+
+
+
 //	/**
 //	 * Bestimmt ob das Formular fŸr die Anforderung korrekt ausgefŸllt wurde
 //	 */
 //	function evalAnforderData() {
 //		$eval = true;
-//		if ($this->formData['email'] == null) 
+//		if ($this->formData['email'] == null)
 //		{
 //			$this->internal['errorAnforderung']['error_email'] = true;
-//			$eval = false;	
+//			$eval = false;
 //		}
-//		if ($this->formData['vorname'] == null) 
+//		if ($this->formData['vorname'] == null)
 //		{
 //			$this->internal['errorAnforderung']['error_vorname'] = true;
-//			$eval = false;	
+//			$eval = false;
 //		}
-//		if ($this->formData['nachname'] == null) 
+//		if ($this->formData['nachname'] == null)
 //		{
 //			$this->internal['errorAnforderung']['error_nachname'] = true;
-//			$eval = false;	
+//			$eval = false;
 //		}
-//		if ($this->formData['plz'] == null) 
+//		if ($this->formData['plz'] == null)
 //		{
 //			$this->internal['errorAnforderung']['error_plz'] = true;
-//			$eval = false;	
+//			$eval = false;
 //		}
-//		
+//
 //		if ($this->formData['ort'] == null) {
 //			$this->internal['errorAnforderung']['error_ort'] = true;
-//			$eval = false;	
+//			$eval = false;
 //		}
 //		if ($this->formData['anschrift'] == null) {
 //			$this->internal['errorAnforderung']['error_anschrift'] = true;
-//			$eval = false;	
+//			$eval = false;
 //		}
 //		return $eval;
-//	}	
-	
+//	}
+
 //	/**
-//	 * 
-//	 * 
-//	 * 
+//	 *
+//	 *
+//	 *
 //	 */
 //	function sendRequestform() {
-//		
+//
 //		if ($this->userLoggedIn) {
 //			$docData = $this->docLogic->getDocument($this->internal['docID']);
 //			$userData = $GLOBALS['TSFE']->fe_user->user;
@@ -695,33 +708,33 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 //			}
 //			else {
 //				// Einblenden der Formularseite wieder aktivieren
-//				
+//
 //				// zum ermitteln der Dokumentendaten muss die Dokumenten ID aus dem Formular geholt werden
 //				$this->internal['docID'] = $this->formData['docID'];
-//				
+//
 //				return $this->requestForm();
-//			}			
+//			}
 //		}
-//		
+//
 //	}
-	
-	
-	
-	
-	
-	
-	/*********************************
-	 * 
-	 * 
-	 * 
-	 * 	FILE UPLOAD AND CATEGORISATION
-	 * 
-	 * 
-	 * 
-	 *********************************/
-	
 
-	
+
+
+
+
+
+	/*********************************
+	 *
+	 *
+	 *
+	 * 	FILE UPLOAD AND CATEGORISATION
+	 *
+	 *
+	 *
+	 *********************************/
+
+
+
 	/**
 	 * Shows the upload form
 	 *
@@ -749,7 +762,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					#t3lib_div::debug('Upload: '. $this->upload);
 					if ($this->upload) {
 						$returnCode = $this->handleUpload();
-						#t3lib_div::debug('handleupload ok: ');	
+						#t3lib_div::debug('handleupload ok: ');
 						if (intval($returnCode) != 0) {
 							// upload was successful - proceeding with categorisation
 							$newID = $returnCode;
@@ -760,39 +773,39 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 						else {
 							// rendering of an error message - messages from the upload extension
 							return $returnCode . '<br><br>' . $this->renderer->renderUploadForm();
-						}	
+						}
 					}
 					else {
 						// no upload - render the upload form
-						return $this->renderer->renderUploadForm();	
+						return $this->renderer->renderUploadForm();
 					}
 				}
-			}	
+			}
 		}
 		else {
 			// no user currently logged in - upload feature is disabled
 			return $this->renderer->renderError('noUserLoggedIn');
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	/*********************
-	 * calls the handleUpload Extension and outputs the 
-	 * error messages to the frontend
-	 * 
-	 * @return int the ID of uploaded file in the dam table, if there is an error, the error message is returned 
-	 *********************/
+
+
+
+
+
+
+
+
+	/**
+	 * ******************
+	 * calls the handle Upload Extension and outputs the error messages to the frontend
+	 *
+	 * @return	int		the ID of uploaded file in the dam table, if there is an error, the error message is returned
+	 */
 	function handleUpload() {
 		// getting incoming form data from the request
 		$returnCode ='';
 		$returnCode = $this->getIncomingDocData();
-		if ($returnCode===true) { 
+		if ($returnCode===true) {
 			// make Instance of the class for fileupload handling
 			if (!t3lib_extMgm::isLoaded('fileupload')) {
 				return $this->renderer->renderError('uploadExtensionNotInstalled');
@@ -805,28 +818,28 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$uploadHandler->cObj = $this->cObj;
 				$uploadHandler->main('',$fileUploadTS);
 				$_FILES[$uploadHandler->prefixId] = $_FILES['file'];
-				
+
 				// retrieving the path of the uploaded file
 				if($fileUploadTS['path']){
 					$path=$this->cObj->stdWrap($fileUploadTS['path'],$fileUploadTS['path.']);
 				}
-				
+
 				$uploaddir = is_dir($path)?$path:$TYPO3_CONF_VARS['BE']['fileadminDir'];
-		
+
 				if($fileUploadTS['FEuserHomePath.']['field']){
 					$feuploaddir=$uploaddir.$GLOBALS["TSFE"]->fe_user->user[$fileUploadTS['FEuserHomePath.']['field']].'/';
-				} 
+				}
 				else {
 					$feuploaddir=$uploaddir.$GLOBALS["TSFE"]->fe_user->user["uid"].'/';
 				}
 				$uploadfile = PATH_site.$feuploaddir.$_FILES[$uploadHandler->prefixId]['name'];
-				
+
 				// final upload
 				$uploadHandler->handleUpload();
-				
+
 				// adding the uploaded file to the DAM System, if no error occured
 				if (is_file($uploadfile)) {
-					return $this->docLogic->addDocument($uploadfile, $this->documentData);	
+					return $this->docLogic->addDocument($uploadfile, $this->documentData);
 				}
 				else {
 					$errorContent = '';
@@ -842,8 +855,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			return $returnCode;
 		}
 	}
-	
-	
+
+	/**
+	 * [load the default typoscript of the upload extension]
+	 *
+	 * @return	[type]		...
+	 */
 	function loadFileUploadTS() {
 	   $sysPageObj = t3lib_div::makeInstance('t3lib_pageSelect');
 	   $rootLine = $sysPageObj->getRootLine($this->cObj->data['pid']);
@@ -854,12 +871,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	   $TSObj->generateConfig();
 	   return $TSObj->setup['plugin.']['tx_fileupload_pi1.'];
 	}
-	
+
 	/**
-	 * Shows the upload form
+	 * get the data of the upload form and validate them
 	 *
 	 * @return	[string]		errormessage / TRUE if there was no error
-	 */	
+	 */
 	function getIncomingDocData() {
 		// conversion of incoming data from the creation of an new document
 		$this->documentData['title'] = strip_tags(t3lib_div::_POST('title'));
@@ -872,22 +889,22 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		if(strlen($this->documentData['creator'])>45) {
 			return $this->renderer->renderError('uploadFormFieldError','creator','45');
 		}
-		
+
 		$this->documentData['description'] = strip_tags(t3lib_div::_POST('description')); #65000
 		if(strlen($this->documentData['description'])>65000) {
 			return $this->renderer->renderError('uploadFormFieldError','description','65000');
 		}
-	
+
 		$this->documentData['copyright'] = strip_tags(t3lib_div::_POST('copyright')); #128
 		if(strlen($this->documentData['copyright'])>128) {
 			return $this->renderer->renderError('uploadFormFieldError','copyright','45');
 		}
 		return true;
 	}
-	
-	
-	
-	
+
+
+
+
 //	function getIncomingAnforderData() {
 //		// †bertrage Formulardaten von der SI Anforderungin ein Array
 //		$this->formData['email'] = t3lib_div::_POST('email') ? strip_tags(t3lib_div::_POST('email')) : '';
@@ -899,8 +916,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 //		// docID legt fest, welches Dokument angefordert wurde
 //		$this->formData['docID'] = intval(t3lib_div::_POST('docID'));
 //	}
-	
-	
+
+	/**
+	 * Show the categoriseform
+	 *
+	 * @return	[html]		...
+	 */
 	function categoriseForm() {
 		$docID = intval($GLOBALS['TSFE']->fe_user->getKey('ses','categoriseID'));
 		$docData = $this->docLogic->getDocument($docID);
@@ -917,7 +938,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 		return $content;
 	}
-	
+
+	/**
+	 * Save the categories of a uploaded file
+	 *
+	 * @return	[html]		...
+	 */
 	function saveCategorisation() {
 		$docID = intval($GLOBALS['TSFE']->fe_user->getKey('ses','categoriseID'));
 		$GLOBALS['TSFE']->fe_user->setKey('ses','categoriseID', null);

@@ -43,19 +43,20 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  *
  *
  *
- *   62: class tx_damfrontend_catTreeView extends tx_dam_selectionCategory
- *   75:     function tx_damfrontend_catTreeView()
- *  113:     function init($treeID='')
- *  128:     function expandNext($id)
- *  140:     function initializePositionSaving()
- *  164:     function savePosition()
- *  178:     function wrapTitle($title,$row,$bank=0)
- *  211:     function PM_ATagWrap($icon,$cmd,$bMark='treeroot')
- *  230:     function getControl($title,$row)
- *  291:     function printTree($treeArr='')
- *  350:     function getBrowsableTree()
+ *   63: class tx_damfrontend_catTreeView extends tx_dam_selectionCategory
+ *   77:     function tx_damfrontend_catTreeView()
+ *  116:     function init($treeID = '', $plugin = null)
+ *  132:     function expandNext($id)
+ *  144:     function initializePositionSaving()
+ *  167:     function savePosition()
+ *  181:     function wrapTitle($title,$row,$bank=0)
+ *  216:     function PM_ATagWrap($icon,$cmd,$bMark='treeroot')
+ *  235:     function getControl($title,$row)
+ *  296:     function printTree($treeArr='')
+ *  359:     function getTitleStr($row, $titleLen = 30)
+ *  373:     function getBrowsableTree()
  *
- * TOTAL FUNCTIONS: 10
+ * TOTAL FUNCTIONS: 11
  * (This index is automatically created/updated by the extension "extdeveval")
  *
  */
@@ -109,6 +110,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	 * a frontend user is used to store the treestate data
 	 *
 	 * @param	[type]		$treeID: ...
+	 * @param	[type]		$plugin: ...
 	 * @return	void
 	 */
  	function init($treeID = '', $plugin = null) {
@@ -117,7 +119,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
  		$this->user =& $GLOBALS['TSFE']->fe_user;
  		$this->backPath = 'typo3/';
 // 		$this->renderer = t3lib_div::makeInstance("tx_damfrontend_rendering");
-		if (isset($plugin)) $this->plugin = $plugin; 
+		if (isset($plugin)) $this->plugin = $plugin;
 	}
 
 	/**
@@ -160,7 +162,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	/**
 	 * saves treestate inside of the fe_user Session Data
 	 *
-	 * @return	[type]		...
+	 * @return	[void]		
 	 */
  	function savePosition()
  	{
@@ -357,7 +359,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	function getTitleStr($row, $titleLen = 30)	{
 		$conf['sys_language_uid'] = $GLOBALS['TSFE']->sys_language_uid;
 		// this line can be used for DAM Version 1.1+
-		//$row = tx_dam_db::getRecordOverlay($this->table, $row, $conf); 
+		//$row = tx_dam_db::getRecordOverlay($this->table, $row, $conf);
 		$title = trim($row['title']);
 		if (empty($title)) $title = '<em>['.$this->plugin->pi_getLL('no_title').']</em>';
 		return $title;
@@ -366,7 +368,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	/**
 	 * calls the parrent methoad getBrowsableTree
 	 *
-	 * @return	[type]		...
+	 * @return	[html]		...
 	 */
 	function getBrowsableTree() {
 		// debug($this->MOUNTS);

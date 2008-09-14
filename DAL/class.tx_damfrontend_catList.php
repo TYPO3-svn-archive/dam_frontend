@@ -42,14 +42,16 @@
  *
  *
  *
- *   61: class tx_damfrontend_catList extends tx_damfrontend_baseSessionData
- *   68:     function tx_damfrontend_catList()
- *   80:     function op_Plus($catID, $treeID)
- *  103:     function op_Minus($catID, $treeID)
- *  123:     function op_Equals($catID, $treeID)
- *  140:     function getCatSelection()
+ *   63: class tx_damfrontend_catList extends tx_damfrontend_baseSessionData
+ *   70:     function tx_damfrontend_catList()
+ *   82:     function op_Plus($catID, $treeID)
+ *  107:     function op_Minus($catID, $treeID)
+ *  126:     function unsetAllCategories()
+ *  137:     function op_Equals($catID, $treeID)
+ *  155:     function getCatSelection($treeID = '')
+ *  173:     function clearCatSelection($treeID)
  *
- * TOTAL FUNCTIONS: 5
+ * TOTAL FUNCTIONS: 7
  * (This index is automatically created/updated by the extension "extdeveval")
  *
  */
@@ -60,7 +62,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/DAL/class.tx_damfrontend_ba
 
 class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 
-	 /**
+/**
  * initialization of the the session
  *
  * @return	void
@@ -85,7 +87,7 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 			if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function op_Plus: for the treeID only integer values are allowed. Given value was:' .$treeID, 'dam_frontend',3);
 		}
 		$catarray = $this->getArrayFromUser();
-		
+
 		if (!is_array($catarray)) $catarray = array();
 		$treeArray = is_array($catarray[$treeID]) ? array_unique($catarray[$treeID]) : array();
 		if (!array_search($catID, $treeArray)) {
@@ -115,11 +117,12 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 		$this->setArrayToUser($catarray);
 	}
 
-	
+
 	/**
-	* Operation for removing all categories from sessio
-	* @return void
-	*/
+	 * Operation for removing all categories from session
+	 *
+	 * @return	void
+	 */
 	function unsetAllCategories() {
 		 $this->setArrayToUser(null);
 	}
@@ -146,24 +149,31 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 	/**
 	 * returns a list of all selected categories
 	 *
+	 * @param	int		$treeID: ID of used category tree
 	 * @return	array		list of all selected categories
 	 */
 	function getCatSelection($treeID = '') {
 			$ar = $this->getArrayFromUser();
 			if ($treeID != '') {
-				return is_array($ar[$treeID]) ? array_unique($ar[$treeID]) : null;	
+				return is_array($ar[$treeID]) ? array_unique($ar[$treeID]) : null;
 			}
 			else {
 				#t3lib_div::debug('getCatSelection: ');t3lib_div::debug($ar);
 				return is_array($ar) ? array_unique($ar) : null;
 			}
-			
+
 	}
-	
+
+	/**
+	 * clears the selected category of a user
+	 * 	
+	 * @param	int		$treeID: ID of used category tree
+	 * @return	void		nothing
+	 */
 	function clearCatSelection($treeID) {
 		$ar = $this->getArrayFromUser();
 		unset($ar[$treeID]);
-		$this->setArrayToUser($ar);	
+		$this->setArrayToUser($ar);
 	}
 }
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/DAL/class.tx_damfrontend_catList.php'])	{
