@@ -253,7 +253,9 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	 * @return	html		rendered category selection content element
 	 */
  	function renderCatSelection($list, $treeID='') {
+ 		
  		$wholeCode = tslib_CObj::getSubpart($this->fileContent,'###CATSELECTION###');
+ 		$wholeCode=tslib_cObj::substituteMarker($wholeCode,'###CHOOSEN_CAT_HEADER###',$this->pi_getLL('CHOOSEN_CAT_HEADER'));
  		$listCode = '';
  		foreach ($list as $category) {
  			$listElem = tslib_CObj::getSubpart($this->fileContent,'###CATLIST###');
@@ -271,6 +273,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  			$listElem = tslib_cObj::substituteMarker($listElem, '###TITLE###', $category['title']);
  			
  			$markerArray = $this->recordToMarkerArray($category);
+ 			
  			$listCode .= tslib_cObj::substituteMarkerArray($listElem, $markerArray);
  		}
  		return $wholeCode = tslib_CObj::substituteSubpart($wholeCode, '###CATLIST###', $listCode);
@@ -313,8 +316,9 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	 * @param	string		$errormsg: ...
 	 * @return	[type]		...
 	 */
- 	function renderError($errormsg = 'default', $customMessage="") {
+ 	function renderError($errormsg = 'default', $customMessage="",$customMessage2="" ) {
  		$this->pi_loadLL();
+ 		
  		switch ($errormsg) {
  			case 'noSingleID':
  				$message = $this->pi_getLL('noSingleID');
@@ -331,6 +335,9 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  			case 'noFilterStates':
  				$message = $this->pi_getLL('noFilterStates');
  				break;
+ 			case 'uploadFormFieldError':
+ 				$message = $this->pi_getLL('uploadFormFieldError') . $customMessage . ' '. $this->pi_getLL('uploadFormFieldErrorLength') . ' ' . $customMessage2 ;
+ 				break;
  			case 'custom':
  				$message = strip_tags($customMessage);
  				break;
@@ -340,7 +347,8 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 
  		$content = tslib_CObj::getSubpart($this->fileContent,'###ERROR###');
  		$content = tslib_CObj::substituteMarker($content, '###ERRORMESSAGE###', $message);
- 		return tslib_CObj::substituteMarker($content, '###ERROR_HEADER###', $this->pi_getLL('error_header'));
+ 		$content = tslib_CObj::substituteMarker($content, '###ERROR_HEADER###', $this->pi_getLL('error_header'));
+ 		return $content;
  	}
 
 	/**
@@ -677,7 +685,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		$markerArray['###CATEGORISATION_TEXT_TITLE###']=$this->pi_getLL('CATEGORISATION_TEXT_TITLE');
 		$markerArray['###CATEGORISATION_TEXT_DESCRIPTION###']=$this->pi_getLL('CATEGORISATION_TEXT_DESCRIPTION');
 		$markerArray['###CATEGORISATION_TEXT_SEND###']=$this->pi_getLL('CATEGORISATION_TEXT_SEND');
-		t3lib_div::debug($this->pi_getLL('CATEGORISATION_TEXT_HEADER'));
+		#t3lib_div::debug($this->pi_getLL('CATEGORISATION_TEXT_HEADER'));
 		if (is_array($selectedCats)) {
 			#$catCode = $this->renderCatSelection($selectedCats, 'categorisation');
 			$catCode = $this->renderCatSelection($selectedCats, -1);
@@ -692,7 +700,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	
 	
 	function renderUploadSuccess() {
-		
+		$this->pi_loadLL();		
 		return $this->pi_getLL('UPLOAD_SUCCESS');
 	}
 	

@@ -67,7 +67,7 @@ class tx_damfrontend_baseSessionData {
 	 */
 	function getArrayFromUser() {
 		$sesarray = $this->user->getKey('ses', $this->sessionVar);
-		t3lib_div::debug($sesarray);
+		#t3lib_div::debug($sesarray);
 		if (is_array($sesarray)) return $sesarray;
 	}
 

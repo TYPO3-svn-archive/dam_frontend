@@ -335,20 +335,20 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 		
 		
-		/***************
-		 * Handling of a request form
-		 * 
-		 * Einbindung des Aufrufs zum Senden einer Anforderung
-		 */ 				
-		if ($this->internal['viewID'] == 8 && $this->internal['sendRequestform']) {
-			$returnform = $this->sendRequestform();
-			if ($returnform != '') return $returnform;
-		}
-		
-		if ($this->internal['viewID'] == 8 &&  $this->internal['showRequestform'] == 1 && t3lib_div::_GET('docID') != null) {
-			return $this->pi_wrapInBaseClass($this->anforderForm());
-		}
-		
+//		/***************
+//		 * Handling of a request form
+//		 * 
+//		 * Einbindung des Aufrufs zum Senden einer Anforderung
+//		 */ 				
+//		if ($this->internal['viewID'] == 8 && $this->internal['sendRequestform']) {
+//			$returnform = $this->sendRequestform();
+//			if ($returnform != '') return $returnform;
+//		}
+//		
+//		if ($this->internal['viewID'] == 8 &&  $this->internal['showRequestform'] == 1 && t3lib_div::_GET('docID') != null) {
+//			return $this->pi_wrapInBaseClass($this->anforderForm());
+//		}
+//		
 		
 		if ($this->internal['useStaticCatSelection']) {
 			$this->catList->unsetAllCategories();
@@ -739,29 +739,27 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			else {
 				// upload still in categorisation mode
 				// show categorisation
-				t3lib_div::debug('categorise: '. $this->categorise);
+				#t3lib_div::debug('categorise: '. $this->categorise);
 				if ($this->categorise) {
 					return $this->categoriseForm();
 				}
 				else {
 					// document gets uploaded - handle the upload and proceed
 					// with the categorisation
-					t3lib_div::debug('Upload: '. $this->upload);
+					#t3lib_div::debug('Upload: '. $this->upload);
 					if ($this->upload) {
-						$newID = $this->handleUpload();
+						$returnCode = $this->handleUpload();
 						#t3lib_div::debug('handleupload ok: ');	
-						if (intval($newID) != 0) {
+						if (intval($returnCode) != 0) {
 							// upload was successful - proceeding with categorisation
+							$newID = $returnCode;
 							$GLOBALS['TSFE']->fe_user->setKey('ses','categoriseID', $newID);
 							$this->catList->unsetAllCategories();
 							return $this->categoriseForm();
 						}
 						else {
-							/**
-							 * @todo better error message, if upload extension fails or isn't installed'
-							 */
 							// rendering of an error message - messages from the upload extension
-							return $this->renderer->renderError('custom', $newID);
+							return $returnCode . '<br><br>' . $this->renderer->renderUploadForm();
 						}	
 					}
 					else {
@@ -788,61 +786,60 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * calls the handleUpload Extension and outputs the 
 	 * error messages to the frontend
 	 * 
+	 * @return int the ID of uploaded file in the dam table, if there is an error, the error message is returned 
 	 *********************/
 	function handleUpload() {
 		// getting incoming form data from the request
-		$this->getIncomingDocData();
-		#t3lib_div::debug('getIncomingDocData ok');
-		// make Instance of the class for fileupload handling
-		if (!t3lib_extMgm::isLoaded('fileupload')) {
-			return $this->renderer->renderError('uploadExtensionNotInstalled');
-		} else {
-			// creating the Object of the upload handler
-			// getting TS for the Extension
-			// creating an instance
-			$uploadHandler = t3lib_div::getUserObj('EXT:fileupload/pi1/class.tx_fileupload_pi1.php:&tx_fileupload_pi1');
-			$fileUploadTS = is_array($this->conf['fileupload.']) ? $this->conf['fileupload.'] : $this->loadFileUploadTS();
-			$uploadHandler->cObj = $this->cObj;
-			$uploadHandler->main('',$fileUploadTS);
-			$_FILES[$uploadHandler->prefixId] = $_FILES['file'];
-			
-			#t3lib_div::debug('Upload Handler ok');
-			
-			// retrieving the path of the uploaded file
-			if($fileUploadTS['path']){
-				$path=$this->cObj->stdWrap($fileUploadTS['path'],$fileUploadTS['path.']);
-			}
-			
-			$uploaddir = is_dir($path)?$path:$TYPO3_CONF_VARS['BE']['fileadminDir'];
-			
-			#t3lib_div::debug($uploaddir);
-			if($fileUploadTS['FEuserHomePath.']['field']){
-				$feuploaddir=$uploaddir.$GLOBALS["TSFE"]->fe_user->user[$fileUploadTS['FEuserHomePath.']['field']].'/';
-			} 
-			else {
-				$feuploaddir=$uploaddir.$GLOBALS["TSFE"]->fe_user->user["uid"].'/';
-			}
-			$uploadfile = PATH_site.$feuploaddir.$_FILES[$uploadHandler->prefixId]['name'];
-			
-			#t3lib_div::debug($uploadfile);
-			// final upload
-			$uploadHandler->handleUpload();
-			
-			#t3lib_div::debug('handleUpload ok');
-			// adding the uploaded file to the DAM System, if no error occured
-			if (is_file($uploadfile)) {
-				t3lib_div::debug('is file');
-				t3lib_div::debug($this->documentData);
-				return $this->docLogic->addDocument($uploadfile, $this->documentData);
+		$returnCode ='';
+		$returnCode = $this->getIncomingDocData();
+		if ($returnCode===true) { 
+			// make Instance of the class for fileupload handling
+			if (!t3lib_extMgm::isLoaded('fileupload')) {
+				return $this->renderer->renderError('uploadExtensionNotInstalled');
+			} else {
+				// creating the Object of the upload handler
+				// getting TS for the Extension
+				// creating an instance
+				$uploadHandler = t3lib_div::getUserObj('EXT:fileupload/pi1/class.tx_fileupload_pi1.php:&tx_fileupload_pi1');
+				$fileUploadTS = is_array($this->conf['fileupload.']) ? $this->conf['fileupload.'] : $this->loadFileUploadTS();
+				$uploadHandler->cObj = $this->cObj;
+				$uploadHandler->main('',$fileUploadTS);
+				$_FILES[$uploadHandler->prefixId] = $_FILES['file'];
 				
-			}
-			else {
-				$errorContent = '';
-				foreach ($uploadHandler->status as $error) {
-					$errorContent .= $error;
+				// retrieving the path of the uploaded file
+				if($fileUploadTS['path']){
+					$path=$this->cObj->stdWrap($fileUploadTS['path'],$fileUploadTS['path.']);
 				}
-				return $errorContent;
+				
+				$uploaddir = is_dir($path)?$path:$TYPO3_CONF_VARS['BE']['fileadminDir'];
+		
+				if($fileUploadTS['FEuserHomePath.']['field']){
+					$feuploaddir=$uploaddir.$GLOBALS["TSFE"]->fe_user->user[$fileUploadTS['FEuserHomePath.']['field']].'/';
+				} 
+				else {
+					$feuploaddir=$uploaddir.$GLOBALS["TSFE"]->fe_user->user["uid"].'/';
+				}
+				$uploadfile = PATH_site.$feuploaddir.$_FILES[$uploadHandler->prefixId]['name'];
+				
+				// final upload
+				$uploadHandler->handleUpload();
+				
+				// adding the uploaded file to the DAM System, if no error occured
+				if (is_file($uploadfile)) {
+					return $this->docLogic->addDocument($uploadfile, $this->documentData);	
+				}
+				else {
+					$errorContent = '';
+					foreach ($uploadHandler->status as $error) {
+						$errorContent .= $error;
+					}
+					return $this->renderer->renderError('custom',$errorContent);
+				}
 			}
+		}
+		else {
+			# an error happend, the message is shown
+			return $returnCode;
 		}
 	}
 	
@@ -858,13 +855,34 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	   return $TSObj->setup['plugin.']['tx_fileupload_pi1.'];
 	}
 	
-	
+	/**
+	 * Shows the upload form
+	 *
+	 * @return	[string]		errormessage / TRUE if there was no error
+	 */	
 	function getIncomingDocData() {
 		// conversion of incoming data from the creation of an new document
 		$this->documentData['title'] = strip_tags(t3lib_div::_POST('title'));
-		$this->documentData['creator'] = strip_tags(t3lib_div::_POST('creator'));
-		$this->documentData['description'] = strip_tags(t3lib_div::_POST('description'));
-		$this->documentData['copyright'] = strip_tags(t3lib_div::_POST('copyright'));
+		if(strlen($this->documentData['title'])>255) {
+			return ($this->renderer->renderError('uploadFormFieldError','title','255'));
+		}
+
+
+		$this->documentData['creator'] = strip_tags(t3lib_div::_POST('creator')); #45
+		if(strlen($this->documentData['creator'])>45) {
+			return $this->renderer->renderError('uploadFormFieldError','creator','45');
+		}
+		
+		$this->documentData['description'] = strip_tags(t3lib_div::_POST('description')); #65000
+		if(strlen($this->documentData['description'])>65000) {
+			return $this->renderer->renderError('uploadFormFieldError','description','65000');
+		}
+	
+		$this->documentData['copyright'] = strip_tags(t3lib_div::_POST('copyright')); #128
+		if(strlen($this->documentData['copyright'])>128) {
+			return $this->renderer->renderError('uploadFormFieldError','copyright','45');
+		}
+		return true;
 	}
 	
 	
@@ -884,7 +902,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	
 	
 	function categoriseForm() {
-		$docID = $GLOBALS['TSFE']->fe_user->getKey('ses','categoriseID');
+		$docID = intval($GLOBALS['TSFE']->fe_user->getKey('ses','categoriseID'));
 		$docData = $this->docLogic->getDocument($docID);
 		$cats = $this->catList->getCatSelection(-1);
 		#$cats = $this->catList->getCatSelection('categorisation');
@@ -901,7 +919,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	}
 	
 	function saveCategorisation() {
-		$docID = $GLOBALS['TSFE']->fe_user->getKey('ses','categoriseID');
+		$docID = intval($GLOBALS['TSFE']->fe_user->getKey('ses','categoriseID'));
 		$GLOBALS['TSFE']->fe_user->setKey('ses','categoriseID', null);
 		#$cats = $this->catList->getCatSelection('categorisation');
 		$cats = $this->catList->getCatSelection(-1);
@@ -909,10 +927,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		#$this->catList->clearCatSelection('categorisation');
 		$this->catList->clearCatSelection(-1);
 		return $this->renderer->renderUploadSuccess();
-		
 	}
-	
-
 }
 
 
