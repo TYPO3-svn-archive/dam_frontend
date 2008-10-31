@@ -149,13 +149,25 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 	/**
 	 * returns a list of all selected categories
 	 *
-	 * @param	int		$treeID: ID of used category tree
+	 * @param	int			$treeID: ID of used category tree
 	 * @return	array		list of all selected categories
 	 */
 	function getCatSelection($treeID = '') {
 			$ar = $this->getArrayFromUser();
+			#t3lib_div::debug($treeID); //dbg
 			if ($treeID != '') {
-				return is_array($ar[$treeID]) ? array_unique($ar[$treeID]) : null;
+				//returns the selected categories for a specified treeID
+				if ($treeID==-1){
+					return is_array($ar[$treeID]) ? array_unique($ar[$treeID]) : null;
+				} else {
+					if (is_array($ar[$treeID])) {
+						$returnArr[$treeID]= array_unique($ar[$treeID]);	
+					} else {
+						$returnArr =  null;
+					} 
+					return $returnArr;	
+				}
+				
 			}
 			else {
 				#t3lib_div::debug('getCatSelection: ');t3lib_div::debug($ar);

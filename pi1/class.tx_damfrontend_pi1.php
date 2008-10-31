@@ -109,6 +109,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	var $categorise; // determines, if the categorisation view shall be shown
 	var $saveCategorisation; // true if the categorisation selection of an uploaded document shall be saved
 
+	var $pid; //Page ID
 	/**
 	 * Inits this class and instanceates all nescessary classes
 	 *
@@ -126,6 +127,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->renderer->piVars = $this->piVars;
 		$this->renderer->conf = $this->conf;
 		$this->renderer->cObj = $this->cObj;
+		$this->pid = $this->cObj->data['pid']; 
 	}
 
 	/**
@@ -145,12 +147,14 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
  		// clear all 0 - values - now they are not shown in the frontend form
  		foreach ($this->internal['filter'] as $key => $value) {
- 			if ($value == '0') $this->internal['filter'][$key] = '';
+ 			if ($value == '0') {
+ 				$this->internal['filter'][$key] = '';	
+ 			}
  		}
 
  		$this->internal['filter']['filetype'] = strip_tags(t3lib_div::_GP('filetype'));
 		$this->internal['filter']['searchword'] = strip_tags(t3lib_div::_GP('searchword'));
-
+		
 		if (t3lib_div::_GP('resetFilter')) $this->filterState->resetFilter();
 		if (!count($this->filterState->getFilterFromSession())) {
 			$emptyArray = $this->internal['filter'];
@@ -185,7 +189,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
  					$this->internal['list']['sorting'] = strip_tags(substr($postvar, 5).' '.$postvalue);
  				}
  			}
-
 		}
 
 		$this->listState->syncListState($this->internal['list']);
@@ -221,12 +224,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @return	void
 	 */
 	function convertPiVars() {
+		
 		// variables for category selection
-		/*
-		$this->internal['catPlus'] = intval($this->piVars['catPlus']);
-		$this->internal['catMinus'] = intval($this->piVars['catMinus']);
-		$this->internal['catEquals'] = intval($this->piVars['catEquals']);
-		*/
 		$this->internal['catPlus'] = intval(t3lib_div::_GP('catPlus'));
 		$this->internal['catMinus'] = intval(t3lib_div::_GP('catMinus'));
 		$this->internal['catEquals'] = intval(t3lib_div::_GP('catEquals'));
@@ -241,10 +240,25 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		// getting the incoming treeID
 		$this->internal['incomingtreeID'] = intval(t3lib_div::_GP('treeID'));
-#$this->internal['incomingtreeID'] = strip_tags(t3lib_div::_GP('treeID'));
-
+		#t3lib_div::debug(t3lib_div::_GP('treeID'));
+		// check if we are still on the same page. If we are at a different page,
+		// the user
+		$incommingPID = $this->get_PID($this->internal['incomingtreeID']);
+//		if ($incommingPID >0) {
+//			t3lib_div::debug('incomming PID:'.$incommingPID);
+//			t3lib_div::debug('pageID:'. $this->pid);
+//			if ($incommingPID <> $this->pid ) {
+//				t3lib_div::debug('delete user session');
+//			} else {
+//				t3lib_div::debug('user ok');
+//			}
+//		} else	{
+//				t3lib_div::debug($this->internal['incomingtreeID']);
+//		}
+//		
+		
 		// Selection Mode
-		$this->internal['slectionMode'] = intval($this->piVars['selectionMode']);
+		$this->internal['selectionMode'] = intval($this->piVars['selectionMode']);
 
 		// Requstform
 		$this->internal['showRequestform'] = intval(t3lib_div::_GET('showRequestform'));
@@ -269,8 +283,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		// incoming command of saving the current category selection
 		$this->saveCategorisation = strip_tags(t3lib_div::_POST('catOK')) != '' ? true : false;
-
-
+		
+		// t3lib_div::debug($this->internal);
 		// if the session var for categorisation is set, render set the categorise var
 		$this->categorise = $GLOBALS['TSFE']->fe_user->getKey('ses','categoriseID') != '' ? true:false;
  	}
@@ -286,7 +300,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$flexform = $this->cObj->data['pi_flexform'];
 
 		$this->internal['viewID'] = intval($this->pi_getFFvalue($flexform, 'viewID'));
-//		debug($this->pi_getFFvalue($flexform, 'catMounts', sSelection));
+		#t3lib_div::debug('viewID: '.$this->internal['viewID']);
+		//debug($this->pi_getFFvalue($flexform, 'catMounts', sSelection));
 		$this->internal['catMounts'] = explode(',',$this->pi_getFFvalue($flexform, 'catMounts', 'sSelection'));
 
 		$this->internal['treeName'] = strip_tags($this->pi_getFFvalue($flexform, 'treeName', 'sSelection'));
@@ -316,9 +331,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->convertPiVars();
 
 		$this->filterState->filterTable = 'tx_damfrontend_filterStates';
-
-		// Executing some primary tests on the catgeory logic
-		// if ($this->internal['viewID'] == 2) $this->test();
 
 		// Processing and distribution of input data
 		// Mapping input parameters to actions
@@ -365,21 +377,22 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					if (strlen($catMount)) {
 						$subs = $this->catLogic->getSubCategories($catMount);
 						foreach ($subs as $sub) {
-							$this->catList->op_Plus($sub['uid'], $this->internal['incomingtreeID']);
+							$this->catList->op_Plus($sub['uid'], $this->internal['treeID']);
 						}
 					}
 				}
 			}
 		}
-		//debug($this->catList->getCatSelection());
-
+		#t3lib_div::debug($this->catList->getCatSelection($this->internal['treeID']));
+		
 		// Mapping the ViewIds - selected in the Flexform to the content
 		// that shall be rendered
+		
 		switch ($this->internal['viewID']) {
-			case 1:
+			case 1: 
 				$content = $this->fileList(false);
 				break;
-			case 2:
+			case 2: 
 				$content = $this->catTree();
 				break;
 			case 3:
@@ -449,7 +462,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeView');
 		$tree->init($this->internal['treeID'], $this);
 		$tree->title = $this->internal['treeName'];
-		$selCats  = $this->catList->getCatSelection();
+		#$selCats  = $this->catList->getCatSelection();
+		$selCats  = $this->catList->getCatSelection($this->internal['treeID']);
+		#t3lib_div::debug($selCats);
+		
+		#t3lib_div::debug($selCats[$this->internal['treeID']]);
 		$tree->selectedCats = $selCats[$this->internal['treeID']];
 		if (is_array($this->internal['catMounts'])) $tree->MOUNTS = $this->internal['catMounts'];
 		return  '<div class="cattree" >'.$tree->getBrowsableTree().'</div>';
@@ -478,7 +495,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @return	html		HTML - list of all selected documents
 	 */
 	function fileList($useRequestForm) {
-		$cats = $this->catList->getCatSelection();
+		$cats = $this->catList->getCatSelection($this->internal['incomingtreeID']);
+		#t3lib_div::debug($cats);
+		#t3lib_div::debug($this->internal['incomingtreeID']);
+		
 		$hasCats = false; // true if any category has been selected yet
 		if (count($cats)) {
 			foreach($cats as $catList) {
@@ -953,6 +973,23 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		#$this->catList->clearCatSelection('categorisation');
 		$this->catList->clearCatSelection(-1);
 		return $this->renderer->renderUploadSuccess();
+	}
+	
+	/**
+	 * Returns the pageID of a given uid
+	 * @author stefan
+	 *@return int pid of a content element
+	 */
+	function get_PID ($uid){
+		//t3lib_div::debug($uid);
+		$uid = intval($uid);
+		$SELECT = 'pid';
+		$FROM = 'tt_content';
+		$WHERE = 'uid = '.$uid;
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE);
+		$record =  $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+		#t3lib_div::debug($record);
+		return $record['pid'];
 	}
 }
 

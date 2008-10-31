@@ -20,6 +20,7 @@
 			<label index="flexform_uploadForm">Upload Form</label>
 			<label index="flexform_requstForm">Request Form</label>
 			<label index="tx_damfrontend_use_request_form">Use a request form for this file</label>
+			<label index="flexform_useStaticCatSelection">use static Category Selection</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="flexform_display_title">Was soll angezeigt werden</label>

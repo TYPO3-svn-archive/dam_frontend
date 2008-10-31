@@ -58,6 +58,7 @@ class tx_damfrontend_baseSessionData {
 
 	function tx_damfrontend_baseSessionData() {
 		$this->user =& $GLOBALS['TSFE']->fe_user;
+		//t3lib_div::debug($GLOBALS['TSFE']->fe_user); dbg
 	}
 
 	/**
@@ -79,6 +80,10 @@ class tx_damfrontend_baseSessionData {
 	 */
 	function setArrayToUser($array) {
 		$this->user->setKey('ses', $this->sessionVar, $array);
+	}
+	
+	function unSetArrayToUser($array) {
+		$this->user->unSetKey('ses');
 	}
 }
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/DAL/class.tx_damfrontend_baseSessionData.php'])	{

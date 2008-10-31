@@ -15,5 +15,7 @@ Language issue: currently there is no language overlay for the dam itsself. So i
 Roadmap:
 * RealURL Support
 
+Development Plattform:
+http://forge.typo3.org/projects/show/extension-dam_frontend
 
-release 0.2.0 / .2008
+release 0.2.1 / .2008

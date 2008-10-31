@@ -1,3 +1,7 @@
+Version 0.2.1 Beta 2
+- fixed bug 1885: if multiple Views are used on different pages, category selection sometimes hasn't worked
+- fixed bug 1922: label for "flexform_useStaticCatSelection" were missing in english
+
 Version	0.2.0
 + feature 1297: Static category selection in pi1 (thanks to Frank NŠgler)
 + feature 1261: Fileupload and categorisation in pi1 

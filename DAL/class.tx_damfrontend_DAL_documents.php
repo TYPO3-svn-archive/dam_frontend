@@ -520,7 +520,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 
 			// executing the insert operation for the database
 			$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_dam', $newrecord);
-			if ($GLOBALS['TYPO3_DB']->sql_error() != '') debug($GLOBALS['TYPO3_DB']->sql_error());
+			if ($GLOBALS['TYPO3_DB']->sql_error() != '') t3lib_div::debug($GLOBALS['TYPO3_DB']->sql_error());
 			$newID = $GLOBALS['TYPO3_DB']->sql_insert_id();
 			return $newID;
 		}
