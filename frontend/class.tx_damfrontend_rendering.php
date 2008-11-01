@@ -358,7 +358,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	 * @return	array		Markerarray ready for substitution
 	 */
  	function recordToMarkerArray($record) {
- 		t3lib_div::debug($record);
+ 		//t3lib_div::debug($record);
  		if (!is_array($record)) die ('Parameter error in class.tx_damfrontend_rendering in function recordToMarkerArray: $record is no Array. Please inform your administrator.');
  		else {
  			foreach ($record as $key=>$value) {
