@@ -475,11 +475,11 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 
 	/**
 	 * renderUploadForm
-	 *
-	 * @return	[type]		...
-	 * @todo function is not finished
+	 * @param array userInput If an error happend and the form must be rendered again
+	 * @return	[string]	the html code	...
+	 * 
 	 */
- 	function renderUploadForm() {
+ 	function renderUploadForm($userInput) {
 		$this->pi_loadLL();
 		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###UPLOADFORM###');
 		$markerArray['###BUTTON_UPLOAD###'] = $this->pi_getLL('BUTTON_UPLOAD');
@@ -489,6 +489,11 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		$markerArray['###LABEL_COPYRIGHT###'] = $this->pi_getLL('LABEL_COPYRIGHT');
 		$markerArray['###LABEL_AUTHOR###'] =  $this->pi_getLL('LABEL_AUTHOR');
 		$markerArray['###LABEL_DESCRIPTION###'] =  $this->pi_getLL('LABEL_DESCRIPTION');
+		$markerArray['###VALUE_TITLE###']= $userInput['title'];
+		$markerArray['###VALUE_COPYRIGHT###']= $userInput['copyright'];
+		$markerArray['###VALUE_AUTHOR###']= $userInput['creator'];
+		$markerArray['###VALUE_DESCRIPTION###']= $userInput['description'];
+	
 		return tslib_cObj::substituteMarkerArray($formCode, $markerArray);
  	}
 
@@ -584,7 +589,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
   
 //  	/**
 //  	 * 
-//  	 * rendert das Formular zur Eingabe der Anforderung fŸr eine SI
+//  	 * rendert das Formular zur Eingabe der Anforderung fï¿½r eine SI
 //  	 * 
 //  	 * 
 //  	 */
@@ -619,7 +624,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 //			}
 //		}
 //		
-//		// FŸge die bisher eingegebenen Daten ein
+//		// Fï¿½ge die bisher eingegebenen Daten ein
 //		foreach($formData as $name => $data) {
 //
 //			$markerArray['###'.strtoupper($name).'###'] = $data;

@@ -154,7 +154,7 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 	 */
 	function getCatSelection($treeID = '') {
 			$ar = $this->getArrayFromUser();
-			#t3lib_div::debug($treeID); //dbg
+			#t3lib_div::debug($treeID); 
 			if ($treeID != '') {
 				//returns the selected categories for a specified treeID
 				if ($treeID==-1){

@@ -668,7 +668,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 
 //	/**
-//	 * Bestimmt ob das Formular für die Anforderung korrekt ausgefüllt wurde
+//	 * Bestimmt ob das Formular f√ºr die Anforderung korrekt ausgef√ºllt wurde
 //	 */
 //	function evalAnforderData() {
 //		$eval = true;
@@ -723,7 +723,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 //				$docData = $this->docLogic->getDocument($this->formData['docID']);
 //				$userMailContent = $this->renderer->renderMailMessage($this->formData, $docData);
 //				t3lib_div::plainMailEncoded($this->formData['email'],'Ihre Anforderung einer Spezialinformation',$userMailContent,'From:service@bus-netzwerk.de');
-//				// Versenden der Anforderung für die Zentrale
+//				// Versenden der Anforderung f√ºr die Zentrale
 //				t3lib_div::plainMailEncoded('makbak@tiscali.de','Anforderung einer Spezialinformation',$userMailContent, 'From:service@bus-netzwerk.de');
 //			}
 //			else {
@@ -792,12 +792,20 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 						}
 						else {
 							// rendering of an error message - messages from the upload extension
-							return $returnCode . '<br><br>' . $this->renderer->renderUploadForm();
+							
+							//building an error with user input, that the volues don't have put in again.
+							$userInput = array();
+							$userInput['title'] = 	$this->documentData['title'];
+							$userInput['creator'] = $this->documentData['creator'];		
+							$userInput['description'] = $this->documentData['description'] ; #65000
+							$userInput['copyright'] = $this->documentData['copyright']; #128	
+							return $returnCode . '<br><br>' . $this->renderer->renderUploadForm($userInput );
 						}
 					}
 					else {
 						// no upload - render the upload form
-						return $this->renderer->renderUploadForm();
+						$userInput = array();
+						return $this->renderer->renderUploadForm($userInput);
 					}
 				}
 			}
@@ -871,6 +879,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 		}
 		else {
+			
 			# an error happend, the message is shown
 			return $returnCode;
 		}
@@ -900,22 +909,22 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	function getIncomingDocData() {
 		// conversion of incoming data from the creation of an new document
 		$this->documentData['title'] = strip_tags(t3lib_div::_POST('title'));
+		$this->documentData['creator'] = strip_tags(t3lib_div::_POST('creator')); #45		
+		$this->documentData['description'] = strip_tags(t3lib_div::_POST('description')); #65000
+		$this->documentData['copyright'] = strip_tags(t3lib_div::_POST('copyright')); #128		
+		
 		if(strlen($this->documentData['title'])>255) {
 			return ($this->renderer->renderError('uploadFormFieldError','title','255'));
 		}
 
-
-		$this->documentData['creator'] = strip_tags(t3lib_div::_POST('creator')); #45
 		if(strlen($this->documentData['creator'])>45) {
 			return $this->renderer->renderError('uploadFormFieldError','creator','45');
 		}
 
-		$this->documentData['description'] = strip_tags(t3lib_div::_POST('description')); #65000
 		if(strlen($this->documentData['description'])>65000) {
 			return $this->renderer->renderError('uploadFormFieldError','description','65000');
 		}
 
-		$this->documentData['copyright'] = strip_tags(t3lib_div::_POST('copyright')); #128
 		if(strlen($this->documentData['copyright'])>128) {
 			return $this->renderer->renderError('uploadFormFieldError','copyright','45');
 		}
@@ -926,7 +935,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 
 //	function getIncomingAnforderData() {
-//		// Übertrage Formulardaten von der SI Anforderungin ein Array
+//		// √úbertrage Formulardaten von der SI Anforderungin ein Array
 //		$this->formData['email'] = t3lib_div::_POST('email') ? strip_tags(t3lib_div::_POST('email')) : '';
 //		$this->formData['plz'] = t3lib_div::_POST('plz') ? strip_tags(t3lib_div::_POST('plz')) : '';
 //		$this->formData['ort'] = t3lib_div::_POST('ort') ? strip_tags(t3lib_div::_POST('ort')) : '';

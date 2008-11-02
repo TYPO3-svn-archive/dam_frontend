@@ -72,9 +72,15 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 		||  $GLOBALS['TSFE']->isUserOrGroupSet()) {
         $GLOBALS['TSFE']->set_no_cache();
     }
-
+	
     //$this->log("main called; " . print_r($this->piVars, 1));
     //debug($GLOBALS['TSFE'], "GLOBALS");
+
+	//Process TYPOScript Conf
+	//t3lib_div::debug($this->conf);
+	if ($this->conf['groupCriteria']<>'') {
+		$this->groupCriteriaConf = $this->conf['groupCriteria'];
+	}
 
     // init grouping data structures:
     $this->group = array();
@@ -134,8 +140,8 @@ class tx_damfrontend_pi2 extends tslib_pibase {
    /**
  * Generates HTML code for a Group of Files
  *
- * @param	[type]		$groupKey: ...
- * @param	[type]		$records: ...
+ * @param	[type]		$groupKey: 	Grouping criteria
+ * @param	[type]		$records: 	records for this grouping criteria
  * @return	[string]		html content
  */
   function renderGroup($groupKey, &$records) {
@@ -145,22 +151,30 @@ class tx_damfrontend_pi2 extends tslib_pibase {
     }
     else {
 
-      $renderedGroup = "";
-      $groupDataKeys = array_keys($records[$groupKey]);
+		$renderedGroup = "";
+		$groupDataKeys = array_keys($records[$groupKey]);
 
-      $firstRecord = null;
-
+		$firstRecord = null;
+		$fileExists = true;
       // render records keeping dam uid list order:
       foreach($this->damUidList as $uid) {
 		if(in_array($uid, $groupDataKeys)) {
-		  $rec = $records[$groupKey][$uid];
+			$rec = $records[$groupKey][$uid];
+			//Check if file exists
+			t3lib_div::debug($BACK_PATH . $rec['file_path'] . $rec['file_name']);
+			if ($this->conf['checkIfFileExist']==0){
+		  		if (file_exists($BACK_PATH . $rec['file_path'] . $rec['file_name']) ==false) {
+		  			$fileExists = false;
+		  		}
+			}
 
-		  if($firstRecord == null) {
-		    $firstRecord = $rec;
-		  }
-		  $renderedGroup .= $this->cObj->substituteMarkerArray($this->templateItemFile, $this->processRecord($rec), "###|###", 1);
+			if ($fileExists==true) {
+				if($firstRecord == null) {
+					$firstRecord = $rec;
+			  	}
+		  		$renderedGroup .= $this->cObj->substituteMarkerArray($this->templateItemFile, $this->processRecord($rec), "###|###", 1);
+			}		  
 		}
-      }
 
       unset($records[$groupKey]);
 
@@ -170,8 +184,8 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 
     }
     return $renderedGroup;
+  	}
   }
-
   /**
  * Fetch dam records
  *
@@ -204,23 +218,20 @@ class tx_damfrontend_pi2 extends tslib_pibase {
       $groupKey = "";
       while ($record = $dbh->sql_fetch_assoc($resObj)) {
 
-	$groupKey = $this->getGroupKey($record);
+		$groupKey = $this->getGroupKey($record);
 
-	if (!array_key_exists($groupKey, $rows)) {
-	  $rows[$groupKey] = array();
-	}
-
-	$rows[$groupKey][$record['uid']] = $record;
-	$rows[$record['uid']] = $groupKey;
+		if (!array_key_exists($groupKey, $rows)) {
+	  		$rows[$groupKey] = array();
+		}
+		$rows[$groupKey][$record['uid']] = $record;
+		$rows[$record['uid']] = $groupKey;
       }
-
+      
     } else {
-
       // plain procedure
       while ($record = $dbh->sql_fetch_assoc($resObj)) {
-	$rows['group_' . $record['uid']] = array( $record['uid'] => $record);
+		$rows['group_' . $record['uid']] = array( $record['uid'] => $record);
       }
-
     }
 
     $dbh->sql_free_result($resObj);

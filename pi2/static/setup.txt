@@ -15,6 +15,12 @@ plugin.tx_damfrontend_pi2 {
   # icon base address (example)
   iconBaseAddress =  typo3conf/ext/dam_frontend/res/ico/
 
+  # Criterias for grouping of files (komma separeted)
+  groupCriteria = title,file_path
+  
+  # Check if selected file still exists: If enabled every file is check, if it exists. Can cause performance trouble on heavy load. In this case you should keep your index via backend clean
+  checkIfFileExist=0
+  
 	_CSS_DEFAULT_STYLE (
 				@CHARSET "UTF-8";
 	li.ddl_file_list_item {
