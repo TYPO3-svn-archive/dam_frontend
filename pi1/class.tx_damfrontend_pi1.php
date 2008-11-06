@@ -462,12 +462,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeView');
 		$tree->init($this->internal['treeID'], $this);
 		$tree->title = $this->internal['treeName'];
-		#$selCats  = $this->catList->getCatSelection();
-		$selCats  = $this->catList->getCatSelection($this->internal['treeID']);
-		#t3lib_div::debug($selCats);
 		
-		#t3lib_div::debug($selCats[$this->internal['treeID']]);
-		$tree->selectedCats = $selCats[$this->internal['treeID']];
+		$selCats  = $this->catList->getCatSelection($this->internal['incomingtreeID']);
+		
+		$tree->selectedCats = $selCats[$this->internal['incomingtreeID']];
 		if (is_array($this->internal['catMounts'])) $tree->MOUNTS = $this->internal['catMounts'];
 		return  '<div class="cattree" >'.$tree->getBrowsableTree().'</div>';
 	}
@@ -495,8 +493,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @return	html		HTML - list of all selected documents
 	 */
 	function fileList($useRequestForm) {
+		
 		$cats = $this->catList->getCatSelection($this->internal['incomingtreeID']);
-		#t3lib_div::debug($cats);
+		
 		#t3lib_div::debug($this->internal['incomingtreeID']);
 		
 		$hasCats = false; // true if any category has been selected yet
