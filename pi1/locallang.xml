@@ -42,12 +42,12 @@
 			<label index="FILETYPE_HEADER">Filetype</label>
 			<label index="TITLE_SINGLEVIEW">Singleview</label>
 			<label index="FILE_SIZE_HEADER">Filesize</label>
-			<label index="CR_DESCRIPTION_HEADER">Description</label>	
-			<label index="CHOOSEN_CAT_HEADER">Choosen cat header</label>	
-			<label index="TITLE_SINGLEVIEW_HEADER">Title</label>	
-			<label index="COPYRIGHT_HEADER">Copyright</label>	
+			<label index="CR_DESCRIPTION_HEADER">Description</label>
+			<label index="CHOOSEN_CAT_HEADER">Choosen cat header</label>
+			<label index="TITLE_SINGLEVIEW_HEADER">Title</label>
+			<label index="COPYRIGHT_HEADER">Copyright</label>
 			<label index="LINK_HEADER">Link</label>
-			<label index="no_title">No title</label>	
+			<label index="no_title">No title</label>
 			<label index="REQUEST_FORM_LEGEND">Requestform</label>
 			<label index="REQUEST_FORM_TEXT">Bitte bestaetigen Sie uns Ihre Anforderung der Spezialinformation:</label>
 			<label index="REQUEST_FORM_ADRESS_HEADER">Bitte geben Sie Ihre E-Mail Adresse und Versandanschrift an: </label>
@@ -66,11 +66,11 @@
 			<label index="REQUEST_USER_TEXT2">Ihre Anfrage wird umgehend bearbeitet!</label>
 			<label index="REQUEST_USER_SEND">Send!</label>
 			<label index="CATEGORISATION_TEXT_HEADER">Here you can asign categories for this document.</label>
-			<label index="CATEGORISATION_TEXT_TITLE">title</label>	
+			<label index="CATEGORISATION_TEXT_TITLE">title</label>
 			<label index="CATEGORISATION_TEXT_DESCRIPTION">description</label>
 			<label index="CATEGORISATION_TEXT_SEND">confirm</label>
-			<label index="CATEGORISATION_TREE_NAME">Categorisation tree</label>			
-			<label index="MAIL_REQUES_TEXT1">The user</label>			
+			<label index="CATEGORISATION_TREE_NAME">Categorisation tree</label>
+			<label index="MAIL_REQUES_TEXT1">The user</label>
 			<label index="MAIL_REQUES_TEXT2">has required this file:</label>
 			<label index="MAIL_REQUES_TEXT3">the user's data</label>
 			<label index="TITLE_FILEUPLOAD">Fileupload</label>
@@ -83,6 +83,10 @@
 			<label index="UPLOAD_SUCCESS">Fileupload was sucessful</label>
 			<label index="uploadFormFieldError">Please take care at the field '</label>
 			<label index="uploadFormFieldErrorLength">'. You are only allowed to use this number of character: </label>
+			<label index="SAVE">save</label>
+			<label index="CANCEL">cancel</label>
+			<label index="FILTER_TITLE_LABEL">filter name</label>
+			<label index="FILTER_DESCRIPTION_LABEL">description</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="list_mode_1">Modus 1</label>
@@ -114,17 +118,17 @@
 			<label index="setRowsPerView">Anzahl pro Ansicht setzen!</label>
 			<label index="label_Count">Anzahl der Ergebnisse:</label>
 			<label index="error_renderFileList_emptyArray">Rendering of dam_frontend is not possible: $list must be an array. Please contact your administrator.</label>
-			<label index="error_renderFilterView_date_to">Incorrect date value (to-date)</label>			
+			<label index="error_renderFilterView_date_to">Incorrect date value (to-date)</label>
 			<label index="error_renderFilterView_date_from">Incorrect date value (from-date)</label>
 			<label index="FILENAME_HEADER">Dateiname</label>
 			<label index="CR_DATE_HEADER">Erstellungsdatum</label>
 			<label index="FILETYPE_HEADER">Dateityp</label>
 			<label index="TITLE_SINGLEVIEW">Detailansicht</label>
 			<label index="FILE_SIZE_HEADER">Dateigröße</label>
-			<label index="CR_DESCRIPTION_HEADER">Beschreibung</label>	
-			<label index="CHOOSEN_CAT_HEADER">gewählte Kategorien</label>	
-			<label index="TITLE_SINGLEVIEW_HEADER">Titel</label>	
-			<label index="COPYRIGHT_HEADER">Copyright</label>	
+			<label index="CR_DESCRIPTION_HEADER">Beschreibung</label>
+			<label index="CHOOSEN_CAT_HEADER">gewählte Kategorien</label>
+			<label index="TITLE_SINGLEVIEW_HEADER">Titel</label>
+			<label index="COPYRIGHT_HEADER">Copyright</label>
 			<label index="LINK_HEADER">Link</label>
 			<label index="no_title">Kein Titel</label>
 			<label index="REQUEST_FORM_LEGEND">Requestform</label>
@@ -133,11 +137,11 @@
 			<label index="REQUEST_FORM_FIRST_NAME_DESCRIPTION">First Name: </label>
 			<label index="REQUEST_FORM_FIRST_NAME">First Name: </label>
 			<label index="CATEGORISATION_TEXT_HEADER">Bitte ordnen Sie dem neuen Dokument geeignete Kategorien zu.</label>
-			<label index="CATEGORISATION_TEXT_TITLE">title</label>	
+			<label index="CATEGORISATION_TEXT_TITLE">title</label>
 			<label index="CATEGORISATION_TEXT_DESCRIPTION">Beschreibung</label>
 			<label index="CATEGORISATION_TEXT_SEND">Auswahl bestaetigen</label>
 			<label index="CATEGORISATION_TREE_NAME">Kategorisierung</label>
-			<label index="MAIL_REQUES_TEXT1">Der BUS Portal Benutzer</label>			
+			<label index="MAIL_REQUES_TEXT1">Der BUS Portal Benutzer</label>
 			<label index="MAIL_REQUES_TEXT2">hat folgende SI angefordert:</label>
 			<label index="MAIL_REQUES_TEXT3">the user's data</label>
 			<label index="TITLE_FILEUPLOAD">Dateiinformationen ergänzen</label>
@@ -150,7 +154,10 @@
 			<label index="UPLOAD_SUCCESS">Die Datei wurde erfolgreich hochgeladen.</label>
 			<label index="uploadFormFieldError">Bitte beachten Sie die Einschränkung für das Feld '</label>
 			<label index="uploadFormFieldErrorLength">'. Sie dürfen maximal diese Anzahl von Zeichen verwenden: </label>
-			
+			<label index="SAVE">speichern</label>
+			<label index="CANCEL">abbrechen</label>
+			<label index="FILTER_TITLE_LABEL">Filtername</label>
+			<label index="FILTER_DESCRIPTION_LABEL">Beschreibung</label>
 		</languageKey>
 	</data>
 </T3locallang>

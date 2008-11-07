@@ -1,4 +1,4 @@
-<!-- ******************************** 
+<!-- ********************************
 
 	Template for fileliste View (the list of files /records is the next subpart line 40+
 ********************************  -->
@@ -26,7 +26,7 @@
 			###FILELIST_RECORDS###
 	</table>
 	<br />
-	<form action="#" method="post">
+	<form action="###FORM_URL###" method="post">
 		<input type="text" name="listLength" value="###LISTLENGTH###"/>
 		<input type="submit" name="setListLength" value="###SETROWSPERVIEW###" class="button" />
 	</form>
@@ -39,7 +39,7 @@
 
 
 
-<!-- ******************************** 
+<!-- ********************************
 
 	template for records of the fileliste
 
@@ -52,7 +52,7 @@
 
 
 
-<!-- ******************************** 
+<!-- ********************************
 
 	template for the browserresult list
 
@@ -69,7 +69,7 @@
 
 
 
-<!-- ******************************** 
+<!-- ********************************
 
 	template for the Filterlist list
 
@@ -84,39 +84,39 @@
 		</tr>
 		<!-- ###FILTERLIST_ELEM### end-->
 	</table>
-	
+
 <!-- ###FILTERLIST### end-->
 
 
 
-<!-- ******************************** 
+<!-- ********************************
 
 	Link for creation of a new filter
 
 ********************************  -->
 
 <!-- ###NEWFILTER_LINK### begin-->
-	<form action="#" method="post">
+	<form action="###FORM_URL###" method="post">
 		<input type="submit" value="Neuer Filter" name="newFilter" class="button" />
 	</form>
 <!-- ###NEWFILTER_LINK### end-->
 
 
 
-<!-- ********************************* 
+<!-- *********************************
 
-		Template for creation of new filter. 
+		Template for creation of new filter.
 		User can insert title and description of a filter record
 
 *********************************  -->
 
 <!-- ###NEWFILTER### begin-->
-	<form action="#" method="post">
+	<form action="###FORM_URL###" method="post">
 		<fieldset>
-			<label>###TITLE_HEADER###:</label>
+			<label>###FILTER_TITLE_LABEL###:</label>
 			<input name="title" type="text" size="40" style="font-size: 130%"/>
-			
-			<label>###DESCRIPTION_HEADER###:</label>
+			<br /><br />
+			<label>###FILTER_DESCRIPTION_LABEL###:</label>
 			<textarea cols="30" rows="10" name="description" ></textarea>
 			<br />
 			<br />
@@ -128,7 +128,7 @@
 
 
 
-<!-- *********************************  
+<!-- *********************************
 
 		Template for ascending / descending sorting in the table - header
 
@@ -212,35 +212,35 @@ Template for displaying a single document in a list
 ****************************************** -->
 
 <!-- ###FILTERVIEW### begin-->
-	<form method="post" action="#">
+	<form method="post" action="###FORM_URL###">
 		<fieldset>
 			<legend>###LABEL_SEARCHOPS###</legend>
 				<label>###LABEL_SEARCHWORD###</label>
 				<input type="text" name="searchword" size="30" value="###SEARCHWORD###"></input>
-				
+
 				<label>###LABEL_FROMDATE###</label>
 				<input type="text" name="von_tag" maxlength="2" size="2" value="###FROM_DAY###"></input>
 				<input type="text" name="von_monat" maxlength="2" size="2" value="###FROM_MONTH###"></input>
 				<input type="text" name="von_jahr" maxlength="4" size="4" value="###FROM_YEAR###"></input>
 				<div style="color: red; font-weight: bold">###ERROR_FROM_DATE###</div>
-				
+
 				<label>###LABEL_TODATE###</label>
 				<input type="text" name="bis_tag" maxlength="2" size="2" value="###TO_DAY###"></input>
 				<input type="text" name="bis_monat" maxlength="2" size="2" value="###TO_MONTH###"></input>
 				<input type="text" name="bis_jahr" maxlength="4" size="4" value="###TO_YEAR###"></input>
 				<div style="color: red; font-weight: bold">###ERROR_TO_DATE###</div>
-				
+
 				<label>###LABEL_FILETYPE###</label>
 				###FILETYPE_LIST###
-				
+
 				<br />
 				<br />
 				<input type="submit" value="###SET_FILTER###" name="setFilter" class="button"></input>
-				
+
 		</fieldset>
 	</form>
-	
-	<form action="#" method="post" >
+
+	<form action="###FORM_URL###" method="post" >
 		<input type="submit" value="###RESET_FILTER###" name="resetFilter" class="button"></input>
 	</form>
 <!-- ###FILTERVIEW### end-->
@@ -250,7 +250,7 @@ Template for displaying a single document in a list
 
 
 <!-- ###REQUESTFORM### begin-->
-<form action="###FORM_TARGET###" method="post">
+<form action="###FORM_URL###" method="post">
 	<fieldset>
 		<legend>###REQUEST_FORM_LEGEND###</legend>
 		###REQUEST_FORM_TEXT###<br />
@@ -280,8 +280,8 @@ Template for displaying a single document in a list
 				<td><input type="text" name="plz" size="5" value="###REQUEST_FORM_ZIP###" /><input type="text" name="town" size="33" value="###TOWN###"/> <span class="error_requestform">###ERROR_ZIP### ###ERROR_TOWN###</span></td>
 			</tr>
 		</table>
-		
-		<br />		
+
+		<br />
 		<input type="submit" value="###REQUEST_FORM_SEND_BUTTON###" /> <a href="###REQUEST_FORM_BACK_URL###">###REQUEST_FORM_BACK_URL_TEXT###/a>
 		<input type="hidden" name="docID" value="###UID###" />
 		<input type="hidden" name="sendRequestform" value="1"/>
@@ -317,7 +317,7 @@ This is the mail message that is sent, if a user has done a request
 
 <!-- ###MAIL_REQUEST### end-->
 
-<!-- *********************************************************** 
+<!-- ***********************************************************
 
 	alternative template for the request,
 	if a fe user requests a file (in this cast we have his data
@@ -335,7 +335,7 @@ This is the mail message that is sent, if a user has done a request
 		###REQUEST_USER_TEXT2###
 		<br />
 		<br />
-		<input name="sendRequest" type="submit" value="###REQUEST_USER_SEND###" />  
+		<input name="sendRequest" type="submit" value="###REQUEST_USER_SEND###" />
 		<a href="###BACK_URL###">###REQUEST_FORM_BACK_URL_TEXT###</a>
 		<input type="hidden" name="sendRequestform" value="1"/>
 		<input type="hidden" name="docID" value="###UID###" />
@@ -365,7 +365,7 @@ REQUEST_FORM_ADRESS_DESCRIPTION:					###UC###
 <!-- ###MAIL_REQUEST_USER### end -->
 
 <!-- ###UPLOADFORM### begin-->
-<form method="post" enctype="multipart/form-data">
+<form action="###FORM_URL###" method="post" enctype="multipart/form-data">
 	<fieldset>
 		<legend>###TITLE_FILEUPLOAD###</legend>
 		<table>
@@ -414,10 +414,10 @@ REQUEST_FORM_ADRESS_DESCRIPTION:					###UC###
 	<br />
 	<br />
 	###CATLIST###
-	<form method="post">
+	<form method="post" action="###FORM_URL###">
 		<input name="catOK" type="submit" value="###CATEGORISATION_TEXT_SEND###">
 	</form>
-	
+
 <!-- ###CATEGORISATION### end-->
 
 

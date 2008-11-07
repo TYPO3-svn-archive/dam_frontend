@@ -12,22 +12,48 @@ plugin.tx_damfrontend_pi1 {
 			setContentToCurrent = 1
 			if.isTrue.current = 1
 			bytes = 1
-			bytes.labels = "Bytes| Kilobyte| Megabyte| Gigabyte" 
+			bytes.labels = "Bytes| Kilobyte| Megabyte| Gigabyte"
 		}
+	}
+
+	# configuration for subpart ###FILELIST###
+	filelist {
+		# formurl action
+		form_url.parameter.data = TSFE:id
+	}
+	# configuration for subpart ###NEWFILTER_LINK###
+	newfilter_link {
+		# formurl action
+		form_url.parameter.data = TSFE:id
+	}
+	# configuration for subpart ###FILTERVIEW###
+	filterview {
+		form_url.parameter.data = TSFE:id
+	}
+	# configuration for subpart ###NEWFILTER###
+	newfilter {
+		# stdWrap
+		save =
+		# stdWrap
+		cancel =
+		# stdWrap
+		filter_title_label =
+		# stdWrap
+		filter_description_label =
 	}
 	mediaTypes {
 	    DEFAULT {
 	      DEFAULT = default.png
 	    }
-	
+
 	    text {
 	      DEFAULT = text_default.png
 	    }
-	
+
 	    image {
 	      DEFAULT = image_default.png
 	    }
-	
+
 	    application {
 	      DEFAULT = application_default.png
 	      pdf = application_pdf.png
@@ -46,7 +72,7 @@ plugin.tx_damfrontend_pi1 {
 			margin: 0px;
 			border-width: 0px;
 		}
-		
+
 		.cattree td a img {
 			border-width: 0px;
 			border-color: white;
@@ -114,27 +140,27 @@ a:visited {
 		table.file_singleView td.title {
 			font-weight: bold;
 			color: #B5B3CB;
-			width: 50%; 
+			width: 50%;
 		}
 		.tree_selectedCats {
 			background: #B5B3CB;
 			font-weight: bold;
 		}
 		.tree_unselectedCats {
-			
+
 		}
 		/*-------------------------------- category list */
 		.delete_button a:link,
 		.delete_button a:visited{
-			border: 1px solid #B5B3CB; 
+			border: 1px solid #B5B3CB;
 			font-size: 130%;
-			font-weight: bold; 
+			font-weight: bold;
 			color: #B5B3CB;
 			width: 20px;
 			height: 20px;
 			padding-right: 5px;
 			padding-left: 5px;
-		}	
+		}
 		.delete_button a:hover {
 			background: #B5B3CB;
 			color: white;
@@ -155,9 +181,9 @@ a:visited {
 			padding: 10px;
 			border-bottom: 1px solid #B5B3CB;
 			font-size: 90%;
-			min-width: 300px;	
+			min-width: 300px;
 		}
-		
+
 		/******************************** Resultlist */
 		ul#browseresultlist {
 			padding: 0px;
