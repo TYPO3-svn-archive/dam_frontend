@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>database</type>
+		<description>Language labels for database tables/fields belonging to extension 'dam_frontend'</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="flexform_display_title">What to display ?</label>
+			<label index="flexform_selection_title">Select your categories</label>
+			<label index="flexform_catTree">Category Tree</label>
+			<label index="flexform_fileList">Filelist</label>
+			<label index="flexform_catSelection">Category Selection</label>
+			<label index="flexform_singleView">Single View</label>
+			<label index="flexform_filterView">Filter View</label>
+			<label index="flexform_filterList">Filter List</label>
+			<label index="flexform_selection_cats">Category Selection</label>
+			<label index="flexform_treeName">Tree Name</label>
+			<label index="flexform_treeID">Tree ID</label>
+			<label index="flexform_uploadForm">Upload Form</label>
+			<label index="flexform_requstForm">Request Form</label>
+			<label index="tx_damfrontend_use_request_form">Use a request form for this file</label>
+			<label index="flexform_useStaticCatSelection">use static Category Selection</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="flexform_display_title">Was soll angezeigt werden</label>
+			<label index="flexform_selection_title">Wählen Sie Ihre Kategorien</label>
+			<label index="flexform_catTree">Kategorien</label>
+			<label index="flexform_fileList">Dateiliste</label>
+			<label index="flexform_catSelection">Kategorien Auswahl</label>
+			<label index="flexform_singleView">Einzelansicht</label>
+			<label index="flexform_filterView">Filter Ansicht</label>
+			<label index="flexform_filterList">Filter Liste</label>
+			<label index="flexform_selection_cats">Kategorie Auswahl</label>
+			<label index="flexform_treeName">Baum Name</label>
+			<label index="flexform_treeID">Baum ID</label>
+			<label index="flexform_uploadForm">Upload Formular</label>
+			<label index="flexform_requstForm">Anforderung Formular</label>
+			<label index="tx_damfrontend_use_request_form">Use a request form for this file</label>
+			<label index="flexform_useStaticCatSelection">Kategorieauswahl als Standard verwenden</label>
+		</languageKey>
+	</data>
+</T3locallang>
