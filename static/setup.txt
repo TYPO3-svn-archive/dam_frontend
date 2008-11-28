@@ -25,6 +25,21 @@ plugin.tx_damfrontend_pi1 {
 
 	}
 	singleView < .renderFields
+	singleView {
+
+		file_name {
+			typolink.parameter = typo3conf/ext/dam_frontend/pushfile.php?docID={field:uid}
+			typolink.parameter.insertData = 1
+			prepend = IMAGE
+			prepend.file {
+				import.dataWrap = {field:file_path}{field:file_name}|
+				width = 100m
+				height = 100m
+			}
+			prepend.stdWrap.wrap = |<br />
+		}
+
+	}
 	filterView {
 		from_day.ifEmpty =
 		from_month.ifEmpty =
@@ -41,6 +56,7 @@ plugin.tx_damfrontend_pi1 {
 	filelist {
 		# typolink : formurl action
 		form_url.parameter.data = TSFE:id
+		form_url.addQueryString = 1
 		# stdWrap : how many items should be default in the filelist
 		defaultLength = 10
 		# configuration for an list item
@@ -55,11 +71,13 @@ plugin.tx_damfrontend_pi1 {
 	newfilter_link {
 		# typolink: formurl action
 		form_url.parameter.data = TSFE:id
+		form_url.addQueryString = 1
 	}
 	# configuration for subpart ###FILTERVIEW###
 	filterview {
 		# typolink : formurl action
 		form_url.parameter.data = TSFE:id
+		form_url.addQueryString = 1
 	}
 	# configuration for subpart ###NEWFILTER###
 	newfilter {
@@ -73,22 +91,22 @@ plugin.tx_damfrontend_pi1 {
 		filter_description_label =
 	}
 	mediaTypes {
-	    DEFAULT {
-	      DEFAULT = default.png
-	    }
+		DEFAULT {
+		  DEFAULT = default.png
+		}
 
-	    text {
-	      DEFAULT = text_default.png
-	    }
+		text {
+		  DEFAULT = text_default.png
+		}
 
-	    image {
-	      DEFAULT = image_default.png
-	    }
+		image {
+		  DEFAULT = image_default.png
+		}
 
-	    application {
-	      DEFAULT = application_default.png
-	      pdf = application_pdf.png
-	    }
+		application {
+		  DEFAULT = application_default.png
+		  pdf = application_pdf.png
+		}
   	}
   	_CSS_DEFAULT_STYLE (
 				@CHARSET "UTF-8";
