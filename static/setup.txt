@@ -14,20 +14,51 @@ plugin.tx_damfrontend_pi1 {
 			bytes = 1
 			bytes.labels = "Bytes| Kilobyte| Megabyte| Gigabyte"
 		}
-	}
+		# stdWrap : Timestamp of file
+		tstamp.strftime =  %Y / %m / %d
+		# stdWrap : Creation Timestamp of file
+		crdate.strftime =  %Y / %m / %d
 
+		title.typolink.parameter = typo3conf/ext/dam_frontend/pushfile.php?&docID={field:uid}
+		title.typolink.parameter.insertData = 1;
+
+
+	}
+	singleView < .renderFields
+	filterView {
+		from_day.ifEmpty =
+		from_month.ifEmpty =
+		from_year.ifEmpty.data = date:U
+		from_year.ifEmpty.strftime =  %Y
+		to_day.ifEmpty =
+		to_month.ifEmpty =
+		to_year.ifEmpty.data = date:U
+		to_year.ifEmpty.strftime =  %Y
+		filetype.ifEmpty =
+		searchword.ifEmpty =
+	}
 	# configuration for subpart ###FILELIST###
 	filelist {
-		# formurl action
+		# typolink : formurl action
 		form_url.parameter.data = TSFE:id
+		# stdWrap : how many items should be default in the filelist
+		defaultLength = 10
+		# configuration for an list item
+		item {
+			# stdWrap : Timestamp of file
+			tstamp.strftime =  %Y / %m  /  %d
+			# stdWrap : Creation Timestamp of file
+			crdate.strftime =  %Y / %m  /  %d
+		}
 	}
 	# configuration for subpart ###NEWFILTER_LINK###
 	newfilter_link {
-		# formurl action
+		# typolink: formurl action
 		form_url.parameter.data = TSFE:id
 	}
 	# configuration for subpart ###FILTERVIEW###
 	filterview {
+		# typolink : formurl action
 		form_url.parameter.data = TSFE:id
 	}
 	# configuration for subpart ###NEWFILTER###

@@ -121,7 +121,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  		if(!is_array($list)) die($this->pi_getLL('error_renderFileList_emptyArray'));
 		if(!intval($resultcount) || $resultcount < 1) die($this->pi_getLL('error_renderFileList_resultcount'));
 		if(!intval($pointer) || $pointer < 1 ) $pointer = 1;
-		if(!intval($listLength) || $listLength < 1 ) $listLength = 10;
+		if(!intval($listLength) || $listLength < 1 ) $listLength = $this->cObj->stdWrap($this->conf['filelist.']['defaultLength'],$this->conf['filelist.']['defaultLength.']);
 		if (!isset($this->fileContent)) return $this->pi_getLL('error_renderFileList_template');
 
  		// reading the filecontent just one time
@@ -129,21 +129,13 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  		$list_Code = tsLib_CObj::getSubpart($this->fileContent,'###FILELIST###');
  		$countElement = 1;
 
+
  		foreach ($list as $elem) {
- 			// converting timestamps
- 			$elem['tstamp'] = date('d.m.Y', $elem['tstamp']);
- 			$elem['crdate'] = date('d.m.Y', $elem['crdate']);
 			$elem['count_id'] = $countElement++;
 
- 			$markerArray = $this->recordToMarkerArray($elem);
+ 			$markerArray = $this->recordToMarkerArray($elem, 'renderFields');
  			// changes in the content of the marker arrays @todo what is done here?
  			$this->piVars['showUid'] = $elem['uid'];
- 			$markerArray['###TITLE###'] = $this->pi_linkTP_keepPiVars($elem['title']);
-
- 			$markerArray['###TITLE###'] = '<a href="typo3conf/ext/dam_frontend/pushfile.php?docID='.$elem['uid'].'" >'. $elem['title'] .'</a>';
-
-
- 			#$markerArray['###FILE_SIZE###'] = t3lib_div::formatSize($elem['file_size'],' bytes | kb| mb| gb');
 
  			// adding Markers for links to download and single View
  			$markerArray['###LINK_SINGLE###'] = $this->pi_linkTP_keepPiVars('<img src="'.$this->iconPath.'zoom.gif'.'" style="border-width: 0px"/>');
@@ -294,17 +286,13 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	 */
  	function renderSingleView($record) {
  		$single_Code = tslib_CObj::getSubpart($this->fileContent,'###SINGLEVIEW###');
- 		// Formating Timefields and filesize
- 		$record['tstamp'] = date('d.m.Y', $record['tstamp']);
- 		$record['crdate'] = date('d.m.Y', $record['crdate']);
- 		#$record['file_size'] = t3lib_div::formatSize($record['file_size'],' bytes | kb| mb| gb');
 
  		// converting all fields in the record to marker (recordfields and markername must match)
- 		$markerArray = $this->recordToMarkerArray($record);
+ 		$markerArray = $this->recordToMarkerArray($record, 'singleView');
 
  		$this->pi_loadLL();
  		$content=tslib_cObj::substituteMarkerArray($single_Code, $markerArray);
- 		$content = tslib_cObj::substituteMarker($content, '###TITLE_SINGLEVIEW###',$record['title']);
+ 		$content = tslib_cObj::substituteMarker($content, '###TITLE_SINGLEVIEW###',$markerArray['###TITLE###']);
  		$content = tslib_cObj::substituteMarker($content, '###CR_DATE_HEADER###',$this->pi_getLL('CR_DATE_HEADER'));
  		$content = tslib_cObj::substituteMarker($content, '###FILE_SIZE_HEADER###',$this->pi_getLL('FILE_SIZE_HEADER'));
  		$content = tslib_cObj::substituteMarker($content, '###CR_DESCRIPTION_HEADER###',$this->pi_getLL('CR_DESCRIPTION_HEADER'));
@@ -361,23 +349,27 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	 * converts an associative array to an Marker Array in the form ### $KEY ### => value
 	 *
 	 * @param	array		$record: array that shall be converted
+	 * @param   string		$scope: defines which TypoScript sub-configuration
+	 * should be used
 	 * @return	array		Markerarray ready for substitution
 	 */
- 	function recordToMarkerArray($record) {
- 		//t3lib_div::debug($record);
- 		if (!is_array($record)) die ('Parameter error in class.tx_damfrontend_rendering in function recordToMarkerArray: $record is no Array. Please inform your administrator.');
- 		else {
- 			foreach ($record as $key=>$value) {
- 				If(strip_tags($value)=='') {
- 					$valueReturn='&nbsp;';
- 				}
- 				else {
- 					$valueReturn=strip_tags($value);
- 				}
- 				$markerArray['###'.strtoupper($key).'###'] = $this->cObj->stdWrap($valueReturn, $this->conf['renderFields.'][$key.'.']);
-	 		}
-	 		return $markerArray;
+ 	function recordToMarkerArray($record, $scope = 'default') {
+
+ 		if (!is_array($record))  { die ('Parameter error in class.tx_damfrontend_rendering in function recordToMarkerArray: $record is no Array. Please inform your administrator.'); }
+
+			// we should be able to have full TypoScript Power
+	 	$cObj = t3lib_div::makeInstance('tslib_cObj');
+ 			// FIXME: table should not be hardcoded
+		$cObj->start($record, 'tx_dam');
+
+		foreach ($record as $key=>$value) {
+				// stripHtml = 1 is default - it has to be disabled via stripHtml = 0
+			if (!isset($this->conf[$scope.'.'][$key.'.']['stripHtml'])) {
+				$this->conf[$scope.'.'][$key.'.']['stripHtml'] = 1;
+			}
+			$markerArray['###'.strtoupper($key).'###'] = $cObj->stdWrap($value, $this->conf[$scope.'.'][$key.'.']);
  		}
+ 		return $markerArray;
  	}
 
 
@@ -392,7 +384,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###FILTERVIEW###');
 
  		// filling fields with url - vars
- 		$markerArray  = $this->recordToMarkerArray($filterArray);
+ 		$markerArray  = $this->recordToMarkerArray($filterArray, 'filterView');
 
  		// error handling
  		$markerArray['###ERROR_TO_DATE###'] = $errorArray['error_to_date'] ? $this->pi_getLL('error_renderFilterView_date_to') : '';
