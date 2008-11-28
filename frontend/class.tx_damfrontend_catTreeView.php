@@ -162,7 +162,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	/**
 	 * saves treestate inside of the fe_user Session Data
 	 *
-	 * @return	[void]		
+	 * @return	[void]
 	 */
  	function savePosition()
  	{
@@ -188,12 +188,12 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 		}
 		*/
 		$param_array = array (
-			'catPlus' => $row['uid'],
-			'catEquals' => null,
-			'catMinus' => null,
-			'catPlus_Rec' => null,
-			'catMinus_Rec' => null,
-			'treeID' => $this->treeID
+			'tx_damfrontend_pi1[catPlus]' => $row['uid'],
+			'tx_damfrontend_pi1[catEquals]' => null,
+			'tx_damfrontend_pi1[catMinus]' => null,
+			'tx_damfrontend_pi1[catPlus_Rec]' => null,
+			'tx_damfrontend_pi1[catMinus_Rec]' => null,
+			'tx_damfrontend_pi1[treeID]' => $this->treeID
 		);
 		if ($id != '') $param_array['id'] = $id;
 //		$url = t3lib_div::getIndpEnv('REQUEST_URI');
@@ -243,12 +243,12 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 
 			// genrating plus button
 			$urlVars = array(
-				'catPlus' => null,
-				'catEquals' => null,
-				'catMinus' => null,
-				'catPlus_Rec' => $row['uid'],
-				'catMinus_Rec' => null,
-				'treeID' => $this->treeID
+				'tx_damfrontend_pi1[catPlus]' => null,
+				'tx_damfrontend_pi1[catEquals]' => null,
+				'tx_damfrontend_pi1[catMinus]' => null,
+				'tx_damfrontend_pi1[catPlus_Rec]' => $row['uid'],
+				'tx_damfrontend_pi1[catMinus_Rec]' => null,
+				'tx_damfrontend_pi1[treeID]' => $this->treeID
 			);
 			if ($id != '') $param_array['id'] = $id;
 			$url = t3lib_div::linkThisScript($urlVars);
@@ -257,12 +257,12 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 
 			// generating equals buttons
 			$urlVars = array(
-				'catPlus' => null,
-				'catEquals' => $row['uid'],
-				'catMinus' => null,
-				'catPlus_Rec' => null,
-				'catMinus_Rec' => null,
-				'treeID' => $this->treeID
+				'tx_damfrontend_pi1[catPlus]' => null,
+				'tx_damfrontend_pi1[catEquals]' => $row['uid'],
+				'tx_damfrontend_pi1[catMinus]' => null,
+				'tx_damfrontend_pi1[catPlus_Rec]' => null,
+				'tx_damfrontend_pi1[catMinus_Rec]' => null,
+				'tx_damfrontend_pi1[treeID]' => $this->treeID
 			);
 			if ($id != '') $param_array['id'] = $id;
 			$url = t3lib_div::linkThisScript($urlVars);
@@ -271,12 +271,12 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 
 			// generate minus button
 			$urlVars = array(
-				'catPlus' => null,
-				'catEquals' => null,
-				'catMinus' => null,
-				'catPlus_Rec' => null,
-				'catMinus_Rec' => $row['uid'],
-				'treeID' => $this->treeID
+				'tx_damfrontend_pi1[catPlus]' => null,
+				'tx_damfrontend_pi1[catEquals]' => null,
+				'tx_damfrontend_pi1[catMinus]' => null,
+				'tx_damfrontend_pi1[catPlus_Rec]' => null,
+				'tx_damfrontend_pi1[catMinus_Rec]' => $row['uid'],
+				'tx_damfrontend_pi1[treeID]' => $this->treeID
 			);
 			if ($id != '') $param_array['id'] = $id;
 			$url = t3lib_div::linkThisScript($urlVars);

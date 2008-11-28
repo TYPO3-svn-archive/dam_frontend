@@ -162,6 +162,8 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 
  			$markerArray['###FILEICON###'] = '<img src="'.$this->getFileIconHref($elem['file_mime_type'],$elem['file_mime_subtype'] ).'" title="'.$elem['title'].'"  alt="'.$elem['title'].'"/>';
 
+
+
  			$newcontent = $record_Code;
  			$rows .= tslib_cObj::substituteMarkerArray($newcontent, $markerArray);
  			$sortlinks = array();
@@ -258,11 +260,11 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  		foreach ($list as $category) {
  			$listElem = tslib_CObj::getSubpart($this->fileContent,'###CATLIST###');
  			$urlVars = array(
-				'catPlus' => null,
-				'catMinus_Rec' => null,
-				'catMinus' => $category['uid'],
-				'catPlus_Rec' => null,
-				'catEquals' => null
+				'tx_damfrontend_pi1[catPlus]' => null,
+				'tx_damfrontend_pi1[catMinus_Rec]' => null,
+				'tx_damfrontend_pi1[catMinus]' => $category['uid'],
+				'tx_damfrontend_pi1[catPlus_Rec]' => null,
+				'tx_damfrontend_pi1[catEquals]' => null
 			);
 			$urlVars['treeID'] = $treeID != '' ?   $treeID : null;
 			$url = t3lib_div::linkThisScript($urlVars);

@@ -127,7 +127,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->renderer->piVars = $this->piVars;
 		$this->renderer->conf = $this->conf;
 		$this->renderer->cObj = $this->cObj;
-		$this->pid = $this->cObj->data['pid']; 
+		$this->pid = $this->cObj->data['pid'];
 	}
 
 	/**
@@ -148,13 +148,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
  		// clear all 0 - values - now they are not shown in the frontend form
  		foreach ($this->internal['filter'] as $key => $value) {
  			if ($value == '0') {
- 				$this->internal['filter'][$key] = '';	
+ 				$this->internal['filter'][$key] = '';
  			}
  		}
 
  		$this->internal['filter']['filetype'] = strip_tags(t3lib_div::_GP('filetype'));
 		$this->internal['filter']['searchword'] = strip_tags(t3lib_div::_GP('searchword'));
-		
+
 		if (t3lib_div::_GP('resetFilter')) $this->filterState->resetFilter();
 		if (!count($this->filterState->getFilterFromSession())) {
 			$emptyArray = $this->internal['filter'];
@@ -224,13 +224,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @return	void
 	 */
 	function convertPiVars() {
-		
+
 		// variables for category selection
-		$this->internal['catPlus'] = intval(t3lib_div::_GP('catPlus'));
-		$this->internal['catMinus'] = intval(t3lib_div::_GP('catMinus'));
-		$this->internal['catEquals'] = intval(t3lib_div::_GP('catEquals'));
-		$this->internal['catPlus_Rec'] = intval(t3lib_div::_GP('catPlus_Rec'));
-		$this->internal['catMinus_Rec'] = intval(t3lib_div::_GP('catMinus_Rec'));
+		$this->internal['catPlus'] = intval($this->piVars['catPlus']);
+		$this->internal['catMinus'] = intval($this->piVars['catMinus']);
+		$this->internal['catEquals'] = intval($this->piVars['catEquals']);
+		$this->internal['catPlus_Rec'] = intval($this->piVars['catPlus_Rec']);
+		$this->internal['catMinus_Rec'] = intval($this->piVars['catMinus_Rec']);
 
 		// Aufruf der Einzelansicht
 		$this->internal['singleID'] = intval($this->piVars['showUid']);
@@ -239,7 +239,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->internal['newFilter'] = strip_tags(t3lib_div::_GP('newFilter'));
 
 		// getting the incoming treeID
-		$this->internal['incomingtreeID'] = intval(t3lib_div::_GP('treeID'));
+		$this->internal['incomingtreeID'] = intval($this->piVars['treeID']);
 		#t3lib_div::debug(t3lib_div::_GP('treeID'));
 		// check if we are still on the same page. If we are at a different page,
 		// the user
@@ -255,8 +255,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 //		} else	{
 //				t3lib_div::debug($this->internal['incomingtreeID']);
 //		}
-//		
-		
+//
+
 		// Selection Mode
 		$this->internal['selectionMode'] = intval($this->piVars['selectionMode']);
 
@@ -283,7 +283,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		// incoming command of saving the current category selection
 		$this->saveCategorisation = strip_tags(t3lib_div::_POST('catOK')) != '' ? true : false;
-		
+
 		// t3lib_div::debug($this->internal);
 		// if the session var for categorisation is set, render set the categorise var
 		$this->categorise = $GLOBALS['TSFE']->fe_user->getKey('ses','categoriseID') != '' ? true:false;
@@ -384,15 +384,15 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 		}
 		#t3lib_div::debug($this->catList->getCatSelection($this->internal['treeID']));
-		
+
 		// Mapping the ViewIds - selected in the Flexform to the content
 		// that shall be rendered
-		
+
 		switch ($this->internal['viewID']) {
-			case 1: 
+			case 1:
 				$content = $this->fileList(false);
 				break;
-			case 2: 
+			case 2:
 				$content = $this->catTree();
 				break;
 			case 3:
@@ -462,9 +462,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeView');
 		$tree->init($this->internal['treeID'], $this);
 		$tree->title = $this->internal['treeName'];
-		
+
 		$selCats  = $this->catList->getCatSelection($this->internal['incomingtreeID']);
-		
+
 		$tree->selectedCats = $selCats[$this->internal['incomingtreeID']];
 		if (is_array($this->internal['catMounts'])) $tree->MOUNTS = $this->internal['catMounts'];
 		return  '<div class="cattree" >'.$tree->getBrowsableTree().'</div>';
@@ -493,11 +493,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @return	html		HTML - list of all selected documents
 	 */
 	function fileList($useRequestForm) {
-		
+
 		$cats = $this->catList->getCatSelection($this->internal['incomingtreeID']);
-		
+
 		#t3lib_div::debug($this->internal['incomingtreeID']);
-		
+
 		$hasCats = false; // true if any category has been selected yet
 		if (count($cats)) {
 			foreach($cats as $catList) {
@@ -791,13 +791,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 						}
 						else {
 							// rendering of an error message - messages from the upload extension
-							
+
 							//building an error with user input, that the volues don't have put in again.
 							$userInput = array();
 							$userInput['title'] = 	$this->documentData['title'];
-							$userInput['creator'] = $this->documentData['creator'];		
+							$userInput['creator'] = $this->documentData['creator'];
 							$userInput['description'] = $this->documentData['description'] ; #65000
-							$userInput['copyright'] = $this->documentData['copyright']; #128	
+							$userInput['copyright'] = $this->documentData['copyright']; #128
 							return $returnCode . '<br><br>' . $this->renderer->renderUploadForm($userInput );
 						}
 					}
@@ -878,7 +878,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 		}
 		else {
-			
+
 			# an error happend, the message is shown
 			return $returnCode;
 		}
@@ -908,10 +908,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	function getIncomingDocData() {
 		// conversion of incoming data from the creation of an new document
 		$this->documentData['title'] = strip_tags(t3lib_div::_POST('title'));
-		$this->documentData['creator'] = strip_tags(t3lib_div::_POST('creator')); #45		
+		$this->documentData['creator'] = strip_tags(t3lib_div::_POST('creator')); #45
 		$this->documentData['description'] = strip_tags(t3lib_div::_POST('description')); #65000
-		$this->documentData['copyright'] = strip_tags(t3lib_div::_POST('copyright')); #128		
-		
+		$this->documentData['copyright'] = strip_tags(t3lib_div::_POST('copyright')); #128
+
 		if(strlen($this->documentData['title'])>255) {
 			return ($this->renderer->renderError('uploadFormFieldError','title','255'));
 		}
@@ -982,7 +982,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->catList->clearCatSelection(-1);
 		return $this->renderer->renderUploadSuccess();
 	}
-	
+
 	/**
 	 * Returns the pageID of a given uid
 	 * @author stefan

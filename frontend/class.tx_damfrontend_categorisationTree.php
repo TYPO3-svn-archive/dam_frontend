@@ -172,7 +172,7 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 	 * @return	string		html ...
 	 */
 	function wrapTitle($title,$row,$bank=0) {
-		$id = t3lib_div::_GET('id');
+		$id = (int)t3lib_div::_GET('id');
 
 		// convert the incoming vars to
 		/*
@@ -181,12 +181,12 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 		}
 		*/
 		$param_array = array (
-			'catPlus' => $row['uid'],
-			'catEquals' => null,
-			'catMinus' => null,
-			'catPlus_Rec' => null,
-			'catMinus_Rec' => null,
-			'treeID' => $this->treeID
+			'tx_damfrontend_pi1[catPlus]' => $row['uid'],
+			'tx_damfrontend_pi1[catEquals]' => null,
+			'tx_damfrontend_pi1[catMinus]' => null,
+			'tx_damfrontend_pi1[catPlus_Rec]' => null,
+			'tx_damfrontend_pi1[catMinus_Rec]' => null,
+			'tx_damfrontend_pi1[treeID]' => $this->treeID
 		);
 		if ($id != '') $param_array['id'] = $id;
 //		$url = t3lib_div::getIndpEnv('REQUEST_URI');
@@ -225,7 +225,7 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 	 */
 	function getControl($title,$row) {
 		// retrieving the current page id
-		$id = t3lib_div::_GET('id');
+		$id = (int)t3lib_div::_GET('id');
 
 		$control = '<div class="control" >';
 		if ($this->modeSelIcons
@@ -234,12 +234,12 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 
 			// genrating plus button
 			$urlVars = array(
-				'catPlus' => null,
-				'catEquals' => null,
-				'catMinus' => null,
-				'catPlus_Rec' => $row['uid'],
-				'catMinus_Rec' => null,
-				'treeID' => $this->treeID
+				'tx_damfrontend_pi1[catPlus]' => null,
+				'tx_damfrontend_pi1[catEquals]' => null,
+				'tx_damfrontend_pi1[catMinus]' => null,
+				'tx_damfrontend_pi1[catPlus_Rec]' => $row['uid'],
+				'tx_damfrontend_pi1[catMinus_Rec]' => null,
+				'tx_damfrontend_pi1[treeID]' => $this->treeID
 			);
 			if ($id != '') $param_array['id'] = $id;
 			$url = t3lib_div::linkThisScript($urlVars);
@@ -248,12 +248,12 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 
 			// generate minus button
 			$urlVars = array(
-				'catPlus' => null,
-				'catEquals' => null,
-				'catMinus' => null,
-				'catPlus_Rec' => null,
-				'catMinus_Rec' => $row['uid'],
-				'treeID' => $this->treeID
+				'tx_damfrontend_pi1[catPlus]' => null,
+				'tx_damfrontend_pi1[catEquals]' => null,
+				'tx_damfrontend_pi1[catMinus]' => null,
+				'tx_damfrontend_pi1[catPlus_Rec]' => null,
+				'tx_damfrontend_pi1[catMinus_Rec]' => $row['uid'],
+				'tx_damfrontend_pi1[treeID]' => $this->treeID
 			);
 			if ($id != '') $param_array['id'] = $id;
 			$url = t3lib_div::linkThisScript($urlVars);
