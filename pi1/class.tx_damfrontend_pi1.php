@@ -128,6 +128,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->renderer->conf = $this->conf;
 		$this->renderer->cObj = $this->cObj;
 		$this->pid = $this->cObj->data['pid'];
+
+		$this->docLogic->setFullTextSearchFields($this->conf['filterView.']['searchwordFields']);
 	}
 
 	/**

@@ -86,10 +86,24 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 
 		var $selectionMode = '';
 
+		var $fullTextSearchFields = 'title';
+
 		var $relations = array(
 			'1' => 'readaccess',
 			'2' => 'downloadaccess'
 		);
+
+		/**
+		 * Sets fullTextSearchFields - in which fields should be searched
+		 *
+		 * @param string $fieldlist kommaseparated list of fields (f.e. 'title,
+		 * description')
+		 *
+		 * @return void
+		 */
+		function setFullTextSearchFields($fieldlist) {
+			$this->fullTextSearchFields = $fieldlist;
+		}
 
 
 	/**
@@ -282,7 +296,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getDcoumentList: for the this->categories is no array. Given value was:' .$this->categories, 'dam_frontend',3);
 			}
 
-//			 debug($this->additionalFilter);
+// t3lib_div::debug($this->additionalFilter, '$this->additionalFilter');
 
 
 			/*
@@ -452,7 +466,13 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 * @return	string		where clause, ready for adding it to the document array
 	 */
 		function getSearchwordWhereString($searchword) {
-			return ' AND '.$this->docTable.'.title LIKE "%'.trim($searchword).'%"';
+			$searchFields = t3lib_div::trimExplode(',', $this->fullTextSearchFields, true);
+			if (0 == count($searchFields)) { return ''; }
+			$queryPart = array();
+			foreach ($searchFields as $field) {
+				$queryPart[] = ' '.$this->docTable.'.'.$field.' LIKE "%'.$GLOBALS['TYPO3_DB']->quoteStr(trim($searchword), $this->docTable).'%" ';
+			}
+			return ' AND ('.implode(' OR ', $queryPart).') ';
 		}
 
 	/**
@@ -472,7 +492,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				}
 		}
 
-	
+
 		/**
 		 * adding an document to the index
 		 *

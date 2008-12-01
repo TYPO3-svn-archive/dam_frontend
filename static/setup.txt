@@ -51,6 +51,8 @@ plugin.tx_damfrontend_pi1 {
 		to_year.ifEmpty.strftime =  %Y
 		filetype.ifEmpty =
 		searchword.ifEmpty =
+		# komma separated list of fields from tx_dam
+		searchwordFields = title
 	}
 	# configuration for subpart ###FILELIST###
 	filelist {

@@ -235,6 +235,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	function getControl($title,$row) {
 		// retrieving the current page id
 		$id = intval(t3lib_div::_GET('id'));
+		$param_array = array();
 
 		$control = '<div class="control" >';
 		if ($this->modeSelIcons
@@ -250,6 +251,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 				'tx_damfrontend_pi1[catMinus_Rec]' => null,
 				'tx_damfrontend_pi1[treeID]' => $this->treeID
 			);
+
 			if ($id != '') $param_array['id'] = $id;
 			$url = t3lib_div::linkThisScript($urlVars);
 			$icon =	'<img'.t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'],$this->iconPath.'plus.gif', 'width="8" height="11"').' alt="" border="0"/>';
