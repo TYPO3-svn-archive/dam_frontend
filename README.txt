@@ -13,9 +13,9 @@ Important:
 Language issue: currently there is no language overlay for the dam itsself. So if you're displaying categories or records from the dam, it is displayed as it is stored in the dam.
 
 TypoScript:
-All values that can be configured via TypoScript has stripHtml = 1 set by default.
-You have to unset it for every field you do not want stripHtml used. Be aware of opening
-XSS-Issues without stripHtml = 1!
+All values that can be configured via TypoScript has htmlSpecialChars = 1 set by default.
+You have to unset it for every field you do not want htmlSpecialChars used. Be aware of opening
+XSS-Issues without htmlSpecialChars = 1!
 
 Roadmap:
 * RealURL Support

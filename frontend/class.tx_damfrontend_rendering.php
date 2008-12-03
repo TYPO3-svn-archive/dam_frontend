@@ -365,9 +365,9 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		$cObj->start($record, 'tx_dam');
 
 		foreach ($record as $key=>$value) {
-				// stripHtml = 1 is default - it has to be disabled via stripHtml = 0
-			if (!isset($this->conf[$scope.'.'][$key.'.']['stripHtml'])) {
-				$this->conf[$scope.'.'][$key.'.']['stripHtml'] = 1;
+				// htmlSpecialChars = 1 is default - it has to be disabled via htmlSpecialChars = 0
+			if (!isset($this->conf[$scope.'.'][$key.'.']['htmlSpecialChars'])) {
+				$this->conf[$scope.'.'][$key.'.']['htmlSpecialChars'] = 1;
 			}
 			$markerArray['###'.strtoupper($key).'###'] = $cObj->stdWrap($value, $this->conf[$scope.'.'][$key.'.']);
  		}
@@ -508,8 +508,8 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	/**
 	 * renderFilterList
 	 *
-	 * @param	[type]		$filterList: ...
-	 * @return	[type]		...
+	 * @param	array		$filterList: ...
+	 * @return	string		...
 	 * @todo renderFilterList is not finished yet
 	 */
  	function renderFilterList($filterList) {
@@ -523,6 +523,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	 			$listCode .= tslib_CObj::substituteMarkerArray($listElem, $markerArray);
 	 		}
  		}
+ 		$formCode  = tslib_CObj::substituteSubpart($this->fileContent, '###FILTERLIST_ELEM###', $listCode);
  		return $formCode;
  	}
 

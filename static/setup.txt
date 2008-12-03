@@ -51,6 +51,7 @@ plugin.tx_damfrontend_pi1 {
 		to_year.ifEmpty.strftime =  %Y
 		filetype.ifEmpty =
 		searchword.ifEmpty =
+		searchword.htmlSpecialChars = 1
 		# komma separated list of fields from tx_dam
 		searchwordFields = title
 	}
