@@ -486,7 +486,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 
 	/**
-	 * fist this function gets the list of selected categories from the session vars
+	 * first this function gets the list of selected categories from the session vars
 	 * after that it retrievs a list of all documents from the doclogic
 	 * all documents are contained, which nat filtered and the user has
 	 * After that, the list is converted to an html view, rendered by the renderer instance
@@ -535,6 +535,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 		else {
 			//render error
+			// TODO: should ignore categories instead rendering an error message
 			$content = $this->renderer->renderError('noCatSelected');
 		}
 		return $content;

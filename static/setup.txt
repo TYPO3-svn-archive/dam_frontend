@@ -38,7 +38,27 @@ plugin.tx_damfrontend_pi1 {
 			}
 			prepend.stdWrap.wrap = |<br />
 		}
-
+		category.htmlSpecialChars = 0
+		category.cObject = CONTENT
+		category.cObject {
+			table =  tx_dam_cat
+			select {
+				pidInList = {$plugin.tx_damfrondend_pi1.mediafolder}
+				selectFields = *
+				join = tx_dam_mm_cat
+				where = tx_dam_cat.uid = tx_dam_mm_cat.uid_foreign
+				andWhere (
+					 tx_dam_mm_cat.uid_local = {field:uid}
+				)
+				andWhere.insertData = 1
+				languageField = sys_language_uid
+			}
+			renderObj = TEXT
+			renderObj.field = title
+			renderObj.wrap = |<br />
+			stdWrap.override = Please set the constant "plugin.tx_damfrondend_pi1.mediafolder".
+			stdWrap.override.if.isFalse = {$plugin.tx_damfrondend_pi1.mediafolder}
+		}
 	}
 	filterView {
 		from_day.ifEmpty =
