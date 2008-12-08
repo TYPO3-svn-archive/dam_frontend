@@ -128,9 +128,12 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  		$record_Code = tslib_CObj::getSubpart($this->fileContent,'###FILELIST_RECORD###');
  		$list_Code = tsLib_CObj::getSubpart($this->fileContent,'###FILELIST###');
  		$countElement = 1;
-
-
+		$rows = '';
+		$cObj = t3lib_div::makeInstance('tslib_cObj');
  		foreach ($list as $elem) {
+// t3lib_div::debug($elem);
+ 			// TODO: correct table-name?
+ 			$cObj->start($elem, 'tx_dam');
 			$elem['count_id'] = $countElement++;
 
  			$markerArray = $this->recordToMarkerArray($elem, 'renderFields');
@@ -144,24 +147,31 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 
  			// this is a field in the database, if true, then the fe user has
  			// to fill out a request form
- 			if ($useRequestForm==1 ) {
- 				if ($elem['tx_damfrontend_use_request_form'] == 1) {
-	 				$paramAnforderung = array(
-	 					'docID' => $elem['uid'],
-	 					'showRequestform' => 1
-	 				);
-	 				$markerArray['###LINK_DOWNLOAD###'] = $this->pi_linkTP('request', $paramAnforderung);
-	 			}
-	 			else {
-	 				$markerArray['###LINK_DOWNLOAD###'] = '<a href="typo3conf/ext/dam_frontend/pushfile.php?docID='.$elem['uid'].'" ><img src="'.$this->iconPath.'clip_pasteafter.gif" style="border-width: 0px"/></a>';
-	 			}
- 			}
- 			else {
- 				$markerArray['###LINK_DOWNLOAD###'] = '<a href="typo3conf/ext/dam_frontend/pushfile.php?docID='.$elem['uid'].'" ><img src="'.$this->iconPath.'clip_pasteafter.gif" style="border-width: 0px"/></a>';
- 			}
+			if ($useRequestForm==1 && $elem['tx_damfrontend_use_request_form'] == 1) {
+ 				$paramAnforderung = array(
+ 					'docID' => $elem['uid'],
+ 					'showRequestform' => 1
+ 				);
+ 				$markerArray['###LINK_DOWNLOAD###'] = $this->pi_linkTP('request', $paramAnforderung);
+ 			} else {
+	 			$markerArray['###LINK_DOWNLOAD###'] = '<a href="typo3conf/ext/dam_frontend/pushfile.php?docID='.$elem['uid'].'" ><img src="'.$this->iconPath.'clip_pasteafter.gif" style="border-width: 0px"/></a>';
+	 		}
+
+			$markerArray['###LINK_SELECT_DOWNLOAD###'] = '';
+			if (is_array($this->conf['filelist.']['link_select_download.'])) {
+
+				$markerArray['###LINK_SELECT_DOWNLOAD###'] .= '<select name="'.$this->prefixId.'['.$elem['uid'].'][convert]">';
+				$i = 1;
+				while (is_array($this->conf['filelist.']['link_select_download.'][$i.'.'])) {
+					$markerArray['###LINK_SELECT_DOWNLOAD###'] .= $cObj->TEXT($this->conf['filelist.']['link_select_download.'][$i.'.']);
+					$i++;
+				}
+				$markerArray['###LINK_SELECT_DOWNLOAD###'] .= '</select>';
+				$markerArray['###LINK_SELECT_DOWNLOAD###'] .= '<input type="submit" name="'.$this->prefixId.'['.$elem['uid'].'][submit]" value="ok" />';
+			}
+
 
  			$markerArray['###FILEICON###'] = '<img src="'.$this->getFileIconHref($elem['file_mime_type'],$elem['file_mime_subtype'] ).'" title="'.$elem['title'].'"  alt="'.$elem['title'].'"/>';
-
 
 
  			$newcontent = $record_Code;
@@ -169,6 +179,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  			$sortlinks = array();
  		}
  		$content = tslib_cObj::substituteMarker($list_Code, '###FILELIST_RECORDS###', $rows);
+ 		$content = tslib_cObj::substituteMarker($content, '###DOWNLOAD_FORM_URL###', $this->cObj->typolink('', $this->conf['filelist.']['link_select_download.']['typolink.']));
 		$content = tslib_cObj::substituteMarker($content, '###LISTLENGTH###', $listLength);
 		$content = tslib_cObj::substituteMarker($content, '###TOTALCOUNT###', $resultcount);
 
@@ -183,9 +194,9 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  		foreach ($record as $key=>$value) {
 			$content = tsLib_CObj::substituteMarker($content, '###SORTLINK_'.strtoupper($key).'###', $this->renderSortLink($key));
  		}
- 		$content = tsLib_CObj::substituteMarker($content, '###FILENAME_HEADER###', $this->pi_getLL('FILENAME_HEADER'));
- 		$content = tsLib_CObj::substituteMarker($content, '###FILETYPE_HEADER###', $this->pi_getLL('FILETYPE_HEADER'));
- 		$content = tsLib_CObj::substituteMarker($content, '###CR_DATE_HEADER###', $this->pi_getLL('CR_DATE_HEADER'));
+ 		foreach (array('FILELIST_BATCH_SELECT', 'FILELIST_BATCH_GO', 'FILELIST_BATCH_CREATEZIPFILE', 'FILELIST_BATCH_SENDASMAIL', 'FILELIST_BATCH_SENDZIPPEDFILESASMAIL', 'FILELIST_BATCH_SENDFILELINK', 'FILELIST_BATCH_SENDZIPPEDFILELINK', 'FILENAME_HEADER', 'FILENAME_HEADER', 'FILETYPE_HEADER', 'CR_DATE_HEADER') as $label) {
+ 			$content = tsLib_CObj::substituteMarker($content, '###'.$label.'###', $this->pi_getLL($label, $label));
+ 		}
 
  		// substitute static markers
  		$this->pi_loadLL();

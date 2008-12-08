@@ -88,6 +88,14 @@
 			<label index="CANCEL">cancel</label>
 			<label index="FILTER_TITLE_LABEL">filter name</label>
 			<label index="FILTER_DESCRIPTION_LABEL">description</label>
+
+			<label index="FILELIST_BATCH_CREATEZIPFILE">create zip file</label>
+			<label index="FILELIST_BATCH_SENDASMAIL">send in mail</label>
+			<label index="FILELIST_BATCH_SENDZIPPEDFILESASMAIL">send zipped files in mail</label>
+			<label index="FILELIST_BATCH_SENDFILELINK">send filelink in mail</label>
+			<label index="FILELIST_BATCH_SENDZIPPEDFILELINK">send zipped filelink in mail</label>
+			<label index="FILELIST_BATCH_GO">go</label>
+			<label index="FILELIST_BATCH_SELECT">please select:</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="list_mode_1">Modus 1</label>
@@ -160,6 +168,14 @@
 			<label index="CANCEL">abbrechen</label>
 			<label index="FILTER_TITLE_LABEL">Filtername</label>
 			<label index="FILTER_DESCRIPTION_LABEL">Beschreibung</label>
+
+			<label index="FILELIST_BATCH_CREATEZIPFILE">Zip Datei herunterladen</label>
+			<label index="FILELIST_BATCH_SENDASMAIL">Dateien als Mail versenden</label>
+			<label index="FILELIST_BATCH_SENDZIPPEDFILESASMAIL">Zip Datei als Mail versenden</label>
+			<label index="FILELIST_BATCH_SENDFILELINK">Download Link als Mail versenden</label>
+			<label index="FILELIST_BATCH_SENDZIPPEDFILELINK">Zip-Datei Download Link als Mail versenden</label>
+			<label index="FILELIST_BATCH_GO">durchführen</label>
+			<label index="FILELIST_BATCH_SELECT">bitte wählen</label>
 		</languageKey>
 	</data>
 </T3locallang>

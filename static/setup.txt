@@ -89,6 +89,28 @@ plugin.tx_damfrontend_pi1 {
 			# stdWrap : Creation Timestamp of file
 			crdate.strftime =  %Y / %m  /  %d
 		}
+
+		link_select_download {
+			typolink.parameter = typo3conf/ext/dam_frontend/pushfile.php
+			typolink.returnLast = url
+			# TEXT Objects, starting with "1"
+			1.value = <option value="">nicht gew&auml;hlt</option>
+			2.value = <option value="ORIGINAL:ORIGINAL">original</option>
+			3.wrap = <option value="width:1024;y:768;resample:72">|</option>
+			3.value = optimized for powerpoint
+			3.lang.de = F&uuml;r Powerpoint optimiert
+			4.wrap = <option value="width:1024;height:768;resample:300">|</option>
+			4.value = 1024x768 - 300 DPI {field:uid}
+			4.insertData = 1
+			4.if.equals.field = media_type
+			4.if.value = 2
+
+			5.wrap = <option value="width:100;y:100;resample:20">|</option>
+			5.value = thumbnail
+			5.lang.de = Thumbnail
+		}
+
+
 	}
 	# configuration for subpart ###NEWFILTER_LINK###
 	newfilter_link {
