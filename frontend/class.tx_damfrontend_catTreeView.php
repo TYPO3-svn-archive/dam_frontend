@@ -1,5 +1,4 @@
 <?php
-require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 /***************************************************************
 *  Copyright notice
 *
@@ -38,6 +37,9 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  * Some scripts that use this class:	--
  * Depends on:		--
  */
+ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
+
+
 /**
  * [CLASS/FUNCTION INDEX of SCRIPT]
  *
@@ -68,6 +70,8 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	var $catLogic;											// array which holds all selected categories
 	var $treeID;											// ID Number of the tree given from the flexform configuration
 	var $plugin;											// Back-reference to the calling plugin
+	var $cObj;												// cObj
+	var $conf;												// configuration array
 
 	/**
 	 * prepares the category tree
@@ -120,6 +124,8 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
  		$this->backPath = 'typo3/';
 // 		$this->renderer = t3lib_div::makeInstance("tx_damfrontend_rendering");
 		if (isset($plugin)) $this->plugin = $plugin;
+		$this->cObj = $this->plugin->cObj;
+		$this->conf = $this->plugin->conf;
 	}
 
 	/**
@@ -179,7 +185,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	 * @return	string		html ...
 	 */
 	function wrapTitle($title,$row,$bank=0) {
-		$id = t3lib_div::_GET('id');
+		$id = (int)t3lib_div::_GET('id');
 
 		// convert the incoming vars to
 		/*
@@ -214,13 +220,13 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	 * @return	string		...
 	 */
 	function PM_ATagWrap($icon,$cmd,$bMark='treeroot')	{
-		$id = intval(t3lib_div::_GET('id'));
-		if ($bMark)	{
-			$anchor = '#'.$bMark;
-			$name=' name="'.$bMark.'"';
-		}
-		$aUrl = '?id='.$id.'&PM='.$cmd.$anchor;
-		return '<a href="'.htmlspecialchars($aUrl).'"'.$name.'>'.$icon.'</a>';
+		$linkConf = array();
+		$linkConf['parameter.']['data'] = 'TSFE:id';
+		$linkConf['additionalParams'] = '&tx_damfrontend_pi1[treeID]='.$this->treeID.'&PM='.htmlspecialchars($cmd);
+		$linkConf['section'] = $bMark;
+		if ($bMark) $linkConf['ATagParams'] = ' name="'.$bMark.'" ';
+		return $this->cObj->typoLink($icon, $linkConf);
+		// return '<a href="'.htmlspecialchars($aUrl).'"'.$name.'>'.$icon.'</a>';
 	}
 
 
@@ -236,8 +242,9 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 		// retrieving the current page id
 		$id = intval(t3lib_div::_GET('id'));
 		$param_array = array();
+		$cObj = t3lib_div::makeInstance('tslib_cObj');
+		$cObj->start($row, 'tx_dam_cat'); // TODO: check if that is the correct table?
 
-		$control = '<div class="control" >';
 		if ($this->modeSelIcons
 			AND !($this->mode=='tceformsSelect')
 			AND ($row['uid'] OR ($row['uid'] == '0' AND $this->linkRootCat))) {
@@ -255,10 +262,12 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 			if ($id != '') $param_array['id'] = $id;
 			$url = t3lib_div::linkThisScript($urlVars);
 			$icon =	'<img'.t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'],$this->iconPath.'plus.gif', 'width="8" height="11"').' alt="" border="0"/>';
+			$icon = $cObj->stdWrap($icon, $this->conf['renderCategoryTree.']['stdWrapPlusIcon.']);
 			$control .= '<a href="'.$url.'">'.$icon.'</a>';
 
 			// generating equals buttons
 			$urlVars = array(
+				'tx_damfrontend_pi1' => '', // ok, the t3lib_div::linkThisScript cant work with arrays
 				'tx_damfrontend_pi1[catPlus]' => null,
 				'tx_damfrontend_pi1[catEquals]' => $row['uid'],
 				'tx_damfrontend_pi1[catMinus]' => null,
@@ -269,10 +278,12 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 			if ($id != '') $param_array['id'] = $id;
 			$url = t3lib_div::linkThisScript($urlVars);
 			$icon =	'<img'.t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'],$this->iconPath.'equals.gif', 'width="8" height="11"').' alt="" border="0"/>';
+			$icon = $cObj->stdWrap($icon, $this->conf['renderCategoryTree.']['stdWrapEqualsIcon.']);
 			$control .= '<a href="'.$url.'">'.$icon.'</a>';
 
 			// generate minus button
 			$urlVars = array(
+				'tx_damfrontend_pi1' => '', // ok, the t3lib_div::linkThisScript cant work with arrays
 				'tx_damfrontend_pi1[catPlus]' => null,
 				'tx_damfrontend_pi1[catEquals]' => null,
 				'tx_damfrontend_pi1[catMinus]' => null,
@@ -283,9 +294,11 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 			if ($id != '') $param_array['id'] = $id;
 			$url = t3lib_div::linkThisScript($urlVars);
 			$icon =	'<img'.t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'],$this->iconPath.'/minus.gif', 'width="8" height="11"').' alt="" border="0"/>';
+			$icon = $cObj->stdWrap($icon, $this->conf['renderCategoryTree.']['stdWrapMinusIcon.']);
 			$control .= '<a href="'.$url.'">'.$icon.'</a>';
 		}
-		$control .= '</div>';
+		$control = $cObj->stdWrap($control, $this->conf['renderCategoryTree.']['stdWrapControl.']);
+		// $control = '<div class="control" >'.$control . '</div>';
 		return $control;
 	}
 

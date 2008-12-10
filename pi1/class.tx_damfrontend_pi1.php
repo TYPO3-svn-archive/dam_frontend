@@ -464,12 +464,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeView');
 		$tree->init($this->internal['treeID'], $this);
 		$tree->title = $this->internal['treeName'];
-
 		$selCats  = $this->catList->getCatSelection($this->internal['incomingtreeID']);
-
 		$tree->selectedCats = $selCats[$this->internal['incomingtreeID']];
 		if (is_array($this->internal['catMounts'])) $tree->MOUNTS = $this->internal['catMounts'];
-		return  '<div class="cattree" >'.$tree->getBrowsableTree().'</div>';
+		return  $this->cObj->stdWrap($tree->getBrowsableTree(), $this->conf['renderCategoryTree.']['stdWrap.']);
 	}
 
 

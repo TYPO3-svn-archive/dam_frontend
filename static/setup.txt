@@ -6,6 +6,14 @@ plugin.tx_damfrontend_pi1 {
 	filter {
 		errorWrap = {$plugin.tx_damfrontend_pi1.filter.errorWrap}
 	}
+	renderCategoryTree {
+		stdWrapPlusIcon.wrap = |
+		stdWrapEqualsIcon.wrap = |
+		stdWrapMinusIcon.wrap = |
+		stdWrap.wrap = <div class="cattree">|</div>
+		stdWrapControl.wrap = <div class="control" >|</div>
+	}
+
 	renderFields {
 	# set stdWrap config for each field
 		file_size {
