@@ -21,6 +21,11 @@
 			<label index="flexform_requstForm">Request Form</label>
 			<label index="tx_damfrontend_use_request_form">Use a request form for this file</label>
 			<label index="flexform_useStaticCatSelection">use static Category Selection</label>
+			<label index="flexform_option_title">Options</label>			
+			<label index="flexform_enableDeletions">enable deletion option for fe_users</label>
+			<label index="flexform_FilterUserGroup">Shows all members of this group in the filter view, to select a filter "author"</label>
+			<label index="flexform_myFiles">my files</label>
+			<label index="flexform_enableEdits">enable edits of meta data</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="flexform_display_title">Was soll angezeigt werden</label>
@@ -38,6 +43,11 @@
 			<label index="flexform_requstForm">Anforderung Formular</label>
 			<label index="tx_damfrontend_use_request_form">Use a request form for this file</label>
 			<label index="flexform_useStaticCatSelection">Kategorieauswahl als Standard verwenden</label>
+			<label index="flexform_option_title">Optionen</label>		
+			<label index="flexform_enableDeletions">erlaube Löschungen durch Frontend User</label>
+			<label index="flexform_FilterUserGroup">Zeigt alle Mitglieder einer Gruppe in der Ansicht Filter, um nach einem Autor zu filtern</label>
+			<label index="flexform_myFiles">eigene Dateien</label>
+			<label index="flexform_enableEdits">erlaube Änderung der Metadaten</label>
 		</languageKey>
 	</data>
 </T3locallang>

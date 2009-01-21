@@ -58,7 +58,7 @@ class tx_damfrontend_baseSessionData {
 
 	function tx_damfrontend_baseSessionData() {
 		$this->user =& $GLOBALS['TSFE']->fe_user;
-		//t3lib_div::debug($GLOBALS['TSFE']->fe_user);
+		//t3lib_div::debug($GLOBALS['TSFE']->fe_user->sesData);
 	}
 
 	/**

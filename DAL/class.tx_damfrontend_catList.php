@@ -112,8 +112,10 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 			if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function op_Minus: for the treeID only integer values are allowed. Given value was:' .$treeID, 'dam_frontend',3);
 		}
 		$catarray = $this->getArrayFromUser();
-		$test = array_search($catID,$catarray[$treeID]);
-		unset($catarray[$treeID][$test]);
+		if (!empty($catarray)) {	
+			$test = array_search($catID,$catarray[$treeID]);
+			unset($catarray[$treeID][$test]);
+		}
 		$this->setArrayToUser($catarray);
 	}
 
@@ -152,28 +154,42 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 	 * @param	int			$treeID: ID of used category tree
 	 * @return	array		list of all selected categories
 	 */
-	function getCatSelection($treeID = '') {
+	function getCatSelection($treeID = 0,$pageID=0) {
 		$ar = $this->getArrayFromUser();
-		if ($treeID != '') {
+		if ($treeID <>0) {
 			//returns the selected categories for a specified treeID
 			if ($treeID==-1){
 				return is_array($ar[$treeID]) ? array_unique($ar[$treeID]) : null;
-			} else { 
+			} 
+			else { 
 				if (is_array($ar[$treeID])) {
 					$returnArr[$treeID]= array_unique($ar[$treeID]);	
 				} else {
 					$returnArr =  null;
 				} 
 				return $returnArr;	
-			}	
-		}
-		else { 
-			if ($treeID==0) {
-				return null;
-			} else {
-				return is_array($ar) ? array_unique($ar) : null;	
 			}
 		}
+		else {
+			# return only treeIDs of the current PageID
+			$returnArr=array();
+			foreach ($ar as $key=>$value) {
+				// ---- getting the new record
+				$FIELDS = 'pid';
+				$TABLE = 'tt_content';
+				$WHERE = 'uid = '.$key;
+				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($FIELDS,$TABLE,$WHERE);
+				while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+					#t3lib_div::debug($ar[$key]);
+					if ($row['pid']==$pageID) {
+						$returnArr[$key] = $ar[$key];						
+					}		
+				}			
+			} 
+			t3lib_div::debug($returnArr);
+			return is_array($returnArr) ? array_unique($returnArr) : null;
+		}
+
 	}
 
 	/**

@@ -161,7 +161,7 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 		if(in_array($uid, $groupDataKeys)) {
 			$rec = $records[$groupKey][$uid];
 			//Check if file exists
-			t3lib_div::debug($BACK_PATH . $rec['file_path'] . $rec['file_name']);
+			#t3lib_div::debug($BACK_PATH . $rec['file_path'] . $rec['file_name']);
 			if ($this->conf['checkIfFileExist']==0){
 		  		if (file_exists($BACK_PATH . $rec['file_path'] . $rec['file_name']) ==false) {
 		  			$fileExists = false;

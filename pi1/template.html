@@ -1,4 +1,8 @@
-<!-- ********************************
+Allowed Markers:
+###LLL:MARKER_NAME### -> thesse markers can be used to define user defined markes. This is useful for mulitlanguage sites. (see configuration plugin.tx_damfrontend_pi1.langFile) 
+
+
+<!-- ******************************** 
 
 	Template for fileliste View (the list of files /records is the next subpart line 40+
 ********************************  -->
@@ -13,9 +17,12 @@
 			<th>###FILENAME_HEADER###</th>
 			<th>###FILETYPE_HEADER###</th>
 			<th>###CR_DATE_HEADER###</th>
+			<th>###CREATOR_HEADER###</th>
+			<th>###LANGUAGE_HEADER###</th>
+			<th>###OWNER_HEADER###</th>
 			<th>&nbsp; </th>
-			<th>&nbsp; </th>
-			<th>&nbsp; </th>
+			<th>&nbsp;</th>
+			<th>&nbsp;</th>
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
@@ -23,9 +30,10 @@
 			<td>###SORTLINK_TITLE###</td>
 			<td>###SORTLINK_FILE_TYPE###</td>
 			<td>###SORTLINK_CRDATE###</td>
+			<td>###SORTLINK_CREATOR###</td>
+			<td>###SORTLINK_LANGUAGE###</td>
 			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
+			<td colspan="3">&nbsp;</td>
 		</tr>
 			###FILELIST_RECORDS###
 		<tr>
@@ -36,7 +44,7 @@
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
-			<td>
+			<td colspan="4">
 			<select name="tx_damfrontend_pi1[modus]">
 			<option value="">###FILELIST_BATCH_SELECT###</option>
 			<option value="createZipFile">###FILELIST_BATCH_CREATEZIPFILE###</option>
@@ -66,20 +74,20 @@
 
 
 
-<!-- ********************************
+<!-- ******************************** 
 
 	template for records of the fileliste
 
 ********************************  -->
 <!-- ###FILELIST_RECORD### begin -->
 	<tr>
-		<td>###COUNT_ID###</td><td>###FILEICON###</td><td><b>###TITLE###</b></td><td><b>###FILE_TYPE###</b></td><td>###PUBLISHER### &nbsp; / &nbsp; ###CRDATE###</td><td>###LINK_SINGLE###</td><td>###LINK_DOWNLOAD###</td><td>###LINK_SELECT_DOWNLOAD###</td>
+				<td>###COUNT_ID###</td><td>###FILEICON###</td><td><b>###TITLE###</b></td><td><b>###FILE_TYPE###</b></td><td>###CRDATE###</td><td>###CREATOR###&nbsp; /  ###PUBLISHER### &nbsp; </td><td>###LANGUAGE###</td><td>###TX_DAMFRONTEND_FEUSER_UPLOAD###</td><td>###LINK_SINGLE###</td><td>###LINK_DOWNLOAD### ###BUTTON_DELETE### ###BUTTON_EDIT### ###BUTTON_CATEDIT###</td><td>###LINK_SELECT_DOWNLOAD###</td>
 	</tr>
 <!-- ###FILELIST_RECORD### end -->
 
 
 
-<!-- ********************************
+<!-- ******************************** 
 
 	template for the browserresult list
 
@@ -96,7 +104,7 @@
 
 
 
-<!-- ********************************
+<!-- ******************************** 
 
 	template for the Filterlist list
 
@@ -111,12 +119,12 @@
 		</tr>
 		<!-- ###FILTERLIST_ELEM### end-->
 	</table>
-
+	
 <!-- ###FILTERLIST### end-->
 
 
 
-<!-- ********************************
+<!-- ******************************** 
 
 	Link for creation of a new filter
 
@@ -130,9 +138,9 @@
 
 
 
-<!-- *********************************
+<!-- ********************************* 
 
-		Template for creation of new filter.
+		Template for creation of new filter. 
 		User can insert title and description of a filter record
 
 *********************************  -->
@@ -182,7 +190,10 @@ Template for displaying a single document in a list
 			<th>###TITLE_SINGLEVIEW_HEADER###:</th><th>###TITLE_SINGLEVIEW###</th>
 		</tr>
 		<tr>
-			<td class="title">###CR_DATE_HEADER###:</td><td>###CRDATE###</td>
+			<td class="title">###LANGUAGE_HEADER###:</td><td>###LANGUAGE###</td>
+		</tr>
+		<tr>
+			<td class="title">###CR_DATE_HEADER###:</td><td>###CRDATE### / ###CREATOR###<</td>
 		</tr>
 		<tr>
 			<td class="title">###CR_DESCRIPTION_HEADER###:</td><td>###DESCRIPTION###</td>
@@ -262,19 +273,24 @@ Template for displaying a single document in a list
 				<input type="text" name="bis_jahr" maxlength="4" size="4" value="###TO_YEAR###"></input>
 				<div style="color: red; font-weight: bold">###ERROR_TO_DATE###</div>
 
-
+				<label>###LABEL_CREATOR###</label>				
+				<input type="text" name="creator" size="30" value="###CREATOR###"></input>
+				
 				<label>###LABEL_FILETYPE###</label>
 				###FILETYPE_LIST###
-
+				
+				<label>###OWNER_HEADER###</label>
+				###DROPDOWN_OWNER###
+				
+				<label>###LABEL_LANGUAGE###</label>
+				###DROPDOWN_LANGUAGE###
+				
 				<br />
 				<br />
 				<input type="submit" value="###SET_FILTER###" name="setFilter" class="button"></input>
-
+				<input type="submit" value="###RESET_FILTER###" name="resetFilter" class="button"></input> &nbsp; &nbsp; &nbsp;
+				
 		</fieldset>
-	</form>
-
-	<form action="###FORM_URL###" method="post" >
-		<input type="submit" value="###RESET_FILTER###" name="resetFilter" class="button"></input>
 	</form>
 <!-- ###FILTERVIEW### end-->
 
@@ -313,8 +329,8 @@ Template for displaying a single document in a list
 				<td><input type="text" name="plz" size="5" value="###REQUEST_FORM_ZIP###" /><input type="text" name="town" size="33" value="###TOWN###"/> <span class="error_requestform">###ERROR_ZIP### ###ERROR_TOWN###</span></td>
 			</tr>
 		</table>
-
-		<br />
+		
+		<br />		
 		<input type="submit" value="###REQUEST_FORM_SEND_BUTTON###" /> <a href="###REQUEST_FORM_BACK_URL###">###REQUEST_FORM_BACK_URL_TEXT###/a>
 		<input type="hidden" name="docID" value="###UID###" />
 		<input type="hidden" name="sendRequestform" value="1"/>
@@ -350,7 +366,7 @@ This is the mail message that is sent, if a user has done a request
 
 <!-- ###MAIL_REQUEST### end-->
 
-<!-- ***********************************************************
+<!-- *********************************************************** 
 
 	alternative template for the request,
 	if a fe user requests a file (in this cast we have his data
@@ -368,7 +384,7 @@ This is the mail message that is sent, if a user has done a request
 		###REQUEST_USER_TEXT2###
 		<br />
 		<br />
-		<input name="sendRequest" type="submit" value="###REQUEST_USER_SEND###" />
+		<input name="sendRequest" type="submit" value="###REQUEST_USER_SEND###" />  
 		<a href="###BACK_URL###">###REQUEST_FORM_BACK_URL_TEXT###</a>
 		<input type="hidden" name="sendRequestform" value="1"/>
 		<input type="hidden" name="docID" value="###UID###" />
@@ -397,27 +413,58 @@ REQUEST_FORM_ADRESS_DESCRIPTION:					###UC###
 
 <!-- ###MAIL_REQUEST_USER### end -->
 
+
+
+
+<!-- ******************************
+
+Template for displaying a single document in a list
+
+********************************** -->
+<!-- ###FILE_DELETION### begin-->
+<div class="dam_frontend_Message">
+	<h2 class="warning">###LABEL_WARNING###</h2>
+	<p>###MESSAGE_DELETION_WARNING###</p>
+	<table class="file_singleView" border="1">
+		<tr>
+			<th>###TITLE_SINGLEVIEW_HEADER###:</th><th>###TITLE_SINGLEVIEW###</th>
+		</tr>
+		<tr>
+			<td class="title">###CR_DATE_HEADER###:</td><td>###CRDATE###</td>
+		</tr>
+		<tr>
+			<td class="title">###CR_DESCRIPTION_HEADER###:</td><td>###DESCRIPTION###</td>
+		</tr>
+		<tr>
+			<td class="title">###FILE_SIZE_HEADER###:</td><td>###FILE_SIZE###</td>
+		</tr>
+		<tr>
+			<td class="title">###COPYRIGHT_HEADER###:</td><td>###COPYRIGHT###</td>
+		</tr>
+		<tr>
+			<td class="title">###FILETYPE_HEADER###:</td><td>###FILE_TYPE###</td>
+		</tr>
+		<tr>
+			<td class="ButtonCancel">###CANCEL_DELETION_UID###</td><td class="ButtonConfirmWarning">###CONFIRM_DELETION_UID###</td>
+		</tr>
+	</table>
+</div>
+<!-- ###FILE_DELETION### end-->
+
+<!-- ###MESSAGE### begin-->
+<div class="dam_frontend_Message">
+	<h2 class="info">###LABEL_MESSAGE###</h2>
+	<p>###MESSAGE_TEXT###</p>
+	<p>###BUTTON_NEXT###</p>
+</div>
+<!-- ###MESSAGE### end-->
+
+
 <!-- ###UPLOADFORM### begin-->
 <form action="###FORM_URL###" method="post" enctype="multipart/form-data">
 	<fieldset>
 		<legend>###TITLE_FILEUPLOAD###</legend>
-		<table>
-			<tr>
-				<td><label>###LABEL_TITLE###</label></td>
-				<td><input name="title" type="text" size="40" value="###LABEL_TITLE###"/><br /></td>
-			</tr>
-			<tr>
-				<td><label>###LABEL_COPYRIGHT###</label></td>
-				<td><input name="copyright" type="text" size="40" value="###VALUE_COPYRIGHT###"/></td>
-			</tr>
-			<tr>
-				<td><label>###LABEL_AUTHOR###</label></td>
-				<td><input name="creator" type="text" size="40" value="###VALUE_AUTHOR###"/></td>
-			</tr>
-			<tr>
-				<td><label>###LABEL_DESCRIPTION###</label></td>
-				<td><textarea name="description" rows="5" cols="39">###VALUE_DESCRIPTION###</textarea><br /></td>
-			</tr>
+		<table>	
 			<tr>
 				<td><label>###LABEL_FILE###</label></td>
 				<td><input name="file" type="file" /></td>
@@ -429,9 +476,38 @@ REQUEST_FORM_ADRESS_DESCRIPTION:					###UC###
 <!-- ###UPLOADFORM### end -->
 
 
+
+
+
+
+
 <!-- ###CATEGORISATION### begin -->
 	###CATEGORISATION_TEXT_HEADER###
+	
+	
+	
+<form method="post">
 	<table>
+		<tr>
+			<td><label>###LABEL_TITLE###</label></td>
+			<td>###VALUE_TITLE###</td>
+		</tr>
+		<tr>
+			<td><label>###LABEL_COPYRIGHT###</label></td>
+			<td>###VALUE_COPYRIGHT###</td>
+		</tr>
+		<tr>
+			<td><label>###LABEL_AUTHOR###</label></td>
+			<td>###VALUE_AUTHOR###</td>
+		</tr>
+		<tr>
+			<td><label>###LABEL_DESCRIPTION###</label></td>
+			<td>###VALUE_DESCRIPTION###</td>
+		</tr>
+		<tr>
+			<td><label>###LABEL_LANGUAGE###</label></td>
+			<td>###VALUE_LANGUAGE###</td>
+		</tr>
 		<tr>
 			<td>###CATEGORISATION_TEXT_TITLE###</td>
 			<td><b>###TITLE###</b></td>
@@ -447,12 +523,68 @@ REQUEST_FORM_ADRESS_DESCRIPTION:					###UC###
 	<br />
 	<br />
 	###CATLIST###
-	<form method="post" action="###FORM_URL###">
-		<input name="catOK" type="submit" value="###CATEGORISATION_TEXT_SEND###">
-	</form>
-
+	<table>
+		<tr>
+			<td> 
+				###BUTTON_CONFIRM###
+			</td>
+			<td class="ButtonCancel">###CANCEL###</td>
+		</tr>
+	</table>
+	###HIDDENFIELDS###
+</form>
 <!-- ###CATEGORISATION### end-->
 
 
 
+<!-- ###EDITFORM### begin -->
+<form method="post">
+		<table>
+			<tr>
+				<td><label>###LABEL_TITLE###</label></td>
+				<td><input name="title" type="text" size="40" value="###VALUE_TITLE###"/><br /></td>
+			</tr>
+			<tr>
+				<td><label>###LABEL_COPYRIGHT###</label></td>
+				<td><input name="copyright" type="text" size="40" value="###VALUE_COPYRIGHT###"/></td>
+			</tr>
+			<tr>
+				<td><label>###LABEL_AUTHOR###</label></td>
+				<td><input name="creator" type="text" size="40" value="###VALUE_AUTHOR###"/></td>
+			</tr>
+			<tr>
+				<td><label>###LABEL_DESCRIPTION###</label></td>
+				<td><textarea name="description" rows="5" cols="39">###VALUE_DESCRIPTION###</textarea><br /></td>
+			</tr>
+			<tr>
+				<td><label>###LABEL_LANGUAGE###</label></td>
+				<td>###VALUE_LANGUAGE###</td>
+			</tr>
+			<tr>
+				<td> 
+					<input name="editok" type="submit" value="###BUTTON_CONFIRM###">
+				</td>
+				<td class="ButtonCancel">###CANCEL###</td>
+			</tr>
+		</table>
+		###HIDDENFIELDS###
+	</form>
+<!-- ###EDITFORM### end-->
 
+<!-- ###FORM_VERSIONING### begin-->
+<form method="post">
+	<fieldset>
+		###VERSIONING_FILE_EXISTS###
+		<br />
+		<input type="radio" name="version_method" value="override" /><label>###VERSIONING_OVERWRITES###</label><br />
+		<input type="radio" name="version_method" value="new_version" /><label>###VERSIONING_NEW_VERSION###</label>
+
+		<br />
+		<br />
+		<input type="submit" name="submit_versioning" value="OK" />
+
+		###HIDDENFIELDS###
+	</fieldset>
+</form>
+
+<!-- ###FORM_VERSIONING### end-->

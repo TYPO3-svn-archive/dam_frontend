@@ -73,7 +73,8 @@ class tx_damfrontend_DAL_categories {
 	// array with all availible access relations
 	var $relations = array(
 		'1' => 'readaccess',
-		'2' => 'downloadaccess'
+		'2' => 'downloadaccess',
+		'3' => 'uploadaccess'
 	);
 	var $mm_table_readaccess = '';  // mm Table which stores the groups, which have readaccess to a category
 	var $mm_table_downloadaccess = ''; // mm Table which stores the groups
@@ -232,12 +233,12 @@ class tx_damfrontend_DAL_categories {
 			if (!isset($userID) || !isset($relID) || $userID == '' || $relID == '') {
 				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getCategories: userID and relID must be set and empty strings are not allowed! Given value were$userID:' .$userID .' and relID: ' . $relID, 'dam_frontend',2);
 			}
-			$mm_table = 'tx_dam_cat_tx_damtree_fe_groups_'.$this->relations[$relID].'_mm';
+			$mm_table = 'tx_dam_cat_'.$this->relations[$relID].'_mm';
 			// executing database search
 			$local_table = $this->catTable;
 			$foreign_table = 'fe_groups';
-			$where = 'AND '.$local_table.'.uid = '. intval($userID) ;
-			$select = $foreign_table.'.*';
+			$where = 'AND '.$local_table.'.uid = '. $userID ;
+			$select = $local_table.'.*';
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query($select,$local_table, $mm_table, $foreign_table, $where);
 
 			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
@@ -296,6 +297,7 @@ class tx_damfrontend_DAL_categories {
 	 */
 		function findUidinList($list, $id)
 		{
+			if (!is_array($list)) return null;
 			$searchrow = null;
 			foreach($list as $catrow) {
 				if ($catrow['uid'] == $id)
@@ -323,7 +325,7 @@ class tx_damfrontend_DAL_categories {
 				return true;
 			}
 			else {
-				if($this->findUidinList($this->getCategories($userID,0),$catID)) {
+				if($this->findUidinList($this->getCategories($userID,1),$catID)) {
 					return true;
 				}
 				else {

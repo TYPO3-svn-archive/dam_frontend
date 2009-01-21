@@ -105,7 +105,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$this->fullTextSearchFields = $fieldlist;
 		}
 
-
 	/**
 	 * inits the class
 	 *
@@ -122,7 +121,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 * @param	int		$fileUid: ...
 	 * @return	array		list of all categories
 	 */
-		function getCategoriesbyDoc($docID) {
+		function getCategoriesbyDoc($docID,$simple=false) {
 
 			// array which accumulates all records
 			$cats = array();
@@ -134,7 +133,13 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query($this->catTable.'.*',$local_table ,$mm_table ,$foreign_table ,$WHERE);
 
 			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				$cats[] = $row;
+				if ($simple==true) {
+					$cats[] = $row['uid'];
+				}
+				else {
+					$cats[] = $row;	
+				}
+				
 			}
 			return $cats;
 		}
@@ -166,7 +171,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 * if the document has no category, the access is not limited
 	 *
 	 * @param	int		$docID: uid of the the document, which delimites, if the user has access or not
-	 * @param	int		$relID: ...
+	 * @param	int		$relID: ID in the array $this->realtions. Determines, which database relation is used (1: Readaccess; 2: Download / Edit Access)
 	 * @return	boolean		returns true if the user has access to this file
 	 */
 		function checkAccess($docID, $relID) {
@@ -229,7 +234,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 * also parent categories of the document are included
 	 *
 	 * @param	int		$docID: uid of the document
-	 * @param	int		$relID: ID in the array $this->realtions. Determines, which database relation is used
+	 * @param	int		$relID: ID in the array $this->realtions. Determines, which database relation is used (1: Readaccess; 2: Download / Edit Access)
 	 * @return	array		Array which contains all usergroups associated with the file
 	 */
 		function getDocumentFEGroups($docID, $relID) {
@@ -291,81 +296,99 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 *
 	 * @return	[array]		returns an array which contains all selected records
 	 */
-		function getDocumentList() {
+		function getDocumentList($userUID=0) {
 			if(!is_array($this->categories)) {
 				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getDcoumentList: for the this->categories is no array. Given value was:' .$this->categories, 'dam_frontend',3);
 			}
 
-// t3lib_div::debug($this->additionalFilter, '$this->additionalFilter');
+			 #debug($this->categories);
 
-
-			/*
-			 * Building the from clause manually by joining the DAM tables
-			 *
-			 *
-			 */
-			$select = $this->docTable.'.uid';
-			$from = $this->docTable.' INNER JOIN '.$this->mm_Table.' ON '.$this->mm_Table.'.uid_local  = '.$this->docTable.
-			'.uid INNER JOIN '.$this->catTable.' ON '.$this->mm_Table.'.uid_foreign = '.$this->catTable.'.uid';
-			$filter = ' AND '.$this->docTable.'.deleted = 0  AND '.$this->docTable.'.hidden = 0'.$this->additionalFilter;
-
-
-			// preparing the category array - deleting all empty entries
-			foreach($this->categories as $number => $catList) {
-				if (!count($catList)) {
-					unset($this->categories[$number]);
-				}
-			}
-
-
-			$queryText = array();
-			$z = 0;
-			/**
-			 * every element in the categories array stores a list of cats that are associated with an array
-			 *
-			 *
-			 *
-			 */
-			foreach($this->categories as $number => $catList) {
-				$catString = '( '.$this->catTable.'.uid='.implode(' OR '.$this->catTable.'.uid=',$catList).')';
-				if ($z != count($this->categories)-1) {
-					if (!count($queryText)) {
-						$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery($select,$from, $catString);
+			if (count($this->categories)) {
+				/*
+				 * Building the from clause manually by joining the DAM tables
+				 *
+				 *
+				 */
+				$select = $this->docTable.'.uid';
+				$from = $this->docTable.' INNER JOIN '.$this->mm_Table.' ON '.$this->mm_Table.'.uid_local  = '.$this->docTable.
+				'.uid INNER JOIN '.$this->catTable.' ON '.$this->mm_Table.'.uid_foreign = '.$this->catTable.'.uid';
+				$filter = ' AND '.$this->docTable.'.deleted = 0  AND '.$this->docTable.'.hidden = 0'.$this->additionalFilter;
+	
+	
+				// preparing the category array - deleting all empty entries
+				foreach($this->categories as $number => $catList) {
+					if (!count($catList)) {
+						unset($this->categories[$number]);
 					}
+				}
+	
+	
+				$queryText = array();
+				$z = 0;
+				/**
+				 * every element in the categories array stores a list of cats that are associated with an array
+				 *
+				 *
+				 *
+				 */
+				 t3lib_div::debug($this->categories);
+				foreach($this->categories as $number => $catList) {
+					$catString = '( '.$this->catTable.'.uid='.implode(' OR '.$this->catTable.'.uid=',$catList).')';
+					if ($z != count($this->categories)-1) {
+						if (!count($queryText)) {
+							$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery($select,$from, $catString);
+						}
+						else {
+							$where = $this->docTable.'.uid IN ('.$queryText[count($queryText)- 1].') AND '.$catString;
+							$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery('tx_dam.uid', $from, $where);
+						}
+					}
+					// building the last element of the list - final building of the list
 					else {
-						$where = $this->docTable.'.uid IN ('.$queryText[count($queryText)- 1].') AND '.$catString;
-						$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery('tx_dam.uid', $from, $where);
+						if(count($this->categories ) > 1) {
+							$where = $this->docTable.'.uid IN ('.$queryText[count($queryText)- 1].') AND '.$catString.$filter;
+						}
+						// list is having more then one "AND" criteria
+						else {
+							$where = $catString.$filter;
+						}
+						$select = ' DISTINCT '.$this->docTable.'.*';
 					}
+					$z++;
 				}
-				// building the last element of the list - final building of the list
-				else {
-					if(count($this->categories ) > 1) {
-						$where = $this->docTable.'.uid IN ('.$queryText[count($queryText)- 1].') AND '.$catString.$filter;
-					}
-					// list is having more then one "AND" criteria
-					else {
-						$where = $catString.$filter;
-					}
-					$select = ' DISTINCT '.$this->docTable.'.*';
-				}
-				$z++;
-			}
-
+			} 
+			else {
+				#query without using categories
+				$select='*';
+				$from='tx_dam';
+				$where.= ' deleted=0 AND hidden=0 '.$this->additionalFilter;
+			} 
+			
 			// executing the query and calculating the number of rows
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select,$from,$where);
 			$this->resultCount = $GLOBALS['TYPO3_DB']->sql_num_rows($res);
-
-
-
+			
+			// TODO get resultCount manual (Delete the sql query above, because it shows to many results, because the permission check comes later; handle this->limit self, otherwise a lot of sql queries would be executed)
+			#$resultCounter=0;
 			// executing the final query and convert the results into an array
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where,'',$this->orderBy, $this->limit);
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+				#t3lib_div::debug($row);
 				if ($this->checkAccess($row['uid'], 1)) {
+					//add a delete information
+					if ($userUID == $row['tx_damfrontend_feuser_upload'] AND $userUID>0){
+						$row['allowDeletion']=1;
+						$row['allowEdit']=1;
+					}
+					#$resultCounter++;
+					$row['tx_damfrontend_feuser_upload']= $this->get_FEUserName($row['tx_damfrontend_feuser_upload']);
 					$result[] = $row;
 				}
 			}
+			#$this->resultCount = $resultCounter;
 			return $result;
 		}
+	
 
 
 
@@ -426,6 +449,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			if (!is_array($filterArray)){
 				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function setFilter: filterArray must be an array. Given value was:' .$this->categories, 'dam_frontend',3);
 			}
+			#t3lib_div::debug($filterArray);
 			$errors = array();
 			$this->additionalFilter = '';
 			/********************************
@@ -454,6 +478,11 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			}
 			if ($filterArray['filetype'] != '' && $filterArray['filetype'] != ' ') $this->additionalFilter .= ' AND '.$this->docTable.'.file_type = \''.$filterArray['filetype'].'\'' ;
 			if ($filterArray['searchword'] != '' && $filterArray['searchword'] != ' ') $this->additionalFilter .= $this->getSearchwordWhereString($filterArray['searchword']);
+			if ($filterArray['creator'] != '' && $filterArray['creator'] != ' ') $this->additionalFilter .= $this->getSearchwordWhereString($filterArray['creator'],'creator');
+			# todo: check access (user must be part of the selected usergroup)
+			if ($filterArray['owner'] > 0 ) $this->additionalFilter .=   ' AND '.$this->docTable.'.tx_damfrontend_feuser_upload  ='.$filterArray['owner'];
+
+			if ($filterArray['LanguageSelector'] != '' && $filterArray['LanguageSelector'] != 'nosel') $this->additionalFilter .=  ' AND '.$this->docTable.'.language = "'.trim($filterArray['LanguageSelector']).'"';
 
 			return $errors;
 		}
@@ -491,8 +520,22 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 					return true;
 				}
 		}
-
-
+		
+		
+		
+		function saveMetaData($docID, $docData) {
+			
+			#t3lib_div::debug($docData);
+			
+			foreach( $docData as $key => $value ) {
+				$DATA[$key] = $value;
+			}		
+			$TABLE = 'tx_dam';
+			$WHERE = 'uid = '.$docID;
+			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$DATA);
+		}
+		
+	
 		/**
 		 * adding an document to the index
 		 *
@@ -516,7 +559,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$data = $indexer->indexfile($path,0,1);
 			$newrecord = $data['fields'];
 
-
 			// adding the data from the form to the new indexed data
 			if (is_array($docData)) {
 				foreach($docData as $key => $value) {
@@ -533,6 +575,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			unset($newrecord['file_title']);
 			unset($newrecord['file_path_absolute']);
 			unset($newrecord['file_path_relative']);
+			unset($newrecord['file_extension']);
 			unset($newrecord['file_owner']);
 			unset($newrecord['file_perms']);
 			unset($newrecord['file_writable']);
@@ -564,8 +607,162 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			}
 
 		}
+	
+		/**
+		 * 
+		 * @author stefan
+		 * @param int $uid UID of the dam entry, which should be created
+		 * @return boolean true, if the deletion was sucessful
+		 */
+		function delete_document ($uid) {
+			$table="tx_dam";
+			$where="uid=" .$uid;
+			$fields_values=array('deleted'=>'1');
+			$res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery($table,$where,$fields_values,$no_quote_fields=FALSE);
+			return $res ;
+		}
+		
+		function get_FEUserName ($uid=0) {
+			
+			if ($uid >0) {
+				$SELECT = '*';
+				$FROM = 'fe_users';
+				$WHERE = 'uid = ' . intval($uid);
+				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE);
+				while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+					if ($row['name']=='') {
+						$content =$row['username']; 
+					} 
+					else {
+						$content =$row['name'];
+					}
+				}
+			} 
+			#t3lib_div::debug($content);
+			return $content;
+		}
+		
+		
+		
+		// if a file is added twice to the system, a new version is genreated
+		function createNewVersion($docID) {			
+			// ---- getting the new record
+			$FIELDS = '*';
+			$TABLE = 'tx_dam';
+			$WHERE = 'uid = '.$docID;
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($FIELDS,$TABLE,$WHERE);
+			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+				$newDoc = $row;
+			}			
+			$filename = $newDoc['file_name'];
+			$filetype = $newDoc['file_type'];
+			$filepath = $newDoc['file_path'];
+			
+			// ---- get the version id of the old file
+			$FIELDS = 'MAX(tx_damfrontend_version),uid, tx_damfrontend_version';
+			$TABLE = 'tx_dam';
+			$GROUPBY = 'tx_damfrontend_version';
+			$WHERE = 'file_dl_name = \''.$filename.' \' AND uid != '.$docID;
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($FIELDS,$TABLE,$WHERE,$GROUPBY);
+			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+				$oldID = $row['uid'];
+				$oldversion = $row['tx_damfrontend_version'];
+			}
+			if ($oldversion == '') $oldversion = 1;
 
+			// ---- getting rest of the old record
+			$FIELDS = '*';
+			$TABLE = 'tx_dam';
+			$WHERE = 'uid = '.$oldID;
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($FIELDS,$TABLE,$WHERE);
+			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+				$oldDoc = $row;
+			}				
+			
+			//copying the old data to the new id
+			// record with the old file
+			$oldDoc['uid']=$docID;
+			#t3lib_div::debug($oldDoc);
+			$TABLE = 'tx_dam';
+			$WHERE = 'uid = '.$docID;
+			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$oldDoc);				
+			
+			// ---- getting the pure filename
+			list($versionname,$type) = split('\.',$filename);
+			list($purename,$version) = split('_v',$versionname);
+			$newversion = $oldversion+ 1;
+			$new_filename = $purename.'_v'.$newversion.'.'.$filetype;	
+
+			// ---- changing the id's of the records and copying the old meta data to the file
+			//record with the new file
+			$oldDoc['uid'] = $oldID;
+			$oldDoc['tx_damfrontend_version'] = $newversion;	
+			$oldDoc['file_name']=$new_filename;
+			$oldDoc['tx_damfrontend_version']= $newversion;	
+			$oldDoc['crdate']=time();
+			$oldDoc['date_mod']=time();		
+			$DATA = array('uid' => $oldID);
+			$TABLE = 'tx_dam';
+			$WHERE = 'uid = '.$oldID;
+			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$oldDoc);
+			
+			// ---- renaming the new file with the version number
+			rename(PATH_site.$filepath.$filename.'_versionate',PATH_site.$filepath.$new_filename);
+			
+			return $oldID;	
+			
+		}
+		
+		function overrideData($docID) {
+						
+			// getting the new record
+			$FIELDS = '*';
+			$TABLE = 'tx_dam';
+			$WHERE = 'uid = '.$docID;
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($FIELDS,$TABLE,$WHERE);
+			
+			
+			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+				$newDoc = $row;
+			}
+			$filename = $newDoc['file_name'];
+			
+			// getting the old dataset id
+			$FIELDS = 'uid';
+			$TABLE = 'tx_dam';
+			$WHERE = 'file_name = \''.$filename.' \' AND uid <>'.$docID ;
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($FIELDS,$TABLE,$WHERE);
+			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+				$oldUID = $row['uid'];
+			}
+				
+			// DELETE the old file
+			unlink(PATH_site.$newDoc['file_path'].$newDoc['file_name']);
+						
+			// Rename the uploaded file to the new name
+			rename(PATH_site.$newDoc['file_path'].$newDoc['file_name'].'_versionate', PATH_site.$newDoc['file_path'].$newDoc['file_name']);
+								
+			// deleting the new record
+			$TABLE = 'tx_dam';
+			$WHERE = 'uid = '.$docID;
+			$GLOBALS['TYPO3_DB']->exec_DELETEquery($TABLE,$WHERE);
+
+			return $oldUID;
+		}
+		
+		/**
+		 * @author stefan
+		 *
+		 */
+		 function delete_category ($uid, $catID) {
+			if (!intval($uid)) die('Parametererror in categoryDocument: Check DatabaseID:' . $uid);
+			if (!intval($catID)) die('one categoryID was not delivered as Integer');
+			$where = ' uid_local=' .$uid .' AND uid_foreign= ' . $catID;
+			return $GLOBALS['TYPO3_DB']->exec_DELETEquery($this->mm_Table, $where);			
+		}
 	}
+
+
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/DAL/class.tx_damfrontend_DAL_documents.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/DAL/class.tx_damfrontend_DAL_documents.php']);
 }

@@ -1,4 +1,6 @@
-Version 0.2.1 Beta 2
+Version 0.3.0 Beta
+
+Version 0.2.1
 - fixed bug 1885: if multiple Views are used on different pages, category selection sometimes hasn't worked
 - fixed bug 1922: label for "flexform_useStaticCatSelection" were missing in english
 
