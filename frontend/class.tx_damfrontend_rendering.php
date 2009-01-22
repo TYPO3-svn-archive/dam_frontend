@@ -467,6 +467,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
  		$markerArray['###NOSELECTION###'] = $this->pi_getLL('noselection');
  		$markerArray['###LABEL_FILETYPE###'] = $this->pi_getLL('label_filetype');
  		$markerArray['###LABEL_SEARCHOPS###'] = $this->pi_getLL('label_searchops');
+ 		$markerArray['###LABEL_NO_CAT###'] = $this->pi_getLL('LABEL_NO_CAT');
  		$markerArray['###PDFFILE###'] = $this->pi_getLL('pdffile');
  		$markerArray['###WORDFILE###'] = $this->pi_getLL('wordfile');
  		$markerArray['###JPEGFILE###'] = $this->pi_getLL('jpegfile');

@@ -359,6 +359,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->convertPiVars();
 
 		$this->filterState->filterTable = 'tx_damfrontend_filterStates';
+		$this->overRide();
 
 		// Processing and distribution of input data
 		// Mapping input parameters to actions
@@ -441,6 +442,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				break;
 			case 8:
 				$content .= $this->fileList(true);
+				break;
+			case 99:
+				$content = $this->dropDown();
 				break;
 			default:
 				$content .= 'no view selected - nothing is displayed';
@@ -819,7 +823,79 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	}
 
 
+	
+	
+	
+	
+	function dropDown() {
+		//$this->catTree();
+		//t3lib_div::debug($this->internal['incomingtreeID']);
+		$v=unserialize($GLOBALS['TSFE']->fe_user->getKey('ses','tx_damdownloads_treeState'));
+		$treeMap=$this->getTreeMap();
+		$post=$_POST["tx_damfrontend_pi1"];
+		$levelState=$this->piVars["dropdown"];
+		//t3lib_div::debug($levelState);
+		for ($i=0;$i<count($levelState);$i++) {
+			if (!($levelState[$i]>0)) $levelState[$i]=-1; 
+		}
 
+		//t3lib_div::debug($l1);
+		$formSt="<form id='formDamSelect' name='formDamSelect' action='' method='POST'>";
+		$formHidden="<input type='hidden' name='treeID' value='14'><input type='hidden' name='treeID' value='14'>";
+		$optString=array();
+		$optString[]="<select name='tx_damfrontend_pi1[dropdown][0]' id='level1' onChange='document.formDamSelect.submit();'>".$this->getSubNodesOptions($treeMap,1,$levelState[0])."</select><br>";
+		$i=0;
+		while ((isset($levelState[$i]))&&(count($this->getSubNodes($treeMap,$levelState[$i]))>0)) {
+			$optString[]="<select name='tx_damfrontend_pi1[dropdown][".($i+1)."]' onChange='document.formDamSelect.submit();'>".($this->getSubNodesOptions($treeMap,$levelState[$i],$levelState[$i+1]))."</select><br>";
+			$i++;
+		}
+		$formEnd="</form>";
+		return $formSt.implode("",$optString).$formHidden.$formEnd;
+	}
+	
+	
+	
+	
+	function isSubNodeOf($arr,$node,$subnode) {
+		$subs=$this->getSubNodes($arr,$node);
+		$found=false;
+		for ($i=0;$i<count($subs);$i++) {
+  			if ($subs[$i]==$subnode) return true;
+  			if ($this->isSubNodeOf($arr,$subs[$i],$subnode)) return true;
+  		}
+  		return false;
+	}
+	
+	
+	
+	
+	
+	function getSubNodesCount($arr,$parent) {
+		return count($this->getSubNodes($arr,$parent));
+	}
+	
+	
+	
+	
+	function getSubNodes($arr,$parent) {
+		$retArr=array();
+		foreach ($arr as $nr=>$val) {
+			if ($val["parent"]==$parent) $retArr[]=$nr;
+		}
+		return $retArr;
+	}
+	
+	
+	
+	
+	function getSubNodesOptions($arr,$parent,$selVal=-1) {
+		$ret="";
+		foreach ($arr as $nr=>$val) {
+			if ($val["parent"]==$parent) $ret.="<option value='$nr' ".(($selVal==$nr)?"selected":"").">".$val["title"]."</option>";
+		}
+		if(strlen($ret)>0) $ret="<option value='-1' ".(($selVal==-1)?"selected":"").">Please select...</option>".$ret;
+		return $ret;
+	}
 	
 	
 	

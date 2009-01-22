@@ -97,6 +97,7 @@
 			<label index="VERSIONING_FILE_EXISTS">This file is allready exisiting. What should be done?</label>
 			<label index="VERSIONING_OVERWRITES">Replace file and update the metadata.</label>
 			<label index="VERSIONING_NEW_VERSION">Create a new (additional) file.</label>
+			<label index="LABEL_NO_CAT">Search in all Categories </label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="list_mode_1">Modus 1</label>
@@ -178,6 +179,7 @@
 			<label index="VERSIONING_FILE_EXISTS">Die Datei ist bereits im System vorhanden. Wie soll verfahren werden ?</label>
 			<label index="VERSIONING_OVERWRITES">Vorhandene Datei überschreiben und Metadaten aktualisieren.</label>
 			<label index="VERSIONING_NEW_VERSION">Neue (zusätzliche) Datei anlegen.</label>
+			<label index="LABEL_NO_CAT">In allen Kategorien suchen</label>
 		</languageKey>
 	</data>
 </T3locallang>

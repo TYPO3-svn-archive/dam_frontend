@@ -501,7 +501,14 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			foreach ($searchFields as $field) {
 				$queryPart[] = ' '.$this->docTable.'.'.$field.' LIKE "%'.$GLOBALS['TYPO3_DB']->quoteStr(trim($searchword), $this->docTable).'%" ';
 			}
+			
+			function getSearchwordWhereString($searchword) { //fb:
+			return ' AND (('.$this->docTable.'.title LIKE "%'.trim($searchword).'%" ) OR ('.$this->docTable.'.keywords LIKE "%'.trim($searchword).'%"))';
+		}
+			
+			
 			return ' AND ('.implode(' OR ', $queryPart).') ';
+			
 		}
 
 	/**
