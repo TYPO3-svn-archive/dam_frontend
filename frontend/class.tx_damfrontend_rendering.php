@@ -561,6 +561,11 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		$markerArray['###BUTTON_UPLOAD###'] = $this->pi_getLL('BUTTON_UPLOAD');
 		$markerArray['###TITLE_FILEUPLOAD###'] = $this->pi_getLL('TITLE_FILEUPLOAD');
 		$markerArray['###LABEL_FILE###'] =  $this->pi_getLL('LABEL_FILE');
+		if (!isset($this->conf['filterview.']['form_url.']['parameter'])) {
+			$this->conf['filterview.']['form_url.']['parameter'] = $GLOBALS['TSFE']->id;
+		}
+		$this->conf['filterview.']['form_url.']['returnLast'] = 'url';
+		$markerArray['###FORM_URL###'] = $this->cObj->typolink('', $this->conf['filterview.']['form_url.']);
 		$markerArray =$markerArray + $this->substituteLangMarkers($formCode);	
 	
 		return tslib_cObj::substituteMarkerArray($formCode, $markerArray);
