@@ -188,18 +188,18 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 	function wrapTitle($title,$row,$bank=0) {		
 		if ($this->catLogic->checkCategoryAccess($GLOBALS['TSFE']->fe_user->user['uid'],$row['uid'])) {
 			$id = t3lib_div::_GET('id');
-			$param_array = array (
+			/**$param_array = array (
 				'catPlus' => $row['uid'],
 				'treeID' => $this->treeID
+			);*/
+			$param_array = array (
+				'tx_damfrontend_pi1[catPlus]' => $row['uid'],
+				'tx_damfrontend_pi1[catEquals]' => null,
+				'tx_damfrontend_pi1[catMinus]' => null,
+				'tx_damfrontend_pi1[catPlus_Rec]' => null,
+				'tx_damfrontend_pi1[catMinus_Rec]' => null,
+				'tx_damfrontend_pi1[treeID]' => $this->treeID
 			);
-		#	$param_array = array (
-		#		'catPlus' => $row['uid'],
-		#		'catEquals' => null,
-		#		'catMinus' => null,
-		#		'catPlus_Rec' => null,
-		#		'catMinus_Rec' => null,
-		#		'treeID' => $this->treeID
-		#	);
 			if ($id != '') $param_array['id'] = $id;
 			$param_array = array_merge($this->piVars,$param_array);
     		$url = $this->cObj->getTypoLink_URL($GLOBALS['TSFE']->id, $param_array);
