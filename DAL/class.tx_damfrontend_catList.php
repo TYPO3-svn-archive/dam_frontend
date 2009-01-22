@@ -156,6 +156,7 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 	 */
 	function getCatSelection($treeID = 0,$pageID=0) {
 		$ar = $this->getArrayFromUser();
+		
 		if ($treeID <>0) {
 			//returns the selected categories for a specified treeID
 			if ($treeID==-1){
@@ -172,21 +173,25 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 		}
 		else {
 			# return only treeIDs of the current PageID
-			$returnArr=array();
-			foreach ($ar as $key=>$value) {
-				// ---- getting the new record
-				$FIELDS = 'pid';
-				$TABLE = 'tt_content';
-				$WHERE = 'uid = '.$key;
-				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($FIELDS,$TABLE,$WHERE);
-				while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-					#t3lib_div::debug($ar[$key]);
-					if ($row['pid']==$pageID) {
-						$returnArr[$key] = $ar[$key];						
-					}		
-				}			
-			} 
-			t3lib_div::debug($returnArr);
+			if (!is_array($ar)) {
+				return null;
+			}
+			else {
+				$returnArr=array();
+				foreach ($ar as $key=>$value) {
+					// ---- getting the new record
+					$FIELDS = 'pid';
+					$TABLE = 'tt_content';
+					$WHERE = 'uid = '.$key;
+					$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($FIELDS,$TABLE,$WHERE);
+					while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+						#t3lib_div::debug($ar[$key]);
+						if ($row['pid']==$pageID) {
+							$returnArr[$key] = $ar[$key];						
+						}		
+					}			
+				}
+			}
 			return is_array($returnArr) ? array_unique($returnArr) : null;
 		}
 

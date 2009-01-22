@@ -826,24 +826,25 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	
 	
 	
-	
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 * @author Martin Baum
+	 **/
 	function dropDown() {
-		//$this->catTree();
-		//t3lib_div::debug($this->internal['incomingtreeID']);
 		$v=unserialize($GLOBALS['TSFE']->fe_user->getKey('ses','tx_damdownloads_treeState'));
 		$treeMap=$this->getTreeMap();
+		
 		$post=$_POST["tx_damfrontend_pi1"];
 		$levelState=$this->piVars["dropdown"];
-		//t3lib_div::debug($levelState);
 		for ($i=0;$i<count($levelState);$i++) {
-			if (!($levelState[$i]>0)) $levelState[$i]=-1; 
+			if (!($levelState[$i]>0)) $levelState[$i]=-1;
 		}
-
-		//t3lib_div::debug($l1);
 		$formSt="<form id='formDamSelect' name='formDamSelect' action='' method='POST'>";
 		$formHidden="<input type='hidden' name='treeID' value='14'><input type='hidden' name='treeID' value='14'>";
 		$optString=array();
-		$optString[]="<select name='tx_damfrontend_pi1[dropdown][0]' id='level1' onChange='document.formDamSelect.submit();'>".$this->getSubNodesOptions($treeMap,1,$levelState[0])."</select><br>";
+		$optString[]="<select name='tx_damfrontend_pi1[dropdown][0]' id='level1' onChange='document.formDamSelect.submit();'>".$this->getSubNodesOptions($treeMap,0,$levelState[0])."</select><br>";
 		$i=0;
 		while ((isset($levelState[$i]))&&(count($this->getSubNodes($treeMap,$levelState[$i]))>0)) {
 			$optString[]="<select name='tx_damfrontend_pi1[dropdown][".($i+1)."]' onChange='document.formDamSelect.submit();'>".($this->getSubNodesOptions($treeMap,$levelState[$i],$levelState[$i+1]))."</select><br>";
@@ -855,7 +856,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	
 	
 	
-	
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 * @author Martin Baum
+	 **/
 	function isSubNodeOf($arr,$node,$subnode) {
 		$subs=$this->getSubNodes($arr,$node);
 		$found=false;
@@ -869,14 +875,24 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	
 	
 	
-	
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 * @author Martin Baum
+	 **/
 	function getSubNodesCount($arr,$parent) {
 		return count($this->getSubNodes($arr,$parent));
 	}
 	
 	
 	
-	
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 * @author Martin Baum
+	 **/
 	function getSubNodes($arr,$parent) {
 		$retArr=array();
 		foreach ($arr as $nr=>$val) {
@@ -887,7 +903,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	
 	
 	
-	
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 * @author Martin Baum
+	 **/
 	function getSubNodesOptions($arr,$parent,$selVal=-1) {
 		$ret="";
 		foreach ($arr as $nr=>$val) {
@@ -1022,22 +1043,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 		return true;
 	}
-
-
-
-
-//	function getIncomingAnforderData() {
-//		// Übertrage Formulardaten von der SI Anforderungin ein Array
-//		$this->formData['email'] = t3lib_div::_POST('email') ? strip_tags(t3lib_div::_POST('email')) : '';
-//		$this->formData['plz'] = t3lib_div::_POST('plz') ? strip_tags(t3lib_div::_POST('plz')) : '';
-//		$this->formData['ort'] = t3lib_div::_POST('ort') ? strip_tags(t3lib_div::_POST('ort')) : '';
-//		$this->formData['anschrift'] = t3lib_div::_POST('anschrift') ? strip_tags(t3lib_div::_POST('anschrift')) : '';
-//		$this->formData['vorname'] = t3lib_div::_POST('vorname') ? strip_tags(t3lib_div::_POST('vorname')) : '';
-//		$this->formData['nachname'] = t3lib_div::_POST('nachname') ? strip_tags(t3lib_div::_POST('nachname')) : '';
-//		// docID legt fest, welches Dokument angefordert wurde
-//		$this->formData['docID'] = intval(t3lib_div::_POST('docID'));
-//	}
-
+	
+	
+	
 	/**
 	 * Show the categoriseform
 	 *	@param array $docData if set: an existing document is categorized new
@@ -1277,6 +1285,130 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			return $this->renderer->renderError('custom','No ID given. ','Edit DAM Metadata (editForm): Please take care, that an uid is given to this function');
 		}
 	}
+	
+	
+	
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 * @author Martin Baum
+	 **/
+	function overRide2() {
+		$x=$this->catList->getCatSelection($this->internal['incomingtreeID']);
+		
+		t3lib_div::debug($x[$this->internal['incomingtreeID']]);
+		
+		if (count($x[$this->internal['incomingtreeID']])<1) {
+			t3lib_div::debug("a");
+		}
+	}
+	
+	
+	
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 * @author Martin Baum
+	 **/
+	function overRide() {
+		
+		$levelState=$this->piVars["dropdown"];
+		//t3lib_div::debug($levelState);
+		$isDropSel=(isset($levelState[0])&&($levelState[0]>0));
+		if ($isDropSel) {
+			//t3lib_div::debug("test");
+			for ($i=0;$i<count($levelState);$i++) {
+				if (!($levelState[$i]>0)) $levelState[$i]=-1; 
+			}
+			
+			$treeMap=$this->getTreeMap();
+			$this->internal['catEquals'] = $levelState[0];
+			$i=1;
+			while((isset($levelState[$i]))&&($levelState[$i]>0)&&($this->isSubNodeOf($treeMap,$levelState[$i-1],$levelState[$i]))) {
+				$this->internal['catEquals'] = $levelState[$i];
+				$i++;
+			}
+		}
+	
+	}
+	
+	
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 * @author Martin Baum
+	 **/
+	function getTreeMap() {
+		$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeView');
+		
+		$tree->init($this->internal['treeID'], $this);
+		$tree->sessionVar="fb_blubb";
+		$tree->title = $this->internal['treeName'];
+		$selCats  = $this->catList->getCatSelection($this->internal['treeID']);
+		$tree->selectedCats = $selCats[$this->internal['treeID']];
+		if (is_array($this->internal['catMounts'])) $tree->MOUNTS = $this->internal['catMounts'];
+		$tree->initializePositionSaving();
+		$treeArr=array();
+		
+		foreach($tree->MOUNTS as $idx => $uid)	{
+			$tree->bank=$idx;
+			$isOpen = $tree->stored[$idx][$uid] || $tree->expandFirst;
+			$tree->expandAll=1;
+			$curIds = $tree->ids;
+			$tree->reset();
+			$tree->ids = $curIds;
+			$cmd=$tree->bank.'_'.($isOpen?"0_":"1_").$uid.'_'.$tree->treeName;
+			if ($uid)	{
+				$rootRec = $tree->getRecord($uid);
+			} else {
+				$rootRec = $tree->getRootRecord($uid);
+			}
+
+			if (is_array($rootRec))	{
+				$uid = $rootRec['uid'];		// In case it was swapped inside getRecord due to workspaces.
+
+					// Add the root of the mount to ->tree
+				$tree->tree[]=array('row'=>$rootRec);
+
+					// If the mount is expanded, go down:
+				if (true||$isOpen)	{
+					if ($tree->addSelfId)	$this->ids[] = $uid;
+					$tree->getTree($uid,999,$depthD,'',$rootRec['_SUBCSSCLASS']);
+				}
+				$treeArr=array_merge($treeArr,$tree->tree);
+			}
+		}
+		$treeMap=array();
+		foreach($tree->tree as $nodeNr=>$node) {
+			if ($nodeNr>0) {
+				$data=$node["row"];
+				$title=$data["title"];
+				$parent=$data["parent_id"];
+				$treeMap[$data["uid"]]=array("title"=>$title,"parent"=>$parent);
+			}
+		}
+		return $treeMap;
+	}
+	
+	
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 * @author Martin Baum
+	 **/
+	function getTree($mount= '') {
+
+		$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeView');
+		$tree->init();
+		$tree->selectedCats = $this->catList->getCatSelection();
+		if ($mount != '') $tree->MOUNTS;
+		return $tree;
+	}
+	
 	
 	/**
 	 * @author stefan
