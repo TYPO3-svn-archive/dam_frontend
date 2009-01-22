@@ -272,7 +272,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		}
 
 	/**
-	 * Retuns the resultlist of a requestet DAM Document
+	 * Returns the resultlist of a requestet DAM Document
 	 *
 	 * @param	[int]		$docID: the UID of a document
 	 * @return	[SQL]		Result
@@ -312,7 +312,10 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				$select = $this->docTable.'.uid';
 				$from = $this->docTable.' INNER JOIN '.$this->mm_Table.' ON '.$this->mm_Table.'.uid_local  = '.$this->docTable.
 				'.uid INNER JOIN '.$this->catTable.' ON '.$this->mm_Table.'.uid_foreign = '.$this->catTable.'.uid';
-				$filter = ' AND '.$this->docTable.'.deleted = 0  AND '.$this->docTable.'.hidden = 0'.$this->additionalFilter;
+				$filter = ' AND '.$this->docTable.'.deleted = 0  AND '.$this->docTable.'.hidden = 0';
+				$filter .= ' AND ('.$this->docTable.'.starttime > '.time().' OR '.$this->docTable.'.starttime = 0)';
+				$filter .= ' AND ('.$this->docTable.'.endtime < '.time().' OR '.$this->docTable.'.endtime = 0)';
+				$filter .= $this->additionalFilter;
 	
 	
 				// preparing the category array - deleting all empty entries
@@ -652,7 +655,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		
 		
 		// if a file is added twice to the system, a new version is genreated
-		function createNewVersion($docID) {			
+		function createNewVersion($docID) {						
 			// ---- getting the new record
 			$FIELDS = '*';
 			$TABLE = 'tx_dam';
@@ -689,7 +692,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			//copying the old data to the new id
 			// record with the old file
 			$oldDoc['uid']=$docID;
-			#t3lib_div::debug($oldDoc);
 			$TABLE = 'tx_dam';
 			$WHERE = 'uid = '.$docID;
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$oldDoc);				
