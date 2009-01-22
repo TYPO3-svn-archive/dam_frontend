@@ -149,9 +149,9 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 	}
 
 	/**
-	 * returns a list of all selected categories
-	 *
-	 * @param	int			$treeID: ID of used category tree
+	 * returns a list of either the selected categories of a tree ($treeID must be set) or the categories of a page (pageID must be set)
+	 * @param	int 		$treeID: ID of used category tree (optional: if set only the categories of this tree are teturned)
+	 * @param	int			$pageID: ID of the page where the tree should be used (optional: if all categories which are selected are returned for this page)
 	 * @return	array		list of all selected categories
 	 */
 	function getCatSelection($treeID = 0,$pageID=0) {
