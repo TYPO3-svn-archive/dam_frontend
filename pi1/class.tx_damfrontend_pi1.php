@@ -170,6 +170,17 @@ class tx_damfrontend_pi1 extends tslib_pibase {
  		$this->internal['filter']['filetype'] = strip_tags(t3lib_div::_GP('filetype'));
 		$this->internal['filter']['searchword'] =strip_tags(t3lib_div::_GP('searchword'));
 		
+		
+		// 
+		if (t3lib_div::_GP('dam_fe_allCats')) {
+			$this->internal['filter']['searchAllCats'] = true;
+		}
+		else {
+			$this->internal['filter']['searchAllCats'] = false;
+		}
+		
+		
+		
 		$this->internal['filter']['LanguageSelector'] = strip_tags(t3lib_div::_GP('LanguageSelector'));
 		$this->internal['filter']['creator'] = strip_tags(t3lib_div::_GP('creator'));
 		$this->internal['filter']['owner'] = strip_tags(t3lib_div::_GP('owner'));
@@ -521,14 +532,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		
 		$hasCats = false; // true if any category has been selected yet
 		
-		// debugging current state of cat Selection
-		//t3lib_div::debug($cats);
-		//t3lib_div::debug($this->internal['incomingtreeID']);
-		//t3lib_div::debug($GLOBALS['TSFE']->fe_user->sesData);
-
-		//check if a document should be deleted
-		#t3lib_div::debug($this->conf);
-		
 		if ($this->conf['enableDeletions']==1) {
 			if ($this->userLoggedIn == true) {
 				# only if a user is logged in and the UserUID of the uploaded doc is equal to fe_user, then operations can be done	
@@ -595,7 +598,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 		}
 
-		if ($hasCats ) {
+		if ($hasCats || $this->internal['filter']['searchAllCats'] ) {
 			/***************************
 			 *
 			 *    search and sorting values are transfered to the user
@@ -636,6 +639,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 */
 	function filterView() {
 		$content = $this->renderer->renderFilterView($this->internal['filter'], $this->internal['filterError']);
+		$content=str_replace("name=\"dam_fe_allCats\"","name=\"dam_fe_allCats\" ".(($this->internal['filter']['searchAllCats'])?" checked ":"")."",$content);
 		return $content;
 	}
 

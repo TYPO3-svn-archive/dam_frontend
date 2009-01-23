@@ -85,7 +85,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		var $categories = array(); // contains all categories, documents shall be shown from
 
 		var $selectionMode = '';
-
+		var $searchAllCats;
 		var $fullTextSearchFields = 'title';
 
 		var $relations = array(
@@ -297,12 +297,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 * @return	[array]		returns an array which contains all selected records
 	 */
 		function getDocumentList($userUID=0) {
-			if(!is_array($this->categories)) {
-				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getDcoumentList: for the this->categories is no array. Given value was:' .$this->categories, 'dam_frontend',3);
-			}
-
-			 #debug($this->categories);
-
 			if (count($this->categories)) {
 				/*
 				 * Building the from clause manually by joining the DAM tables
@@ -312,11 +306,13 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				$select = $this->docTable.'.uid';
 				$from = $this->docTable.' INNER JOIN '.$this->mm_Table.' ON '.$this->mm_Table.'.uid_local  = '.$this->docTable.
 				'.uid INNER JOIN '.$this->catTable.' ON '.$this->mm_Table.'.uid_foreign = '.$this->catTable.'.uid';
+				
+				
 				$filter = ' AND '.$this->docTable.'.deleted = 0  AND '.$this->docTable.'.hidden = 0';
 				$filter .= ' AND ('.$this->docTable.'.starttime > '.time().' OR '.$this->docTable.'.starttime = 0)';
 				$filter .= ' AND ('.$this->docTable.'.endtime < '.time().' OR '.$this->docTable.'.endtime = 0)';
 				$filter .= $this->additionalFilter;
-	
+				
 	
 				// preparing the category array - deleting all empty entries
 				foreach($this->categories as $number => $catList) {
@@ -334,9 +330,9 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				 *
 				 *
 				 */
-				 t3lib_div::debug($this->categories);
 				foreach($this->categories as $number => $catList) {
-					$catString = '( '.$this->catTable.'.uid='.implode(' OR '.$this->catTable.'.uid=',$catList).')';
+					$catString = ($this->searchAllCats)?"1=1":'( '.$this->catTable.'.uid='.implode(' OR '.$this->catTable.'.uid=',$catList).')';
+					//$catString = '( '.$this->catTable.'.uid='.implode(' OR '.$this->catTable.'.uid=',$catList).')';
 					if ($z != count($this->categories)-1) {
 						if (!count($queryText)) {
 							$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery($select,$from, $catString);
@@ -364,8 +360,9 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				#query without using categories
 				$select='*';
 				$from='tx_dam';
-				$where.= ' deleted=0 AND hidden=0 '.$this->additionalFilter;
+				$where.= ' deleted=0 AND hidden=0 '.$filter;
 			} 
+			
 			
 			// executing the query and calculating the number of rows
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select,$from,$where);
@@ -449,10 +446,22 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 * @return	array		returns an array with error codes - filled while cration of the form
 	 */
 		function setFilter($filterArray) {
+			
+			
+			
 			if (!is_array($filterArray)){
 				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function setFilter: filterArray must be an array. Given value was:' .$this->categories, 'dam_frontend',3);
 			}
 			#t3lib_div::debug($filterArray);
+			
+			// searching in all Documents if filter is set
+			if ($filterArray['searchAllCats']) {
+				$this->searchAllCats = true;
+			}
+			else {
+				$this->searchAllCats = false;
+			}
+			
 			$errors = array();
 			$this->additionalFilter = '';
 			/********************************
@@ -504,12 +513,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			foreach ($searchFields as $field) {
 				$queryPart[] = ' '.$this->docTable.'.'.$field.' LIKE "%'.$GLOBALS['TYPO3_DB']->quoteStr(trim($searchword), $this->docTable).'%" ';
 			}
-			
-			function getSearchwordWhereString($searchword) { //fb:
-			return ' AND (('.$this->docTable.'.title LIKE "%'.trim($searchword).'%" ) OR ('.$this->docTable.'.keywords LIKE "%'.trim($searchword).'%"))';
-		}
-			
-			
 			return ' AND ('.implode(' OR ', $queryPart).') ';
 			
 		}
