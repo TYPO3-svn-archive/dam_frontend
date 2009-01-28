@@ -112,6 +112,7 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 			if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function op_Minus: for the treeID only integer values are allowed. Given value was:' .$treeID, 'dam_frontend',3);
 		}
 		$catarray = $this->getArrayFromUser();
+
 		if (!empty($catarray)) {	
 			$test = array_search($catID,$catarray[$treeID]);
 			unset($catarray[$treeID][$test]);
@@ -144,20 +145,21 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 			if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function op_Equals: for the treeID only integer values are allowed. Given value was:' .$treeID, 'dam_frontend',3);
 		}
 		$catarray = $this->getArrayFromUser();
+
 		$catarray[$treeID] = array($catID);
 		$this->setArrayToUser($catarray);
 	}
 
 	/**
 	 * returns a list of either the selected categories of a tree ($treeID must be set) or the categories of a page (pageID must be set)
-	 * @param	int 		$treeID: ID of used category tree (optional: if set only the categories of this tree are teturned)
+	 * @param	int 		$treeID: ID of used category tree (optional: if set only the categories of this tree are returned)
 	 * @param	int			$pageID: ID of the page where the tree should be used (optional: if all categories which are selected are returned for this page)
 	 * @return	array		list of all selected categories
 	 */
 	function getCatSelection($treeID = 0,$pageID=0) {
 		$ar = $this->getArrayFromUser();
 		
-		if ($treeID <>0) {
+		if ($treeID <> 0) {
 			//returns the selected categories for a specified treeID
 			if ($treeID==-1){
 				return is_array($ar[$treeID]) ? array_unique($ar[$treeID]) : null;

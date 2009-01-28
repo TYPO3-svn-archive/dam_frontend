@@ -471,28 +471,46 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @return	[type]		...
 	 */
 	function getInputTree() {
+	
+		if (is_array($this->piVars['dropdown'])) {
+			$this->internal['incomingtreeID'] = 999;
+			t3lib_div::debug($this->piVars['dropdown']);
+			$count = count($this->piVars['dropdown']);
+			
+			$lastID = $this->piVars['dropdown'][$count-1];
+			while($lastID == -1) {
+				$count --;
+				$lastID = $this->piVars['dropdown'][$count-1];
+			}
+			$this->catList->op_Equals($lastID,999);
+		}
+		else {
+			if ($this->internal['catPlus']) {
+				$this->catList->op_Plus($this->internal['catPlus'], $this->internal['incomingtreeID']);
+			}
+			else if ($this->internal['catMinus']) {
+				$this->catList->op_Minus($this->internal['catMinus'], $this->internal['incomingtreeID']);
+			}
+			else if ($this->internal['catEquals']) {
+				$this->catList->op_Equals($this->internal['catEquals'], $this->internal['incomingtreeID']);
+			}
+			else if ($this->internal['catMinus_Rec']) {
+				$subs = $this->catLogic->getSubCategories($this->internal['catMinus_Rec']);
+				foreach ($subs as $sub) {
+					$this->catList->op_Minus($sub['uid'], $this->internal['incomingtreeID']);
+				}
+			}
+			else if ($this->internal['catPlus_Rec']) {
+				$subs = $this->catLogic->getSubCategories($this->internal['catPlus_Rec']);
+				foreach ($subs as $sub) {
+					$this->catList->op_Plus($sub['uid'], $this->internal['incomingtreeID']);
+				}
+			}
+		}
 		
-		if ($this->internal['catPlus']) {
-			$this->catList->op_Plus($this->internal['catPlus'], $this->internal['incomingtreeID']);
-		}
-		else if ($this->internal['catMinus']) {
-			$this->catList->op_Minus($this->internal['catMinus'], $this->internal['incomingtreeID']);
-		}
-		else if ($this->internal['catEquals']) {
-			$this->catList->op_Equals($this->internal['catEquals'], $this->internal['incomingtreeID']);
-		}
-		else if ($this->internal['catMinus_Rec']) {
-			$subs = $this->catLogic->getSubCategories($this->internal['catMinus_Rec']);
-			foreach ($subs as $sub) {
-				$this->catList->op_Minus($sub['uid'], $this->internal['incomingtreeID']);
-			}
-		}
-		else if ($this->internal['catPlus_Rec']) {
-			$subs = $this->catLogic->getSubCategories($this->internal['catPlus_Rec']);
-			foreach ($subs as $sub) {
-				$this->catList->op_Plus($sub['uid'], $this->internal['incomingtreeID']);
-			}
-		}
+		
+		
+
 	}
 
 
@@ -528,8 +546,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @return	html		HTML - list of all selected documents
 	 */
 	function fileList($useRequestForm) {
-		$cats = $this->catList->getCatSelection(0,$this->pid );
+		//t3lib_div::debug($this->internal['incomingtreeID']);
 		
+		$cats = $this->catList->getCatSelection($this->internal['incomingtreeID']);
+		//t3lib_div::debug($cats);
 		$hasCats = false; // true if any category has been selected yet
 		
 		if ($this->conf['enableDeletions']==1) {
@@ -846,7 +866,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			if (!($levelState[$i]>0)) $levelState[$i]=-1;
 		}
 		$formSt="<form id='formDamSelect' name='formDamSelect' action='' method='POST'>";
-		$formHidden="<input type='hidden' name='treeID' value='14'><input type='hidden' name='treeID' value='14'>";
+		$formHidden="<input type='hidden' name='tx_damfrontend_pi1[treeID]' value='999'><input type='hidden' name='treeID' value='14'>";
 		$optString=array();
 		$optString[]="<select name='tx_damfrontend_pi1[dropdown][0]' id='level1' onChange='document.formDamSelect.submit();'>".$this->getSubNodesOptions($treeMap,0,$levelState[0])."</select><br>";
 		$i=0;
