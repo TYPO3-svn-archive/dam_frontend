@@ -114,6 +114,8 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 		$catarray = $this->getArrayFromUser();
 
 		if (!empty($catarray)) {	
+			#t3lib_div::debug($catarray);
+			#t3lib_div::debug($catarray[$treeID]);
 			$test = array_search($catID,$catarray[$treeID]);
 			unset($catarray[$treeID][$test]);
 		}

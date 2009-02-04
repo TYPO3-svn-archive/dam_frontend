@@ -388,6 +388,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->getInputTree();
 
 		if ($this->internal['useStaticCatSelection']) {
+			$this->internal['incomingtreeID'] = $this->internal['treeID']; 
 			$this->catList->unsetAllCategories();
 			if (is_array($this->internal['catMounts'])) {
 				foreach ($this->internal['catMounts'] as $catMount) {
@@ -399,8 +400,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					}
 				}
 			}
+			t3lib_div::debug($this->catList->getCatSelection($this->internal['incomingtreeID']));
 		}
-		#t3lib_div::debug($this->catList->getCatSelection($this->internal['treeID']));
+		
 		
 		#processing edition of meta data
 		if ($this->internal['saveUID'] >0){

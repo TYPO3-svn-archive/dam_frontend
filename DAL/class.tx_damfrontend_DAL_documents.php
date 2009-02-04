@@ -358,6 +358,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			} 
 			else {
 				#query without using categories
+				$filter .= $this->additionalFilter;
 				$select='*';
 				$from='tx_dam';
 				$where.= ' deleted=0 AND hidden=0 '.$filter;
