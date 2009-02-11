@@ -375,7 +375,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			// executing the final query and convert the results into an array
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where,'',$this->orderBy, $this->limit);
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				#t3lib_div::debug($row);
 				if ($this->checkAccess($row['uid'], 1)) {
 					//add a delete information
 					if ($userUID == $row['tx_damfrontend_feuser_upload'] AND $userUID>0){
@@ -456,8 +455,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			if (!is_array($filterArray)){
 				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function setFilter: filterArray must be an array. Given value was:' .$this->categories, 'dam_frontend',3);
 			}
-			#t3lib_div::debug($filterArray);
-			
 			// searching in all Documents if filter is set
 			if ($filterArray['searchAllCats']) {
 				$this->searchAllCats = true;
@@ -541,9 +538,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		
 		
 		function saveMetaData($docID, $docData) {
-			
-			#t3lib_div::debug($docData);
-			
 			foreach( $docData as $key => $value ) {
 				$DATA[$key] = $value;
 			}		
@@ -600,7 +594,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 
 			// executing the insert operation for the database
 			$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_dam', $newrecord);
-			if ($GLOBALS['TYPO3_DB']->sql_error() != '') t3lib_div::debug($GLOBALS['TYPO3_DB']->sql_error());
 			$newID = $GLOBALS['TYPO3_DB']->sql_insert_id();
 			return $newID;
 		}
@@ -655,7 +648,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 					}
 				}
 			} 
-			#t3lib_div::debug($content);
 			return $content;
 		}
 		

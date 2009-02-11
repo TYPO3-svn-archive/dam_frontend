@@ -58,7 +58,6 @@ class tx_damfrontend_baseSessionData {
 
 	function tx_damfrontend_baseSessionData() {
 		$this->user =& $GLOBALS['TSFE']->fe_user;
-		//t3lib_div::debug($GLOBALS['TSFE']->fe_user->sesData);
 	}
 
 	/**
@@ -68,7 +67,6 @@ class tx_damfrontend_baseSessionData {
 	 */
 	function getArrayFromUser() {
 		$sesarray = $this->user->getKey('ses', $this->sessionVar);
-		#t3lib_div::debug($sesarray);
 		if (is_array($sesarray)) return $sesarray;
 	}
 

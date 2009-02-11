@@ -97,8 +97,6 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		$this->langFile = $this->conf['langFile'];
 		$this->debug = $this->conf['debug'];
 		$this->staticInfoObj = t3lib_div::getUserObj('tx_staticinfotables_pi1');
-		#t3lib_div::debug('init Renderer:');
-		#t3lib_div::debug($this->conf);
 	}
 
 
@@ -125,8 +123,6 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 	 * @return	[type]		...
 	 */
  	function renderFileList($list, $resultcount, $pointer, $listLength, $useRequestForm) {
-		#t3lib_div::debug('Render filelist');
-		#t3lib_div::debug($this->conf);
  		if(!is_array($list)) die($this->pi_getLL('error_renderFileList_emptyArray'));
 		if(!intval($resultcount) || $resultcount < 1) die($this->pi_getLL('error_renderFileList_resultcount'));
 		if(!intval($pointer) || $pointer < 1 ) $pointer = 1;
@@ -140,12 +136,10 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		$rows = '';
 		$cObj = t3lib_div::makeInstance('tslib_cObj');
  		foreach ($list as $elem) {
-			// t3lib_div::debug($elem);
  			// TODO: correct table-name?
  			$cObj->start($elem, 'tx_dam');
  			$elem['count_id'] = $countElement++;
 			$elem['count_id'] = $elem['count_id']  + $pointer;
-			#t3lib_div::debug($elem);
  			$markerArray = $this->recordToMarkerArray($elem, 'renderFields');
  			$markerArray =$markerArray + $this->substituteLangMarkers($record_Code);
  			// TODO changes in the content of the marker arrays @todo what is done here?
@@ -443,7 +437,6 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 	 */
  	function renderFilterView($filterArray, $errorArray = '') {
  		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###FILTERVIEW###');
-		#t3lib_div::debug($filterArray); 
  		// filling fields with url - vars
  		$markerArray  = $this->recordToMarkerArray($filterArray);
 		$markerArray =$markerArray + $this->substituteLangMarkers($formCode);
@@ -791,7 +784,6 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		$tree->MOUNTS = explode(',',$uploadCats);
 		$tree->init(-1);
 		$tree->cObj = $this->cObj;
-		#t3lib_div::debug( $this->piVars);
 		if ($this->piVars['catEditUID']>0) {
 			$tree->piVars = array('tx_damfrontend_pi1[catEditUID]'=>$docData['uid']);
 		}	
@@ -941,7 +933,6 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 	 *	@return string HTML of the Selektorbox
 	 */
 	function renderLanguageSelector ($currentLanguage ='') {
-		#t3lib_div::debug($currentLanguage);
 		$whereLanguages='';
 		$languagesArray = array();
 		$languagesArray = explode(",",$this->conf['allowedLanguages']);
@@ -965,10 +956,8 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 	 *	@return string html of the selector box
 	 */
 	function renderOwnerSelector ($listOfOwners) {
-		#t3lib_div::debug($listOfCreators);
 		if (is_array($listOfOwners)) {
 			foreach ($listOfOwners as $owner) {
-				#t3lib_div::debug($creator);
 				if ($owner['selected'] == 1) {
 					$sel = ' selected="selected"'; 
 					$selected = true;

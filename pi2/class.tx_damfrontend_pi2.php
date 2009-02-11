@@ -74,10 +74,8 @@ class tx_damfrontend_pi2 extends tslib_pibase {
     }
 	
     //$this->log("main called; " . print_r($this->piVars, 1));
-    //debug($GLOBALS['TSFE'], "GLOBALS");
 
 	//Process TYPOScript Conf
-	//t3lib_div::debug($this->conf);
 	if ($this->conf['groupCriteria']<>'') {
 		$this->groupCriteriaConf = $this->conf['groupCriteria'];
 	}
@@ -161,7 +159,6 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 		if(in_array($uid, $groupDataKeys)) {
 			$rec = $records[$groupKey][$uid];
 			//Check if file exists
-			#t3lib_div::debug($BACK_PATH . $rec['file_path'] . $rec['file_name']);
 			if ($this->conf['checkIfFileExist']==0){
 		  		if (file_exists($BACK_PATH . $rec['file_path'] . $rec['file_name']) ==false) {
 		  			$fileExists = false;
@@ -200,10 +197,7 @@ class tx_damfrontend_pi2 extends tslib_pibase {
     $fieldList = array('uid','title', 'ident', 'description', 'file_path', 'file_name', 'file_size', 'file_mime_type', 'file_mime_subtype', 'file_type', 'file_mtime');
     $damTableName = "tx_dam";
     $whereClause = "uid IN (" . implode(", ", $this->damUidList) . ")" .
-    	t3lib_BEfunc::deleteClause($damTableName) . $this->cObj->enableFields($damTableName, $GLOBALS['TSFE']->beUserLogin);
-
-    //debug($whereClause, 'WHERE');
-
+    t3lib_BEfunc::deleteClause($damTableName) . $this->cObj->enableFields($damTableName, $GLOBALS['TSFE']->beUserLogin);
     $fields = 'pid,' . t3lib_BEfunc::getCommonSelectFields($damTableName, '') . ',' . implode(", ", $fieldList);
 
     $resObj = $dbh->exec_SELECTquery($fields,
@@ -312,10 +306,7 @@ class tx_damfrontend_pi2 extends tslib_pibase {
     $damRecord['icontag'] = $editIcon;
     $damRecord['icontag'] .= "<img border='0' class='" . $this->conf['iconCssClass'] . "' src='{$imgsrc}' alt='{$imgalt}' />";
 
-	//
-
 	$damRecord['file_name'] = $damRecord['file_name'] ? $damRecord['file_name'] : $this->pi_getLL('not_set');
-	//debug('Dateiname: '.$damRecord['file_name']);
     // ident field:
     $damRecord['ident'] = $damRecord['ident'] ? $damRecord['ident'] : $this->pi_getLL('not_set');
 

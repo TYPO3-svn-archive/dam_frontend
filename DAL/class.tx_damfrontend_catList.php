@@ -114,8 +114,6 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 		$catarray = $this->getArrayFromUser();
 
 		if (!empty($catarray)) {	
-			#t3lib_div::debug($catarray);
-			#t3lib_div::debug($catarray[$treeID]);
 			$test = array_search($catID,$catarray[$treeID]);
 			unset($catarray[$treeID][$test]);
 		}
@@ -161,7 +159,6 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 	 */
 	function getCatSelection($treeID = 0,$pageID=0) {
 		$ar = $this->getArrayFromUser();
-
 		if ($treeID <> 0) {
 			//returns the selected categories for a specified treeID
 			if ($treeID==-1){
@@ -184,7 +181,6 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 			else {
 				$returnArr=array();
 				foreach ($ar as $key=>$value) {
-					// ---- getting the new record
 					$FIELDS = 'pid';
 					$TABLE = 'tt_content';
 					$WHERE = 'uid = '.$key;
