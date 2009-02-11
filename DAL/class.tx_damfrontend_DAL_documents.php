@@ -384,7 +384,9 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 					}
 					#$resultCounter++;
 					$row['tx_damfrontend_feuser_upload']= $this->get_FEUserName($row['tx_damfrontend_feuser_upload']);
-					$result[] = $row;
+					if ($this->checkAccess($row['uid'], 1)&&($this->checkDocumentAccess($row['fe_group']))) {
+						$result[] = $row;
+					}
 				}
 			}
 			#$this->resultCount = $resultCounter;
@@ -773,6 +775,18 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			if (!intval($catID)) die('one categoryID was not delivered as Integer');
 			$where = ' uid_local=' .$uid .' AND uid_foreign= ' . $catID;
 			return $GLOBALS['TYPO3_DB']->exec_DELETEquery($this->mm_Table, $where);			
+		}
+		
+		/**
+	 * Checks if the FE_User has Access to the Document
+	 *
+	 * @param	int		$docFEGroup -> fe_group the document is restricted to
+	 */	
+		function checkDocumentAccess($docFEGroup) {
+			if (!$docFEGroup) return true;
+			$userGroups=$GLOBALS['TSFE']->fe_user->groupData['uid'];
+			if (!is_array($userGroups)) return false;
+			return (array_search($docFEGroup,$userGroups));
 		}
 	}
 
