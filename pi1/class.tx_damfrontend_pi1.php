@@ -229,15 +229,16 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		if (!isset($this->internal['list']['listLength'])) $this->internal['list']['listLength'] = 10;
 
+		// deactived: these lines are not necessary
 		/*
 		 * if a filter criteria is changed, the pagebrowsing is reseted to the beginning value
 		 */
-//		if (t3lib_div::_GP('setFilter') || !empty($this->internal['catPlus']) ||
-//				!empty($this->internal['catPlus']) || !empty($this->internal['catMinus']) ||
-//				!empty($this->internal['catEquals']) || !empty($this->internal['catPlus_Rec']) || !empty($this->internal['catMinus_Rec']))
-//		{
-//			$this->internal['list']['pointer'] = 0;
-//		}
+		//		if (t3lib_div::_GP('setFilter') || !empty($this->internal['catPlus']) ||
+		//				!empty($this->internal['catPlus']) || !empty($this->internal['catMinus']) ||
+		//				!empty($this->internal['catEquals']) || !empty($this->internal['catPlus_Rec']) || !empty($this->internal['catMinus_Rec']))
+		//		{
+		//			$this->internal['list']['pointer'] = 0;
+		//		}
 		$this->internal['list']['limit'] = $this->internal['list']['pointer'].','. ($this->internal['list']['listLength']);
 		$this->listState->setListState($this->internal['list']);
 	}
@@ -307,6 +308,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		
 		if ($this->internal['viewID'] == 6) {
 			$this->initList();
+			$this->initFilter();
 		}
 		
 		// iniitalisation of an Upload
@@ -333,6 +335,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$flexform = $this->cObj->data['pi_flexform'];
 
 		$this->internal['viewID'] = intval($this->pi_getFFvalue($flexform, 'viewID'));
+		#t3lib_div::debug('viewID: '.$this->internal['viewID']);
 
 		$this->internal['catMounts'] = explode(',',$this->pi_getFFvalue($flexform, 'catMounts', 'sSelection'));
 
