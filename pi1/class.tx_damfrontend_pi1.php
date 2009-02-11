@@ -232,12 +232,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		/*
 		 * if a filter criteria is changed, the pagebrowsing is reseted to the beginning value
 		 */
-		if (t3lib_div::_GP('setFilter') || !empty($this->internal['catPlus']) ||
-				!empty($this->internal['catPlus']) || !empty($this->internal['catMinus']) ||
-				!empty($this->internal['catEquals']) || !empty($this->internal['catPlus_Rec']) || !empty($this->internal['catMinus_Rec']))
-		{
-			$this->internal['list']['pointer'] = 0;
-		}
+//		if (t3lib_div::_GP('setFilter') || !empty($this->internal['catPlus']) ||
+//				!empty($this->internal['catPlus']) || !empty($this->internal['catMinus']) ||
+//				!empty($this->internal['catEquals']) || !empty($this->internal['catPlus_Rec']) || !empty($this->internal['catMinus_Rec']))
+//		{
+//			$this->internal['list']['pointer'] = 0;
+//		}
 		$this->internal['list']['limit'] = $this->internal['list']['pointer'].','. ($this->internal['list']['listLength']);
 		$this->listState->setListState($this->internal['list']);
 	}
@@ -400,7 +400,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					}
 				}
 			}
-			t3lib_div::debug($this->catList->getCatSelection($this->internal['incomingtreeID']));
+			#t3lib_div::debug($this->catList->getCatSelection($this->internal['incomingtreeID']));
 		}
 		
 		
@@ -528,11 +528,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$tree->init($this->internal['treeID'], $this);
 		$tree->title = $this->internal['treeName'];
 		$selCats  = $this->catList->getCatSelection($this->internal['treeID']);
-		/**t3lib_div::debug($selCats);
-		t3lib_div::debug('treeID:');
-		t3lib_div::debug($this->internal['treeID']);
-		t3lib_div::debug('incomming');
-		t3lib_div::debug($this->internal['incomingtreeID']);*/
+		
 		$tree->selectedCats = $selCats[$this->internal['treeID']];
 		if (is_array($this->internal['catMounts'])) $tree->MOUNTS = $this->internal['catMounts'];
 		return  $this->cObj->stdWrap($tree->getBrowsableTree(), $this->conf['renderCategoryTree.']['stdWrap.']);
@@ -549,9 +545,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 */
 	function fileList($useRequestForm) {
 		//t3lib_div::debug($this->internal['incomingtreeID']);
+		$cats = $this->catList->getCatSelection(0,$this->pid );		
 		
-		$cats = $this->catList->getCatSelection($this->internal['incomingtreeID']);
-		//t3lib_div::debug($cats);
 		$hasCats = false; // true if any category has been selected yet
 		
 		if ($this->conf['enableDeletions']==1) {

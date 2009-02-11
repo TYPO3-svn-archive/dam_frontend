@@ -358,6 +358,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			} 
 			else {
 				#query without using categories
+				// TODO add permission check for dam records itself
 				$filter .= $this->additionalFilter;
 				$select='*';
 				$from='tx_dam';
@@ -369,7 +370,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select,$from,$where);
 			$this->resultCount = $GLOBALS['TYPO3_DB']->sql_num_rows($res);
 			
-			// TODO get resultCount manual (Delete the sql query above, because it shows to many results, because the permission check comes later; handle this->limit self, otherwise a lot of sql queries would be executed)
+			// TODO get resultCount manually (Delete the sql query above, because it shows to many results, because the permission check comes later; handle this->limit self, otherwise a lot of sql queries would be executed)
 			#$resultCounter=0;
 			// executing the final query and convert the results into an array
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where,'',$this->orderBy, $this->limit);

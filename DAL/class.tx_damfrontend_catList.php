@@ -156,11 +156,12 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 	 * returns a list of either the selected categories of a tree ($treeID must be set) or the categories of a page (pageID must be set)
 	 * @param	int 		$treeID: ID of used category tree (optional: if set only the categories of this tree are returned)
 	 * @param	int			$pageID: ID of the page where the tree should be used (optional: if all categories which are selected are returned for this page)
+	 * 
 	 * @return	array		list of all selected categories
 	 */
 	function getCatSelection($treeID = 0,$pageID=0) {
 		$ar = $this->getArrayFromUser();
-		
+
 		if ($treeID <> 0) {
 			//returns the selected categories for a specified treeID
 			if ($treeID==-1){
@@ -189,16 +190,15 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 					$WHERE = 'uid = '.$key;
 					$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($FIELDS,$TABLE,$WHERE);
 					while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-						#t3lib_div::debug($ar[$key]);
 						if ($row['pid']==$pageID) {
-							$returnArr[$key] = $ar[$key];						
+							$returnArr[$key] = array();
+							$returnArr[$key] = array_unique($ar[$key]);		
 						}		
-					}			
-				}
+					}
+				}						
+				return is_array($returnArr) ? $returnArr: null;						
 			}
-			return is_array($returnArr) ? array_unique($returnArr) : null;
 		}
-
 	}
 
 	/**

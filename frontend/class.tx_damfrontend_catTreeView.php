@@ -220,6 +220,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 		}
 		$param_array = array();
 		$param_array['PM'] = $cmd;
+		$param_array['tx_damfrontend_pi1[treeID]'] = $this->treeID;
     	$aUrl = $this->cObj->getTypoLink_URL($GLOBALS['TSFE']->id, $param_array).$anchor;		
 		return '<a href="'.htmlspecialchars($aUrl).'"'.$name.'>'.$icon.'</a>';
 
