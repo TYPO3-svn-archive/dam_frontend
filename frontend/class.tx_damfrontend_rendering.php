@@ -96,7 +96,10 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		$this->iconBaseAddress = $this->conf['iconBaseAddress'];
 		$this->langFile = $this->conf['langFile'];
 		$this->debug = $this->conf['debug'];
-		$this->staticInfoObj = t3lib_div::getUserObj('tx_staticinfotables_pi1');
+		$this->staticInfoObj = t3lib_div::getUserObj('&tx_staticinfotables_pi1');	
+		#if ($this->staticInfoObj->needsInit())	{
+			$this->staticInfoObj->init();
+		#}
 	}
 
 
@@ -138,8 +141,9 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
  		foreach ($list as $elem) {
  			// TODO: correct table-name?
  			$cObj->start($elem, 'tx_dam');
- 			$elem['count_id'] = $countElement++;
-			$elem['count_id'] = $elem['count_id']  + $pointer;
+ 			$countElement++;
+ 			$elem['count_id'] =$countElement;
+ 			if ($pointer>1) $elem['count_id'] = $countElement  + $pointer;
  			$markerArray = $this->recordToMarkerArray($elem, 'renderFields');
  			$markerArray =$markerArray + $this->substituteLangMarkers($record_Code);
  			// TODO changes in the content of the marker arrays @todo what is done here?
@@ -946,7 +950,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 			$whereLanguages = 'lg_iso_2 IN ( '.$languages.')';
 		}
 		$mergeArray = array('nosel'=>'---');
-		return  $this->staticInfoObj->buildStaticInfoSelector('LANGUAGES', 'LanguageSelector','',$currentLanguage,'','','','',$whereLanguages,'',0,$mergeArray);
+		return  $this->staticInfoObj->buildStaticInfoSelector('LANGUAGES', 'LanguageSelector','',$currentLanguage,'','','','',$whereLanguages,'DEU',1,$mergeArray);
 	}
 		
 	/**

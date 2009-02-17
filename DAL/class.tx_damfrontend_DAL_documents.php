@@ -366,29 +366,29 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			} 
 			
 			
-			// executing the query and calculating the number of rows
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select,$from,$where);
-			$this->resultCount = $GLOBALS['TYPO3_DB']->sql_num_rows($res);
-			
-			// TODO get resultCount manually (Delete the sql query above, because it shows to many results, because the permission check comes later; handle this->limit self, otherwise a lot of sql queries would be executed)
-			#$resultCounter=0;
+			$resultCounter=0;
 			// executing the final query and convert the results into an array
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where,'',$this->orderBy, $this->limit);
+			$limitArr = explode (',',$this->limit);
+			## limit: erste Zahl pointer, zweite zahl anzahl
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where,'',$this->orderBy);
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				if ($this->checkAccess($row['uid'], 1)) {
+				if ($this->checkAccess($row['uid'], 1) && $this->checkDocumentAccess($row['fe_group'])) {
 					//add a delete information
 					if ($userUID == $row['tx_damfrontend_feuser_upload'] AND $userUID>0){
 						$row['allowDeletion']=1;
 						$row['allowEdit']=1;
 					}
-					#$resultCounter++;
 					$row['tx_damfrontend_feuser_upload']= $this->get_FEUserName($row['tx_damfrontend_feuser_upload']);
-					if ($this->checkAccess($row['uid'], 1)&&($this->checkDocumentAccess($row['fe_group']))) {
+					$resultCounter++;
+					// add row only, if the current resultID is between the limit range
+					if ($resultCounter>=$limitArr[0] && $resultCounter<=$limitArr[1]){
 						$result[] = $row;
 					}
+					
 				}
 			}
-			#$this->resultCount = $resultCounter;
+			$this->resultCount = $resultCounter;
+			
 			return $result;
 		}
 	
@@ -769,7 +769,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			return $GLOBALS['TYPO3_DB']->exec_DELETEquery($this->mm_Table, $where);			
 		}
 		
-		/**
+	 /**
 	 * Checks if the FE_User has Access to the Document
 	 *
 	 * @param	int		$docFEGroup -> fe_group the document is restricted to

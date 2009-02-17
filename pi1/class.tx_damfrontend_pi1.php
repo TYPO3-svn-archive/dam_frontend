@@ -185,9 +185,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->internal['filter']['creator'] = strip_tags(t3lib_div::_GP('creator'));
 		$this->internal['filter']['owner'] = strip_tags(t3lib_div::_GP('owner'));
 		
-		if (t3lib_div::_GP('resetFilter')){
-			$this->filterState->resetFilter();
-		} 
+
 		
 		if (!count($this->filterState->getFilterFromSession())) {
 			$emptyArray = $this->internal['filter'];
@@ -197,9 +195,16 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		if (t3lib_div::_GP('setFilter')) {
 			$this->filterState->setFilter($this->internal['filter']);
 		}
+
 		$this->internal['filter'] = $this->filterState->getFilterFromSession();
 		$this->internal['filter']['listOfOwners']=$this->get_FEUserList($this->conf['FilterUserGroup'],$this->internal['filter']['owner']);
+		
+		if (t3lib_div::_GP('resetFilter')){
+			$this->filterState->resetFilter();
+		} 
+		
 		$this->docLogic->setFilter($this->internal['filter']);
+		
 	}
 
 	/**
@@ -872,7 +877,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$i++;
 		}
 		$formEnd="</form>";
-		return $formSt.implode("",$optString).$formHidden.$formEnd;
+		return 'Sorry: This function is currently disabled: Please check for newer version.';
+		#return $formSt.implode("",$optString).$formHidden.$formEnd;
 	}
 	
 	
@@ -1147,7 +1153,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$ORDERBY = 'name, username';
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE,'' , $ORDERBY);
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			if ($currentUser == $row['name'] or $currentUser == $row['username'] or $currentUser == $row['uid']) {
+			if ($currentUser<>'' AND ($currentUser == $row['name'] or $currentUser == $row['username'] or $currentUser == $row['uid'])) {
 				$row['selected']=1;
 			} else {
 				$row['selected']=0;
