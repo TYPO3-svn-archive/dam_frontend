@@ -8,8 +8,9 @@
 		<languageKey index="default" type="array">
 			<label index="tt_content.list_type_pi1">DAM Frontend</label>
 			<label index="tt_content.list_type_pi2">DAM Frontend Filelist</label>
-			<label index="tx_dam_cat.downloadaccess">Downloadaccess for:</label>
-			<label index="tx_dam_cat.readaccess">Readaccess for:</label>
+			<label index="tx_dam_cat.downloadaccess">download access for:</label>
+			<label index="tx_dam_cat.uploadaccess">upload access for:</label>
+			<label index="tx_dam_cat.readaccess">read access for:</label>
 			<label index="tx_damtree_fe_groups_all">all groups have access</label>
 			<label index="tx_damtree_fe_groups_none">no group has access</label>
 			<label index="tx_damtree_fe_groups">----- > single groups --> choose below -----</label>		
@@ -17,7 +18,8 @@
 		<languageKey index="de" type="array">
 			<label index="tt_content.list_type_pi1">DAM Frontend</label>
 			<label index="tt_content.list_type_pi2">DAM Frontend Dateiliste</label>
-			<label index="tx_dam_cat.downloadaccess">Downloadzugriff Frontend für:</label>
+			<label index="tx_dam_cat.downloadaccess">Download Berechtigung im Frontend für:</label>
+			<label index="tx_dam_cat.uploadaccess">Upload Berechtigung für:</label>
 			<label index="tx_dam_cat.readaccess">Darstellung im Frontend für:</label>
 			<label index="tx_damtree_fe_groups_all">alle Gruppen habe Zugriff</label>
 			<label index="tx_damtree_fe_groups_none">keine Gruppe hat Zugriff</label>

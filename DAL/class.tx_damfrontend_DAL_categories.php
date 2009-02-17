@@ -69,7 +69,8 @@ class tx_damfrontend_DAL_categories {
 	var $catTable = 'tx_dam_cat';
 	var $docTable = 'tx_dam';
 	var $mm_Table = 'tx_dam_mm_cat';
-	var $filter = ' AND deleted = 0';
+	//TODO add support for start stop field
+	var $filter = ' AND deleted = 0 AND hidden = 0';
 	// array with all availible access relations
 	var $relations = array(
 		'1' => 'readaccess',
@@ -321,11 +322,12 @@ class tx_damfrontend_DAL_categories {
 
 			$catRow = $this->getCategory($catID);
 			// check first, if no usergroup has been assigned to the given category
-			if ($catRow['tx_damtree_fe_groups_readaccess'] == 0) {
+			t3lib_div::debug($catRow);
+			if ($catRow['tx_damtree_fe_groups_uploadaccess'] == 0) {
 				return true;
 			}
 			else {
-				if($this->findUidinList($this->getCategories($userID,1),$catID)) {
+				if($this->findUidinList($this->getCategories($userID,3),$catID)) {
 					return true;
 				}
 				else {

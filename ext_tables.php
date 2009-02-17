@@ -88,12 +88,31 @@ $tempColumns = Array (
 			"MM" => "tx_dam_cat_downloadaccess_mm",
 		)
 	),
+	"tx_damtree_fe_groups_uploadaccess" => Array (		
+		"exclude" => 1,		
+		"label" => "LLL:EXT:dam_frontend/locallang_db.php:tx_dam_cat.uploadaccess",		
+		"config" => Array (
+			"items" => Array(
+				Array("alle Gruppen freigeben", -1),
+				Array("keine Gruppe freigeben", -2),
+				Array("-----einzelne Gruppen------", '--div--')
+			), 	
+			'exclusiveKeys' => '-1,-2',
+			"type" => "select",	
+			"internal_type" => "db",
+			"foreign_table" => "fe_groups",	
+			"size" => 5,	
+			"minitems" => 0,
+			"maxitems" => 50,	
+			"MM" => "tx_dam_cat_uploadaccess_mm",
+		)
+	),
 );
 
 // adding the configuration to the dam - categorie table
 t3lib_div::loadTCA("tx_dam_cat");
 t3lib_extMgm::addTCAcolumns("tx_dam_cat",$tempColumns,1);
-t3lib_extMgm::addToAllTCAtypes("tx_dam_cat","tx_damtree_fe_groups_readaccess;;;;1-1-1, tx_damtree_fe_groups_downloadaccess");
+t3lib_extMgm::addToAllTCAtypes("tx_dam_cat","tx_damtree_fe_groups_readaccess;;;;1-1-1, tx_damtree_fe_groups_downloadaccess, tx_damtree_fe_groups_uploadaccess");
 
 
 
