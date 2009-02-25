@@ -564,10 +564,10 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$indexer->initEnabledRules();
 			$indexer->collectMeta = true;
 			$indexer->setDryRun(true); // just getting metadata from the dock
-			$indexer->setPID(0);
+			$indexer->setPID(tx_dam_db::getPid());
 			$indexer->setRunType("man");
 
-			$data = $indexer->indexfile($path,0,1);
+			$data = $indexer->indexfile($path,0);
 			$newrecord = $data['fields'];
 
 			// adding the data from the form to the new indexed data
