@@ -79,7 +79,7 @@ plugin.tx_damfrontend_pi1 {
 		searchword.ifEmpty =
 		searchword.htmlSpecialChars = 1
 		# komma separated list of fields from tx_dam
-		searchwordFields = title
+		searchwordFields = description, title
 	}
 	
 	# configuration for subpart ###FILELIST###
@@ -89,6 +89,10 @@ plugin.tx_damfrontend_pi1 {
 		form_url.addQueryString = 1
 		# stdWrap : how many items should be default in the filelist
 		defaultLength = 10
+		
+		#
+		searchwordFields = title, description
+		
 		# configuration for an list item
 		item {
 			# stdWrap : Timestamp of file
@@ -159,8 +163,9 @@ plugin.tx_damfrontend_pi1 {
 		}
 
 		application {
-		  DEFAULT = application_default.png
 		  pdf = application_pdf.png
+		  msexcel = image_default.png
+		  DEFAULT = application_default.png
 		}
   	}
   	_CSS_DEFAULT_STYLE (

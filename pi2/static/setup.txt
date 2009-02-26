@@ -4,7 +4,7 @@ plugin.tx_damfrontend_pi2 {
   template =  typo3conf/ext/dam_frontend/res/tmpl_list.html
 
   # date Format (example)
-  # dateConf = d-m-Y
+   dateConf = d.m.Y
 
   # html class attribute value:
   iconCssClass = ddl_icon
@@ -18,8 +18,17 @@ plugin.tx_damfrontend_pi2 {
   # Criterias for grouping of files (komma separeted)
   groupCriteria = title,file_path
   
+  	renderFields {
+	# set stdWrap config for each field
+		file_size {
+			setContentToCurrent = 1
+			if.isTrue.current = 1
+			bytes = 1
+			bytes.labels = "Bytes| Kilobyte| Megabyte| Gigabyte"
+		}
+	 }
   # Check if selected file still exists: If enabled every file is check, if it exists. Can cause performance trouble on heavy load. In this case you should keep your index via backend clean
-  checkIfFileExist=0
+  checkIfFileExist=1
   
 	_CSS_DEFAULT_STYLE (
 				@CHARSET "UTF-8";

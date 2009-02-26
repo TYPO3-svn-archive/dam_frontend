@@ -41,20 +41,19 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 	var $extKey = 'dam_frontend';	// The extension key.
 	var $pi_checkCHash = TRUE;
 
-  var $fieldDamUidList = "tx_damdownloadlist_records";
-  var $damUidList = null;
-  var $dateConf = "d/m/Y";
-  var $iconBaseAddress = null;
+	var $fieldDamUidList = "tx_damdownloadlist_records";
+	var $damUidList = null;
+	var $dateConf = "d/m/Y";
+	var $iconBaseAddress = null;
 
-  var $template = "";
-  var $templateItem = "";
-  var $templateItemFile = "";
+	var $template = "";
+	var $templateItem = "";
+	var $templateItemFile = "";
+	var $groupCriteriaConf = "title,file_path";
+	var $group = null;
 
-  var $groupCriteriaConf = "title,file_path";
-  var $group = null;
-
-  var $pi_USER_INT_obj = TRUE;
-  //var $pi_checkCHash = TRUE;
+	var $pi_USER_INT_obj = TRUE;
+	//var $pi_checkCHash = TRUE;
 
   /**
  * Plugin Entry-Point
@@ -72,22 +71,22 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 		||  $GLOBALS['TSFE']->isUserOrGroupSet()) {
         $GLOBALS['TSFE']->set_no_cache();
     }
-	
-    //$this->log("main called; " . print_r($this->piVars, 1));
 
-	//Process TYPOScript Conf
-	if ($this->conf['groupCriteria']<>'') {
-		$this->groupCriteriaConf = $this->conf['groupCriteria'];
-	}
+    //$this->log("main called; " . print_r($this->piVars, 1));
+    //debug($GLOBALS['TSFE'], "GLOBALS");
 
     // init grouping data structures:
     $this->group = array();
-    $this->groupCriteria = t3lib_div::trimExplode(',', $this->groupCriteriaConf);
+    #t3lib_div::debug($this->conf['groupCriteria']);
+	
+    #checkIfFileExist
+    $this->groupCriteria = t3lib_div::trimExplode(',', $this->conf['groupCriteria']);
 
     // get date format
     if ($this->conf['dateConf']) {
-      $this->dateConf = $this->conf['dateConf'];
+    	$this->dateConf = $this->conf['dateConf'];
     }
+
 
     // get icon base address
     $this->iconBaseAddress = $this->conf['iconBaseAddress'];
@@ -135,54 +134,53 @@ class tx_damfrontend_pi2 extends tslib_pibase {
   }
 
 
-   /**
+ /**
  * Generates HTML code for a Group of Files
  *
- * @param	[type]		$groupKey: 	Grouping criteria
- * @param	[type]		$records: 	records for this grouping criteria
+ * @param	[type]		$groupKey: ...
+ * @param	[type]		$records: ...
  * @return	[string]		html content
  */
-  function renderGroup($groupKey, &$records) {
-
-    if (empty($records[$groupKey])) {
-      $renderedGroup = "";
-    }
-    else {
-
+	function renderGroup($groupKey, &$records) {
+		$fileDoesExist = true;
+		if (empty($records[$groupKey])) {
+			$renderedGroup = "";
+	  	}
+		else {
 		$renderedGroup = "";
 		$groupDataKeys = array_keys($records[$groupKey]);
-
+	
 		$firstRecord = null;
-		$fileExists = true;
-      // render records keeping dam uid list order:
-      foreach($this->damUidList as $uid) {
-		if(in_array($uid, $groupDataKeys)) {
-			$rec = $records[$groupKey][$uid];
-			//Check if file exists
-			if ($this->conf['checkIfFileExist']==0){
-		  		if (file_exists($BACK_PATH . $rec['file_path'] . $rec['file_name']) ==false) {
-		  			$fileExists = false;
-		  		}
+	
+		// render records keeping dam uid list order:
+		foreach($this->damUidList as $uid) {
+			if(in_array($uid, $groupDataKeys)) {
+				$rec = $records[$groupKey][$uid];
+						
+				if ($this->conf['checkIfFileExist']=1) {
+					if (file_exists($BACK_PATH . $rec['file_path'] . $rec['file_name']) ==false) {
+		  				$fileDoesExist = false;
+		  			}
+				}
+				if ($fileDoesExist==true){
+					if($firstRecord == null) {
+						$firstRecord = $rec;
+			  		}
+			  		$renderedGroup .= $this->cObj->substituteMarkerArray($this->templateItemFile, $this->processRecord($rec), "###|###", 1);
+				}
 			}
-
-			if ($fileExists==true) {
-				if($firstRecord == null) {
-					$firstRecord = $rec;
-			  	}
-		  		$renderedGroup .= $this->cObj->substituteMarkerArray($this->templateItemFile, $this->processRecord($rec), "###|###", 1);
-			}		  
 		}
+	
+		unset($records[$groupKey]);
+	
+		$renderedGroup = $this->cObj->substituteSubpart($this->templateItem, "###TEMPLATE_LIST_ITEM_FILE###", $renderedGroup);
+	
+		$renderedGroup = $this->cObj->substituteMarkerArray($renderedGroup, $this->processRecord($firstRecord), "###|###", 1);
+	
+	  }
+	  return $renderedGroup;
+	}
 
-      unset($records[$groupKey]);
-
-      $renderedGroup = $this->cObj->substituteSubpart($this->templateItem, "###TEMPLATE_LIST_ITEM_FILE###", $renderedGroup);
-
-      $renderedGroup = $this->cObj->substituteMarkerArray($renderedGroup, $this->processRecord($firstRecord), "###|###", 1);
-
-    }
-    return $renderedGroup;
-  	}
-  }
   /**
  * Fetch dam records
  *
@@ -197,7 +195,10 @@ class tx_damfrontend_pi2 extends tslib_pibase {
     $fieldList = array('uid','title', 'ident', 'description', 'file_path', 'file_name', 'file_size', 'file_mime_type', 'file_mime_subtype', 'file_type', 'file_mtime');
     $damTableName = "tx_dam";
     $whereClause = "uid IN (" . implode(", ", $this->damUidList) . ")" .
-    t3lib_BEfunc::deleteClause($damTableName) . $this->cObj->enableFields($damTableName, $GLOBALS['TSFE']->beUserLogin);
+    	t3lib_BEfunc::deleteClause($damTableName) . $this->cObj->enableFields($damTableName, $GLOBALS['TSFE']->beUserLogin);
+
+    //debug($whereClause, 'WHERE');
+
     $fields = 'pid,' . t3lib_BEfunc::getCommonSelectFields($damTableName, '') . ',' . implode(", ", $fieldList);
 
     $resObj = $dbh->exec_SELECTquery($fields,
@@ -212,20 +213,23 @@ class tx_damfrontend_pi2 extends tslib_pibase {
       $groupKey = "";
       while ($record = $dbh->sql_fetch_assoc($resObj)) {
 
-		$groupKey = $this->getGroupKey($record);
+	$groupKey = $this->getGroupKey($record);
 
-		if (!array_key_exists($groupKey, $rows)) {
-	  		$rows[$groupKey] = array();
-		}
-		$rows[$groupKey][$record['uid']] = $record;
-		$rows[$record['uid']] = $groupKey;
+	if (!array_key_exists($groupKey, $rows)) {
+	  $rows[$groupKey] = array();
+	}
+
+	$rows[$groupKey][$record['uid']] = $record;
+	$rows[$record['uid']] = $groupKey;
       }
-      
+
     } else {
+
       // plain procedure
       while ($record = $dbh->sql_fetch_assoc($resObj)) {
-		$rows['group_' . $record['uid']] = array( $record['uid'] => $record);
+	$rows['group_' . $record['uid']] = array( $record['uid'] => $record);
       }
+
     }
 
     $dbh->sql_free_result($resObj);
@@ -274,7 +278,7 @@ class tx_damfrontend_pi2 extends tslib_pibase {
     // translate byte size into "human readable" string:
     $sz = intval($damRecord['file_size']);
     $order = "";
-
+	//TODO do this by typoscript
     if ($sz > 1048576) {
       $order = "M";
       $sz = (float) $sz / 1048576.0;
@@ -306,7 +310,10 @@ class tx_damfrontend_pi2 extends tslib_pibase {
     $damRecord['icontag'] = $editIcon;
     $damRecord['icontag'] .= "<img border='0' class='" . $this->conf['iconCssClass'] . "' src='{$imgsrc}' alt='{$imgalt}' />";
 
+	//
+
 	$damRecord['file_name'] = $damRecord['file_name'] ? $damRecord['file_name'] : $this->pi_getLL('not_set');
+	//debug('Dateiname: '.$damRecord['file_name']);
     // ident field:
     $damRecord['ident'] = $damRecord['ident'] ? $damRecord['ident'] : $this->pi_getLL('not_set');
 

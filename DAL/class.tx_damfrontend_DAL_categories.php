@@ -322,7 +322,6 @@ class tx_damfrontend_DAL_categories {
 
 			$catRow = $this->getCategory($catID);
 			// check first, if no usergroup has been assigned to the given category
-			t3lib_div::debug($catRow);
 			if ($catRow['tx_damtree_fe_groups_uploadaccess'] == 0) {
 				return true;
 			}

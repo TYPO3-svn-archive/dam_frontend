@@ -97,9 +97,9 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		$this->langFile = $this->conf['langFile'];
 		$this->debug = $this->conf['debug'];
 		$this->staticInfoObj = t3lib_div::getUserObj('&tx_staticinfotables_pi1');	
-		#if ($this->staticInfoObj->needsInit())	{
+		if ($this->staticInfoObj->needsInit())	{
 			$this->staticInfoObj->init();
-		#}
+		}
 	}
 
 
@@ -138,6 +138,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
  		$countElement = 0;
 		$rows = '';
 		$cObj = t3lib_div::makeInstance('tslib_cObj');
+		
  		foreach ($list as $elem) {
  			// TODO: correct table-name?
  			$cObj->start($elem, 'tx_dam');
@@ -426,7 +427,6 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 			}
 			// TODO -> this line throws a warning
 			$markerArray['###'.strtoupper($key).'###'] = $cObj->stdWrap((string)$value, $this->conf[$scope.'.'][$key.'.']);
-			#$markerArray['###'.strtoupper($key).'###'] =  strip_tags($value) ;
  		}
  		return $markerArray;
  	}
@@ -914,9 +914,9 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 			$aLLMarkerList = array();
 			preg_match_all('/###LLL:.+?###/Ssm', $templCode, $aLLMarkerList);
 
-			if ($this->debug == 1) {
-				print "Found language markers: <br>";
-				print_r($aLLMarkerList);
+			if ($this->conf['debug']==1) {
+				t3lib_div::debug('in class.tx_damfrontend_rendering.php / Found language markers: //');
+				t3lib_div::debug($aLLMarkerList);
 			}
 
 			foreach($aLLMarkerList[0] as $LLMarker){
@@ -950,7 +950,8 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 			$whereLanguages = 'lg_iso_2 IN ( '.$languages.')';
 		}
 		$mergeArray = array('nosel'=>'---');
-		return  $this->staticInfoObj->buildStaticInfoSelector('LANGUAGES', 'LanguageSelector','',$currentLanguage,'','','','',$whereLanguages,'DEU',1,$mergeArray);
+		
+		return  $this->staticInfoObj->buildStaticInfoSelector('LANGUAGES', 'LanguageSelector','',$currentLanguage,'','','','',$whereLanguages,'',1,$mergeArray);
 	}
 		
 	/**

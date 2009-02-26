@@ -340,7 +340,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$flexform = $this->cObj->data['pi_flexform'];
 
 		$this->internal['viewID'] = intval($this->pi_getFFvalue($flexform, 'viewID'));
-		#t3lib_div::debug('viewID: '.$this->internal['viewID']);
 
 		$this->internal['catMounts'] = explode(',',$this->pi_getFFvalue($flexform, 'catMounts', 'sSelection'));
 
