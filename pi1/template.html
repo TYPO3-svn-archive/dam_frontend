@@ -1,8 +1,8 @@
 Allowed Markers:
-###LLL:MARKER_NAME### -> thesse markers can be used to define user defined markes. This is useful for mulitlanguage sites. (see configuration plugin.tx_damfrontend_pi1.langFile) 
+###LLL:MARKER_NAME### -> thesse markers can be used to define user defined markes. This is useful for mulitlanguage sites. (see configuration plugin.tx_damfrontend_pi1.langFile)
 
 
-<!-- ******************************** 
+<!-- ********************************
 
 	Template for fileliste View (the list of files /records is the next subpart line 40+
 ********************************  -->
@@ -20,8 +20,9 @@ Allowed Markers:
 			<th>###CREATOR_HEADER###</th>
 			<th>###LANGUAGE_HEADER###</th>
 			<th>###OWNER_HEADER###</th>
-			<th>&nbsp;</th>
-			<th>&nbsp;</th>
+			<th>&nbsp; </th>
+			<th>&nbsp; </th>
+			<th>&nbsp; </th>
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
@@ -31,10 +32,9 @@ Allowed Markers:
 			<td>###SORTLINK_CRDATE###</td>
 			<td>###SORTLINK_CREATOR###</td>
 			<td>###SORTLINK_LANGUAGE###</td>
-			<td colspan="3">&nbsp;</td>
+			<td colspan="4">&nbsp;</td>
 		</tr>
 			###FILELIST_RECORDS###
-		<!-- 
 		<tr>
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
@@ -47,7 +47,7 @@ Allowed Markers:
 			<select name="tx_damfrontend_pi1[modus]">
 			<option value="">###FILELIST_BATCH_SELECT###</option>
 			<option value="createZipFile">###FILELIST_BATCH_CREATEZIPFILE###</option>
-			
+
 			<option value="sendAsMail">###FILELIST_BATCH_SENDASMAIL###</option>
 			<option value="sendZippedAsMail">###FILELIST_BATCH_SENDZIPPEDFILESASMAIL###</option>
 			<option value="sendFileLink">###FILELIST_BATCH_SENDFILELINK###</option>
@@ -55,7 +55,6 @@ Allowed Markers:
 			</select>
 			<input type="submit" name="tx_damfrontend_pi1[submit]" value="###FILELIST_BATCH_GO###" /></td>
 		</tr>
-		-->
 	</table>
 	</form>
 
@@ -73,20 +72,20 @@ Allowed Markers:
 
 
 
-<!-- ******************************** 
+<!-- ********************************
 
 	template for records of the fileliste
 
 ********************************  -->
 <!-- ###FILELIST_RECORD### begin -->
 	<tr>
-				<td>###COUNT_ID###</td><td>###FILEICON###</td><td><b>###TITLE###</b></td><td><b>###FILE_TYPE###</b></td><td>###CRDATE###</td><td>###CREATOR###&nbsp; /  ###PUBLISHER### &nbsp; </td><td>###LANGUAGE###</td><td>###TX_DAMFRONTEND_FEUSER_UPLOAD###</td><td>###LINK_SINGLE###</td><td>###LINK_DOWNLOAD### ###BUTTON_DELETE### ###BUTTON_EDIT### ###BUTTON_CATEDIT###</td><!-- <td>###LINK_SELECT_DOWNLOAD###</td> -->
+				<td>###COUNT_ID###</td><td>###FILEICON###</td><td><b>###TITLE###</b></td><td><b>###FILE_TYPE###</b></td><td>###CRDATE###</td><td>###CREATOR###&nbsp; /  ###PUBLISHER### &nbsp; </td><td>###LANGUAGE###</td><td>###TX_DAMFRONTEND_FEUSER_UPLOAD###</td><td>###LINK_SINGLE###</td><td>###LINK_DOWNLOAD### ###BUTTON_DELETE### ###BUTTON_EDIT### ###BUTTON_CATEDIT###</td><td>###LINK_SELECT_DOWNLOAD###</td>
 	</tr>
 <!-- ###FILELIST_RECORD### end -->
 
 
 
-<!-- ******************************** 
+<!-- ********************************
 
 	template for the browserresult list
 
@@ -103,7 +102,7 @@ Allowed Markers:
 
 
 
-<!-- ******************************** 
+<!-- ********************************
 
 	template for the Filterlist list
 
@@ -118,12 +117,12 @@ Allowed Markers:
 		</tr>
 		<!-- ###FILTERLIST_ELEM### end-->
 	</table>
-	
+
 <!-- ###FILTERLIST### end-->
 
 
 
-<!-- ******************************** 
+<!-- ********************************
 
 	Link for creation of a new filter
 
@@ -137,9 +136,9 @@ Allowed Markers:
 
 
 
-<!-- ********************************* 
+<!-- *********************************
 
-		Template for creation of new filter. 
+		Template for creation of new filter.
 		User can insert title and description of a filter record
 
 *********************************  -->
@@ -271,26 +270,26 @@ Template for displaying a single document in a list
 				<input type="text" name="bis_monat" maxlength="2" size="2" value="###TO_MONTH###"></input>
 				<input type="text" name="bis_jahr" maxlength="4" size="4" value="###TO_YEAR###"></input>
 				<div style="color: red; font-weight: bold">###ERROR_TO_DATE###</div>
-				
 
-				<label>###LABEL_CREATOR###</label>				
+
+				<label>###LABEL_CREATOR###</label>
 				<input type="text" name="creator" size="30" value="###CREATOR###"></input>
-				
+
 				<label>###LABEL_FILETYPE###</label>
 				###FILETYPE_LIST###
-				
+
 				<label>###OWNER_HEADER###</label>
 				###DROPDOWN_OWNER###
-				
+
 				<label>###LABEL_LANGUAGE###</label>
 				###DROPDOWN_LANGUAGE###
-				
+
 				<br />
 				<br />
 				<input type="submit" value="###SET_FILTER###" name="setFilter" class="button"></input>
 				<input type="checkbox" name="dam_fe_allCats" value="true" /> ###LABEL_NO_CAT###
 				<input type="submit" value="###RESET_FILTER###" name="resetFilter" class="button"></input> &nbsp; &nbsp; &nbsp;
-				
+
 		</fieldset>
 	</form>
 <!-- ###FILTERVIEW### end-->
@@ -330,8 +329,8 @@ Template for displaying a single document in a list
 				<td><input type="text" name="plz" size="5" value="###REQUEST_FORM_ZIP###" /><input type="text" name="town" size="33" value="###TOWN###"/> <span class="error_requestform">###ERROR_ZIP### ###ERROR_TOWN###</span></td>
 			</tr>
 		</table>
-		
-		<br />		
+
+		<br />
 		<input type="submit" value="###REQUEST_FORM_SEND_BUTTON###" /> <a href="###REQUEST_FORM_BACK_URL###">###REQUEST_FORM_BACK_URL_TEXT###/a>
 		<input type="hidden" name="docID" value="###UID###" />
 		<input type="hidden" name="sendRequestform" value="1"/>
@@ -367,7 +366,7 @@ This is the mail message that is sent, if a user has done a request
 
 <!-- ###MAIL_REQUEST### end-->
 
-<!-- *********************************************************** 
+<!-- ***********************************************************
 
 	alternative template for the request,
 	if a fe user requests a file (in this cast we have his data
@@ -385,7 +384,7 @@ This is the mail message that is sent, if a user has done a request
 		###REQUEST_USER_TEXT2###
 		<br />
 		<br />
-		<input name="sendRequest" type="submit" value="###REQUEST_USER_SEND###" />  
+		<input name="sendRequest" type="submit" value="###REQUEST_USER_SEND###" />
 		<a href="###BACK_URL###">###REQUEST_FORM_BACK_URL_TEXT###</a>
 		<input type="hidden" name="sendRequestform" value="1"/>
 		<input type="hidden" name="docID" value="###UID###" />
@@ -427,19 +426,19 @@ Template for displaying a single document in a list
 	<h2 class="warning">###LABEL_WARNING###</h2>
 	<p>###MESSAGE_DELETION_WARNING###</p>
 	<table class="file_singleView" border="1">
-		<tr>
+			<tr>
 			<th>###TITLE_SINGLEVIEW_HEADER###:</th><th>###TITLE_SINGLEVIEW###</th>
-		</tr>
-		<tr>
+			</tr>
+			<tr>
 			<td class="title">###CR_DATE_HEADER###:</td><td>###CRDATE###</td>
-		</tr>
-		<tr>
+			</tr>
+			<tr>
 			<td class="title">###CR_DESCRIPTION_HEADER###:</td><td>###DESCRIPTION###</td>
-		</tr>
-		<tr>
+			</tr>
+			<tr>
 			<td class="title">###FILE_SIZE_HEADER###:</td><td>###FILE_SIZE###</td>
-		</tr>
-		<tr>
+			</tr>
+			<tr>
 			<td class="title">###COPYRIGHT_HEADER###:</td><td>###COPYRIGHT###</td>
 		</tr>
 		<tr>
@@ -465,7 +464,7 @@ Template for displaying a single document in a list
 <form action="###FORM_URL###" method="post" enctype="multipart/form-data">
 	<fieldset>
 		<legend>###TITLE_FILEUPLOAD###</legend>
-		<table>	
+		<table>
 			<tr>
 				<td><label>###LABEL_FILE###</label></td>
 				<td><input name="file" type="file" /></td>
@@ -477,16 +476,11 @@ Template for displaying a single document in a list
 <!-- ###UPLOADFORM### end -->
 
 
-
-
-
-
-
 <!-- ###CATEGORISATION### begin -->
 	###CATEGORISATION_TEXT_HEADER###
-	
-	
-	
+
+
+
 <form method="post">
 	<table>
 		<tr>
@@ -526,14 +520,15 @@ Template for displaying a single document in a list
 	###CATLIST###
 	<table>
 		<tr>
-			<td> 
+			<td>
 				###BUTTON_CONFIRM###
 			</td>
 			<td class="ButtonCancel">###CANCEL###</td>
 		</tr>
 	</table>
 	###HIDDENFIELDS###
-</form>
+	</form>
+
 <!-- ###CATEGORISATION### end-->
 
 
@@ -562,7 +557,7 @@ Template for displaying a single document in a list
 				<td>###VALUE_LANGUAGE###</td>
 			</tr>
 			<tr>
-				<td> 
+				<td>
 					<input name="editok" type="submit" value="###BUTTON_CONFIRM###">
 				</td>
 				<td class="ButtonCancel">###CANCEL###</td>

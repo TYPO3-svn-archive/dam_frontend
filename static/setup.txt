@@ -29,6 +29,8 @@ plugin.tx_damfrontend_pi1 {
 
 		title.typolink.parameter = typo3conf/ext/dam_frontend/pushfile.php?&docID={field:uid}
 		title.typolink.parameter.insertData = 1;
+		link_download.typolink.parameter = typo3conf/ext/dam_frontend/pushfile.php?&docID={field:uid}
+		link_download.typolink.parameter.insertData = 1
 	}
 	singleView < .renderFields
 	singleView {
@@ -65,7 +67,7 @@ plugin.tx_damfrontend_pi1 {
 			stdWrap.override.if.isFalse = {$plugin.tx_damfrondend_pi1.mediafolder}
 		}
 	}
-	
+
 	filterView {
 		from_day.ifEmpty =
 		from_month.ifEmpty =
@@ -81,7 +83,7 @@ plugin.tx_damfrontend_pi1 {
 		# komma separated list of fields from tx_dam
 		searchwordFields = description, title
 	}
-	
+
 	# configuration for subpart ###FILELIST###
 	filelist {
 		# typolink : formurl action
@@ -89,10 +91,10 @@ plugin.tx_damfrontend_pi1 {
 		form_url.addQueryString = 1
 		# stdWrap : how many items should be default in the filelist
 		defaultLength = 10
-		
+
 		#
 		searchwordFields = title, description
-		
+
 		# configuration for an list item
 		item {
 			# stdWrap : Timestamp of file
@@ -112,7 +114,7 @@ plugin.tx_damfrontend_pi1 {
 			3.wrap = <option value="width:1024;y:768;resample:72">|</option>
 			3.value = optimized for powerpoint
 			3.lang.de = F&uuml;r Powerpoint optimiert
-	
+
 			4.wrap = <option value="width:1024;height:768;resample:300">|</option>
 			4.value = 1024x768 - 300 DPI {field:uid}
 			4.insertData = 1
@@ -124,7 +126,7 @@ plugin.tx_damfrontend_pi1 {
 			5.lang.de = Thumbnail
 		}
 	}
-	
+
 	# configuration for subpart ###NEWFILTER_LINK###
 	newfilter_link {
 		# typolink: formurl action
@@ -148,7 +150,7 @@ plugin.tx_damfrontend_pi1 {
 		# stdWrap
 		filter_description_label =
 	}
-	
+
 	mediaTypes {
 		DEFAULT {
 		  DEFAULT = default.png
@@ -305,3 +307,22 @@ plugin.tx_damfrontend_pi1 {
 		}
 	)
 }
+
+[globalVar = LIT:1 = {$plugin.tx_damfrontend_pi1.doNotUsePushFile}]
+# for using advanced download features with resizing we cannot use an direct link
+plugin.tx_damfrontend_pi1 {
+	renderFields {
+		title.typolink.parameter = {field:file_path}{field:file_name}
+		title.typolink.parameter.insertData = 1;
+		link_download.typolink.parameter = {field:file_path}{field:file_name}
+		link_download.typolink.parameter.insertData = 1;
+	}
+	singleView {
+		file_name {
+			typolink.parameter = {field:file_path}{field:file_name}
+			typolink.parameter.insertData = 1
+		}
+	}
+}
+
+[end]

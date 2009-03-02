@@ -76,7 +76,6 @@ $docLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_documents');
 $post = t3lib_div::_POST($prefixId);
 if (is_array($post) && count($post) > 0) {
 	$filesToSend = array();
-
 	foreach ($post as $docID => $configuration) {
 		if (!is_numeric($docID)) {
 			continue; // not a file-id
@@ -108,6 +107,8 @@ if (is_array($post) && count($post) > 0) {
 		$filePath = PATH_site.$doc['file_path'].$doc['file_name'];
 		if ($tmp = createFile($filePath, configuration2Array($configuration['convert']))) {
 			$filesToSend[] = array('file' => $tmp, 'filename' => $doc['file_name']);
+		} else {
+			die('<h1>Error</h1><p>File not available...</p>');
 		}
 	}
 
@@ -196,7 +197,9 @@ if (is_array($post) && count($post) > 0) {
 	 */
 	function createFile($filePath, $configuration = array()) {
 		global $TSFE;
-		if (!file_exists($filePath)) { return false; }
+		if (!file_exists($filePath)) {
+			return false;
+		}
 		if (isset($configuration['ORIGINAL'])) { return $filePath; }
 
 		/*

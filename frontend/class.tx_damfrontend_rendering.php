@@ -85,7 +85,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 	var $iconBaseAddress = null;
 	var $staticInfoObj;
 	var $debug = 0;
-	
+
 	/**
 	 * inits this class (loading the locallang file)
 	 *
@@ -96,9 +96,13 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		$this->iconBaseAddress = $this->conf['iconBaseAddress'];
 		$this->langFile = $this->conf['langFile'];
 		$this->debug = $this->conf['debug'];
-		$this->staticInfoObj = t3lib_div::getUserObj('&tx_staticinfotables_pi1');	
-		if ($this->staticInfoObj->needsInit())	{
-			$this->staticInfoObj->init();
+		// TODO: check if it is possible to make staticinfotables optional
+		$this->staticInfoObj = null;
+		if (t3lib_extMgm::isLoaded('staticinfotables')) {
+			$this->staticInfoObj = t3lib_div::getUserObj('&tx_staticinfotables_pi1');
+			if (!method_exists($this->staticInfoObj, 'needsInit') || $this->staticInfoObj->needsInit())	{
+				$this->staticInfoObj->init();
+			}
 		}
 	}
 
@@ -126,6 +130,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 	 * @return	[type]		...
 	 */
  	function renderFileList($list, $resultcount, $pointer, $listLength, $useRequestForm) {
+
  		if(!is_array($list)) die($this->pi_getLL('error_renderFileList_emptyArray'));
 		if(!intval($resultcount) || $resultcount < 1) die($this->pi_getLL('error_renderFileList_resultcount'));
 		if(!intval($pointer) || $pointer < 1 ) $pointer = 1;
@@ -138,7 +143,6 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
  		$countElement = 0;
 		$rows = '';
 		$cObj = t3lib_div::makeInstance('tslib_cObj');
-		
  		foreach ($list as $elem) {
  			// TODO: correct table-name?
  			$cObj->start($elem, 'tx_dam');
@@ -147,16 +151,15 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
  			if ($pointer>1) $elem['count_id'] = $countElement  + $pointer;
  			$markerArray = $this->recordToMarkerArray($elem, 'renderFields');
  			$markerArray =$markerArray + $this->substituteLangMarkers($record_Code);
- 			// TODO changes in the content of the marker arrays @todo what is done here?
+ 			// TODO changes in the content of the marker arrays
+ 			// @todo what is done here?
  			//$this->piVars['showUid'] = $elem['uid'];
- 			$markerArray['###LANGUAGE###'] 	= $this->staticInfoObj->getStaticInfoName('LANGUAGES', $elem['language'], '', '', false);
- 			$markerArray['###TITLE###'] = $this->pi_linkTP_keepPiVars($elem['title']);
-
- 			$markerArray['###TITLE###'] = '<a href="typo3conf/ext/dam_frontend/pushfile.php?docID='.$elem['uid'].'" >'. $elem['title'] .'</a>';
+			// TODO: $this->staticInfoObj does not exists?
+			if (!is_null($this->staticInfoObj)) { $markerArray['###LANGUAGE###'] 	= $this->staticInfoObj->getStaticInfoName('LANGUAGES', $elem['language'], '', '', false); }
 
  			// adding Markers for links to download and single View
  			$markerArray['###LINK_SINGLE###'] = $this->pi_linkTP_keepPiVars('<img src="'.$this->iconPath.'zoom.gif'.'" style="border-width: 0px"/>',array('showUid'=>$elem['uid'],'confirmDeleteUID'=>'','editUID'=>'','catEditUID'=>''));
- 			
+
 
  			// this is a field in the database, if true, then the fe user has to fill out a request form
 			if ($useRequestForm==1 && $elem['tx_damfrontend_use_request_form'] == 1) {
@@ -165,12 +168,15 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
  					'showRequestform' => 1
  				);
  				$markerArray['###LINK_DOWNLOAD###'] = $this->pi_linkTP('request', $paramAnforderung);
+
  			} else {
-	 			$markerArray['###LINK_DOWNLOAD###'] = '<a href="typo3conf/ext/dam_frontend/pushfile.php?docID='.$elem['uid'].'" ><img src="'.$this->iconPath.'clip_pasteafter.gif" style="border-width: 0px"/></a>';
+	 			// $markerArray['###LINK_DOWNLOAD###'] = '<a href="typo3conf/ext/dam_frontend/pushfile.php?docID='.$elem['uid'].'" ><img src="'.$this->iconPath.'clip_pasteafter.gif" style="border-width: 0px"/></a>';
+	 			$markerArray['###LINK_DOWNLOAD###'] = $cObj->stdWrap('<img src="'.$this->iconPath.'clip_pasteafter.gif" style="border-width: 0px"/>', $this->conf['renderFields.']['link_download.']);
 	 		}
 
 			$markerArray['###LINK_SELECT_DOWNLOAD###'] = '';
 			if (is_array($this->conf['filelist.']['link_select_download.'])) {
+
 				$markerArray['###LINK_SELECT_DOWNLOAD###'] .= '<select name="'.$this->prefixId.'['.$elem['uid'].'][convert]">';
 				$i = 1;
 				while (is_array($this->conf['filelist.']['link_select_download.'][$i.'.'])) {
@@ -183,7 +189,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 
 
  			$markerArray['###FILEICON###'] = '<img src="'.$this->getFileIconHref($elem['file_mime_type'],$elem['file_mime_subtype'] ).'" title="'.$elem['title'].'"  alt="'.$elem['title'].'"/>';
-			
+
 			//render deletion button
 			if ($elem['allowDeletion']==1 AND $this->conf['enableDeletions']==1) {
 				$markerArray['###BUTTON_DELETE###'] =$this->pi_linkTP_keepPiVars('<img src="'.$this->iconPath.'garbage.gif'.'" style="border-width: 0px"/>',array('showUid'=>'','confirmDeleteUID'=>$elem['uid'],'editUID'=>'','catEditUID'=>''));
@@ -198,7 +204,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 				$markerArray['###BUTTON_EDIT###'] ='';
 				$markerArray['###BUTTON_CATEDIT###'] ='';
 			}
-			
+
  			$newcontent = $record_Code;
  			$rows .= tslib_cObj::substituteMarkerArray($newcontent, $markerArray);
  			$sortlinks = array();
@@ -219,7 +225,6 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
  		foreach ($record as $key=>$value) {
 			$content = tsLib_CObj::substituteMarker($content, '###SORTLINK_'.strtoupper($key).'###', $this->renderSortLink($key));
  		}
- 		
  		foreach (array('FILELIST_BATCH_SELECT', 'FILELIST_BATCH_GO', 'FILELIST_BATCH_CREATEZIPFILE', 'FILELIST_BATCH_SENDASMAIL', 'FILELIST_BATCH_SENDZIPPEDFILESASMAIL', 'FILELIST_BATCH_SENDFILELINK', 'FILELIST_BATCH_SENDZIPPEDFILELINK', 'FILENAME_HEADER', 'FILENAME_HEADER', 'FILETYPE_HEADER', 'CR_DATE_HEADER') as $label) {
  			$content = tsLib_CObj::substituteMarker($content, '###'.$label.'###', $this->pi_getLL($label, $label));
  		}
@@ -230,7 +235,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		$content = tslib_cObj::substituteMarker($content, '###LANGUAGE_HEADER###',$this->pi_getLL('LANGUAGE_HEADER'));
 		$content = tslib_cObj::substituteMarker($content, '###OWNER_HEADER###',$this->pi_getLL('OWNER_HEADER'));
 		$content = tslib_cObj::substituteMarker($content, '###CREATOR_HEADER###',$this->pi_getLL('CREATOR_HEADER'));
- 		
+
  		// substitute static markers
  		$this->pi_loadLL();
  		$staticMarkers['###SETROWSPERVIEW###'] = $this->pi_getLL('setRowsPerView');
@@ -297,7 +302,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 	 * @return	html		rendered category selection content element
 	 */
  	function renderCatSelection($list, $treeID='', $catEditUID=0) {
- 		
+
  		$wholeCode = tslib_CObj::getSubpart($this->fileContent,'###CATSELECTION###');
  		$wholeCode=tslib_cObj::substituteMarker($wholeCode,'###CHOOSEN_CAT_HEADER###',$this->pi_getLL('CHOOSEN_CAT_HEADER'));
  		$listCode = '';
@@ -314,13 +319,13 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 				$urlVars['tx_damfrontend_pi1[catEditUID]'] =$catEditUID;
 			}
 			$urlVars['tx_damfrontend_pi1[treeID]'] = $treeID != '' ?   $treeID : null;
-			$url = $this->cObj->getTypoLink_URL($GLOBALS['TSFE']->id,$urlVars); 
+			$url = $this->cObj->getTypoLink_URL($GLOBALS['TSFE']->id,$urlVars);
  			// static markers of the list
  			$listElem = tslib_cObj::substituteMarker($listElem, '###DELETE_URL###', $url);
  			$listElem = tslib_cObj::substituteMarker($listElem, '###TITLE###', $category['title']);
- 			
+
  			$markerArray = $this->recordToMarkerArray($category);
- 			
+
  			$listCode .= tslib_cObj::substituteMarkerArray($listElem, $markerArray);
  		}
  		return $wholeCode = tslib_CObj::substituteSubpart($wholeCode, '###CATLIST###', $listCode);
@@ -335,16 +340,17 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 	 */
  	function renderSingleView($record) {
  		$single_Code = tslib_CObj::getSubpart($this->fileContent,'###SINGLEVIEW###');
+		// TODO: clean up
  		// Formating Timefields and filesize
- 		$record['tstamp'] = date('d.m.Y', $record['tstamp']);
- 		$record['crdate'] = date('d.m.Y', $record['crdate']);
+ 		// $record['tstamp'] = date('d.m.Y', $record['tstamp']);
+ 		// $record['crdate'] = date('d.m.Y', $record['crdate']);
  		#$record['file_size'] = t3lib_div::formatSize($record['file_size'],' bytes | kb| mb| gb');
- 		
+
  		// converting all fields in the record to marker (recordfields and markername must match)
  		$this->pi_loadLL();
  		$markerArray = $this->recordToMarkerArray($record,'SingleView');
  		$markerArray =$markerArray + $this->substituteLangMarkers($single_Code);
- 		$markerArray['###LANGUAGE###'] 	= $this->staticInfoObj->getStaticInfoName('LANGUAGES', $record['language'], '', '', false);
+ 		if (!is_null($this->staticInfoObj)) { $markerArray['###LANGUAGE###'] 	= $this->staticInfoObj->getStaticInfoName('LANGUAGES', $record['language'], '', '', false);}
  		$content=tslib_cObj::substituteMarkerArray($single_Code, $markerArray);
  		// TODO: we should do it with foreach on record, so new fields could be easily introduced without editing this lines
  		$content = tslib_cObj::substituteMarker($content, '###TITLE_SINGLEVIEW###',$markerArray['###TITLE###']);
@@ -357,7 +363,6 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
  		$content = tslib_cObj::substituteMarker($content, '###LINK_HEADER###',$this->pi_getLL('LINK_HEADER'));
  		$content = tslib_cObj::substituteMarker($content, '###LANGUAGE_HEADER###',$this->pi_getLL('LANGUAGE_HEADER'));
  		$content = tslib_cObj::substituteMarker($content, '###TITLE_SINGLEVIEW_HEADER###',$this->pi_getLL('TITLE_SINGLEVIEW_HEADER'));
- 	
  		return $content;
  	}
 
@@ -370,7 +375,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 	 */
  	function renderError($errormsg = 'default', $customMessage="",$customMessage2="" ) {
  		$this->pi_loadLL();
- 		
+
  		switch ($errormsg) {
  			case 'noSingleID':
  				$message = $this->pi_getLL('noSingleID');
@@ -391,6 +396,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
  				$message = $this->pi_getLL('uploadFormFieldError') . $customMessage . ' '. $this->pi_getLL('uploadFormFieldErrorLength') . ' ' . $customMessage2 ;
  				break;
  			case 'custom':
+				// TODO: <br> in strip_tags? makes no sense - perhaps stdWrap? where it is used?
  				$message = strip_tags($customMessage. ' <br>'. $customMessage2);
  				break;
  			default:
@@ -441,6 +447,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 	 */
  	function renderFilterView($filterArray, $errorArray = '') {
  		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###FILTERVIEW###');
+
  		// filling fields with url - vars
  		$markerArray  = $this->recordToMarkerArray($filterArray);
 		$markerArray =$markerArray + $this->substituteLangMarkers($formCode);
@@ -473,11 +480,11 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		$markerArray['###LABEL_LANGUAGE###'] = $this->pi_getLL('LANGUAGE_HEADER');
 		$markerArray['###OWNER_HEADER###'] = $this->pi_getLL('OWNER_HEADER');
 		if (is_array($filterArray['listOfOwners'])) {
-			$markerArray['###DROPDOWN_OWNER###'] = $this->renderOwnerSelector($filterArray['listOfOwners']);	
+			$markerArray['###DROPDOWN_OWNER###'] = $this->renderOwnerSelector($filterArray['listOfOwners']);
 		} else {
 			$markerArray['###DROPDOWN_OWNER###']='';
 		}
-		
+
 		$markerArray['###DROPDOWN_LANGUAGE###'] = $this->renderLanguageSelector($filterArray['LanguageSelector']);
  		if (!isset($this->conf['filterview.']['form_url.']['parameter'])) {
 			$this->conf['filterview.']['form_url.']['parameter'] = $GLOBALS['TSFE']->id;
@@ -554,7 +561,6 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 	 */
  	function renderUploadForm() {
 		$this->pi_loadLL();
-		
 		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###UPLOADFORM###');
 		$markerArray['###BUTTON_UPLOAD###'] = $this->pi_getLL('BUTTON_UPLOAD');
 		$markerArray['###TITLE_FILEUPLOAD###'] = $this->pi_getLL('TITLE_FILEUPLOAD');
@@ -564,8 +570,8 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		}
 		$this->conf['filterview.']['form_url.']['returnLast'] = 'url';
 		$markerArray['###FORM_URL###'] = $this->cObj->typolink('', $this->conf['filterview.']['form_url.']);
-		$markerArray =$markerArray + $this->substituteLangMarkers($formCode);	
-	
+		$markerArray =$markerArray + $this->substituteLangMarkers($formCode);
+
 		return tslib_cObj::substituteMarkerArray($formCode, $markerArray);
  	}
 
@@ -681,22 +687,22 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
       return t3lib_extMgm::siteRelPath($this->extKey) . 'res/ico/';
     }
   }
-  
-  
+
+
 //  	/**
-//  	 * 
+//  	 *
 //  	 * rendert das Formular zur Eingabe der Anforderung f�r eine SI
-//  	 * 
-//  	 * 
+//  	 *
+//  	 *
 //  	 */
-//	function renderRequest($formData, $docArray, $errorArray=''){	
+//	function renderRequest($formData, $docArray, $errorArray=''){
 //		$docArray = array_merge($formData, $docArray);
 //		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###ANFORDERUNG###');
 //		$markerArray  = $this->recordToMarkerArray($docArray);
 //		$markerArray['###FORM_TARGET###'] = $this->pi_getPageLink($this->cObj->data['pid'],null, array('sendRequestform' => 1));
 //
 //		// Es traten fehler bei den Formulareingaben auf
-//		foreach ($formData as $name => $data) {			
+//		foreach ($formData as $name => $data) {
 //			$markerArray['###ERROR_'.strtoupper($name).'###'] = '';
 //		}
 //		if (is_array($errorArray)) {
@@ -705,7 +711,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 //			}
 //			if ($errorArray['error_plz']) {
 //				$markerArray['###ERROR_PLZ###'] = 'Die Postleitzahl fehlt noch';
-//			} 
+//			}
 //			if ($errorArray['error_ort']) {
 //				$markerArray['###ERROR_ORT###'] = 'Der Ort fehlt noch';
 //			}
@@ -719,20 +725,20 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 //				$markerArray['###ERROR_ANSCHRIFT###'] = 'Die Anschrift fehlt noch';
 //			}
 //		}
-//		
+//
 //		// F�ge die bisher eingegebenen Daten ein
 //		foreach($formData as $name => $data) {
 //
 //			$markerArray['###'.strtoupper($name).'###'] = $data;
 //		}
 //		$markerArray['###BACK_URL###'] = $this->pi_GetPageLink($this->cObj->data['pid']);
-//		
+//
 //		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
 //		return $formCode;
 //	}
-//	
+//
 //	/*
-//	 * 
+//	 *
 //	 */
 //	function renderMailMessage($formData, $docData)
 //	{
@@ -740,11 +746,11 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 //		$wholeData = array_merge($formData, $docData);
 //		$markerArray = $this->recordToMarkerArray($wholeData);
 //		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
-//		return $formCode;	
+//		return $formCode;
 //	}
-//	
+//
 //	/*
-//	 * 
+//	 *
 //	 */
 //	function renderRequestUser($docArray) {
 //		$formCode = tslib_CObj::getSubpart($this->fileContent, '###ANFORDERUNG_USER###');
@@ -754,11 +760,11 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 //		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
 //		return $formCode;
 //	}
-//	
+//
 //	/*
 //	 */
 //	function renderAnforderMailUser($userData, $docData) {
-//		
+//
 //		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###MAIL_ANFORDER_USER###');
 //		$wholeData = array_merge($userData, $docData);
 //		$markerArray = $this->recordToMarkerArray($wholeData);
@@ -768,21 +774,21 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 //		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
 //		return $formCode;
 //	}
-	
+
 	/*
 	 * Renders the categorisation form
-	 * 
+	 *
  	 * @param	[array] 	$docdata: 		meta data of the doc, that should be imported to the dam
  	 * @param	[array] 	$docdata: 		meta data of the doc, that should be imported to the dam
 	 * @param	[array]		$selectedCats: 	selected categories
 	 * @return	[string]	$return:		html of the form
 	 * @author  martin baum
-	 * 
+	 *
 	 */
 	function renderCategorisationForm($docData,$selectedCats='',$uploadCats,$versioning='') {
 		$this->pi_loadLL();
 		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###CATEGORISATION###');
-		
+
 		// initalisation of the treeview
 		$tree = t3lib_div::makeInstance('tx_damfrontend_categorisationTree');
 		$tree->MOUNTS = explode(',',$uploadCats);
@@ -790,14 +796,13 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		$tree->cObj = $this->cObj;
 		if ($this->piVars['catEditUID']>0) {
 			$tree->piVars = array('tx_damfrontend_pi1[catEditUID]'=>$docData['uid']);
-		}	
+		}
 		$tree->title = $this->pi_getLL('CATEGORISATION_TREE_NAME');
-		
 		$markerArray = $this->recordToMarkerArray($docData);
-		
+
 		$markerArray['###BUTTON_CONFIRM###'] = '<input name="catOK" type="submit" value="'.$this->pi_getLL('BUTTON_CONFIRM').'">';
 		$markerArray['###CANCEL###'] = $this->pi_linkTP_keepPiVars('<img src="'.$this->iconPath.'turn_left.gif'.'" style="border-width: 0px"/> &nbsp;'.$this->pi_getLL('BUTTON_BACK'),   array('catEditUID'=>''));
-		
+
 		$markerArray['###TITLE_FILEUPLOAD###'] = $this->pi_getLL('TITLE_FILEUPLOAD');
 		$markerArray['###LABEL_FILE###'] =  $this->pi_getLL('LABEL_FILE');
 		$markerArray['###LABEL_TITLE###'] =  $this->pi_getLL('LABEL_TITLE');
@@ -809,50 +814,49 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		$markerArray['###VALUE_AUTHOR###']= $docData['creator'];
 		$markerArray['###VALUE_DESCRIPTION###']= $docData['description'];
 		$markerArray['###LABEL_LANGUAGE###']= $this->pi_getLL('LANGUAGE_HEADER');
-		$markerArray['###VALUE_LANGUAGE###']= $this->staticInfoObj->getStaticInfoName('LANGUAGES', $docData['language'], '', '', false);
+		if (!is_null($this->staticInfoObj)) { $markerArray['###VALUE_LANGUAGE###']= $this->staticInfoObj->getStaticInfoName('LANGUAGES', $docData['language'], '', '', false); }
 		$markerArray =$markerArray + $this->substituteLangMarkers($formCode);
 		$markerArray['###CATTREE###'] = $tree->getBrowsableTree();
 		$markerArray['###CATLIST###'] = '';
-		
 		$markerArray['###CATEGORISATION_TEXT_HEADER###']=$this->pi_getLL('CATEGORISATION_TEXT_HEADER');
 		$markerArray['###CATEGORISATION_TEXT_TITLE###']=$this->pi_getLL('CATEGORISATION_TEXT_TITLE');
 		$markerArray['###CATEGORISATION_TEXT_DESCRIPTION###']=$this->pi_getLL('CATEGORISATION_TEXT_DESCRIPTION');
 		$markerArray['###CATEGORISATION_TEXT_SEND###']=$this->pi_getLL('CATEGORISATION_TEXT_SEND');
-		
-		
+
+
 		if (is_array($selectedCats)) {
 			$catCode = $this->renderCatSelection($selectedCats, -1,$this->piVars['catEditUID']);
 		}
 		else {
 			$catCode = $this->renderError('noCatSelected');
-			$markerArray['###CANCEL###'] = '';	
+			$markerArray['###CANCEL###'] = '';
 		}
-		
+
 		$markerArray['###HIDDENFIELDS###'] = '';
 		if (isset($versioning))  {
 			if ($versioning=='editCats') {
 				#hide confirm button if edit is active (otherwise the user would see the message 'upload successful')
 				$markerArray['###BUTTON_CONFIRM###'] ='';
-			} 
+			}
 			else {
 				$markerArray['###HIDDENFIELDS###'] = '<input type="hidden" name="version_method" value="'.$versioning.'" />';
-			}	
+			}
 		}
 		$markerArray['###CATLIST###'] = $catCode;
 		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
 		return $formCode;
 	}
-	
+
 	/**
 	 * renderUploadSuccess
 	 * @author stefan
 	 * @return	[string]	$return:		html of the form
 	 */
 	function renderUploadSuccess() {
-		$this->pi_loadLL();		
+		$this->pi_loadLL();
 		return $this->pi_getLL('UPLOAD_SUCCESS');
 	}
-	
+
 	/**
 	 * message to confirm the deletion of a file
 	 * @author stefan
@@ -860,13 +864,13 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 	 * @return	[string]	$return:		html of the form
 	 */
 	function renderFileDeletion($record) {
-	
+
 		$single_Code = tslib_CObj::getSubpart($this->fileContent,'###FILE_DELETION###');
  		// Formating Timefields and filesize
  		$record['tstamp'] = date('d.m.Y', $record['tstamp']);
  		$record['crdate'] = date('d.m.Y', $record['crdate']);
  		#$record['file_size'] = t3lib_div::formatSize($record['file_size'],' bytes | kb| mb| gb');
- 		
+
  		// converting all fields in the record to marker (recordfields and markername must match)
  		$markerArray = $this->recordToMarkerArray($record);
  		$markerArray =$markerArray + $this->substituteLangMarkers($single_Code);
@@ -881,11 +885,11 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
  		$content = tslib_cObj::substituteMarker($content, '###LINK_HEADER###',$this->pi_getLL('LINK_HEADER'));
  		$content = tslib_cObj::substituteMarker($content, '###TITLE_SINGLEVIEW_HEADER###',$this->pi_getLL('TITLE_SINGLEVIEW_HEADER'));
  		$content = tslib_cObj::substituteMarker($content, '###LABEL_WARNING###',$this->pi_getLL('LABEL_WARNING'));
-		$content = tslib_cObj::substituteMarker($content, '###MESSAGE_DELETION_WARNING###',$this->pi_getLL('MESSAGE_DELETION_WARNING')); 		
-		$content = tslib_cObj::substituteMarker($content, '###CANCEL_DELETION_UID###', $this->pi_linkTP_keepPiVars('<img src="'.$this->iconPath.'turn_left.gif'.'" style="border-width: 0px"/> &nbsp;'.$this->pi_getLL('BUTTON_BACK'),   array('showUid'=>$record['uid'],'confirmDeleteUID'=>'')));	
-		$content = tslib_cObj::substituteMarker($content, '###CONFIRM_DELETION_UID###',$this->pi_linkTP_keepPiVars('<img src="'.$this->iconPath.'garbage.gif'.'" style="border-width: 0px"/> &nbsp;'.$this->pi_getLL('BUTTON_CONFIRM'),		array('showUid'=>''            ,'deleteUID'=>$record['uid'], 'confirmDeleteUID'=>''))); 		
+		$content = tslib_cObj::substituteMarker($content, '###MESSAGE_DELETION_WARNING###',$this->pi_getLL('MESSAGE_DELETION_WARNING'));
+		$content = tslib_cObj::substituteMarker($content, '###CANCEL_DELETION_UID###', $this->pi_linkTP_keepPiVars('<img src="'.$this->iconPath.'turn_left.gif'.'" style="border-width: 0px"/> &nbsp;'.$this->pi_getLL('BUTTON_BACK'),   array('showUid'=>$record['uid'],'confirmDeleteUID'=>'')));
+		$content = tslib_cObj::substituteMarker($content, '###CONFIRM_DELETION_UID###',$this->pi_linkTP_keepPiVars('<img src="'.$this->iconPath.'garbage.gif'.'" style="border-width: 0px"/> &nbsp;'.$this->pi_getLL('BUTTON_CONFIRM'),		array('showUid'=>''            ,'deleteUID'=>$record['uid'], 'confirmDeleteUID'=>'')));
  		return $content;
-	}
+ }
 
 	/**
 	 * Message if the deletion was successful
@@ -893,15 +897,15 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 	 * @return	[string]	$return:		html of the form
 	 */
 	function renderFileDeletionSuccess() {
-		$this->pi_loadLL();	
-		$subpart = tslib_CObj::getSubpart($this->fileContent,'###MESSAGE###'); 		
+		$this->pi_loadLL();
+		$subpart = tslib_CObj::getSubpart($this->fileContent,'###MESSAGE###');
  		$markerArray['###LABEL_MESSAGE###']=$this->pi_getLL('LABEL_MESSAGE');
  		$markerArray['###MESSAGE_TEXT###']=$this->pi_getLL('MESSAGE_TEXT_DELETION_SUCESS');
  		$markerArray['###BUTTON_NEXT###']= $this->pi_linkTP_keepPiVars('<img src="'.$this->iconPath.'icon_ok2.gif'.'" style="border-width: 0px"/> &nbsp;'.$this->pi_getLL('BUTTON_NEXT'),array('showUid'=>'','deleteUID'=>'', 'confirmDeleteUID'=>''));
  		$content=tslib_cObj::substituteMarkerArray($subpart, $markerArray);
 		return $content;
-	}	
-	
+	}
+
 	/**
 	 * finds markers (###LLL:[markername]###) in given template Code
 	 * @param		string		$templCode		the template code in which the markers should be searched for
@@ -927,9 +931,9 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		}
 	    return $langMarkers;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * Renders a Language Selector (optional filtered via TYPOSCRIPT)
 	 * TS Example: plugin.tx_damfrontend_pi1.allowedLanguages = EN,DE
 	 * @author stefan
@@ -937,26 +941,27 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 	 *	@return string HTML of the Selektorbox
 	 */
 	function renderLanguageSelector ($currentLanguage ='') {
+		if (is_null($this->staticInfoObj)) { return ''; }
 		$whereLanguages='';
 		$languagesArray = array();
 		$languagesArray = explode(",",$this->conf['allowedLanguages']);
 		// building where clause to limit the languages
 		if (count($languagesArray)>0){
 			foreach ($languagesArray as $language) {
-				$languages .= '"'.$language.'",';	
+				$languages .= '"'.$language.'",';
 			}
 			//removing the last comma
 			$languages = rtrim($languages,',');
 			$whereLanguages = 'lg_iso_2 IN ( '.$languages.')';
 		}
 		$mergeArray = array('nosel'=>'---');
-		
+
 		return  $this->staticInfoObj->buildStaticInfoSelector('LANGUAGES', 'LanguageSelector','',$currentLanguage,'','','','',$whereLanguages,'',1,$mergeArray);
 	}
-		
+
 	/**
 	 * @author stefan
-	 *	
+	 *
 	 *	@param array $listOfCreators holds a List of creators (sorted alphabetically, in column 2 there is a value selected)
 	 *	@return string html of the selector box
 	 */
@@ -964,7 +969,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		if (is_array($listOfOwners)) {
 			foreach ($listOfOwners as $owner) {
 				if ($owner['selected'] == 1) {
-					$sel = ' selected="selected"'; 
+					$sel = ' selected="selected"';
 					$selected = true;
 				} else {
 					$sel='';
@@ -974,11 +979,11 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 				} else {
 					$feUserName =$owner['name'];
 				}
-				
+
 	 			$content .= '<option value="'.$owner['uid'].'"'.$sel.'>'.$feUserName.'</option>';
 			}
 			if ($selected==false ){
-				$sel = ' selected="selected"'; 
+				$sel = ' selected="selected"';
 			} else {
 				$sel='';
 			}
@@ -988,38 +993,38 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		}
 		else {
 			$content ='<label>'.$this->pi_getLL('NO_OWNERS').'</label>';
-		}			
+		}
 		return $content;
 	}
-	
-	
-	
+
+
+
 	function renderVersioningForm() {
 		$this->pi_loadLL();
-		$subpart = tslib_CObj::getSubpart($this->fileContent,'###FORM_VERSIONING###'); 		
+		$subpart = tslib_CObj::getSubpart($this->fileContent,'###FORM_VERSIONING###');
 		$markerArray = array();
 		$markerArray['###VERSIONING_FILE_EXISTS###'] =  $this->pi_getLL('VERSIONING_FILE_EXISTS');
 		$markerArray['###VERSIONING_OVERWRITES###'] =  $this->pi_getLL('VERSIONING_OVERWRITES');
 		$markerArray['###VERSIONING_NEW_VERSION###'] = $this->pi_getLL('VERSIONING_NEW_VERSION');
 		$markerArray['###HIDDENFIELDS###'] = '';
-		
+
  		$content=tslib_cObj::substituteMarkerArray($subpart, $markerArray);
 		return $content;
 	}
-	
-	
+
+
 	/**
 	 * Renders the edition form. A fe_user can edit the metadata of a file
-	 * 
+	 *
 	 * 	@author stefan
 	 *	@version 1
-	 *	
+	 *
 	 *	@param array $record array of the dam record
 	 *	@return string html of the edit form
 	 */
 	function renderFileEdit($record){
 		$this->pi_loadLL();
-		
+
 		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###EDITFORM###');
 		$markerArray['###BUTTON_CONFIRM###'] = $this->pi_getLL('BUTTON_CONFIRM');
 		$markerArray['###TITLE_FILEUPLOAD###'] = $this->pi_getLL('TITLE_FILEUPLOAD');
@@ -1036,7 +1041,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		$markerArray['###VALUE_LANGUAGE###']=$this->renderLanguageSelector($record['language']);
 		$hiddenFields = '<input type="hidden" name="saveUID" value="'.$record['uid'].'" />';
  		$markerArray['###HIDDENFIELDS###'] = $hiddenFields;
-		$markerArray =$markerArray + $this->substituteLangMarkers($formCode);	
+		$markerArray =$markerArray + $this->substituteLangMarkers($formCode);
 		if ($GLOBALS['TSFE']->fe_user->getKey('ses','saveID')>0) {
 			$formCode = tslib_cObj::substituteMarker($formCode, '###CANCEL###','');
 		}
@@ -1045,7 +1050,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		}
 		return tslib_cObj::substituteMarkerArray($formCode, $markerArray);
 	}
-	
+
  }
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_rendering.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_rendering.php']);
