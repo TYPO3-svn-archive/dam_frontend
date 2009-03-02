@@ -28,7 +28,6 @@ if (!$_REQUEST['docID']
 	&& !$_POST[$prefixId]) {
 	die ('<h1>Error</h1><p>You have no access to download a file. In this case no DocID was given!</p>');
 }
-
 error_reporting(E_ERROR);
 
 define('TYPO3_OS', stristr(PHP_OS,'win')&&!stristr(PHP_OS,'darwin')?'WIN':'');
@@ -38,6 +37,11 @@ define('PATH_site',preg_replace("/(typo3conf|typo3)\/ext\/DAM_Frontend/i", '', d
 define('PATH_t3lib', PATH_site.'t3lib/');
 define('PATH_tslib', PATH_site.'typo3/sysext/cms/tslib/');
 define('PATH_typo3conf', PATH_site.'typo3conf/');
+
+require_once(PATH_t3lib.'class.t3lib_timetrack.php');
+$TT = new t3lib_timeTrack;
+$TT->start();
+$TT->push('','Script start');
 
 require_once(PATH_t3lib.'class.t3lib_div.php');
 require_once(PATH_t3lib.'class.t3lib_extmgm.php');
@@ -69,15 +73,8 @@ $TSFE->initUserGroups();
 $docLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_documents');
 
 // Formular versendet?
-
 $post = t3lib_div::_POST($prefixId);
 if (is_array($post) && count($post) > 0) {
-/*
-	echo '<pre>';
-print_r($post);
-echo '</pre>';
-die('stop');
-*/
 	$filesToSend = array();
 
 	foreach ($post as $docID => $configuration) {
@@ -160,9 +157,6 @@ die('stop');
 			}
 		break;
 	}
-
-
-
 }
 
 
