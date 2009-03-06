@@ -59,7 +59,7 @@
  *
  */
  
- require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
+require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 require_once(t3lib_extMgm::extPath('dam_frontend').'/DAL/class.tx_damfrontend_DAL_categories.php');
  
  
@@ -73,14 +73,14 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 	var $treeID;											// ID Number of the tree given from the flexform configuration
 	var $piVars;											// PiVars for keeping the vars in the links (must be set from the place where this class is used)
 	var $cObj;                       						// for RealURL
-	
+
 	/**
 	 * prepares the category tree
 	 *
 	 * @return	void
 	 */// some small changes from the original category Tree
  	function tx_damfrontend_categorisationTree() {
-		
+
 		
 		$this->treeID = 1;
 		$this->title = 'categorytree';
@@ -178,40 +178,39 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 
 	/**
 	 * wraps a Title in a link
-	 * or not - if the user has no access rightsÅÅ
+	 * or not - if the user has no access rights
 	 *
 	 * @param	string		$title: ...
 	 * @param	resultset		$row: ...
 	 * @param	int		$bank: ...
 	 * @return	string		html ...
 	 */
-	function wrapTitle($title,$row,$bank=0) {		
+	function wrapTitle($title,$row,$bank=0) {
 		if ($this->catLogic->checkCategoryAccess($GLOBALS['TSFE']->fe_user->user['uid'],$row['uid'])) {
 			$id = t3lib_div::_GET('id');
 			/**$param_array = array (
 				'catPlus' => $row['uid'],
 				'treeID' => $this->treeID
 			);*/
-			$param_array = array (
-				'tx_damfrontend_pi1[catPlus]' => $row['uid'],
-				'tx_damfrontend_pi1[catEquals]' => null,
-				'tx_damfrontend_pi1[catMinus]' => null,
-				'tx_damfrontend_pi1[catPlus_Rec]' => null,
-				'tx_damfrontend_pi1[catMinus_Rec]' => null,
-				'tx_damfrontend_pi1[treeID]' => $this->treeID
-			);
-			if ($id != '') $param_array['id'] = $id;
-			$param_array = array_merge($this->piVars,$param_array);
-    		$url = $this->cObj->getTypoLink_URL($GLOBALS['TSFE']->id, $param_array);
-			$title = '<a href="'.$url.'">'.$title.'</a>';
-			return $title;
-		}
+		$param_array = array (
+			'tx_damfrontend_pi1[catPlus]' => $row['uid'],
+			'tx_damfrontend_pi1[catEquals]' => null,
+			'tx_damfrontend_pi1[catMinus]' => null,
+			'tx_damfrontend_pi1[catPlus_Rec]' => null,
+			'tx_damfrontend_pi1[catMinus_Rec]' => null,
+			'tx_damfrontend_pi1[treeID]' => $this->treeID
+		);
+		if ($id != '') $param_array['id'] = $id;
+		$param_array = array_merge($this->piVars,$param_array);
+    	$url = $this->cObj->getTypoLink_URL($GLOBALS['TSFE']->id, $param_array);
+		$title = '<a href="'.$url.'">'.$title.'</a>';
+		return $title;
+	}
 		else {
 			return '<span style="color: #aaa" >'.$title.'</span>';
 		}
 
 	}
-
 
 	/**
 	 * PM_ATagWrap
@@ -232,6 +231,56 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 		$param_array = array_merge($this->piVars,$param_array);
 		$aUrl = $this->cObj->getTypoLink_URL($GLOBALS['TSFE']->id, $param_array).$anchor;
 		return '<a href="'.htmlspecialchars($aUrl).'"'.$name.'>'.$icon.'</a>';
+	}
+
+
+// TODO: check why/if this function is not needed anymore
+	/**
+	 * Renders the +-= buttons with corresponding commands
+	 *
+	 * @param	string		$title: ...
+	 * @param	resultslist		$row: ...
+	 * @return	string		HTML Output
+	 */
+	function getControl($title,$row) {
+		// retrieving the current page id
+		$id = (int)t3lib_div::_GET('id');
+
+		$control = '<div class="control" >';
+		if ($this->modeSelIcons
+			AND !($this->mode=='tceformsSelect')
+			AND ($row['uid'] OR ($row['uid'] == '0' AND $this->linkRootCat))) {
+
+			// genrating plus button
+			$urlVars = array(
+				'tx_damfrontend_pi1[catPlus]' => null,
+				'tx_damfrontend_pi1[catEquals]' => null,
+				'tx_damfrontend_pi1[catMinus]' => null,
+				'tx_damfrontend_pi1[catPlus_Rec]' => $row['uid'],
+				'tx_damfrontend_pi1[catMinus_Rec]' => null,
+				'tx_damfrontend_pi1[treeID]' => $this->treeID
+			);
+			if ($id != '') $param_array['id'] = $id;
+			$url = t3lib_div::linkThisScript($urlVars);
+			$icon =	'<img'.t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'],$this->iconPath.'plus.gif', 'width="8" height="11"').' alt="" border="0"/>';
+			$control .= '<a href="'.$url.'">'.$icon.'</a>';
+
+			// generate minus button
+			$urlVars = array(
+				'tx_damfrontend_pi1[catPlus]' => null,
+				'tx_damfrontend_pi1[catEquals]' => null,
+				'tx_damfrontend_pi1[catMinus]' => null,
+				'tx_damfrontend_pi1[catPlus_Rec]' => null,
+				'tx_damfrontend_pi1[catMinus_Rec]' => $row['uid'],
+				'tx_damfrontend_pi1[treeID]' => $this->treeID
+			);
+			if ($id != '') $param_array['id'] = $id;
+			$url = t3lib_div::linkThisScript($urlVars);
+			$icon =	'<img'.t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'],$this->iconPath.'/minus.gif', 'width="8" height="11"').' alt="" border="0"/>';
+			$control .= '<a href="'.$url.'">'.$icon.'</a>';
+		}
+		$control .= '</div>';
+		return $control;
 	}
 
 
@@ -273,13 +322,20 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 				}
 				$idAttr = htmlspecialchars($this->domIdPrefix.$this->getId($v['row']).'_'.$v['bank']);
 				$title = $this->getTitleStr($v['row'], $titleLen);
+				// TODO: how/where are the controls rendered?
+				$control = $this->getControl($title, $v['row'], $v['bank']);
 				$out.='
 					<tr class="'.$class.'">
 						<td id="'.$idAttr.'" class="'.$sel_class.'">'.
 							$v['HTML'].
 							$this->wrapTitle($title, $v['row'], $v['bank']).
 						'</td>
-					</tr>';
+						<td  width="1%" id="'.$idAttr.'Control" class="typo3-browsetree-control">'.
+							($control ? $control : '<span></span>').
+						'</td>
+					</tr>
+
+				';
 			}
 			$out .= '
 				</table>';

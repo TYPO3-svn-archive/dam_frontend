@@ -105,6 +105,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$this->fullTextSearchFields = $fieldlist;
 		}
 
+
 	/**
 	 * inits the class
 	 *
@@ -137,8 +138,8 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 					$cats[] = $row['uid'];
 				}
 				else {
-					$cats[] = $row;	
-				}
+				$cats[] = $row;
+			}
 				
 			}
 			return $cats;
@@ -297,64 +298,67 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 * @return	[array]		returns an array which contains all selected records
 	 */
 		function getDocumentList($userUID=0) {
+			if(!is_array($this->categories)) {
+				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getDcoumentList: for the this->categories is no array. Given value was:' .$this->categories, 'dam_frontend',3);
+			}
 			if (count($this->categories)) {
-				/*
-				 * Building the from clause manually by joining the DAM tables
-				 *
-				 *
-				 */
-				$select = $this->docTable.'.uid';
-				$from = $this->docTable.' INNER JOIN '.$this->mm_Table.' ON '.$this->mm_Table.'.uid_local  = '.$this->docTable.
-				'.uid INNER JOIN '.$this->catTable.' ON '.$this->mm_Table.'.uid_foreign = '.$this->catTable.'.uid';
-				
-				
+			/*
+			 * Building the from clause manually by joining the DAM tables
+			 *
+			 *
+			 */
+			$select = $this->docTable.'.uid';
+			$from = $this->docTable.' INNER JOIN '.$this->mm_Table.' ON '.$this->mm_Table.'.uid_local  = '.$this->docTable.
+			'.uid INNER JOIN '.$this->catTable.' ON '.$this->mm_Table.'.uid_foreign = '.$this->catTable.'.uid';
+
+
 				$filter = ' AND '.$this->docTable.'.deleted = 0  AND '.$this->docTable.'.hidden = 0';
 				$filter .= ' AND ('.$this->docTable.'.starttime > '.time().' OR '.$this->docTable.'.starttime = 0)';
 				$filter .= ' AND ('.$this->docTable.'.endtime < '.time().' OR '.$this->docTable.'.endtime = 0)';
 				$filter .= $this->additionalFilter;
 				
 	
-				// preparing the category array - deleting all empty entries
-				foreach($this->categories as $number => $catList) {
-					if (!count($catList)) {
-						unset($this->categories[$number]);
-					}
+			// preparing the category array - deleting all empty entries
+			foreach($this->categories as $number => $catList) {
+				if (!count($catList)) {
+					unset($this->categories[$number]);
 				}
-	
-	
-				$queryText = array();
-				$z = 0;
-				/**
-				 * every element in the categories array stores a list of cats that are associated with an array
-				 *
-				 *
-				 *
-				 */
-				foreach($this->categories as $number => $catList) {
+			}
+
+
+			$queryText = array();
+			$z = 0;
+			/**
+			 * every element in the categories array stores a list of cats that are associated with an array
+			 *
+			 *
+			 *
+			 */
+			foreach($this->categories as $number => $catList) {
 					$catString = ($this->searchAllCats)?"1=1":'( '.$this->catTable.'.uid='.implode(' OR '.$this->catTable.'.uid=',$catList).')';
 					//$catString = '( '.$this->catTable.'.uid='.implode(' OR '.$this->catTable.'.uid=',$catList).')';
-					if ($z != count($this->categories)-1) {
-						if (!count($queryText)) {
-							$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery($select,$from, $catString);
-						}
-						else {
-							$where = $this->docTable.'.uid IN ('.$queryText[count($queryText)- 1].') AND '.$catString;
-							$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery('tx_dam.uid', $from, $where);
-						}
+				if ($z != count($this->categories)-1) {
+					if (!count($queryText)) {
+						$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery($select,$from, $catString);
 					}
-					// building the last element of the list - final building of the list
 					else {
-						if(count($this->categories ) > 1) {
-							$where = $this->docTable.'.uid IN ('.$queryText[count($queryText)- 1].') AND '.$catString.$filter;
-						}
-						// list is having more then one "AND" criteria
-						else {
-							$where = $catString.$filter;
-						}
-						$select = ' DISTINCT '.$this->docTable.'.*';
+						$where = $this->docTable.'.uid IN ('.$queryText[count($queryText)- 1].') AND '.$catString;
+						$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery('tx_dam.uid', $from, $where);
 					}
-					$z++;
 				}
+				// building the last element of the list - final building of the list
+				else {
+					if(count($this->categories ) > 1) {
+						$where = $this->docTable.'.uid IN ('.$queryText[count($queryText)- 1].') AND '.$catString.$filter;
+					}
+					// list is having more then one "AND" criteria
+					else {
+						$where = $catString.$filter;
+					}
+					$select = ' DISTINCT '.$this->docTable.'.*';
+				}
+				$z++;
+			}
 			} 
 			else {
 				#query without using categories
@@ -364,8 +368,8 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				$from='tx_dam';
 				$where.= ' deleted=0 AND hidden=0 '.$filter;
 			} 
-			
-			
+
+
 			$resultCounter=0;
 			// executing the final query and convert the results into an array
 			$limitArr = explode (',',$this->limit);
@@ -382,16 +386,14 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 					$resultCounter++;
 					// add row only, if the current resultID is between the limit range
 					if ($resultCounter>=$limitArr[0] && $resultCounter<=$limitArr[1]){
-						$result[] = $row;
-					}
-					
+					$result[] = $row;
 				}
+			}
 			}
 			$this->resultCount = $resultCounter;
 			
 			return $result;
 		}
-	
 
 
 
@@ -449,9 +451,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 * @return	array		returns an array with error codes - filled while cration of the form
 	 */
 		function setFilter($filterArray) {
-			
-			
-			
 			if (!is_array($filterArray)){
 				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function setFilter: filterArray must be an array. Given value was:' .$this->categories, 'dam_frontend',3);
 			}
@@ -515,7 +514,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				$queryPart[] = ' '.$this->docTable.'.'.$field.' LIKE "%'.$GLOBALS['TYPO3_DB']->quoteStr(trim($searchword), $this->docTable).'%" ';
 			}
 			return ' AND ('.implode(' OR ', $queryPart).') ';
-			
 		}
 
 	/**
@@ -534,8 +532,8 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 					return true;
 				}
 		}
-		
-		
+
+
 		
 		function saveMetaData($docID, $docData) {
 			foreach( $docData as $key => $value ) {
@@ -569,6 +567,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 
 			$data = $indexer->indexfile($path,0);
 			$newrecord = $data['fields'];
+
 
 			// adding the data from the form to the new indexed data
 			if (is_array($docData)) {
@@ -617,7 +616,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			}
 
 		}
-	
+
 		/**
 		 * 
 		 * @author stefan
@@ -630,7 +629,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$fields_values=array('deleted'=>'1');
 			$res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery($table,$where,$fields_values,$no_quote_fields=FALSE);
 			return $res ;
-		}
+	}
 		
 		function get_FEUserName ($uid=0) {
 			

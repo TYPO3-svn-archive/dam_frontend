@@ -41,210 +41,199 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 	var $extKey = 'dam_frontend';	// The extension key.
 	var $pi_checkCHash = TRUE;
 
-	var $fieldDamUidList = "tx_damdownloadlist_records";
+	var $fieldDamUidList = 'tx_damdownloadlist_records';
 	var $damUidList = null;
-	var $dateConf = "d/m/Y";
+	// TODO: dateconf should be done via TypoScript
+	var $dateConf = 'd/m/Y';
 	var $iconBaseAddress = null;
 
-	var $template = "";
-	var $templateItem = "";
-	var $templateItemFile = "";
-	var $groupCriteriaConf = "title,file_path";
+	var $template = '';
+	var $templateItem = '';
+	var $templateItemFile = '';
+
+	var $groupCriteriaConf = 'title,file_path';
 	var $group = null;
 
 	var $pi_USER_INT_obj = TRUE;
-	//var $pi_checkCHash = TRUE;
 
-  /**
- * Plugin Entry-Point
- *
- * @param	[type]		$content: ...
- * @param	[type]		$conf: ...
- * @return	[type]		...
- */
-  function main($content, $conf) {
-    $this->conf = $conf;
-    $this->pi_setPiVarDefaults();
-    $this->pi_loadLL();
+	/**
+	 * Plugin Entry-Point
+	 *
+	 * @param	[type]		$content: ...
+	 * @param	[type]		$conf: ...
+	 * @return	[type]		...
+	 */
+	function main($content, $conf) {
+		$this->conf = $conf;
+		$this->pi_setPiVarDefaults();
+		$this->pi_loadLL();
+// t3lib_div::debug($conf);
+		if ($GLOBALS['TSFE']->beUserLogin
+			||  $GLOBALS['TSFE']->isUserOrGroupSet()) {
+			// TODO: use USER_INT instead of using set_no_cache!
+			$GLOBALS['TSFE']->set_no_cache();
+		}
 
-    if ($GLOBALS['TSFE']->beUserLogin
-		||  $GLOBALS['TSFE']->isUserOrGroupSet()) {
-        $GLOBALS['TSFE']->set_no_cache();
-    }
+		// init grouping data structures:
+		$this->group = array();
 
-    //$this->log("main called; " . print_r($this->piVars, 1));
-    //debug($GLOBALS['TSFE'], "GLOBALS");
+		#checkIfFileExist
+		$this->groupCriteria = t3lib_div::trimExplode(',', $this->conf['groupCriteria']);
 
-    // init grouping data structures:
-    $this->group = array();
-    #t3lib_div::debug($this->conf['groupCriteria']);
-	
-    #checkIfFileExist
-    $this->groupCriteria = t3lib_div::trimExplode(',', $this->conf['groupCriteria']);
+		// get date format
+		if ($this->conf['dateConf']) {
+			$this->dateConf = $this->conf['dateConf'];
+		}
 
-    // get date format
-    if ($this->conf['dateConf']) {
-    	$this->dateConf = $this->conf['dateConf'];
-    }
+			// get icon base address
+		$this->iconBaseAddress = $this->conf['iconBaseAddress'];
 
+		$templateFile = t3lib_div::getFileAbsFileName($this->conf['template']); //getting filename of the template
 
-    // get icon base address
-    $this->iconBaseAddress = $this->conf['iconBaseAddress'];
+		if ($templateFile && @is_file($templateFile)) {
+		  $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['template']), '###TEMPLATE_LIST###');
+		  $this->templateItem = $this->cObj->getSubPart($this->template, '###TEMPLATE_LIST_ITEM###');
+		  $this->templateItemFile = $this->cObj->getSubPart($this->template, '###TEMPLATE_LIST_ITEM_FILE###');
 
-    $templateFile = t3lib_div::getFileAbsFileName($this->conf['template']); //getting filename of the template
+			  // starts rendering:
+		  $content = $this->renderContent();
+		} else {
+			  // no template file found. Print an error message.
+		  $content = "<p style='background: yellow; color: black; padding: 0.1em; border: 1px solid black;'>NO TEMPLATE FILE FOUND: Check <code>template</code> property in TS template record.</p>";
+		}
 
-    if ($templateFile && @is_file($templateFile)) {
-      $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['template']), '###TEMPLATE_LIST###');
-      $this->templateItem = $this->cObj->getSubPart($this->template, '###TEMPLATE_LIST_ITEM###');
-      $this->templateItemFile = $this->cObj->getSubPart($this->template, '###TEMPLATE_LIST_ITEM_FILE###');
+		$content = $this->cObj->stdWrap($content, $conf['stdWrap.']);
 
-      // starts rendering:
-      $content = $this->renderContent();
-    } else {
+		return $this->pi_wrapInBaseClass($content);
+  	}
 
-      // no template file found. Print an error message.
-      $content = "<p style='background: yellow; color: black; padding: 0.1em; border: 1px solid black;'>NO TEMPLATE FILE FOUND: Check <code>template</code> property in TS template record.</p>";
-    }
+	/**
+	 * Generate HTML code
+	 *
+	 * @return	[string]		html content
+	 */
+	function renderContent() {
+		$content = "\n";
+		$renderedItem = "";
 
-    $content = $this->cObj->stdWrap($content, $conf['stdWrap.']);
+		$records = $this->selectDamRecords(); // loading the IDs of the stored DAM Files
 
-    return $this->pi_wrapInBaseClass($content);
-  }
-
-   /**
- * Generate HTML code
- *
- * @return	[string]		html content
- */
-  function renderContent() {
-    $content = "\n";
-    $renderedItem = "";
-
-    $records = $this->selectDamRecords(); // loading the IDs of the stored DAM Files
-
-    foreach($this->damUidList as $uid) {
-    	if (array_key_exists($uid, $records)) {
-			$groupKey = $records[$uid];
-			$renderedItem = $this->renderGroup($groupKey, $records);
-			$content .= $renderedItem;
-      	}
-    }
-
-    return $content;
-  }
+		foreach($this->damUidList as $uid) {
+			if (array_key_exists($uid, $records)) {
+				$groupKey = $records[$uid];
+				$renderedItem = $this->renderGroup($groupKey, $records);
+				$content .= $renderedItem;
+			  }
+		}
+		return $content;
+	}
 
 
- /**
- * Generates HTML code for a Group of Files
- *
- * @param	[type]		$groupKey: ...
- * @param	[type]		$records: ...
- * @return	[string]		html content
- */
+	/**
+	 * Generates HTML code for a Group of Files
+	 *
+	 * @param	[type]		$groupKey: 	Grouping criteria
+	 * @param	[type]		$records: 	records for this grouping criteria
+	 * @return	[string]		html content
+	 */
 	function renderGroup($groupKey, &$records) {
-		$fileDoesExist = true;
 		if (empty($records[$groupKey])) {
-			$renderedGroup = "";
-	  	}
-		else {
-		$renderedGroup = "";
+		  return '';
+		}
+
+		$renderedGroup = '';
 		$groupDataKeys = array_keys($records[$groupKey]);
-	
+
 		$firstRecord = null;
-	
+		if (!is_array($this->damUidList)) {
+			// TODO: Error Handling
+			return '';
+		}
 		// render records keeping dam uid list order:
 		foreach($this->damUidList as $uid) {
 			if(in_array($uid, $groupDataKeys)) {
 				$rec = $records[$groupKey][$uid];
-						
-				if ($this->conf['checkIfFileExist']=1) {
-					if (file_exists($BACK_PATH . $rec['file_path'] . $rec['file_name']) ==false) {
-		  				$fileDoesExist = false;
-		  			}
-				}
-				if ($fileDoesExist==true){
-					if($firstRecord == null) {
-						$firstRecord = $rec;
+
+				if ($this->conf['checkIfFileExist']==1) {
+			  		if (!file_exists($rec['file_path'] . $rec['file_name'])) {
+			  			continue;
 			  		}
-			  		$renderedGroup .= $this->cObj->substituteMarkerArray($this->templateItemFile, $this->processRecord($rec), "###|###", 1);
 				}
+				if($firstRecord == null) { $firstRecord = $rec; }
+			  	$renderedGroup .= $this->cObj->substituteMarkerArray($this->templateItemFile, $this->processRecord($rec), "###|###", 1);
 			}
 		}
-	
+
 		unset($records[$groupKey]);
-	
+
 		$renderedGroup = $this->cObj->substituteSubpart($this->templateItem, "###TEMPLATE_LIST_ITEM_FILE###", $renderedGroup);
-	
+		// Fill Group-Related Marker
+		if (null == $firstRecord) {
+			// if there is no record, there should be no output
+			return '';
+		}
 		$renderedGroup = $this->cObj->substituteMarkerArray($renderedGroup, $this->processRecord($firstRecord), "###|###", 1);
-	
-	  }
-	  return $renderedGroup;
+
+		return $renderedGroup;
 	}
 
-  /**
- * Fetch dam records
- *
- * @return	[type]		...
- */
-  function selectDamRecords() {
-    $dbh = $GLOBALS['TYPO3_DB'];
+	/**
+	 * Fetch dam records
+	 *
+	 * @return	[type]		...
+	 */
+	function selectDamRecords() {
+		$dbh = $GLOBALS['TYPO3_DB'];
 
-    // fetch DAM UIDs from tt_content -
-    $this->damUidList = t3lib_div::intExplode(',', $this->cObj->data[$this->fieldDamUidList]);
+		// fetch DAM UIDs from tt_content -
+		$this->damUidList = t3lib_div::intExplode(',', $this->cObj->data[$this->fieldDamUidList]);
 
-    $fieldList = array('uid','title', 'ident', 'description', 'file_path', 'file_name', 'file_size', 'file_mime_type', 'file_mime_subtype', 'file_type', 'file_mtime');
-    $damTableName = "tx_dam";
-    $whereClause = "uid IN (" . implode(", ", $this->damUidList) . ")" .
-    	t3lib_BEfunc::deleteClause($damTableName) . $this->cObj->enableFields($damTableName, $GLOBALS['TSFE']->beUserLogin);
+		$fieldList = array('uid','title', 'ident', 'description', 'file_path', 'file_name', 'file_size', 'file_mime_type', 'file_mime_subtype', 'file_type', 'file_mtime');
+		$damTableName = 'tx_dam';
+		// TODO: i do not think, that a Backend User should see hidden records by default - Martin Holtz
+		$whereClause = 'uid IN (' . implode(', ', $this->damUidList) . ')' .
+			t3lib_BEfunc::deleteClause($damTableName) . $this->cObj->enableFields($damTableName, $GLOBALS['TSFE']->beUserLogin);
 
-    //debug($whereClause, 'WHERE');
+		$fields = 'pid,' . t3lib_BEfunc::getCommonSelectFields($damTableName, '') . ',' . implode(', ', $fieldList);
 
-    $fields = 'pid,' . t3lib_BEfunc::getCommonSelectFields($damTableName, '') . ',' . implode(", ", $fieldList);
+		$resObj = $dbh->exec_SELECTquery($fields,
+										 $damTableName,
+										 $whereClause);
+		$rows = array();
+		if ($this->groupEnabled()) {
+		  // group procedure
+		  $groupKey = '';
+		  while ($record = $dbh->sql_fetch_assoc($resObj)) {
 
-    $resObj = $dbh->exec_SELECTquery($fields,
-                                     $damTableName,
-                                     $whereClause);
+			$groupKey = $this->getGroupKey($record);
 
-    $rows = array();
+			if (!array_key_exists($groupKey, $rows)) {
+		  		$rows[$groupKey] = array();
+			}
+			$rows[$groupKey][$record['uid']] = $record;
+			$rows[$record['uid']] = $groupKey;
+		  }
 
-    if ($this->groupEnabled()) {
+		} else {
+		  // plain procedure
+		  while ($record = $dbh->sql_fetch_assoc($resObj)) {
+			$rows['group_' . $record['uid']] = array( $record['uid'] => $record);
+		  }
+		}
 
-      // group procedure
-      $groupKey = "";
-      while ($record = $dbh->sql_fetch_assoc($resObj)) {
+		$dbh->sql_free_result($resObj);
 
-	$groupKey = $this->getGroupKey($record);
-
-	if (!array_key_exists($groupKey, $rows)) {
-	  $rows[$groupKey] = array();
+		return $rows;
 	}
-
-	$rows[$groupKey][$record['uid']] = $record;
-	$rows[$record['uid']] = $groupKey;
-      }
-
-    } else {
-
-      // plain procedure
-      while ($record = $dbh->sql_fetch_assoc($resObj)) {
-	$rows['group_' . $record['uid']] = array( $record['uid'] => $record);
-      }
-
-    }
-
-    $dbh->sql_free_result($resObj);
-
-    return $rows;
-  }
 
 	/**
 	 * [Describe function...]
 	 *
 	 * @return	[type]		...
 	 */
-  function groupEnabled() {
-    return (count($this->groupCriteria) > 0);
-  }
+	function groupEnabled() {
+		return (count($this->groupCriteria) > 0);
+	}
 
 	/**
 	 * [Describe function...]
@@ -252,137 +241,142 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 	 * @param	[type]		$record: ...
 	 * @return	[type]		...
 	 */
-  function getGroupKey($record) {
-    $groupKey = "";
-    foreach($this->groupCriteria as $criteriaSlice) {
-      $groupKey .= $record[$criteriaSlice];
-    }
-    return $groupKey;
-  }
+	function getGroupKey($record) {
+		$groupKey = '';
+		foreach($this->groupCriteria as $criteriaSlice) {
+		  $groupKey .= $record[$criteriaSlice];
+		}
+		return $groupKey;
+	}
 
-  /**
- * Building the Details for a DAM record
- *
- * @param	[array]		$damRecord: DAM database record
- * @return	[array]		an array containing processed DAM fields
- */
-  function processRecord($damRecord) {
+	/**
+	 * Building the Details for a DAM record
+	 *
+	 * @param	[array]		$damRecord: DAM database record
+	 * @return	[array]		an array containing processed DAM fields
+	 */
+	function processRecord($damRecord) {
 
-    $damRecord['description'] = trim($damRecord['description']);
+		if (!is_array($damRecord)) {
+			t3lib_div::debug($damRecord,'Kein Array?');
+			return array();
+		}
 
-    // add a field for download links:
-    //$damRecord['file_href'] = $BACK_PATH . $damRecord['file_path'] . $damRecord['file_name'];
-    $damRecord['file_href'] = 'typo3conf/ext/dam_frontend/pushfile.php?docID='.$damRecord['uid'];
+		$cObj = t3lib_div::makeInstance('tslib_cObj');
+		$cObj->start($damRecord, '');
 
+		foreach ($damRecord as $key => $value) {
+			if (isset($this->conf['renderFields.'][$key.'.'])) {
+				$damRecord[$key] = $cObj->stdWrap($value, $this->conf['renderFields.'][$key.'.']);
+			}
+		}
+		// Download Link
+		$damRecord['file_href'] = $cObj->typoLink('',$this->conf['renderFields.']['file_href.']);
 
-    // translate byte size into "human readable" string:
-    $sz = intval($damRecord['file_size']);
-    $order = "";
-	//TODO do this by typoscript
-    if ($sz > 1048576) {
-      $order = "M";
-      $sz = (float) $sz / 1048576.0;
-    }
-    else if ($sz > 1024) {
-      $order = "K";
-      $sz = (float) $sz / 1024.0;
-    }
+		// get icon reference:
+		if ($damRecord['hidden']) {
+			$imgalt = $this->pi_getLL('hidden');
+			$imgsrc = $this->getIconBaseAddress() . 'hidden.png';
+			$damRecord['hidden'] = $imgalt;
+		} else {
+			$mimetype = $damRecord['file_mime_type'];
+			$mimesubtype = $damRecord['file_mime_subtype'];
+			$imgalt = $mimetype . '/' . $mimesubtype;
+			$imgsrc = $this->getFileIconHref($mimetype, $mimesubtype);
+			$damRecord['hidden'] = '';
+		}
 
-    $damRecord['file_size'] = sprintf("%.1f&nbsp;%sB", $sz , $order);
+		//add icon img-tag with (optional) edit-icon:
+		$editIcon = $this->pi_getEditIcon("", "title,hidden,starttime,endtime,fe_group", $damRecord['title'], $damRecord, "tx_dam");
+		$damRecord['icontag'] = $editIcon;
+		$damRecord['icontag'] .= "<img border='0' class='" . $this->conf['iconCssClass'] . "' src='{$imgsrc}' alt='{$imgalt}' />";
 
-    $damRecord['file_mtime'] = date($this->dateConf, $damRecord['file_mtime']);
+		//
 
-    // get icon reference:
-    if ($damRecord['hidden']) {
-      $imgalt = $this->pi_getLL('hidden');
-      $imgsrc = $this->getIconBaseAddress() . 'hidden.png';
-      $damRecord['hidden'] = $imgalt;
-    } else {
-      $mimetype = $damRecord['file_mime_type'];
-      $mimesubtype = $damRecord['file_mime_subtype'];
-      $imgalt = $mimetype . '/' . $mimesubtype;
-      $imgsrc = $this->getFileIconHref($mimetype, $mimesubtype);
-      $damRecord['hidden'] = '';
-    }
-
-    //add icon img-tag with (optional) edit-icon:
-    $editIcon = $this->pi_getEditIcon("", "title,hidden,starttime,endtime,fe_group", $damRecord['title'], $damRecord, "tx_dam");
-    $damRecord['icontag'] = $editIcon;
-    $damRecord['icontag'] .= "<img border='0' class='" . $this->conf['iconCssClass'] . "' src='{$imgsrc}' alt='{$imgalt}' />";
-
-	//
-
-	$damRecord['file_name'] = $damRecord['file_name'] ? $damRecord['file_name'] : $this->pi_getLL('not_set');
-	//debug('Dateiname: '.$damRecord['file_name']);
-    // ident field:
-    $damRecord['ident'] = $damRecord['ident'] ? $damRecord['ident'] : $this->pi_getLL('not_set');
+		$damRecord['file_name'] = $damRecord['file_name'] ? $damRecord['file_name'] : $this->pi_getLL('not_set');
+		//debug('Dateiname: '.$damRecord['file_name']);
+		// ident field:
+		$damRecord['ident'] = $damRecord['ident'] ? $damRecord['ident'] : $this->pi_getLL('not_set');
 
 
-    // rename fields adding "mark_" prefix:
-    $markRecord = array();
-    foreach ($damRecord as $key => $value) {
-      $markRecord['mark_'.$key] = $value;
-    }
-    return $markRecord;
-  }
+		// rename fields adding "mark_" prefix:
+		$markRecord = array();
+		foreach ($damRecord as $key => $value) {
+			$markRecord['mark_'.$key] = $value;
+		}
+		return $markRecord;
+	}
 
 	/**
 	 * [Describe function...]
 	 *
 	 * @return	[type]		...
 	 */
-  function getIconBaseAddress() {
-    if($this->iconBaseAddress) {
-      return $this->iconBaseAddress;
-    } else {
-      return t3lib_extMgm::siteRelPath($this->extKey) . 'res/ico/';
-    }
-  }
-
-  /**
- * Returns the reference to the image file associated to given mime types.
- *
- * @param	[string]		$mimeType: mime type.
- * @param	[string]		$mimeSubType: mime sub type.
- * @return	[string]		href attribute value, pointing to an image file.
- */
-  function getFileIconHref($mimeType, $mimeSubType) {
-
-    $rootKey = 'mediaTypes.';
-    $mimeType .= '.';
-
-    if (!array_key_exists($rootKey, $this->conf)) {
-      return "#";
-    }
-
-    $mimeTypesConf = $this->conf[$rootKey];
-
-    if (!array_key_exists($mimeType, $mimeTypesConf)) {
-      $mimeType = 'DEFAULT.';
-    }
-
-    if (!array_key_exists($mimeSubType, $mimeTypesConf[$mimeType])) {
-      $mimeSubType = 'DEFAULT';
-    }
-
-    $relPath = $this->getIconBaseAddress();
-    $relPath .= $mimeTypesConf[$mimeType][$mimeSubType];
-
-    return $relPath;
-  }
+	function getIconBaseAddress() {
+		if($this->iconBaseAddress) {
+			return $this->iconBaseAddress;
+		} else {
+			return t3lib_extMgm::siteRelPath($this->extKey) . 'res/ico/';
+		}
+	}
 
 	/**
-	 * [Describe function...]
+	 * Returns the reference to the image file associated to given mime types.
 	 *
-	 * @param	[type]		$msg: ...
-	 * @return	[type]		...
+	 * @param	[string]		$mimeType: mime type.
+	 * @param	[string]		$mimeSubType: mime sub type.
+	 * @return	[string]		href attribute value, pointing to an image file.
 	 */
-  function log($msg) {
-    $fileName = t3lib_extMgm::extPath($this->extKey) . $this->extKey . ".log";
-    $fh = fopen($fileName, "a");
-    fwrite($fh, date("Y-m-d H:i:s") . " - " . $msg . "\n");
-    fclose($fh);
-  }
+	function getFileIconHref($mimeType, $mimeSubType) {
+
+		$rootKey = 'mediaTypes.';
+		$mimeType .= '.';
+
+		if (!array_key_exists($rootKey, $this->conf)) {
+	  		return "#";
+		}
+
+		$mimeTypesConf = $this->conf[$rootKey];
+
+		if (!array_key_exists($mimeType, $mimeTypesConf)) {
+	  		$mimeType = 'DEFAULT.';
+		}
+
+		if (!array_key_exists($mimeSubType, $mimeTypesConf[$mimeType])) {
+		  $mimeSubType = 'DEFAULT';
+		}
+
+		$relPath = $this->getIconBaseAddress();
+		$relPath .= $mimeTypesConf[$mimeType][$mimeSubType];
+
+		return $relPath;
+	}
+
+	/**
+	 * Logs some Debug-Messages via TYPO3 DLOG API
+	 *
+	 * Only if debug and TYPO3_DLOG
+	 * is set
+	 *
+	 * To use it, set
+	 * $TYPO3_CONF_VARS['SYS']['enable_DLOG'] = '1';
+	 * via Install-Tool or direct in localconf.php
+	 *
+	 * Then install an devlog Extension. You can watch the logs in the backend
+	 * then
+	 *
+	 * @param	string		$msg
+	 * @return	void
+	 */
+	function log($msg) {
+		if (TYPO3_DLOG && $this->conf['debug'])	{ t3lib_div::devLog($msg,$this->extKey,0); }
+	  	/*
+		$fileName = t3lib_extMgm::extPath($this->extKey) . $this->extKey . ".log";
+		$fh = fopen($fileName, "a");
+		fwrite($fh, date("Y-m-d H:i:s") . " - " . $msg . "\n");
+		fclose($fh);
+		*/
+	}
 }
 
 

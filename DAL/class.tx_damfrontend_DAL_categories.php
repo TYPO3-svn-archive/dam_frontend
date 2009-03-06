@@ -238,7 +238,7 @@ class tx_damfrontend_DAL_categories {
 			// executing database search
 			$local_table = $this->catTable;
 			$foreign_table = 'fe_groups';
-			$where = 'AND '.$local_table.'.uid = '. $userID ;
+			$where = 'AND '.$local_table.'.uid = '. (int)$userID ;
 			$select = $local_table.'.*';
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query($select,$local_table, $mm_table, $foreign_table, $where);
 
