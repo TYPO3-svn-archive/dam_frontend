@@ -58,12 +58,12 @@
  * (This index is automatically created/updated by the extension "extdeveval")
  *
  */
- 
+
 require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 require_once(t3lib_extMgm::extPath('dam_frontend').'/DAL/class.tx_damfrontend_DAL_categories.php');
- 
- 
- 
+
+
+
 class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 
  	var $user;   											// instead of storing the data in the backend user, this data is stored in fe user
@@ -81,7 +81,7 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 	 */// some small changes from the original category Tree
  	function tx_damfrontend_categorisationTree() {
 
-		
+
 		$this->treeID = 1;
 		$this->title = 'categorytree';
  		$this->treeName = 'txdamCat';
@@ -127,7 +127,7 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
  		$this->user =& $GLOBALS['TSFE']->fe_user;
  		$this->backPath = 'typo3/';
 		if (isset($plugin)) $this->plugin = $plugin;
-		
+
  	}
 
 	/**
@@ -215,22 +215,23 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 	/**
 	 * PM_ATagWrap
 	 *
+	 * TODO: is this function in use?
+	 *
 	 * @param	string		$icon: html (img Tag)
 	 * @param	string		$cmd: ...
 	 * @param	string		$bMark: ...
 	 * @return	string		...
 	 */
 	function PM_ATagWrap($icon,$cmd,$bMark='treeroot')	{
-		$id = t3lib_div::_GET('id');
-		if ($bMark)	{
-			$anchor = '#'.$bMark;
-			$name=' name="'.$bMark.'"';
-		}
-		$param_array = array();
-		$param_array['PM'] = $cmd;
-		$param_array = array_merge($this->piVars,$param_array);
-		$aUrl = $this->cObj->getTypoLink_URL($GLOBALS['TSFE']->id, $param_array).$anchor;
-		return '<a href="'.htmlspecialchars($aUrl).'"'.$name.'>'.$icon.'</a>';
+		$linkConf = array();
+		$linkConf['parameter'] = $GLOBALS['TSFE']->id;
+		$linkConf['additionalParams'] = t3lib_div::implodeArrayForUrl('',$this->piVars);
+		// TODO: htmlspecialvars or rawurlencode? IMHO rawurlencode
+		$linkConf['additionalParams'] .= '&PM='.htmlspecialchars($cmd);
+		$linkConf['section'] = $bMark;
+		if ($bMark) $linkConf['ATagParams'] = ' name="'.$bMark.'" ';
+		return $this->cObj->typoLink($icon, $linkConf);
+
 	}
 
 
@@ -245,7 +246,6 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 	function getControl($title,$row) {
 		// retrieving the current page id
 		$id = (int)t3lib_div::_GET('id');
-
 		$control = '<div class="control" >';
 		if ($this->modeSelIcons
 			AND !($this->mode=='tceformsSelect')

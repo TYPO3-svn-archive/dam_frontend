@@ -151,6 +151,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
  			if ($pointer>1) $elem['count_id'] = $countElement  + $pointer;
  			$markerArray = $this->recordToMarkerArray($elem, 'renderFields');
  			$markerArray =$markerArray + $this->substituteLangMarkers($record_Code);
+
  			// TODO changes in the content of the marker arrays
  			// @todo what is done here?
  			//$this->piVars['showUid'] = $elem['uid'];
@@ -170,10 +171,11 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
  				$markerArray['###LINK_DOWNLOAD###'] = $this->pi_linkTP('request', $paramAnforderung);
 
  			} else {
-	 			// $markerArray['###LINK_DOWNLOAD###'] = '<a href="typo3conf/ext/dam_frontend/pushfile.php?docID='.$elem['uid'].'" ><img src="'.$this->iconPath.'clip_pasteafter.gif" style="border-width: 0px"/></a>';
+	 			// TODO: create IMAGE from TypoScript
 	 			$markerArray['###LINK_DOWNLOAD###'] = $cObj->stdWrap('<img src="'.$this->iconPath.'clip_pasteafter.gif" style="border-width: 0px"/>', $this->conf['renderFields.']['link_download.']);
 	 		}
 
+			// TODO: Create from TypoScript
 			$markerArray['###LINK_SELECT_DOWNLOAD###'] = '';
 			if (is_array($this->conf['filelist.']['link_select_download.'])) {
 
@@ -205,8 +207,8 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 				$markerArray['###BUTTON_CATEDIT###'] ='';
 			}
 
- 			$newcontent = $record_Code;
- 			$rows .= tslib_cObj::substituteMarkerArray($newcontent, $markerArray);
+
+ 			$rows .= tslib_cObj::substituteMarkerArray($record_Code, $markerArray);
  			$sortlinks = array();
  		}
  		$content = tslib_cObj::substituteMarker($list_Code, '###FILELIST_RECORDS###', $rows);
@@ -425,14 +427,19 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 	 	$cObj = t3lib_div::makeInstance('tslib_cObj');
  			// FIXME: table should not be hardcoded
 		$cObj->start($record, 'tx_dam');
+		if (!is_array($this->conf[$scope.'.'])) { $this->conf[$scope.'.'] = array(); }
 
 		foreach ($record as $key=>$value) {
+			if ('' == $key) continue; // empty key
+			if (!is_array($this->conf[$scope.'.'][$key.'.'])) { $this->conf[$scope.'.'][$key.'.'] = array(); }
 				// htmlSpecialChars = 1 is default - it has to be disabled via htmlSpecialChars = 0
 			if (!isset($this->conf[$scope.'.'][$key.'.']['htmlSpecialChars'])) {
 				$this->conf[$scope.'.'][$key.'.']['htmlSpecialChars'] = 1;
 			}
-			// TODO -> this line throws a warning
 			$markerArray['###'.strtoupper($key).'###'] = $cObj->stdWrap((string)$value, $this->conf[$scope.'.'][$key.'.']);
+			if ($key == 'file_name') {
+				t3lib_div::debug($this->conf[$scope.'.'][$key.'.'],$scope);
+			}
  		}
  		return $markerArray;
  	}

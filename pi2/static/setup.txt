@@ -17,6 +17,17 @@ plugin.tx_damfrontend_pi2 {
 		bytes = 1
 		bytes.labels = Bytes| Kilobyte| Megabyte| Gigabyte
 	}
+	file_name {
+		prepend = IMAGE
+		prepend.file {
+			import.dataWrap = {field:file_path}{field:file_name}|
+			width = 100m
+			height = 100m
+		}
+		# Only if the file could be rendered
+		prepend.stdWrap.if.isTrue.data = TSFE:lastImageInfo|0
+		prepend.stdWrap.wrap = |<br />
+	}
   	file_mtime.strftime = %m/%d/%y
   	# typolink
   	file_href.parameter = typo3conf/ext/dam_frontend/pushfile.php?&docID={field:uid}

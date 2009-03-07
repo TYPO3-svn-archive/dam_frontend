@@ -118,7 +118,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	 * @return	void
 	 */
  	function init($treeID = '', $plugin = null) {
- 		
+
 		$langWhere = ' AND sys_language_uid = ' . $GLOBALS['TSFE']->sys_language_uid;
 		parent::init($langWhere);
  		$this->treeID = $treeID;
@@ -197,10 +197,10 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 			'tx_damfrontend_pi1[catMinus_Rec]' => null,
 			'tx_damfrontend_pi1[treeID]' => $this->treeID
 		);
-		if ($id != '') $param_array['tx_damfrontend_pi1[id]'] = $id;
-    	$url = $this->cObj->getTypoLink_URL($GLOBALS['TSFE']->id, $param_array);
-		$title = '<a href="'.$url.'">'.$title.'</a>';
-		return $title;
+		if ($id > 0) { $param_array['tx_damfrontend_pi1[id]'] = $id; }
+		$this->conf['renderCategoryTree.']['wrapTitle.']['parameter'] = $GLOBALS['TSFE']->id;
+		$this->conf['renderCategoryTree.']['wrapTitle.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
+		return $this->cObj->typoLink($title, $this->conf['renderCategoryTree.']['wrapTitle.']);
 	}
 
 
@@ -257,9 +257,13 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 			);
 
 			if ($id != '') $param_array['id'] = $id;
+			// TODO: use TypoScript
 			$url = t3lib_div::linkThisScript($urlVars);
+
 			$icon =	'<img'.t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'],$this->iconPath.'plus.gif', 'width="8" height="11"').' alt="" border="0"/>';
+
 			$icon = $cObj->stdWrap($icon, $this->conf['renderCategoryTree.']['stdWrapPlusIcon.']);
+			// TODO: use TypoScript
 			$control .= '<a href="'.$url.'">'.$icon.'</a>';
 
 			// generating equals buttons
@@ -273,6 +277,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 				'tx_damfrontend_pi1[treeID]' => $this->treeID
 			);
 			if ($id != '') $param_array['id'] = $id;
+			// TODO: use TypoScript
 			$url = $cObj->getTypoLink_URL($GLOBALS['TSFE']->id, $urlVars);
 			$icon =	'<img'.t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'],$this->iconPath.'equals.gif', 'width="8" height="11"').' alt="" border="0"/>';
 			$icon = $cObj->stdWrap($icon, $this->conf['renderCategoryTree.']['stdWrapEqualsIcon.']);
@@ -309,6 +314,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 		// 0 - show root icon always
 		if(!$this->rootIconIsSet AND count($treeArr)) {
 			// Artificial record for the tree root, id=0
+			// TODO: AFAIK 9 is missleading - since it has no effect?
 			$rootRec = $this->getRootRecord(9);
 			$firstHtml =$this->getRootIcon($rootRec);
 			$treeArr = array_merge(array(array('HTML' => $firstHtml,'row' => $rootRec,'bank'=>0)), $treeArr);
@@ -338,7 +344,9 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 				}
 				$idAttr = htmlspecialchars($this->domIdPrefix.$this->getId($v['row']).'_'.$v['bank']);
 				$title = $this->getTitleStr($v['row'], $titleLen);
+
 				$control = $this->getControl($title, $v['row'], $v['bank']);
+
 				$out.='
 					<tr class="'.$class.'">
 						<td id="'.$idAttr.'" class="'.$sel_class.'">'.
