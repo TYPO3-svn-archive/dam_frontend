@@ -140,7 +140,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				else {
 				$cats[] = $row;
 			}
-				
+
 			}
 			return $cats;
 		}
@@ -302,64 +302,66 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getDcoumentList: for the this->categories is no array. Given value was:' .$this->categories, 'dam_frontend',3);
 			}
 			if (count($this->categories)) {
-			/*
-			 * Building the from clause manually by joining the DAM tables
-			 *
-			 *
-			 */
-			$select = $this->docTable.'.uid';
-			$from = $this->docTable.' INNER JOIN '.$this->mm_Table.' ON '.$this->mm_Table.'.uid_local  = '.$this->docTable.
-			'.uid INNER JOIN '.$this->catTable.' ON '.$this->mm_Table.'.uid_foreign = '.$this->catTable.'.uid';
+				/*
+				 * Building the from clause manually by joining the DAM tables
+				 *
+				 *
+				 */
+				$select = $this->docTable.'.uid';
+				$from = $this->docTable.' INNER JOIN '.$this->mm_Table.' ON '.$this->mm_Table.'.uid_local  = '.$this->docTable.
+				'.uid INNER JOIN '.$this->catTable.' ON '.$this->mm_Table.'.uid_foreign = '.$this->catTable.'.uid';
+
+				// TODO: is there a reason not to use API: Enablefields?
+					$filter = ' AND '.$this->docTable.'.deleted = 0  AND '.$this->docTable.'.hidden = 0';
+					$filter .= ' AND ('.$this->docTable.'.starttime > '.time().' OR '.$this->docTable.'.starttime = 0)';
+					$filter .= ' AND ('.$this->docTable.'.endtime < '.time().' OR '.$this->docTable.'.endtime = 0)';
+					$filter .= $this->additionalFilter;
 
 
-				$filter = ' AND '.$this->docTable.'.deleted = 0  AND '.$this->docTable.'.hidden = 0';
-				$filter .= ' AND ('.$this->docTable.'.starttime > '.time().' OR '.$this->docTable.'.starttime = 0)';
-				$filter .= ' AND ('.$this->docTable.'.endtime < '.time().' OR '.$this->docTable.'.endtime = 0)';
-				$filter .= $this->additionalFilter;
-				
-	
-			// preparing the category array - deleting all empty entries
-			foreach($this->categories as $number => $catList) {
-				if (!count($catList)) {
-					unset($this->categories[$number]);
+				// preparing the category array - deleting all empty entries
+				// TODO: rethinking if it is a good idea to change $this->categories in a function for reading entrys?
+				foreach($this->categories as $number => $catList) {
+					if (!count($catList)) {
+						unset($this->categories[$number]);
+					}
+				}
+
+
+				$queryText = array();
+				$z = 0;
+				/**
+				 * every element in the categories array stores a list of cats that are associated with an array
+				 *
+				 *
+				 *
+				 */
+				foreach($this->categories as $number => $catList) {
+						$catString = ($this->searchAllCats)?"1=1":'( '.$this->catTable.'.uid='.implode(' OR '.$this->catTable.'.uid=',$catList).')';
+						//$catString = '( '.$this->catTable.'.uid='.implode(' OR '.$this->catTable.'.uid=',$catList).')';
+					if ($z != count($this->categories)-1) {
+						if (!count($queryText)) {
+							$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery($select,$from, $catString);
+						}
+						else {
+							$where = $this->docTable.'.uid IN ('.$queryText[count($queryText)- 1].') AND '.$catString;
+							$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery('tx_dam.uid', $from, $where);
+						}
+					}
+					// building the last element of the list - final building of the list
+					else {
+						if(count($this->categories ) > 1) {
+							$where = $this->docTable.'.uid IN ('.$queryText[count($queryText)- 1].') AND '.$catString.$filter;
+						}
+						// list is having more then one "AND" criteria
+						else {
+							// TODO: can we reach this part of the code? The part is only executed if (count($this->categories))
+							$where = $catString.$filter;
+						}
+						$select = ' DISTINCT '.$this->docTable.'.*';
+					}
+					$z++;
 				}
 			}
-
-
-			$queryText = array();
-			$z = 0;
-			/**
-			 * every element in the categories array stores a list of cats that are associated with an array
-			 *
-			 *
-			 *
-			 */
-			foreach($this->categories as $number => $catList) {
-					$catString = ($this->searchAllCats)?"1=1":'( '.$this->catTable.'.uid='.implode(' OR '.$this->catTable.'.uid=',$catList).')';
-					//$catString = '( '.$this->catTable.'.uid='.implode(' OR '.$this->catTable.'.uid=',$catList).')';
-				if ($z != count($this->categories)-1) {
-					if (!count($queryText)) {
-						$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery($select,$from, $catString);
-					}
-					else {
-						$where = $this->docTable.'.uid IN ('.$queryText[count($queryText)- 1].') AND '.$catString;
-						$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery('tx_dam.uid', $from, $where);
-					}
-				}
-				// building the last element of the list - final building of the list
-				else {
-					if(count($this->categories ) > 1) {
-						$where = $this->docTable.'.uid IN ('.$queryText[count($queryText)- 1].') AND '.$catString.$filter;
-					}
-					// list is having more then one "AND" criteria
-					else {
-						$where = $catString.$filter;
-					}
-					$select = ' DISTINCT '.$this->docTable.'.*';
-				}
-				$z++;
-			}
-			} 
 			else {
 				#query without using categories
 				// TODO add permission check for dam records itself
@@ -367,8 +369,11 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				$select='*';
 				$from='tx_dam';
 				$where.= ' deleted=0 AND hidden=0 '.$filter;
-			} 
+			}
 
+			// TODO: is there a reason not to define SELECT here?
+			// TODO: do not use '*' but whitlist defined via TypoScript
+			$select = ' DISTINCT '.$this->docTable.'.*';
 
 			$resultCounter=0;
 			// executing the final query and convert the results into an array
@@ -384,14 +389,14 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 					}
 					$row['tx_damfrontend_feuser_upload']= $this->get_FEUserName($row['tx_damfrontend_feuser_upload']);
 					$resultCounter++;
+					// TODO: we should use SQL-LIMIT instead! Cant we create an SQL-Syntax for $this->checkAccess($row['uid'], 1) && $this->checkDocumentAccess($row['fe_group']) ??
 					// add row only, if the current resultID is between the limit range
 					if ($resultCounter>=$limitArr[0] && $resultCounter<=$limitArr[1]){
-					$result[] = $row;
+						$result[] = $row;
+					}
 				}
 			}
-			}
 			$this->resultCount = $resultCounter;
-			
 			return $result;
 		}
 
@@ -422,23 +427,23 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				$cats[] = $row;
 			}
 			// create a list of all parent categories
-			if (is_array($cats))
+			if (!is_array($cats)) {
+				return array();
+			}
+			// create a list of all parent categories
+			$completecats = array();
+			foreach ($cats as $category)
 			{
-				// create a list of all parent categories
-				$completecats = array();
-				foreach ($cats as $category)
-				{
-					 $parents = $this->catLogic->getParentCategories($category['uid']);
-					 for ($z = 0; $z < count($parents); $z++)
-					 {
-					 	$parentcat = $parents[$z];
-					 	// if the parent category isn't already in the list add it
-					 	if (!$this->catLogic->findUidinList($completecats, $parentcat['uid']))
-					 	{
-					 		$completecats[] = $parentcat;
-					 	}
-					 }
-				}
+				 $parents = $this->catLogic->getParentCategories($category['uid']);
+				 for ($z = 0; $z < count($parents); $z++)
+				 {
+				 	$parentcat = $parents[$z];
+				 	// if the parent category isn't already in the list add it
+				 	if (!$this->catLogic->findUidinList($completecats, $parentcat['uid']))
+				 	{
+				 		$completecats[] = $parentcat;
+				 	}
+				 }
 			}
 			return $completecats;
 		}
@@ -461,7 +466,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			else {
 				$this->searchAllCats = false;
 			}
-			
+
 			$errors = array();
 			$this->additionalFilter = '';
 			/********************************
@@ -534,17 +539,17 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		}
 
 
-		
+
 		function saveMetaData($docID, $docData) {
 			foreach( $docData as $key => $value ) {
 				$DATA[$key] = $value;
-			}		
+			}
 			$TABLE = 'tx_dam';
 			$WHERE = 'uid = '.$docID;
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$DATA);
 		}
-		
-	
+
+
 		/**
 		 * adding an document to the index
 		 *
@@ -618,7 +623,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		}
 
 		/**
-		 * 
+		 *
 		 * @author stefan
 		 * @param int $uid UID of the dam entry, which should be created
 		 * @return boolean true, if the deletion was sucessful
@@ -630,9 +635,9 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery($table,$where,$fields_values,$no_quote_fields=FALSE);
 			return $res ;
 	}
-		
+
 		function get_FEUserName ($uid=0) {
-			
+
 			if ($uid >0) {
 				$SELECT = '*';
 				$FROM = 'fe_users';
@@ -640,20 +645,20 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE);
 				while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 					if ($row['name']=='') {
-						$content =$row['username']; 
-					} 
+						$content =$row['username'];
+					}
 					else {
 						$content =$row['name'];
 					}
 				}
-			} 
+			}
 			return $content;
 		}
-		
-		
-		
+
+
+
 		// if a file is added twice to the system, a new version is genreated
-		function createNewVersion($docID) {						
+		function createNewVersion($docID) {
 			// ---- getting the new record
 			$FIELDS = '*';
 			$TABLE = 'tx_dam';
@@ -661,11 +666,11 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($FIELDS,$TABLE,$WHERE);
 			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				$newDoc = $row;
-			}			
+			}
 			$filename = $newDoc['file_name'];
 			$filetype = $newDoc['file_type'];
 			$filepath = $newDoc['file_path'];
-			
+
 			// ---- get the version id of the old file
 			$FIELDS = 'MAX(tx_damfrontend_version),uid, tx_damfrontend_version';
 			$TABLE = 'tx_dam';
@@ -685,55 +690,55 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($FIELDS,$TABLE,$WHERE);
 			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				$oldDoc = $row;
-			}				
-			
+			}
+
 			//copying the old data to the new id
 			// record with the old file
 			$oldDoc['uid']=$docID;
 			$TABLE = 'tx_dam';
 			$WHERE = 'uid = '.$docID;
-			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$oldDoc);				
-			
+			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$oldDoc);
+
 			// ---- getting the pure filename
 			list($versionname,$type) = split('\.',$filename);
 			list($purename,$version) = split('_v',$versionname);
 			$newversion = $oldversion+ 1;
-			$new_filename = $purename.'_v'.$newversion.'.'.$filetype;	
+			$new_filename = $purename.'_v'.$newversion.'.'.$filetype;
 
 			// ---- changing the id's of the records and copying the old meta data to the file
 			//record with the new file
 			$oldDoc['uid'] = $oldID;
-			$oldDoc['tx_damfrontend_version'] = $newversion;	
+			$oldDoc['tx_damfrontend_version'] = $newversion;
 			$oldDoc['file_name']=$new_filename;
-			$oldDoc['tx_damfrontend_version']= $newversion;	
+			$oldDoc['tx_damfrontend_version']= $newversion;
 			$oldDoc['crdate']=time();
-			$oldDoc['date_mod']=time();		
+			$oldDoc['date_mod']=time();
 			$DATA = array('uid' => $oldID);
 			$TABLE = 'tx_dam';
 			$WHERE = 'uid = '.$oldID;
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$oldDoc);
-			
+
 			// ---- renaming the new file with the version number
 			rename(PATH_site.$filepath.$filename.'_versionate',PATH_site.$filepath.$new_filename);
-			
-			return $oldID;	
-			
+
+			return $oldID;
+
 		}
-		
+
 		function overrideData($docID) {
-						
+
 			// getting the new record
 			$FIELDS = '*';
 			$TABLE = 'tx_dam';
 			$WHERE = 'uid = '.$docID;
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($FIELDS,$TABLE,$WHERE);
-			
-			
+
+
 			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				$newDoc = $row;
 			}
 			$filename = $newDoc['file_name'];
-			
+
 			// getting the old dataset id
 			$FIELDS = 'uid';
 			$TABLE = 'tx_dam';
@@ -742,13 +747,13 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				$oldUID = $row['uid'];
 			}
-				
+
 			// DELETE the old file
 			unlink(PATH_site.$newDoc['file_path'].$newDoc['file_name']);
-						
+
 			// Rename the uploaded file to the new name
 			rename(PATH_site.$newDoc['file_path'].$newDoc['file_name'].'_versionate', PATH_site.$newDoc['file_path'].$newDoc['file_name']);
-								
+
 			// deleting the new record
 			$TABLE = 'tx_dam';
 			$WHERE = 'uid = '.$docID;
@@ -756,7 +761,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 
 			return $oldUID;
 		}
-		
+
 		/**
 		 * @author stefan
 		 *
@@ -765,14 +770,14 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			if (!intval($uid)) die('Parametererror in categoryDocument: Check DatabaseID:' . $uid);
 			if (!intval($catID)) die('one categoryID was not delivered as Integer');
 			$where = ' uid_local=' .$uid .' AND uid_foreign= ' . $catID;
-			return $GLOBALS['TYPO3_DB']->exec_DELETEquery($this->mm_Table, $where);			
+			return $GLOBALS['TYPO3_DB']->exec_DELETEquery($this->mm_Table, $where);
 		}
-		
+
 	 /**
 	 * Checks if the FE_User has Access to the Document
 	 *
 	 * @param	int		$docFEGroup -> fe_group the document is restricted to
-	 */	
+	 */
 		function checkDocumentAccess($docFEGroup) {
 			if (!$docFEGroup) return true;
 			$userGroups=$GLOBALS['TSFE']->fe_user->groupData['uid'];
