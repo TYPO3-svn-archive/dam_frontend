@@ -437,9 +437,6 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 				$this->conf[$scope.'.'][$key.'.']['htmlSpecialChars'] = 1;
 			}
 			$markerArray['###'.strtoupper($key).'###'] = $cObj->stdWrap((string)$value, $this->conf[$scope.'.'][$key.'.']);
-			if ($key == 'file_name') {
-				t3lib_div::debug($this->conf[$scope.'.'][$key.'.'],$scope);
-			}
  		}
  		return $markerArray;
  	}
