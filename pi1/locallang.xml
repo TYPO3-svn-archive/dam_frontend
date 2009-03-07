@@ -122,7 +122,7 @@
 			<label index="desc">Absteigend</label>
 			<label index="submit_button_label">Abesenden!</label>
 			<label index="noSingleID">Sie haben noch keine Dokument zur Detailansicht ausgewählt</label>
-			<label index="noDocInCat">nonono de Dokumente für die derzeitige Auswahl gefunden</label>
+			<label index="noDocInCat">Keine Dokumente für die derzeitige Auswahl gefunden</label>
 			<label index="noCatSelected">keine Kategorien ausgewählt</label>
 			<label index="noUserLoggedIn">derzeit ist kein User eingeloggt!</label>
 			<label index="noFilterStates">es existieren keine gespeicherten Filtervorlagen</label>
