@@ -779,7 +779,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$docID = '';
 				if (!intval($docID)) {
 					$docID = intval($GLOBALS['TSFE']->fe_user->getKey('ses','categoriseID'));
-			}
+				}
 				$GLOBALS['TSFE']->fe_user->setKey('ses','categoriseID', null);
 				$this->catList->clearCatSelection(-1);
 				return $this->renderer->renderUploadSuccess();;

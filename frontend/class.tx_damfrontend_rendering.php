@@ -98,7 +98,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		$this->debug = $this->conf['debug'];
 		// TODO: check if it is possible to make staticinfotables optional
 		$this->staticInfoObj = null;
-		if (t3lib_extMgm::isLoaded('staticinfotables')) {
+		if (t3lib_extMgm::isLoaded('static_info_tables')) {
 			$this->staticInfoObj = t3lib_div::getUserObj('&tx_staticinfotables_pi1');
 			if (!method_exists($this->staticInfoObj, 'needsInit') || $this->staticInfoObj->needsInit())	{
 				$this->staticInfoObj->init();
@@ -959,7 +959,8 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 			$whereLanguages = 'lg_iso_2 IN ( '.$languages.')';
 		}
 		$mergeArray = array('nosel'=>'---');
-
+		#t3lib_div::debug( $this->staticInfoObj->buildStaticInfoSelector('LANGUAGES', 'LanguageSelector','',$currentLanguage,'','','','',$whereLanguages,'',1,$mergeArray));
+		
 		return  $this->staticInfoObj->buildStaticInfoSelector('LANGUAGES', 'LanguageSelector','',$currentLanguage,'','','','',$whereLanguages,'',1,$mergeArray);
 	}
 

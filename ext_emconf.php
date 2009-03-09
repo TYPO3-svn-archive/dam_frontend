@@ -12,10 +12,10 @@
 
 $EM_CONF[$_EXTKEY] = array(
 	'title' => 'DAM Frontend',
-	'description' => 'Shows the dam category tree in frontend, so users can select files by combining dam categories. Files are delivered by a pushfile, so that the fileadmin directory can be secured by a .htaccess file. A second plugin shows selected (by an author) dam files. Please read the manual for more informations.',
+	'description' => 'Download, upload and edit DAM files via frontend. Shows the dam category tree in frontend, so users can select files by combining dam categories. Files are delivered by a pushfile, so that the fileadmin directory can be secured by a .htaccess file. A second plugin shows selected (by an author) dam files. Please read the manual for more informations.',
 	'category' => 'plugin',
 	'shy' => 0,
-	'version' => '0.3.0.2',
+	'version' => '0.3.1-rc',
 	'dependencies' => 'static_info_tables,dam,dam_catedit,fileupload',
 	'conflicts' => '',
 	'priority' => '',
@@ -27,7 +27,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'modify_tables' => '',
 	'clearcacheonload' => 0,
 	'lockType' => '',
-	'author' => 'Martin Baum, Stefan Busemann',
+	'author' => 'Team DAM Frontend',
 	'author_email' => 'typo3@in2form.com',
 	'author_company' => 'in2form.com',
 	'CGLcompliance' => '',
@@ -35,10 +35,11 @@ $EM_CONF[$_EXTKEY] = array(
 	'constraints' => array(
 		'depends' => array(
 			'php' => '5.2.0-0.0.0',
-			'typo3' => '4.2.0-0.0.0',
+			'typo3' => '4.2.6-0.0.0',
 			'static_info_tables' => '2.1.0-0.0.0',
 			'dam' => '1.1.0-0.0.0',
 			'dam_catedit' => '1.1.0-0.0.0',
+			'dam_index' =>'1.1.0-0.0.0',
 			'fileupload' => '1.1.0-0.0.0',
 		),
 		'conflicts' => array(

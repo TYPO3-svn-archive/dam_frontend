@@ -65,14 +65,6 @@
 				</TCEforms>
 				<type>array</type>
 				<el>
-					<useStaticCatSelection>
- 						<TCEforms>
- 							<label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_useStaticCatSelection</label>
- 							<config>
- 								<type>check</type>
- 							</config>
- 						</TCEforms>
- 					</useStaticCatSelection>
 					<catMounts>
 						<TCEforms>
 							<label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_selection_cats</label>
