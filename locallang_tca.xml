@@ -12,7 +12,7 @@
 			<label index="flexform_fileList">Filelist</label>
 			<label index="flexform_catSelection">Category Selection</label>
 			<label index="flexform_singleView">Single View</label>
-			<label index="flexform_filterView">Filter View</label>
+			<label index="flexform_filterView">Search box</label>
 			<label index="flexform_filterList">Filter List</label>
 			<label index="flexform_selection_cats">Category Selection</label>
 			<label index="flexform_treeName">Tree Name</label>
@@ -35,7 +35,7 @@
 			<label index="flexform_fileList">Dateiliste</label>
 			<label index="flexform_catSelection">Kategorien Auswahl</label>
 			<label index="flexform_singleView">Einzelansicht</label>
-			<label index="flexform_filterView">Filter Ansicht</label>
+			<label index="flexform_filterView">Suchbox</label>
 			<label index="flexform_filterList">Filter Liste</label>
 			<label index="flexform_selection_cats">Kategorie Auswahl</label>
 			<label index="flexform_treeName">Baum Name</label>

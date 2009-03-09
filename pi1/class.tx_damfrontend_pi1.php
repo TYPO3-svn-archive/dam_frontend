@@ -442,6 +442,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$content .= $this->singleView();
 				break;
 			case 5:
+				// Searchbox
 				$content .= $this->filterView();
 				break;
 			case 6:
@@ -653,7 +654,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	}
 
 	/**
-	 * Renders the filter view
+	 * Renders the search box
 	 *
 	 * @return	[string]		$content html auf filterview
 	 */
