@@ -377,7 +377,9 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 
 			$resultCounter=0;
 			// executing the final query and convert the results into an array
-			$limitArr = explode (',',$this->limit);
+			// is defnied as: $this->internal['list']['limit'] = $this->internal['list']['pointer'].','. ($this->internal['list']['listLength']);
+			list($pointer, $listLength) = explode (',',$this->limit);
+
 			## limit: erste Zahl pointer, zweite zahl anzahl
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where,'',$this->orderBy);
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
@@ -391,7 +393,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 					$resultCounter++;
 					// TODO: we should use SQL-LIMIT instead! Cant we create an SQL-Syntax for $this->checkAccess($row['uid'], 1) && $this->checkDocumentAccess($row['fe_group']) ??
 					// add row only, if the current resultID is between the limit range
-					if ($resultCounter>=$limitArr[0] && $resultCounter<=$limitArr[1]){
+					if ($resultCounter>=$pointer && $resultCounter<=($pointer+$listLength)){
 						$result[] = $row;
 					}
 				}
