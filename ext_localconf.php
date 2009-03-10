@@ -19,4 +19,9 @@ t3lib_extMgm::addTypoScript($_EXTKEY,'editorcfg','
 ',43);
 
 t3lib_extMgm::addPItoST43($_EXTKEY,'pi2/class.tx_damfrontend_pi2.php','_pi2','list_type',1);
+
+t3lib_div::debug(t3lib_extMgm::extRelPath($_EXTKEY).'pushfile.php');
+// including the eID for the pushfile
+$TYPO3_CONF_VARS['FE']['eID_include']['dam_frontend_push'] = t3lib_extMgm::extPath($_EXTKEY).'pushfile.php';
+
 ?>
