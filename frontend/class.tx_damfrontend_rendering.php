@@ -528,6 +528,12 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 			'zip' => array (
 				label => $this->pi_getLL('zipfile')
 			),
+			'eps' => array(
+				label => $this->pi_getLL('epsfile')
+			),
+			'tif' => array(
+				label => $this->pi_getLL('tifffile')
+			),
 			'noselection' => array (
 				label => $this->pi_getLL('noselection')
 			)
@@ -960,7 +966,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		}
 		$mergeArray = array('nosel'=>'---');
 		#t3lib_div::debug( $this->staticInfoObj->buildStaticInfoSelector('LANGUAGES', 'LanguageSelector','',$currentLanguage,'','','','',$whereLanguages,'',1,$mergeArray));
-		
+
 		return  $this->staticInfoObj->buildStaticInfoSelector('LANGUAGES', 'LanguageSelector','',$currentLanguage,'','','','',$whereLanguages,'',1,$mergeArray);
 	}
 

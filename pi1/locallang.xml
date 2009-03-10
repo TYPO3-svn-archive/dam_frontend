@@ -30,6 +30,8 @@
 			<label index="jpegfile">jpeg image</label>
 			<label index="giffile">gif image</label>
 			<label index="zipfile">zip archive</label>
+			<label index="epsfile">eps image (Encapsulated PostScript)</label>
+			<label index="tifffile">tiff image (Tagged Image File Format)</label>
 			<label index="label_filetype">filetype</label>
 			<label index="error_header">Message</label>
 			<label index="setRowsPerView">Set Count Per View!</label>
