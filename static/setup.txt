@@ -29,16 +29,24 @@ plugin.tx_damfrontend_pi1 {
 		# stdWrap : Creation Timestamp of file
 		crdate.strftime =  %Y / %m / %d
 
-		title.typolink.parameter = typo3conf/ext/dam_frontend/pushfile.php?&docID={field:uid}
-		title.typolink.parameter.insertData = 1;
-		link_download.typolink.parameter = typo3conf/ext/dam_frontend/pushfile.php?&docID={field:uid}
-		link_download.typolink.parameter.insertData = 1
+		title.typolink.parameter.data = TSFE:id
+  		title.typolink.parameter.additionalParams = &eID=dam_frontend_push&docID={field:uid}
+		title.typolink.parameter.additionalParams.insertData = 1;
+
+		link_download.typolink.parameter.data = TSFE:id
+  		link_download.typolink.parameter.additionalParams = &eID=dam_frontend_push&docID={field:uid}
+		link_download.typolink.parameter.additionalParams.insertData = 1;
+
+
 	}
 	SingleView < .renderFields
 	SingleView {
 		file_name {
-			typolink.parameter = typo3conf/ext/dam_frontend/pushfile.php?docID={field:uid}
-			typolink.parameter.insertData = 1
+			typolink.parameter.data = TSFE:id
+  			typolink.parameter.additionalParams = &eID=dam_frontend_push&docID={field:uid}
+			typolink.parameter.additionalParams.insertData = 1;
+
+
 			prepend = IMAGE
 			prepend.file {
 				import.dataWrap = {field:file_path}{field:file_name}|

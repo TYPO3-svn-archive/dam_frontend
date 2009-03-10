@@ -30,8 +30,9 @@ plugin.tx_damfrontend_pi2 {
 	}
   	file_mtime.strftime = %m/%d/%y
   	# typolink
-  	file_href.parameter = typo3conf/ext/dam_frontend/pushfile.php?&docID={field:uid}
-	file_href.parameter.insertData = 1;
+  	file_href.parameter.data = TSFE:id
+  	file_href.parameter.additionalParams = &eID=dam_frontend_push&docID={field:uid}
+	file_href.parameter.additionalParams.insertData = 1;
 	file_href.returnLast = url
 
   }

@@ -24,21 +24,27 @@
  * **************************************************************/
 
 
-require_once(t3lib_extMgm::extPath('dam_frontend').'/DAL/class.tx_damfrontend_DAL_documents.php');
 
 error_reporting(E_ERROR);
 
+require_once(t3lib_extMgm::extPath('dam_frontend').'/DAL/class.tx_damfrontend_DAL_documents.php');
 
-$userObj = tslib_eidtools::initFeUser(); // Initialize FE user object         
+
+$userObj = tslib_eidtools::initFeUser(); // Initialize FE user object
 tslib_eidtools::connectDB();
 $docLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_documents');
 
-// Formular versendet?
 
+$prefixId = 'tx_damfrontend_pi1';
+if (!$_REQUEST['docID']
+	&& !$_POST[$prefixId]) {
+	die ('<h1>Error</h1><p>You have no access to download a file. In this case no DocID was given!</p>');
+}
+
+// Formular versendet?
 $post = t3lib_div::_POST($prefixId);
 if (is_array($post) && count($post) > 0) {
 	$filesToSend = array();
-
 	foreach ($post as $docID => $configuration) {
 		if (!is_numeric($docID)) {
 			continue; // not a file-id
@@ -70,6 +76,8 @@ if (is_array($post) && count($post) > 0) {
 		$filePath = PATH_site.$doc['file_path'].$doc['file_name'];
 		if ($tmp = createFile($filePath, configuration2Array($configuration['convert']))) {
 			$filesToSend[] = array('file' => $tmp, 'filename' => $doc['file_name']);
+		} else {
+			die('<h1>Error</h1><p>File not available...</p>');
 		}
 	}
 
@@ -119,11 +127,15 @@ if (is_array($post) && count($post) > 0) {
 			}
 		break;
 	}
-
-
-
 }
 
+	/**
+	 *
+	 */
+	function sendMail() {
+		// TODO: implement me:)
+		// use t3lib_htmlmail
+	}
 
 	/**
 	 * Splits configuration
