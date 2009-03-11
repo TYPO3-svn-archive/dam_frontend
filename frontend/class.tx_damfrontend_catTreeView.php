@@ -334,7 +334,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 				<!--
 				  TYPO3 tree structure.
 				-->
-				<table cellpadding="0" cellspacing="0" border="0" class="typo3-browsetree">';
+				<table class="typo3-browsetree">';
 
 			foreach($treeArr as $k => $v)	{
 				if (is_array($this->selectedCats)) {
@@ -353,7 +353,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 							$v['HTML'].
 							$this->wrapTitle($title, $v['row'], $v['bank']).
 						'</td>
-						<td  width="5%" id="'.$idAttr.'Control" class="typo3-browsetree-control">'.
+						<td  id="'.$idAttr.'Control" class="typo3-browsetree-control">'.
 							($control ? $control : '<span></span>').
 						'</td>
 					</tr>';

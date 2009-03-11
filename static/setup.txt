@@ -223,6 +223,16 @@ plugin.tx_damfrontend_pi1 {
 		.cattree div.control{
 			width: 100px;
 		}
+		td.typo3-browsetree-control {
+			width:5%;
+		}
+
+		table.typo3-browsetree {
+			border: 0;
+			border-collapse: collapse;
+		}
+
+
 		/*---------------------------------- filelist */
 		table.filelist {
 			font-size: 90%;
