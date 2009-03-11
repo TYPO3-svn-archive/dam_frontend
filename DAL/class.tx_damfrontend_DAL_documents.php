@@ -550,8 +550,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			foreach( $docData as $key => $value ) {
 				$DATA[$key] = $value;
 			}
-			t3lib_div::debug($DATA);
-			
 			$TABLE = 'tx_dam';
 			$WHERE = 'uid = '.$docID;
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$DATA);
