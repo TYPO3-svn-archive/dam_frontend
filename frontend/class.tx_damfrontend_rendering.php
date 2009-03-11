@@ -140,8 +140,8 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 
 		// Optionsplit for ###FILELIST_RECORD###
 		if (!isset($this->conf['marker.']['filelist_record'])) { $this->conf['marker.']['filelist_record'] = '###FILELIST_RECORD###'; }
-		$filelist_record_marker = $GLOBALS['TSFE']->tmpl->splitConfArray(array('cObjNum' => $this->conf['marker.']['filelist_record']), $resultcount);
 
+		$filelist_record_marker = $GLOBALS['TSFE']->tmpl->splitConfArray(array('cObjNum' => $this->conf['marker.']['filelist_record']), count($list));
  		$list_Code = tsLib_CObj::getSubpart($this->fileContent,'###FILELIST###');
  		$countElement = 0;
 		$rows = '';
@@ -149,7 +149,6 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 
  		foreach ($list as $elem) {
 			$record_Code = tsLib_CObj::getSubpart($this->fileContent,$filelist_record_marker[$countElement]['cObjNum']);
-
  			// TODO: correct table-name?
  			$cObj->start($elem, 'tx_dam');
  			$countElement++;

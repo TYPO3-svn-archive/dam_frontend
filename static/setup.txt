@@ -7,7 +7,7 @@ plugin.tx_damfrontend_pi1 {
 		errorWrap = {$plugin.tx_damfrontend_pi1.filter.errorWrap}
 	}
 	marker {
-		# optionSplit is possible: ###FILELIST_RECORD_ODD### || ###FILELIST_RECORD_EVEN###
+		# optionSplit is possible: ###FILELIST_RECORD_ODD### |*| ###FILELIST_RECORD_EVEN### || ###FILELIST_RECORD_ODD### |*|
 		filelist_record = ###FILELIST_RECORD###
 	}
 
