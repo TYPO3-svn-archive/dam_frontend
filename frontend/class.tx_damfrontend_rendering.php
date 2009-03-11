@@ -130,8 +130,8 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 	 * @return	[type]		...
 	 */
  	function renderFileList($list, $resultcount, $pointer, $listLength, $useRequestForm) {
-
  		if(!is_array($list)) die($this->pi_getLL('error_renderFileList_emptyArray'));
+ 		// TODO: it should be possible to have empty categories! If an Category is empty, the result is empty and we get an die...
 		if(!intval($resultcount) || $resultcount < 1) die($this->pi_getLL('error_renderFileList_resultcount'));
 		if(!intval($pointer) || $pointer < 1 ) $pointer = 1;
 		if(!intval($listLength) || $listLength < 1 ) $listLength = $this->cObj->stdWrap($this->conf['filelist.']['defaultLength'],$this->conf['filelist.']['defaultLength.']);
@@ -164,8 +164,8 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 			if (!is_null($this->staticInfoObj)) { $markerArray['###LANGUAGE###'] 	= $this->staticInfoObj->getStaticInfoName('LANGUAGES', $elem['language'], '', '', false); }
 
  			// adding Markers for links to download and single View
- 			$markerArray['###LINK_SINGLE###'] = $this->pi_linkTP_keepPiVars('<img src="'.$this->iconPath.'zoom.gif'.'" style="border-width: 0px"/>',array('showUid'=>$elem['uid'],'confirmDeleteUID'=>'','editUID'=>'','catEditUID'=>''));
-
+ 			// $markerArray['###LINK_SINGLE###'] = $this->pi_linkTP_keepPiVars('<img src="'.$this->iconPath.'zoom.gif'.'" style="border-width: 0px"/>',array('showUid'=>$elem['uid'],'confirmDeleteUID'=>'','editUID'=>'','catEditUID'=>''));
+			$markerArray['###LINK_SINGLE###'] = $cObj->stdWrap('<img src="'.$this->iconPath.'zoom.gif'.'" style="border-width: 0px"/>',$this->conf['renderFields.']['link_single.']);
 
  			// this is a field in the database, if true, then the fe user has to fill out a request form
 			if ($useRequestForm==1 && $elem['tx_damfrontend_use_request_form'] == 1) {
@@ -179,7 +179,6 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 	 			// TODO: create IMAGE from TypoScript
 	 			$markerArray['###LINK_DOWNLOAD###'] = $cObj->stdWrap('<img src="'.$this->iconPath.'clip_pasteafter.gif" style="border-width: 0px"/>', $this->conf['renderFields.']['link_download.']);
 	 		}
-
 			// TODO: Create from TypoScript
 			$markerArray['###LINK_SELECT_DOWNLOAD###'] = '';
 			if (is_array($this->conf['filelist.']['link_select_download.'])) {

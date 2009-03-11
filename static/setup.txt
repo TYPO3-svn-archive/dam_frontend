@@ -35,21 +35,27 @@ plugin.tx_damfrontend_pi1 {
 		crdate.strftime =  %Y / %m / %d
 
 		title.typolink.parameter.data = TSFE:id
-  		title.typolink.parameter.additionalParams = &eID=dam_frontend_push&docID={field:uid}
-		title.typolink.parameter.additionalParams.insertData = 1;
+  		title.typolink.additionalParams = &eID=dam_frontend_push&docID={field:uid}
+		title.typolink.additionalParams.insertData = 1
 
 		link_download.typolink.parameter.data = TSFE:id
-  		link_download.typolink.parameter.additionalParams = &eID=dam_frontend_push&docID={field:uid}
-		link_download.typolink.parameter.additionalParams.insertData = 1;
+  		link_download.typolink.additionalParams = &eID=dam_frontend_push&docID={field:uid}
+		link_download.typolink.additionalParams.insertData = 1
 
-
+		link_single.typolink {
+			parameter.data = TSFE:id
+			additionalParams = &tx_damfrontend_pi1[showUid]={field:uid}&tx_damfrontend_pi1[confirmDeleteUID]=&tx_damfrontend_pi1[editUID]=&tx_damfrontend_pi1[catEditUID]=
+			additionalParams.insertData = 1
+			addQueryString = 1
+			no_cache  = 1
+		}
 	}
 	SingleView < .renderFields
 	SingleView {
 		file_name {
 			typolink.parameter.data = TSFE:id
-  			typolink.parameter.additionalParams = &eID=dam_frontend_push&docID={field:uid}
-			typolink.parameter.additionalParams.insertData = 1;
+  			typolink.additionalParams = &eID=dam_frontend_push&docID={field:uid}
+			typolink.additionalParams.insertData = 1
 
 
 			prepend = IMAGE
@@ -81,7 +87,7 @@ plugin.tx_damfrontend_pi1 {
 			renderObj = TEXT
 			renderObj.field = title
 			renderObj.wrap = |<br />
-			stdWrap.override = Please set the constant "plugin.tx_damfrondend_pi1.mediafolder".
+			stdWrap.override = Please set constant "plugin.tx_damfrondend_pi1.mediafolder".
 			stdWrap.override.if.isFalse = {$plugin.tx_damfrondend_pi1.mediafolder}
 		}
 	}
@@ -122,8 +128,12 @@ plugin.tx_damfrontend_pi1 {
 		}
 
 		link_select_download {
-			typolink.parameter = typo3conf/ext/dam_frontend/pushfile.php
 			typolink.returnLast = url
+			typolink.parameter.data = TSFE:id
+  			typolink.additionalParams = &eID=dam_frontend_push
+			typolink.additionalParams.insertData = 1
+
+
 			# TEXT Objects, starting with "1"
 			1.value = <option value="">nicht gew&auml;hlt</option>
 
@@ -189,7 +199,6 @@ plugin.tx_damfrontend_pi1 {
 		}
   	}
   	_CSS_DEFAULT_STYLE (
-				@CHARSET "UTF-8";
 		/*---------------------------------- category tree */
 
 		.cattree td {
@@ -341,9 +350,9 @@ plugin.tx_damfrontend_pi1 {
 plugin.tx_damfrontend_pi1 {
 	renderFields {
 		title.typolink.parameter = {field:file_path}{field:file_name}
-		title.typolink.parameter.insertData = 1;
+		title.typolink.parameter.insertData = 1
 		link_download.typolink.parameter = {field:file_path}{field:file_name}
-		link_download.typolink.parameter.insertData = 1;
+		link_download.typolink.parameter.insertData = 1
 	}
 	singleView {
 		file_name {

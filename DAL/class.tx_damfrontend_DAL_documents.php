@@ -302,6 +302,8 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getDcoumentList: for the this->categories is no array. Given value was:' .$this->categories, 'dam_frontend',3);
 			}
 			if (count($this->categories)) {
+
+
 				/*
 				 * Building the from clause manually by joining the DAM tables
 				 *
@@ -325,7 +327,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 						unset($this->categories[$number]);
 					}
 				}
-
 
 				$queryText = array();
 				$z = 0;
@@ -361,8 +362,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 					}
 					$z++;
 				}
-			}
-			else {
+			} else {
 				#query without using categories
 				// TODO add permission check for dam records itself
 				$filter .= $this->additionalFilter;

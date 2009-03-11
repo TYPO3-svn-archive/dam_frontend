@@ -25,14 +25,17 @@
 
 
 
+
 error_reporting(E_ERROR);
 
 require_once(t3lib_extMgm::extPath('dam_frontend').'/DAL/class.tx_damfrontend_DAL_documents.php');
 
-
 $userObj = tslib_eidtools::initFeUser(); // Initialize FE user object
 tslib_eidtools::connectDB();
 $docLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_documents');
+require_once(PATH_tslib.'class.tslib_gifbuilder.php');
+
+
 
 
 $prefixId = 'tx_damfrontend_pi1';
@@ -42,9 +45,11 @@ if (!$_REQUEST['docID']
 }
 
 // Formular versendet?
+
 $post = t3lib_div::_POST($prefixId);
 if (is_array($post) && count($post) > 0) {
 	$filesToSend = array();
+
 	foreach ($post as $docID => $configuration) {
 		if (!is_numeric($docID)) {
 			continue; // not a file-id
@@ -135,7 +140,8 @@ if (is_array($post) && count($post) > 0) {
 	function sendMail() {
 		// TODO: implement me:)
 		// use t3lib_htmlmail
-	}
+}
+
 
 	/**
 	 * Splits configuration
@@ -197,6 +203,7 @@ if (is_array($post) && count($post) > 0) {
 		}
 		$theImage = $filePath;
 		$options = null;
+
 		$gifCreator = t3lib_div::makeInstance('tslib_gifbuilder');
 		/* @var $gifCreator tslib_gifbuilder */
 		$gifCreator->absPrefix = PATH_site;
