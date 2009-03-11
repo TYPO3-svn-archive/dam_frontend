@@ -36,13 +36,21 @@ Allowed Markers:
 		</tr>
 			###FILELIST_RECORDS###
 		<tr>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
+			<td colspan="7">
+			<div id="mailform">
+				<div style="float:left; margin-right:10px;">
+				<label>Von:</label><input type="text" name="tx_damfrontend_pi1[mail][from]" />
+				<br />
+				<label>An:</label><input type="text" name="tx_damfrontend_pi1[mail][to]" />
+				<br />
+				<label>Subject:</label><input type="text" name="tx_damfrontend_pi1[mail][subject]" />
+				</div>
+				<div style="float:left;">
+				<label>Kommentar:</label><br />
+				<textarea cols="60" rows="5" name="tx_damfrontend_pi1[mail][body]" ></textarea>
+				</div>
+			</div>
+			</td>
 			<td colspan="4">
 			<select name="tx_damfrontend_pi1[modus]">
 			<option value="">###FILELIST_BATCH_SELECT###</option>
@@ -83,6 +91,17 @@ Allowed Markers:
 	</tr>
 <!-- ###FILELIST_RECORD### end -->
 
+<!-- ###FILELIST_RECORD_ODD### begin -->
+	<tr>
+				<td>(ODD) ###COUNT_ID###</td><td>###FILEICON###</td><td><b>###TITLE###</b></td><td><b>###FILE_TYPE###</b></td><td>###CRDATE###</td><td>###CREATOR###&nbsp; /  ###PUBLISHER### &nbsp; </td><td>###LANGUAGE###</td><td>###TX_DAMFRONTEND_FEUSER_UPLOAD###</td><td>###LINK_SINGLE###</td><td>###LINK_DOWNLOAD### ###BUTTON_DELETE### ###BUTTON_EDIT### ###BUTTON_CATEDIT###</td><td>###LINK_SELECT_DOWNLOAD###</td>
+	</tr>
+<!-- ###FILELIST_RECORD_ODD### end -->
+
+<!-- ###FILELIST_RECORD_EVEN### begin -->
+	<tr>
+				<td>(EVEN)###COUNT_ID###</td><td>###FILEICON###</td><td><b>###TITLE###</b></td><td><b>###FILE_TYPE###</b></td><td>###CRDATE###</td><td>###CREATOR###&nbsp; /  ###PUBLISHER### &nbsp; </td><td>###LANGUAGE###</td><td>###TX_DAMFRONTEND_FEUSER_UPLOAD###</td><td>###LINK_SINGLE###</td><td>###LINK_DOWNLOAD### ###BUTTON_DELETE### ###BUTTON_EDIT### ###BUTTON_CATEDIT###</td><td>###LINK_SELECT_DOWNLOAD###</td>
+	</tr>
+<!-- ###FILELIST_RECORD_EVEN### end -->
 
 
 <!-- ********************************
@@ -286,6 +305,7 @@ Template for displaying a single document in a list
 
 				<br />
 				<br />
+				<input type="hidden" value="0" name="tx_damfrontend_pi1[pointer]" />
 				<input type="submit" value="###SET_FILTER###" name="setFilter" class="button"></input>
 				<input type="checkbox" name="dam_fe_allCats" value="true" /> ###LABEL_NO_CAT###
 				<input type="submit" value="###RESET_FILTER###" name="resetFilter" class="button"></input> &nbsp; &nbsp; &nbsp;

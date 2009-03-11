@@ -6,6 +6,11 @@ plugin.tx_damfrontend_pi1 {
 	filter {
 		errorWrap = {$plugin.tx_damfrontend_pi1.filter.errorWrap}
 	}
+	marker {
+		# optionSplit is possible: ###FILELIST_RECORD_ODD### || ###FILELIST_RECORD_EVEN###
+		filelist_record = ###FILELIST_RECORD###
+	}
+
 	renderCategoryTree {
 		stdWrapPlusIcon.wrap = |
 		stdWrapEqualsIcon.wrap = |

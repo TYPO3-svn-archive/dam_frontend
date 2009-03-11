@@ -137,13 +137,19 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		if(!intval($listLength) || $listLength < 1 ) $listLength = $this->cObj->stdWrap($this->conf['filelist.']['defaultLength'],$this->conf['filelist.']['defaultLength.']);
 		if (!isset($this->fileContent)) return $this->pi_getLL('error_renderFileList_template');
 
- 		// reading the filecontent just one time
- 		$record_Code = tslib_CObj::getSubpart($this->fileContent,'###FILELIST_RECORD###');
+
+		// Optionsplit for ###FILELIST_RECORD###
+		if (!isset($this->conf['marker.']['filelist_record'])) { $this->conf['marker.']['filelist_record'] = '###FILELIST_RECORD###'; }
+		$filelist_record_marker = $GLOBALS['TSFE']->tmpl->splitConfArray(array('cObjNum' => $this->conf['marker.']['filelist_record']), $resultcount);
+
  		$list_Code = tsLib_CObj::getSubpart($this->fileContent,'###FILELIST###');
  		$countElement = 0;
 		$rows = '';
 		$cObj = t3lib_div::makeInstance('tslib_cObj');
+
  		foreach ($list as $elem) {
+			$record_Code = tsLib_CObj::getSubpart($this->fileContent,$filelist_record_marker[$countElement]['cObjNum']);
+
  			// TODO: correct table-name?
  			$cObj->start($elem, 'tx_dam');
  			$countElement++;
