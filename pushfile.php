@@ -33,6 +33,8 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/DAL/class.tx_damfrontend_DA
 $userObj = tslib_eidtools::initFeUser(); // Initialize FE user object
 tslib_eidtools::connectDB();
 $docLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_documents');
+require_once(PATH_t3lib.'class.t3lib_stdGraphic.php');
+require_once(PATH_t3lib.'class.t3lib_page.php');
 require_once(PATH_tslib.'class.tslib_gifbuilder.php');
 
 
@@ -214,12 +216,15 @@ if (is_array($post) && count($post) > 0) {
 
 
 
-// test f�r den Zugriff auf eine Datei
+// test for access to a file
 $docID = intval(t3lib_div::GPvar('docID'));
 
 if ($docID==0) {
 	die('<h1>Error</h1><p>You have no access to download a file. In this case no correct DocID was given!</p>');
 }
+
+// FIXME checkDocumentAccess must be included too!
+ 
 if (!$docLogic->checkAccess($docID, 1)) {
 	die('<h1>Error</h1><p>You have no access to download this file.');
 }
