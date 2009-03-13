@@ -182,9 +182,11 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			if (!isset($relID) || $relID == ''){
 				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function checkAccess: for the relID only integer values are allowed. Given value was:' .$relID, 'dam_frontend',3);
 			}
+			
 			// all frontend usergroups assigned to the document
 			$docgroups = $this->getDocumentFEGroups($docID, $relID);
 			if (!is_array($docgroups)) return true; // no groups assigned - allow access
+			
 			// get the ID's of the usergroups, the current user is a member of
 			$usergroups = $GLOBALS['TSFE']->fe_user->groupData['uid'];
 			$valid = true;
@@ -303,7 +305,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			}
 			if (count($this->categories)) {
 
-
+		
 				/*
 				 * Building the from clause manually by joining the DAM tables
 				 *
@@ -327,7 +329,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 						unset($this->categories[$number]);
 					}
 				}
-
 				$queryText = array();
 				$z = 0;
 				/**
@@ -336,6 +337,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				 *
 				 *
 				 */
+				//FIXME : seachAllCats must be discussed
 				foreach($this->categories as $number => $catList) {
 						$catString = ($this->searchAllCats)?"1=1":'( '.$this->catTable.'.uid='.implode(' OR '.$this->catTable.'.uid=',$catList).')';
 						//$catString = '( '.$this->catTable.'.uid='.implode(' OR '.$this->catTable.'.uid=',$catList).')';
@@ -466,7 +468,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function setFilter: filterArray must be an array. Given value was:' .$this->categories, 'dam_frontend',3);
 			}
 			// searching in all Documents if filter is set
-			if ($filterArray['searchAllCats']) {
+			if ($filterArray['searchAllCats']==true) {
 				$this->searchAllCats = true;
 			}
 			else {
@@ -506,7 +508,8 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			if ($filterArray['owner'] > 0 ) $this->additionalFilter .=   ' AND '.$this->docTable.'.tx_damfrontend_feuser_upload  ='.$filterArray['owner'];
 
 			if (trim($filterArray['LanguageSelector']) != '' && $filterArray['LanguageSelector'] != 'nosel') $this->additionalFilter .=  ' AND '.$this->docTable.'.language = "'.trim($filterArray['LanguageSelector']).'"';
-
+			
+			if ($filterArray['showOnlyFilesWithPermission'] == 1) $this->additionalFilter .=  ' AND '.$this->docTable.'.fe_group <>"" AND '.$this->docTable.'.fe_group <>"-1" AND '.$this->docTable.'.fe_group <>"-2" AND '.$this->docTable.'.fe_group <>"0"';
 			return $errors;
 		}
 
@@ -781,14 +784,34 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 
 	 /**
 	 * Checks if the FE_User has Access to the Document
-	 *
-	 * @param	int		$docFEGroup -> fe_group the document is restricted to
+	 * @author Stefan Busemann
+	 * @param	string		$docFEGroup -> fe_group the document is restricted to
+	 * @return	bool	true if fe_user has access, false if not
 	 */
-		function checkDocumentAccess($docFEGroup) {
-			if (!$docFEGroup) return true;
-			$userGroups=$GLOBALS['TSFE']->fe_user->groupData['uid'];
-			if (!is_array($userGroups)) return false;
-			return (array_search($docFEGroup,$userGroups));
+		function checkDocumentAccess($docFEGroups) {
+			// if no fe group is asigned, access is given
+			if (!$docFEGroups) return true;
+			
+			$access = false;
+			
+			// get all usergroups of the fe_user
+			$feuserGroups=$GLOBALS['TSFE']->fe_user->groupData['uid'];
+			
+			// if fe_user is not assigned to group return false, because a fe_user has to be at least member of one group
+			if (!is_array($feuserGroups)) return false;
+			
+			$docFEGroups = explode(',',$docFEGroups);
+			// check if at least one fe_group has access to file
+			foreach ($feuserGroups as $group ){
+				
+				if (array_search($group,$docFEGroups, true)===false) {
+					//if the array search founds no value - nothing is to do
+					// TODO is there a more elegantly way for this construction? - stefan 
+				} else {
+					$access=true;
+				}
+			}  
+			return $access;
 		}
 	}
 
