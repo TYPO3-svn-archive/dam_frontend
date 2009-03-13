@@ -56,7 +56,7 @@ plugin.tx_damfrontend_pi1 {
 			typolink.parameter.data = TSFE:id
   			typolink.additionalParams = &eID=dam_frontend_push&docID={field:uid}
 			typolink.additionalParams.insertData = 1
-
+			typolink.extTarget = _blank
 
 			prepend = IMAGE
 			prepend.file {
@@ -132,7 +132,7 @@ plugin.tx_damfrontend_pi1 {
 			typolink.parameter.data = TSFE:id
   			typolink.additionalParams = &eID=dam_frontend_push
 			typolink.additionalParams.insertData = 1
-
+			typolink.extTarget = _blank
 
 			# TEXT Objects, starting with "1"
 			1.value = <option value="">nicht gew&auml;hlt</option>
@@ -152,6 +152,10 @@ plugin.tx_damfrontend_pi1 {
 			5.wrap = <option value="width:100;y:100;resample:20">|</option>
 			5.value = thumbnail
 			5.lang.de = Thumbnail
+		}
+		
+		security_options {
+			showOnlyFilesWithPermission=1
 		}
 	}
 
@@ -197,6 +201,9 @@ plugin.tx_damfrontend_pi1 {
 		  msexcel = image_default.png
 		  DEFAULT = application_default.png
 		}
+  	}
+  	upload {
+  		autoAsignFEGroups = 1
   	}
   	_CSS_DEFAULT_STYLE (
 		/*---------------------------------- category tree */

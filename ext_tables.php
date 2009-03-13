@@ -191,12 +191,24 @@ $tempColumns = Array (
 			'default' => '0',
 		),
 	),
+	"tx_damfrontend_feuser_upload" => Array (		
+		"exclude" => 0,		
+		"label" => "LLL:EXT:dam_frontend/locallang_tca.php:tx_damfrontend_feuser_upload",		
+		"config" => Array (	
+			"type" => "select",	
+			"internal_type" => "db",
+			"foreign_table" => "fe_users",	
+			"size" => 2,	
+			"minitems" => 0,
+			"maxitems" => 1,	
+		),
+	),
 );
 
 /*   for upload user */
 t3lib_div::loadTCA("tx_dam");
 t3lib_extMgm::addTCAcolumns("tx_dam",$tempColumns,1);
-t3lib_extMgm::addToAllTCAtypes("tx_dam","tx_damfrontend_use_request_form;;;;1-1-1",'','after:category');
+t3lib_extMgm::addToAllTCAtypes("tx_dam","tx_damfrontend_use_request_form;;;;1-1-1,tx_damfrontend_feuser_upload",'','after:category');
 
 /*
 $tempColumns = Array (

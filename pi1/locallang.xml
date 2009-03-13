@@ -36,9 +36,7 @@
 			<label index="error_header">Message</label>
 			<label index="setRowsPerView">Set Count Per View!</label>
 			<label index="label_Count">rowcount:</label>
-			<label index="error_renderFileList_emptyArray">Rendering of dam_frontend is not possible: $list must be an array. Please contact your administrator.</label>
-			<label index="error_renderFileList_resultcount">Rendering of dam_frontend is not possible: Parametererror in renderFileList: $resultcount. Please contact your administrator.</label>
-			<label index="error_renderFileList_template">Rendering of dam_frontend is not possible: Please initialize the templatefile first. Use setFileRef. Please contact your administrator.</label>
+			<label index="error_renderFileList_template">Rendering of dam_frontend is not possible: Please initialize the templatefile first. Please check, if a valid value for plugin.tx_damfrontend_pi1.templateFile  is set. Please contact your administrator.</label>
 			<label index="FILENAME_HEADER">Filename</label>
 			<label index="CR_DATE_HEADER">Creation date</label>
 			<label index="FILETYPE_HEADER">Filetype</label>
@@ -144,7 +142,7 @@
 			<label index="error_header">Meldung</label>
 			<label index="setRowsPerView">Anzahl pro Ansicht setzen!</label>
 			<label index="label_Count">Anzahl der Ergebnisse:</label>
-			<label index="error_renderFileList_emptyArray">Rendering of dam_frontend is not possible: $list must be an array. Please contact your administrator.</label>
+			<label index="error_renderFileList_template">Anzeige von DAM_Frontend is nicht möglich: Please initialize the templatefile first. Bitte überprüfen Sie, ob ein ein gültiger Wert für plugin.tx_damfrontend_pi1.templateFile im typoscript template gesetzt ist. Bitte informieren Sie den Administrator.</label>
 			<label index="error_renderFilterView_date_to">Incorrect date value (to-date)</label>
 			<label index="error_renderFilterView_date_from">Incorrect date value (from-date)</label>
 			<label index="FILENAME_HEADER">Dateiname</label>
