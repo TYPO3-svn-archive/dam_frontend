@@ -130,9 +130,15 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 	 * @return	[type]		...
 	 */
  	function renderFileList($list, $resultcount, $pointer, $listLength, $useRequestForm) {
- 		if(!is_array($list)) die($this->pi_getLL('error_renderFileList_emptyArray'));
- 		// TODO: it should be possible to have empty categories! If an Category is empty, the result is empty and we get an die...
-		if(!intval($resultcount) || $resultcount < 1) die($this->pi_getLL('error_renderFileList_resultcount'));
+ 		if(!is_array($list)){
+ 			//no result is given
+ 			return $this->pi_getLL('noDocInCat');
+ 		}
+
+ 		if(!intval($resultcount) || $resultcount < 1) {
+			if (TYPO3_DLOG)	t3lib_div::devLog('tx_damfrontend_rendering.renderFileList: Invalid resultcount. Counter is less than 1 or null. Allowed values are integer >0','dam_frontend',2,$list);
+ 			return $this->pi_getLL('noDocInCat');
+		}
 		if(!intval($pointer) || $pointer < 1 ) $pointer = 1;
 		if(!intval($listLength) || $listLength < 1 ) $listLength = $this->cObj->stdWrap($this->conf['filelist.']['defaultLength'],$this->conf['filelist.']['defaultLength.']);
 		if (!isset($this->fileContent)) return $this->pi_getLL('error_renderFileList_template');
