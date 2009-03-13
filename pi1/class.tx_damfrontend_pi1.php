@@ -199,7 +199,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		if (t3lib_div::_GP('resetFilter')){
 			$this->filterState->resetFilter();
 		}
-
+		# This filter must set regardless the filter is resetet, because this setting is independ of the normal filters or filter view
+		if ($this->conf['filelist.']['security_options.']['showOnlyFilesWithPermission']==1) {
+			$this->internal['filter']['showOnlyFilesWithPermission']=1;
+		} else {
+			$this->internal['filter']['showOnlyFilesWithPermission']=0;
+		}
+		
 		$this->docLogic->setFilter($this->internal['filter']);
 	}
 
@@ -819,8 +825,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 								// File exists - show versioning options
 								if ($this->versionate) {
 									return $this->versioningForm();
-						}
-						else {
+								}
+								else {
 									$this->getIncomingDocData();
 									return $this->editForm($newID);
 								}
@@ -998,14 +1004,21 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				}
 				$uploadfile = PATH_site.$feuploaddir.$_FILES[$uploadHandler->prefixId]['name'];
 
-			// check if the current file is already present  - preparing for
-			// displaying the versioning options
-			if (is_file($uploadfile)) {
-				$this->versionate = true;
-				$_FILES[$uploadHandler->prefixId]['name'] = $_FILES[$uploadHandler->prefixId]['name'].'_versionate';
-			}
-			$this->documentData['title'] = $_FILES[$uploadHandler->prefixId]['name'];
-			$this->documentData['tx_damfrontend_feuser_upload'] = $this->userUID;
+				// check if the current file is already present  - preparing for
+				// displaying the versioning options
+				if (is_file($uploadfile)) {
+					$this->versionate = true;
+					$_FILES[$uploadHandler->prefixId]['name'] = $_FILES[$uploadHandler->prefixId]['name'].'_versionate';
+				}
+				$this->documentData['title'] = $_FILES[$uploadHandler->prefixId]['name'];
+				$this->documentData['tx_damfrontend_feuser_upload'] = $this->userUID;
+				// set fe_user group
+				if ($this->conf['upload.']['autoAsignFEGroups']==1){
+					// fetch the usergroups the fe_user is belonging and put them into the access field
+					$userGroups=$GLOBALS['TSFE']->fe_user->groupData['uid'];
+					if (is_array($userGroups)) $this->documentData['fe_group']= implode(',',$userGroups);
+				}
+				
 				// final upload
 				$uploadHandler->handleUpload();
 
