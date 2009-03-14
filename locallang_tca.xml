@@ -27,6 +27,7 @@
 			<label index="flexform_myFiles">my files</label>
 			<label index="flexform_enableEdits">enable edits of meta data</label>
 			<label index="flexform_dropDown">Dropdown Catmenu</label>
+			<label index="tx_damfrontend_feuser_upload">belongs to this frontend user</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="flexform_display_title">Was soll angezeigt werden</label>
@@ -50,6 +51,7 @@
 			<label index="flexform_myFiles">eigene Dateien</label>
 			<label index="flexform_enableEdits">erlaube Änderung der Metadaten</label>
 			<label index="flexform_dropDown">Dropdown Catmenu</label>
+			<label index="tx_damfrontend_feuser_upload">gehört zu diesem Frontend Benutzer</label>
 		</languageKey>
 	</data>
 </T3locallang>

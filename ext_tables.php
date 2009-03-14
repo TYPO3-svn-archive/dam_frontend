@@ -198,7 +198,7 @@ $tempColumns = Array (
 			"type" => "select",	
 			"internal_type" => "db",
 			"foreign_table" => "fe_users",	
-			"size" => 2,	
+			"size" => 1,	
 			"minitems" => 0,
 			"maxitems" => 1,	
 		),
