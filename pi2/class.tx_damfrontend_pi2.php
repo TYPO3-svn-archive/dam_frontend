@@ -258,7 +258,6 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 	function processRecord($damRecord) {
 
 		if (!is_array($damRecord)) {
-			t3lib_div::debug($damRecord,'Kein Array?');
 			return array();
 		}
 

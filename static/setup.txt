@@ -3,6 +3,7 @@ plugin.tx_damfrontend_pi1 {
 	userFunc = tx_damfrontend_pi1->main
 	templateFile = {$plugin.tx_damfrontend_pi1.templateFile}
 	singleID = {$plugin.tx_damfrontend_pi1.singleID}
+	allowedLanguages = EN,DE
 	filter {
 		errorWrap = {$plugin.tx_damfrontend_pi1.filter.errorWrap}
 	}
