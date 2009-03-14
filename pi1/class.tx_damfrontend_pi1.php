@@ -557,7 +557,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$cats = $this->catList->getCatSelection(0,$this->pid);
 		}
 
-
 		$hasCats = false; // true if any category has been selected yet
 		if ($this->conf['enableDeletions']==1) {
 			if ($this->userLoggedIn == true) {

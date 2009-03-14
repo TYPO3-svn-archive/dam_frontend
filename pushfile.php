@@ -26,13 +26,17 @@
 
 
 
-error_reporting(E_ERROR);
+//error_reporting(E_ERROR);
 
 require_once(t3lib_extMgm::extPath('dam_frontend').'/DAL/class.tx_damfrontend_DAL_documents.php');
 
 $userObj = tslib_eidtools::initFeUser(); // Initialize FE user object
+$GLOBALS['TSFE']->fe_user = $userObj;
+$userObj->fetchGroupData();
 tslib_eidtools::connectDB();
 $docLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_documents');
+$docLogic->feuser = $userObj;
+
 require_once(PATH_t3lib.'class.t3lib_stdGraphic.php');
 require_once(PATH_t3lib.'class.t3lib_page.php');
 require_once(PATH_tslib.'class.tslib_gifbuilder.php');
@@ -141,6 +145,7 @@ if (is_array($post) && count($post) > 0) {
 	 */
 	function sendMail() {
 		// TODO: implement me:)
+		// TODO: don't place that here
 		// use t3lib_htmlmail
 }
 
@@ -223,12 +228,12 @@ if ($docID==0) {
 	die('<h1>Error</h1><p>You have no access to download a file. In this case no correct DocID was given!</p>');
 }
 
-// FIXME checkDocumentAccess must be included too!
- 
+// TODO checkDocumentAccess must be included too!
 if (!$docLogic->checkAccess($docID, 1)) {
 	die('<h1>Error</h1><p>You have no access to download this file.');
 }
 $doc = $docLogic->getDocument($docID);
+
 $filePath = PATH_site.$doc['file_path'].$doc['file_name'];
 if (!sendFile($filePath, $doc['file_name'])) {
 	die ('<h1>Error</h1><p>The requested file was not found! Please contact the adminstrator and tell him that the id: '.$docID .' was not found');

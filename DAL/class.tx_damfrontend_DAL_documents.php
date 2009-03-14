@@ -92,6 +92,8 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			'1' => 'readaccess',
 			'2' => 'downloadaccess'
 		);
+		
+		var $feuser;			// pointing to the fe user object instance - please use this instead of GLOBALS['TSFE]
 
 		/**
 		 * Sets fullTextSearchFields - in which fields should be searched
@@ -113,6 +115,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 */
 		function tx_damfrontend_DAL_documents() {
 			$this->catLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_categories');
+			$this->feuser = $GLOBALS['TSFE']->fe_user;
 		}
 
 	/**
@@ -182,13 +185,11 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			if (!isset($relID) || $relID == ''){
 				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function checkAccess: for the relID only integer values are allowed. Given value was:' .$relID, 'dam_frontend',3);
 			}
-			
 			// all frontend usergroups assigned to the document
 			$docgroups = $this->getDocumentFEGroups($docID, $relID);
 			if (!is_array($docgroups)) return true; // no groups assigned - allow access
-			
 			// get the ID's of the usergroups, the current user is a member of
-			$usergroups = $GLOBALS['TSFE']->fe_user->groupData['uid'];
+			$usergroups = $this->feuser->groupData['uid'];
 			$valid = true;
 			foreach($docgroups as $docgroup) {
 				$valid = $valid && array_search($docgroup['uid'], $usergroups);
@@ -305,7 +306,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			}
 			if (count($this->categories)) {
 
-		
 				/*
 				 * Building the from clause manually by joining the DAM tables
 				 *
@@ -321,7 +321,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 					$filter .= ' AND ('.$this->docTable.'.endtime < '.time().' OR '.$this->docTable.'.endtime = 0)';
 					$filter .= $this->additionalFilter;
 
-
 				// preparing the category array - deleting all empty entries
 				// TODO: rethinking if it is a good idea to change $this->categories in a function for reading entrys?
 				foreach($this->categories as $number => $catList) {
@@ -329,6 +328,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 						unset($this->categories[$number]);
 					}
 				}
+
 				$queryText = array();
 				$z = 0;
 				/**
@@ -360,7 +360,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 							// TODO: can we reach this part of the code? The part is only executed if (count($this->categories))
 							$where = $catString.$filter;
 						}
-						$select = ' DISTINCT '.$this->docTable.'.*';
+						$select = '  DISTINCT '.$this->docTable.'.*';
 					}
 					$z++;
 				}
@@ -468,7 +468,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function setFilter: filterArray must be an array. Given value was:' .$this->categories, 'dam_frontend',3);
 			}
 			// searching in all Documents if filter is set
-			if ($filterArray['searchAllCats']==true) {
+			if ($filterArray['searchAllCats']) {
 				$this->searchAllCats = true;
 			}
 			else {
@@ -508,8 +508,8 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			if ($filterArray['owner'] > 0 ) $this->additionalFilter .=   ' AND '.$this->docTable.'.tx_damfrontend_feuser_upload  ='.$filterArray['owner'];
 
 			if (trim($filterArray['LanguageSelector']) != '' && $filterArray['LanguageSelector'] != 'nosel') $this->additionalFilter .=  ' AND '.$this->docTable.'.language = "'.trim($filterArray['LanguageSelector']).'"';
-			
-			if ($filterArray['showOnlyFilesWithPermission'] == 1) $this->additionalFilter .=  ' AND '.$this->docTable.'.fe_group <>"" AND '.$this->docTable.'.fe_group <>"-1" AND '.$this->docTable.'.fe_group <>"-2" AND '.$this->docTable.'.fe_group <>"0"';
+
+			// if ($filterArray['showOnlyFilesWithPermission'] == 1) $this->additionalFilter .=  ' AND '.$this->docTable.'.fe_group <> '' AND '.$this->docTable.'.fe_group <>"-1" AND '.$this->docTable.'.fe_group <>"-2" AND '.$this->docTable.'.fe_group <>"0"';
 			return $errors;
 		}
 
@@ -590,8 +590,8 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				}
 			}
 
-			if (!is_array($GLOBALS['TSFE']->fe_user->user)) die('no frontend user logged in');
-			$newrecord['tx_damfrontend_feuser_upload'] = $GLOBALS['TSFE']->fe_user->user['uid'];
+			if (!is_array($this->feuser->user)) die('no frontend user logged in');
+			$newrecord['tx_damfrontend_feuser_upload'] = $this->feuser->user['uid'];
 
 			// unsetting all array elements, which are not used
 			unset($newrecord['__type']);
@@ -814,7 +814,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			return $access;
 		}
 	}
-
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/DAL/class.tx_damfrontend_DAL_documents.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/DAL/class.tx_damfrontend_DAL_documents.php']);
