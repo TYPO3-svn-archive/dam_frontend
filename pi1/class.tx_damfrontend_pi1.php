@@ -168,9 +168,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
  		$this->internal['filter']['filetype'] = strip_tags(t3lib_div::_GP('filetype'));
 		$this->internal['filter']['searchword'] = strip_tags(t3lib_div::_GP('searchword'));
 
-
-		//
-		if (t3lib_div::_GP('dam_fe_allCats')) {
+		
+		// if all categories should be searched
+		if (t3lib_div::_GP('dam_fe_allCats')=='true') {
 			$this->internal['filter']['searchAllCats'] = true;
 		}
 		else {
@@ -304,6 +304,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->internal['saveUID'] = intval(t3lib_div::_POST('saveUID'));
 		$this->internal['catEditUID'] = intval($this->piVars['catEditUID']);
 
+		$this->internal['filter']['searchAllCats'] = 0;
 		// values for searching
 		// Setting new values
  		if ($this->internal['viewID'] == 1  ) {
@@ -624,7 +625,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 		}
 
-		if ($hasCats || $this->internal['filter']['searchAllCats'] ) {
+		if ($hasCats || $this->internal['filter']['searchAllCats']==true ) {
 			/***************************
 			 *
 			 *    search and sorting values are transfered to the user
@@ -665,7 +666,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 */
 	function filterView() {
 		$content = $this->renderer->renderFilterView($this->internal['filter'], $this->internal['filterError']);
-		$content=str_replace("name=\"dam_fe_allCats\"","name=\"dam_fe_allCats\" ".(($this->internal['filter']['searchAllCats'])?" checked ":"")."",$content);
+		if ($this->internal['filter']['searchAllCats'] ==true) {
+			$content=str_replace("name=\"dam_fe_allCats\"","name=\"dam_fe_allCats\" checked",$content);
+		}
 		return $content;
 	}
 

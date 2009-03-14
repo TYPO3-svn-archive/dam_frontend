@@ -43,7 +43,7 @@
 			<label index="TITLE_SINGLEVIEW">Singleview</label>
 			<label index="FILE_SIZE_HEADER">Filesize</label>
 			<label index="CR_DESCRIPTION_HEADER">Description</label>
-			<label index="CHOOSEN_CAT_HEADER">Choosen cat header</label>
+			<label index="CHOOSEN_CAT_HEADER">Choosen categories</label>
 			<label index="TITLE_SINGLEVIEW_HEADER">Title</label>
 			<label index="COPYRIGHT_HEADER">Copyright</label>
 			<label index="CATEGORY_HEADER">Category</label>
