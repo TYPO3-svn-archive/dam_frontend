@@ -236,6 +236,7 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 
 
 // TODO: check why/if this function is not needed anymore
+
 	/**
 	 * Renders the +-= buttons with corresponding commands
 	 *
@@ -243,6 +244,7 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 	 * @param	resultslist		$row: ...
 	 * @return	string		HTML Output
 	 */
+/**
 	function getControl($title,$row) {
 		// retrieving the current page id
 		$id = (int)t3lib_div::_GET('id');
@@ -281,7 +283,7 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 		}
 		$control .= '</div>';
 		return $control;
-	}
+	}*/
 
 
 	/* Compiles the HTML code for displaying the structure found inside the ->tree array
@@ -330,12 +332,7 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 							$v['HTML'].
 							$this->wrapTitle($title, $v['row'], $v['bank']).
 						'</td>
-						<td  width="1%" id="'.$idAttr.'Control" class="typo3-browsetree-control">'.
-							($control ? $control : '<span></span>').
-						'</td>
-					</tr>
-
-				';
+					</tr>';
 			}
 			$out .= '
 				</table>';
