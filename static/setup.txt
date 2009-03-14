@@ -155,7 +155,7 @@ plugin.tx_damfrontend_pi1 {
 		}
 		
 		security_options {
-			showOnlyFilesWithPermission=1
+			showOnlyFilesWithPermission=0
 		}
 	}
 
