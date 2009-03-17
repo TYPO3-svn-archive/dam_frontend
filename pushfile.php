@@ -37,7 +37,7 @@ tslib_eidtools::connectDB();
 $docLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_documents');
 $docLogic->feuser = $userObj;
 
-require_once(PATH_t3lib.'class.t3lib_stdGraphic.php');
+require_once(PATH_t3lib.'class.t3lib_stdgraphic.php');
 require_once(PATH_t3lib.'class.t3lib_page.php');
 require_once(PATH_tslib.'class.tslib_gifbuilder.php');
 
@@ -173,6 +173,9 @@ if (is_array($post) && count($post) > 0) {
 	 */
 	function sendFile($file, $filename) {
 		$filesize = filesize($file);
+		if (!$filesize) {
+			return false;
+		}
 		header("Content-type: application/force-download");
 		header("Content-Transfer-Encoding: Binary");
 		header("Content-length: ".$filesize);

@@ -156,6 +156,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 * @return	boolean		true if access is allowed
 	 * @see checkAccess
 	 */
+	 //TODO this function is not used? delete it? - Stefan
 		function checkAccess_fileRef($filePath) {
 			// getting filename and filepath from the given path
 			$splitpos = strrpos($filePath, '/') + 1;
@@ -169,7 +170,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			return $this->checkAccess(intval($row['uid']),2);
 		}
 
-
+// TODO implement a function which combines checkAccess and checkDokumentAcess  - Stefan
 	/**
 	 * checks, if the current user has access to an specific document
 	 * if the document has no category, the access is not limited
