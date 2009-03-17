@@ -814,7 +814,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 					//if the array search founds no value - nothing is to do
 					// TODO is there a more elegantly way for this construction? - stefan 
 				} else {
-					$access=true;
+					$access = true;
 				}
 			}  
 			return $access;

@@ -231,12 +231,18 @@ if ($docID==0) {
 	die('<h1>Error</h1><p>You have no access to download a file. In this case no correct DocID was given!</p>');
 }
 
-// TODO checkDocumentAccess must be included too!
+// check if a user has access to the selected categories (a user must have access to all categories that are selected)
 if (!$docLogic->checkAccess($docID, 1)) {
 	die('<h1>Error</h1><p>You have no access to download this file.');
 }
+
+// get the data of the selected document
 $doc = $docLogic->getDocument($docID);
 
+// check if a user has access to the dam record / file
+if (!$docLogic->checkDocumentAccess($doc['fe_group'])) {
+	die('<h1>Error</h1><p>You have no access to this file.');
+}
 $filePath = PATH_site.$doc['file_path'].$doc['file_name'];
 if (!sendFile($filePath, $doc['file_name'])) {
 	die ('<h1>Error</h1><p>The requested file was not found! Please contact the adminstrator and tell him that the id: '.$docID .' was not found');
