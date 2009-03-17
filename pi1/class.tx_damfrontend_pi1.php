@@ -623,9 +623,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			foreach($cats as $catList) {
 				if (count($catList)) $hasCats = true;
 			}
-		}
-
-		if ($hasCats || $this->internal['filter']['searchAllCats']==true ) {
+		}		
+		
+		if ($hasCats===true || $this->internal['filter']['searchAllCats']===true ) {
+			
 			/***************************
 			 *
 			 *    search and sorting values are transfered to the user

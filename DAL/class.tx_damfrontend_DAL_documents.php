@@ -339,8 +339,14 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				 */
 				//FIXME : seachAllCats must be discussed
 				foreach($this->categories as $number => $catList) {
-						$catString = ($this->searchAllCats)?"1=1":'( '.$this->catTable.'.uid='.implode(' OR '.$this->catTable.'.uid=',$catList).')';
-						//$catString = '( '.$this->catTable.'.uid='.implode(' OR '.$this->catTable.'.uid=',$catList).')';
+						
+						if ($this->searchAllCats === true) {
+							$catString = "1=1";
+						}
+						else {
+							$catString = '( '.$this->catTable.'.uid='.implode(' OR '.$this->catTable.'.uid=',$catList).')';
+						}
+
 					if ($z != count($this->categories)-1) {
 						if (!count($queryText)) {
 							$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery($select,$from, $catString);
@@ -381,8 +387,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			// executing the final query and convert the results into an array
 			// is defnied as: $this->internal['list']['limit'] = $this->internal['list']['pointer'].','. ($this->internal['list']['listLength']);
 			list($pointer, $listLength) = explode (',',$this->limit);
-
-			
+						
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where,'',$this->orderBy);
 			$result = array();
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
@@ -468,7 +473,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function setFilter: filterArray must be an array. Given value was:' .$this->categories, 'dam_frontend',3);
 			}
 			// searching in all Documents if filter is set
-			if ($filterArray['searchAllCats']==true) {
+			if ($filterArray['searchAllCats']===true) {
 				$this->searchAllCats = true;
 			}
 			else {
