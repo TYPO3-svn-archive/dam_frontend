@@ -26,7 +26,7 @@
 
 
 
-//error_reporting(E_ERROR);
+error_reporting(E_ERROR);
 
 require_once(t3lib_extMgm::extPath('dam_frontend').'/DAL/class.tx_damfrontend_DAL_documents.php');
 
