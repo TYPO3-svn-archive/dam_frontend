@@ -163,7 +163,6 @@ plugin.tx_damfrontend_pi1 {
 		
 		sortlinks {
 			asc = TEXT
-			#asc.value = hello
 			asc.data = LLL:EXT:dam_frontend/pi1/locallang.xml:asc
 			desc < .asc
 			desc.data = LLL:EXT:dam_frontend/pi1/locallang.xml:desc

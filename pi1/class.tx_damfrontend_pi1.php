@@ -354,6 +354,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->conf['enableEdits'] = strip_tags($this->pi_getFFvalue($flexform, 'enableEdits', 'sOptions'));
 		$this->conf['FilterUserGroup'] = strip_tags($this->pi_getFFvalue($flexform, 'FilterUserGroup', 'sOptions'));
 		$this->internal['uploadCatSelection'] =strip_tags($this->pi_getFFvalue($flexform, 'uploadMounts', 'sUploadSettings'));
+		$this->internal['catPreSelection'] =explode(',',$this->pi_getFFvalue($flexform, 'catPreSelection', 'sPreSelectSettings'));
 	}
 
 
@@ -392,7 +393,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$this->userLoggedIn = false;
 		}
 
-			$this->getInputTree();
+		$this->getInputTree();
 
 		if ($this->internal['useStaticCatSelection']) {
 			$this->internal['incomingtreeID'] = $this->internal['treeID'];
@@ -480,9 +481,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	function getInputTree() {
 
 		if (is_array($this->piVars['dropdown'])) {
-
-
-
 			$this->internal['incomingtreeID'] = 999;
 			$count = count($this->piVars['dropdown']);
 
@@ -515,13 +513,24 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$this->catList->op_Plus($sub['uid'], $this->internal['incomingtreeID']);
 			}
 		}
+		
+		
+		if ($this->internal['catPreSelection'] || $this->catList->getCatSelection($this->internal['incomingtreeID'])==null) {
+			// if a preselection is activated and no cat is selected yet, the preselected cats will be loaded
+			
+			if (is_array($this->internal['catPreSelection'])) {
+				foreach ($this->internal['catPreSelection'] as $catMount) {
+					if (strlen($catMount)) {
+						$subs = $this->catLogic->getSubCategories($catMount);
+						foreach ($subs as $sub) {
+							$this->catList->op_Plus($sub['uid'], $this->internal['incomingtreeID']);
+						}
+					}
+				}
+			}
+		}
 	}
-
-
-
-
 	}
-
 
 
 	/**
