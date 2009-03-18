@@ -163,6 +163,8 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
  			$markerArray = $this->recordToMarkerArray($elem, 'renderFields');
  			$markerArray =$markerArray + $this->substituteLangMarkers($record_Code);
 
+			$markerArray['###CRDATE_AGE###'] =  $cObj->stdWrap($elem['crdate'], $this->conf['renderFields.']['crdate_age.']);
+
  			// TODO changes in the content of the marker arrays
  			// @todo what is done here?
  			//$this->piVars['showUid'] = $elem['uid'];
@@ -214,7 +216,6 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 				$markerArray['###BUTTON_EDIT###'] ='';
 				$markerArray['###BUTTON_CATEDIT###'] ='';
 			}
-
 
  			$rows .= tslib_cObj::substituteMarkerArray($record_Code, $markerArray);
  			$sortlinks = array();
@@ -294,12 +295,16 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 	 * @return	string		Html	...
 	 */
 	function renderSortLink($key) {
+			
 			$this->pi_loadLL();
 			$content = tslib_CObj::getSubpart($this->fileContent, '###SORTLINK###');
+			
 			$this->piVars['sort_'.$key] = 'ASC';
-			$content = tsLib_CObj::substituteMarker($content, '###SORTLINK_ASC###', $this->pi_linkTP_keepPiVars($this->pi_getLL('asc')));
 			$this->piVars['sort_'.$key] = 'DESC';
-			$content = tsLib_CObj::substituteMarker($content, '###SORTLINK_DESC###', $this->pi_linkTP_keepPiVars($this->pi_getLL('desc')));
+			
+			$content = tsLib_CObj::substituteMarker($content, '###SORTLINK_ASC###', $this->pi_linkTP_keepPiVars($this->cObj->cObjGetSingle($this->conf['filelist.']['sortlinks.']['asc'], $this->conf['filelist.']['sortlinks.']['asc.'])));
+			$content = tsLib_CObj::substituteMarker($content, '###SORTLINK_DESC###', $this->pi_linkTP_keepPiVars($this->cObj->cObjGetSingle($this->conf['filelist.']['sortlinks.']['desc'], $this->conf['filelist.']['sortlinks.']['desc.'])));	
+			
 			unset($this->piVars['sort_'.$key]);
 			return $content;
 	}
@@ -349,6 +354,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 	 * @return	void
 	 */
  	function renderSingleView($record) {
+ 		$cObj = t3lib_div::makeInstance('tslib_cObj');
  		$single_Code = tslib_CObj::getSubpart($this->fileContent,'###SINGLEVIEW###');
 		// TODO: clean up
  		// Formating Timefields and filesize
@@ -359,11 +365,13 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
  		// converting all fields in the record to marker (recordfields and markername must match)
  		$this->pi_loadLL();
  		$markerArray = $this->recordToMarkerArray($record,'SingleView');
+ 		$markerArray['###CRDATE_AGE###'] =  $cObj->stdWrap($record['crdate'], $this->conf['renderFields.']['crdate_age.']);
  		$markerArray =$markerArray + $this->substituteLangMarkers($single_Code);
  		if (!is_null($this->staticInfoObj)) { $markerArray['###LANGUAGE###'] 	= $this->staticInfoObj->getStaticInfoName('LANGUAGES', $record['language'], '', '', false);}
  		$content=tslib_cObj::substituteMarkerArray($single_Code, $markerArray);
  		// TODO: we should do it with foreach on record, so new fields could be easily introduced without editing this lines
  		$content = tslib_cObj::substituteMarker($content, '###TITLE_SINGLEVIEW###',$markerArray['###TITLE###']);
+ 		
  		$content = tslib_cObj::substituteMarker($content, '###CR_DATE_HEADER###',$this->pi_getLL('CR_DATE_HEADER'));
  		$content = tslib_cObj::substituteMarker($content, '###FILE_SIZE_HEADER###',$this->pi_getLL('FILE_SIZE_HEADER'));
  		$content = tslib_cObj::substituteMarker($content, '###CR_DESCRIPTION_HEADER###',$this->pi_getLL('CR_DESCRIPTION_HEADER'));

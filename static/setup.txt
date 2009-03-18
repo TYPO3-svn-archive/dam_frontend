@@ -34,7 +34,9 @@ plugin.tx_damfrontend_pi1 {
 		tstamp.strftime =  %Y / %m / %d
 		# stdWrap : Creation Timestamp of file
 		crdate.strftime =  %Y / %m / %d
-
+		
+		crdate_age.stdWrap.age = 1
+		
 		title.typolink.parameter.data = TSFE:id
   		title.typolink.additionalParams = &eID=dam_frontend_push&docID={field:uid}
 		title.typolink.additionalParams.insertData = 1
@@ -157,6 +159,14 @@ plugin.tx_damfrontend_pi1 {
 		
 		security_options {
 			showOnlyFilesWithPermission=0
+		}
+		
+		sortlinks {
+			asc = TEXT
+			#asc.value = hello
+			asc.data = LLL:EXT:dam_frontend/pi1/locallang.xml:asc
+			desc < .asc
+			desc.data = LLL:EXT:dam_frontend/pi1/locallang.xml:desc
 		}
 	}
 

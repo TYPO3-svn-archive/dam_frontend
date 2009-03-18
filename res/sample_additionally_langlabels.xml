@@ -1,0 +1,14 @@
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Custom markers for dam_frontend</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="SAMPLE">we are  interested in</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="SAMPLE">Wir bitten um Ihr kostenloses Angebot </label>
+		</languageKey>
+	</data>
+</T3locallang>
