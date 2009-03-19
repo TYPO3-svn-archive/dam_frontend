@@ -1,4 +1,26 @@
-Version 0.3.0 Beta
+Version 0.3.1 (19.03.2009)
++ 2809 Major Feature	Resolved 	Must have 	change pushfile to eID feature Martin Holtz 2009-03-14 23:26 
++ 2492 Major Feature 	Closed 		Should have	Edit of Meta data Stefan Busemann2009-01-22 10:21 
++ 2491 Major Feature	Closed 		Should have	View "MyFiles" Stefan Busemann2009-01-21 13:00 
++ 1369 Major Feature	Resolved 	Must have 	Search box (by typohead) Stefan Busemann2009-02-11 11:00 
++ 2495 Major Feature	Resolved	Should have	Multi-language Support (Kat Tree and Interface) Martin Baum 2009-02-11 10:45 
++ 2496 Feature 			Resolved	Should have	Set allowed upload categories Martin Baum 2009-01-21 14:34 
++ 2494 Feature 			Closed 		Should have	Versioning Martin Baum 2009-02-11 11:04 
++ 2493 Feature 			Resolved	Should have	additional Filteroptions Stefan Busemann2009-02-11 11:01 
++ 2249 Feature 			Resolved	Should have	searchword: configure in which fields should be searched Martin Holtz 2009-03-08 09:21 
++ 1420 Feature 			Resolved 	Must have 	Real Compatibilty Stefan Busemann2009-01-19 13:01
++ 1362 Feature			Resolved 	Could have 	Use pushfile optionally 2009-03-06 18:22 
+- 2806 Bug 				Resolved	Could have 	pushfile does not work with $TYPO3_CONF_VARS['EXT']['extCache'] = '0' Martin Baum 2009-03-14 23:29 
+- 2803 Bug 				Resolved	Should have	files do not show up in FE if a language label is set Stefan Busemann2009-03-11 14:41 
+- 2776 Bug 				Resolved 	Must have 	Extension shows a table error Stefan Busemann2009-03-06 20:51  
+- 2702 Bug 				Resolved	Should have	function addDocument doesn't use proper Media Folder pid (path attached) Stefan Busemann2009-02-25 15:01 
+- 2504 Bug 				Closed 		Must have 	static typoscript disappears after user login Martin Baum 2009-02-11 10:56 
+- 2240 Bug 				Resolved	Should have	parameters should have prefix: tx_damfrontend_pi1[] Martin Holtz 2009-02-11 10:48 
+- 1968 Bug 				Resolved	Should have	Cattree shows old selection after changing pages Stefan Busemann2009-02-11 10:46 
+- 1964 Bug 				Resolved	Should have	Filelist displays wrong selection if used on multiple pages Stefan Busemann2009-01-19 13:08 
+- 1957 Bug 				Closed 		have		form-action is often "#" Martin Holtz 2009-01-19 13:10 
+- 1343 Bug 				Closed 		Should have	Overriding of files is not displayed Stefan Busemann2009-01-19 12:58
++ 2498 Task 			Resolved 	Must have 	update manual Stefan Busemann2009-03-09 22:15 
 
 Version 0.2.1
 - fixed bug 1885: if multiple Views are used on different pages, category selection sometimes hasn't worked
