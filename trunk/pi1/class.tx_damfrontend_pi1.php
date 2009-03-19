@@ -55,33 +55,46 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  *
  *
  *
- *   87: class tx_damfrontend_pi1 extends tslib_pibase
- *  117:     function init()
- *  136:     function initFilter()
- *  172:     function initList()
- *  214:     function initUpload()
- *  223:     function convertPiVars()
- *  283:     function loadFlexForm()
- *  306:     function main($content,$conf)
- *  416:     function getInputTree()
- *  447:     function catTree()
- *  460:     function getTree($mount= '')
- *  480:     function fileList($useRequestForm)
- *  527:     function filterView()
- *  540:     function catSelection()
- *  569:     function singleView()
- *  597:     function filterList()
+ *  101: class tx_damfrontend_pi1 extends tslib_pibase
+ *  136:     function init()
+ *  164:     function initFilter()
+ *  230:     function initList()
+ *  273:     function initUpload()
+ *  282:     function convertPiVars()
+ *  354:     function loadFlexForm()
+ *  380:     function main($content,$conf)
+ *  493:     function getInputTree()
+ *  545:     function catTree()
+ *  566:     function fileList($useRequestForm)
+ *  681:     function filterView()
+ *  697:     function catSelection()
+ *  726:     function singleView()
+ *  754:     function filterList()
  *
  *              SECTION: FILE UPLOAD AND CATEGORISATION
- *  743:     function uploadForm()
- *  804:     function handleUpload()
- *  864:     function loadFileUploadTS()
- *  880:     function getIncomingDocData()
- *  925:     function categoriseForm()
- *  947:     function saveCategorisation()
+ *  793:     function uploadForm()
+ *  885:     function dropDown()
+ *  920:     function isSubNodeOf($arr,$node,$subnode)
+ *  943:     function getSubNodesCount($arr,$parent)
+ *  959:     function getSubNodes($arr,$parent)
+ *  980:     function getSubNodesOptions($arr,$parent,$selVal=-1)
+ *  998:     function versioningForm()
+ * 1012:     function handleUpload()
+ * 1078:     function loadFileUploadTS()
+ * 1094:     function getIncomingDocData()
+ * 1127:     function categoriseForm($docData='')
+ * 1166:     function saveCategorisation($docID)
+ * 1181:     function get_FEUserList ($fe_group=0,$currentUser ='')
+ * 1221:     function myFiles ()
+ * 1314:     function handleVersioning($code)
+ * 1336:     function editForm ($uid=0)
+ * 1367:     function overRide2()
+ * 1383:     function overRide()
+ * 1412:     function getTreeMap()
+ * 1473:     function getTree($mount= '')
+ * 1487:     function saveMetaData ($saveUID)
  *
- *
- * TOTAL FUNCTIONS: 21
+ * TOTAL FUNCTIONS: 35
  * (This index is automatically created/updated by the extension "extdeveval")
  *
  */
@@ -168,7 +181,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
  		$this->internal['filter']['filetype'] = strip_tags(t3lib_div::_GP('filetype'));
 		$this->internal['filter']['searchword'] = strip_tags(t3lib_div::_GP('searchword'));
 
-		
+
 		// if all categories should be searched
 		if (t3lib_div::_GP('dam_fe_allCats')=='true') {
 			$this->internal['filter']['searchAllCats'] = true;
@@ -205,7 +218,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		} else {
 			$this->internal['filter']['showOnlyFilesWithPermission']=0;
 		}
-		
+
 		$this->docLogic->setFilter($this->internal['filter']);
 	}
 
@@ -623,10 +636,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			foreach($cats as $catList) {
 				if (count($catList)) $hasCats = true;
 			}
-		}		
-		
+		}
+
 		if ($hasCats===true || $this->internal['filter']['searchAllCats']===true ) {
-			
+
 			/***************************
 			 *
 			 *    search and sorting values are transfered to the user
@@ -864,9 +877,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * undocumented function
 	 * // TODO: write documentation
-	 * @return void
+	 *
+	 * @return	void
 	 * @author Martin Baum
-	 **/
+	 */
 	function dropDown() {
 		$v=unserialize($GLOBALS['TSFE']->fe_user->getKey('ses','tx_damdownloads_treeState'));
 		$treeMap=$this->getTreeMap();
@@ -894,9 +908,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * undocumented function
 	 *
-	 * @return void
+	 *
+	 * @param	[type]		$arr: ...
+	 * @param	[type]		$node: ...
+	 * @param	[type]		$subnode: ...
+	 * @return	void
 	 * @author Martin Baum
-	 **/
+	 */
 	function isSubNodeOf($arr,$node,$subnode) {
 		$subs=$this->getSubNodes($arr,$node);
 		$found=false;
@@ -913,9 +931,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * undocumented function
 	 *
-	 * @return void
+	 *
+	 * @param	[type]		$arr: ...
+	 * @param	[type]		$parent: ...
+	 * @return	void
 	 * @author Martin Baum
-	 **/
+	 */
 	function getSubNodesCount($arr,$parent) {
 		return count($this->getSubNodes($arr,$parent));
 	}
@@ -925,9 +946,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * undocumented function
 	 *
-	 * @return void
+	 * @param	[type]		$arr: ...
+	 * @param	[type]		$parent: ...
+	 * @return	void
 	 * @author Martin Baum
-	 **/
+	 */
 	function getSubNodes($arr,$parent) {
 		$retArr=array();
 		foreach ($arr as $nr=>$val) {
@@ -941,9 +964,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * undocumented function
 	 *
-	 * @return void
+	 * @param	[type]		$arr: ...
+	 * @param	[type]		$parent: ...
+	 * @param	[type]		$selVal: ...
+	 * @return	void
 	 * @author Martin Baum
-	 **/
+	 */
 	function getSubNodesOptions($arr,$parent,$selVal=-1) {
 		$ret="";
 		foreach ($arr as $nr=>$val) {
@@ -958,12 +984,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 
 	/**
-	*
-	* renders a form for versioning of a file
-	*
-	*
-	*
-	*/
+	 * renders a form for versioning of a file
+	 *
+	 * @return	[type]		...
+	 */
 	function versioningForm() {
 		return $this->renderer->renderVersioningForm();
 	}
@@ -1021,7 +1045,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					$userGroups=$GLOBALS['TSFE']->fe_user->groupData['uid'];
 					if (is_array($userGroups)) $this->documentData['fe_group']= implode(',',$userGroups);
 				}
-				
+
 				// final upload
 				$uploadHandler->handleUpload();
 
@@ -1089,7 +1113,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 	/**
 	 * Show the categoriseform
-	 *	@param array $docData if set: an existing document is categorized new
+	 *
+	 * @param	array		$docData if set: an existing document is categorized new
 	 * @return	[html]		...
 	 */
 	function categoriseForm($docData='') {
@@ -1128,6 +1153,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * Save the categories of a uploaded file
 	 *
+	 * @param	[type]		$docID: ...
 	 * @return	[html]		...
 	 */
 	function saveCategorisation($docID) {
@@ -1138,12 +1164,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	}
 
 	/**
-	 *  returns an array of users, if current user is given the user is selected in this array
-	 * @author stefan
-	 *	@param int $fe_group uid of the fe_group
-	 *	@param string $currentUser Username or name of the user
+	 * returns an array of users, if current user is given the user is selected in this array
 	 *
-	 *	@return array all fe_users which shoud be selected
+	 * @param	int		$fe_group uid of the fe_group
+	 * @param	string		$currentUser Username or name of the user
+	 * @return	array		all fe_users which shoud be selected
+	 * @author stefan
 	 */
 	function get_FEUserList ($fe_group=0,$currentUser ='') {
 		if ($fe_group>0) {
@@ -1182,6 +1208,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 	/**
 	 * TODO: documentation
+	 *
+	 * @return	[type]		...
 	 */
 	function myFiles () {
 		if ($this->userLoggedIn==false){
@@ -1270,10 +1298,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		return $content;
 	}
 
-
-
-
-
+	/**
+	 * [Describe function...]
+	 *
+	 * @param	[type]		$code: ...
+	 * @return	[type]		...
+	 */
 	function handleVersioning($code) {
 		$trigger = t3lib_div::_GP('version_method');
 		$docID = $GLOBALS['TSFE']->fe_user->getKey('ses','saveID');
@@ -1291,11 +1321,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	}
 
 	/**
-	 * 	@author stefan
-	 *
-	 * 	@param int $uid UID of the DAM record which should be edited
-	 * 	@param boolean $checkAccess if true, access is check with categories
-	 *	@return string html of the editing form
+	 * @param	int		$uid UID of the DAM record which should be edited
+	 * @param	boolean		$checkAccess if true, access is check with categories
+	 * @return	string		html of the editing form
+	 * @author stefan
 	 */
 	function editForm ($uid=0) {
 		if (intval($uid)>0) {
@@ -1323,9 +1352,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * undocumented function
 	 *
-	 * @return void
+	 *
+	 * @return	void
 	 * @author Martin Baum
-	 **/
+	 */
 	function overRide2() {
 		$x=$this->catList->getCatSelection($this->internal['incomingtreeID']);
 		if (count($x[$this->internal['incomingtreeID']])<1) {
@@ -1337,9 +1367,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * undocumented function
 	 *
-	 * @return void
+	 *
+	 * @return	void
 	 * @author Martin Baum
-	 **/
+	 */
 	function overRide() {
 
 		$levelState=$this->piVars["dropdown"];
@@ -1364,9 +1395,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * undocumented function
 	 *
-	 * @return void
+	 *
+	 * @return	void
 	 * @author Martin Baum
-	 **/
+	 */
 	function getTreeMap() {
 		$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeView');
 
@@ -1422,9 +1454,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * undocumented function
 	 *
-	 * @return void
+	 *
+	 * @param	[type]		$mount: ...
+	 * @return	void
 	 * @author Martin Baum
-	 **/
+	 */
 	function getTree($mount= '') {
 		$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeView');
 		$tree->init();
@@ -1435,8 +1469,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 
 	/**
+	 * @param	[type]		$saveUID: ...
+	 * @return	[type]		...
 	 * @author stefan
-	 *
 	 */
 	 function saveMetaData ($saveUID) {
 

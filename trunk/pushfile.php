@@ -141,7 +141,7 @@ if (is_array($post) && count($post) > 0) {
 }
 
 	/**
-	 *
+	 * @return	[type]		...
 	 */
 	function sendMail() {
 		// TODO: implement me:)
@@ -154,8 +154,8 @@ if (is_array($post) && count($post) > 0) {
 	 * Splits configuration
 	 * and returns array which could be used in sendFile
 	 *
-	 * @param string configuration
-	 * @return array configuration Array
+	 * @param	string		configuration
+	 * @return	array		configuration Array
 	 */
 	function configuration2Array($configuration) {
 		// x:1024;y:768;dpi:300
@@ -169,7 +169,9 @@ if (is_array($post) && count($post) > 0) {
 	}
 
 	/**
-	 * @param string $file Filename including absolute path
+	 * @param	string		$file Filename including absolute path
+	 * @param	[type]		$filename: ...
+	 * @return	[type]		...
 	 */
 	function sendFile($file, $filename) {
 		$filesize = filesize($file);
@@ -185,7 +187,9 @@ if (is_array($post) && count($post) > 0) {
 	}
 
 	/**
-	 *
+	 * @param	[type]		$filePath: ...
+	 * @param	[type]		$configuration: ...
+	 * @return	[type]		...
 	 */
 	function createFile($filePath, $configuration = array()) {
 		global $TSFE;

@@ -42,17 +42,17 @@
  *
  *
  *
- *   62: class tx_damfrontend_catTreeView extends tx_dam_selectionCategory
- *   75:     function tx_damfrontend_catTreeView()
- *  112:     function init($treeID='')
- *  127:     function expandNext($id)
- *  139:     function initializePositionSaving()
- *  160:     function savePosition()
- *  174:     function wrapTitle($title,$row,$bank=0)
- *  207:     function PM_ATagWrap($icon,$cmd,$bMark='treeroot')
- *  226:     function getControl($title,$row)
- *  287:     function printTree($treeArr='')
- *  346:     function getBrowsableTree()
+ *   67: class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory
+ *   82:     function tx_damfrontend_categorisationTree()
+ *  123:     function init($treeID='', $plugin=null)
+ *  141:     function expandNext($id)
+ *  153:     function initializePositionSaving()
+ *  174:     function savePosition()
+ *  189:     function wrapTitle($title,$row,$bank=0)
+ *  226:     function PM_ATagWrap($icon,$cmd,$bMark='treeroot')
+ *  249:     function getControl($title,$row)
+ *  295:     function printTree($treeArr='')
+ *  350:     function getBrowsableTree()
  *
  * TOTAL FUNCTIONS: 10
  * (This index is automatically created/updated by the extension "extdeveval")
@@ -117,6 +117,7 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 	 * a frontend user is used to store the treestate data
 	 *
 	 * @param	[type]		$treeID: ...
+	 * @param	[type]		$plugin: ...
 	 * @return	void
 	 */
  	function init($treeID='', $plugin=null) {

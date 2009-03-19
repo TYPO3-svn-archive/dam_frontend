@@ -43,12 +43,13 @@
  *
  *
  *
- *   55: class tx_damfrontend_baseSessionData
- *   59:     function tx_damfrontend_baseSessionData()
- *   68:     function getArrayFromUser()
- *   79:     function setArrayToUser($array)
+ *   56: class tx_damfrontend_baseSessionData
+ *   60:     function tx_damfrontend_baseSessionData()
+ *   69:     function getArrayFromUser()
+ *   80:     function setArrayToUser($array)
+ *   90:     function unSetArrayToUser($array)
  *
- * TOTAL FUNCTIONS: 3
+ * TOTAL FUNCTIONS: 4
  * (This index is automatically created/updated by the extension "extdeveval")
  *
  */
@@ -79,7 +80,13 @@ class tx_damfrontend_baseSessionData {
 	function setArrayToUser($array) {
 		$this->user->setKey('ses', $this->sessionVar, $array);
 	}
-	
+
+	/**
+	 * [Describe function...]
+	 *
+	 * @param	[type]		$array: ...
+	 * @return	[type]		...
+	 */
 	function unSetArrayToUser($array) {
 		$this->user->unSetKey('ses');
 	}
