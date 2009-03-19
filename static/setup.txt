@@ -2,6 +2,7 @@ plugin.tx_damfrontend_pi1 = USER_INT
 plugin.tx_damfrontend_pi1 {
 	userFunc = tx_damfrontend_pi1->main
 	templateFile = {$plugin.tx_damfrontend_pi1.templateFile}
+	iconBaseAdress = typo3/gfx/
 	singleID = {$plugin.tx_damfrontend_pi1.singleID}
 	allowedLanguages = EN,DE
 	filter {
@@ -46,7 +47,7 @@ plugin.tx_damfrontend_pi1 {
 		link_download.typolink.additionalParams.insertData = 1
 
 		link_single.typolink {
-			parameter.data = TSFE:id
+			#parameter.data = TSFE:id
 			additionalParams = &tx_damfrontend_pi1[showUid]={field:uid}&tx_damfrontend_pi1[confirmDeleteUID]=&tx_damfrontend_pi1[editUID]=&tx_damfrontend_pi1[catEditUID]=
 			additionalParams.insertData = 1
 			addQueryString = 1
@@ -72,6 +73,16 @@ plugin.tx_damfrontend_pi1 {
 			prepend.stdWrap.if.isTrue.data = TSFE:lastImageInfo|0
 
 		}
+		link_download = IMAGE
+		link_download {
+			file = EXT:dam_frontend/res/ico/clip_pasteafter.gif
+			#style="border-width: 0px
+			stdWrap.typolink {
+				parameter.data = TSFE:id
+  				additionalParams = &eID=dam_frontend_push&docID={field:uid}
+				additionalParams.insertData = 1
+			}
+		}
 		category.htmlSpecialChars = 0
 		category.cObject = CONTENT
 		category.cObject {
@@ -92,6 +103,11 @@ plugin.tx_damfrontend_pi1 {
 			renderObj.wrap = |<br />
 			stdWrap.override = Please set constant "plugin.tx_damfrondend_pi1.mediafolder".
 			stdWrap.override.if.isFalse = {$plugin.tx_damfrondend_pi1.mediafolder}
+		}
+		
+		backLink = IMAGE
+		backLink {
+			file = EXT:dam_frontend/res/ico/edit_rtewiz.gif
 		}
 	}
 
@@ -119,9 +135,18 @@ plugin.tx_damfrontend_pi1 {
 		# stdWrap : how many items should be default in the filelist
 		defaultLength = 10
 
-		#
+		# comma separated list of dam columns, which should be searched (use only text columns)
 		searchwordFields = title, description
 
+		#pre defined sorting
+		usePreDefinedSorting=1
+		orderBy = crdate DESC
+		
+		# shows only the last nr. of items
+		latestLimit = 10
+		#latestField must be date field
+		latestField = crdate
+		
 		# configuration for an list item
 		item {
 			# stdWrap : Timestamp of file
@@ -129,7 +154,9 @@ plugin.tx_damfrontend_pi1 {
 			# stdWrap : Creation Timestamp of file
 			crdate.strftime =  %Y / %m  /  %d
 		}
-
+		
+		useAlternatingRows = 0
+		
 		link_select_download {
 			typolink.returnLast = url
 			typolink.parameter.data = TSFE:id
@@ -155,6 +182,53 @@ plugin.tx_damfrontend_pi1 {
 			5.wrap = <option value="width:100;y:100;resample:20">|</option>
 			5.value = thumbnail
 			5.lang.de = Thumbnail
+		}
+		
+		link_download = IMAGE
+		link_download {
+			file = EXT:dam_frontend/res/ico/clip_pasteafter.gif
+			#style="border-width: 0px
+			stdWrap.typolink {
+				parameter.data = TSFE:id
+  				additionalParams = &eID=dam_frontend_push&docID={field:uid}
+				additionalParams.insertData = 1
+			}
+		}
+
+		link_single = IMAGE
+		link_single {
+			file = EXT:dam_frontend/res/ico/zoom.gif
+			#style="border-width: 0px
+			stdWrap.typolink {
+				parameter.data = TSFE:id
+				additionalParams = &tx_damfrontend_pi1[showUid]={field:uid}&tx_damfrontend_pi1[backPid]={TSFE:id}
+				additionalParams.insertData = 1
+				no_cache  = 1
+			}
+		}
+
+		button_catedit < .link_single
+		button_catedit {
+			file = EXT:dam_frontend/res/ico/edit_rtewiz.gif
+			stdWrap.typolink {
+				additionalParams = &tx_damfrontend_pi1[showUid]=&tx_damfrontend_pi1[confirmDeleteUID]=&tx_damfrontend_pi1[editUID]=&tx_damfrontend_pi1[catEditUID]={field:uid}
+			}
+		}
+		
+		button_edit  < .link_single
+		button_edit {
+			file = EXT:dam_frontend/res/ico/edit_fe.gif
+			stdWrap.typolink {
+				additionalParams = &tx_damfrontend_pi1[showUid]=&tx_damfrontend_pi1[confirmDeleteUID]=&tx_damfrontend_pi1[editUID]={field:uid}&tx_damfrontend_pi1[catEditUID]=
+			}
+		}				
+
+		button_delete  < .link_single
+		button_delete {
+			file = EXT:dam_frontend/res/ico/garbage.gif
+			stdWrap.typolink {
+				additionalParams = &tx_damfrontend_pi1[showUid]=&tx_damfrontend_pi1[confirmDeleteUID]={field:uid}&tx_damfrontend_pi1[editUID]=&tx_damfrontend_pi1[catEditUID]=
+			}
 		}
 		
 		security_options {

@@ -165,27 +165,23 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 
 			$markerArray['###CRDATE_AGE###'] =  $cObj->stdWrap($elem['crdate'], $this->conf['renderFields.']['crdate_age.']);
 
- 			// TODO changes in the content of the marker arrays
- 			// @todo what is done here?
- 			//$this->piVars['showUid'] = $elem['uid'];
-			// TODO: $this->staticInfoObj does not exists?
 			if (!is_null($this->staticInfoObj)) { $markerArray['###LANGUAGE###'] 	= $this->staticInfoObj->getStaticInfoName('LANGUAGES', $elem['language'], '', '', false); }
 
  			// adding Markers for links to download and single View
- 			// $markerArray['###LINK_SINGLE###'] = $this->pi_linkTP_keepPiVars('<img src="'.$this->iconPath.'zoom.gif'.'" style="border-width: 0px"/>',array('showUid'=>$elem['uid'],'confirmDeleteUID'=>'','editUID'=>'','catEditUID'=>''));
-			$markerArray['###LINK_SINGLE###'] = $cObj->stdWrap('<img src="'.$this->iconPath.'zoom.gif'.'" style="border-width: 0px"/>',$this->conf['renderFields.']['link_single.']);
+			$markerArray['###LINK_SINGLE###'] = $cObj->cObjGetSingle($this->conf['filelist.']['link_single'], $this->conf['filelist.']['link_single.']);
 
- 			// this is a field in the database, if true, then the fe user has to fill out a request form
+			// this is a field in the database, if true, then the fe user has to fill out a request form
 			if ($useRequestForm==1 && $elem['tx_damfrontend_use_request_form'] == 1) {
- 				$paramAnforderung = array(
+ 				die('this function is not implemented at this time!');
+				$paramAnforderung = array(
  					'docID' => $elem['uid'],
  					'showRequestform' => 1
  				);
+ 				// TODO implement me with cObj
  				$markerArray['###LINK_DOWNLOAD###'] = $this->pi_linkTP('request', $paramAnforderung);
 
  			} else {
-	 			// TODO: create IMAGE from TypoScript
-	 			$markerArray['###LINK_DOWNLOAD###'] = $cObj->stdWrap('<img src="'.$this->iconPath.'clip_pasteafter.gif" style="border-width: 0px"/>', $this->conf['renderFields.']['link_download.']);
+	 			$markerArray['###LINK_DOWNLOAD###'] = $cObj->cObjGetSingle($this->conf['filelist.']['link_download'], $this->conf['filelist.']['link_download.']);
 	 		}
 			// TODO: Create from TypoScript
 			$markerArray['###LINK_SELECT_DOWNLOAD###'] = '';
@@ -204,14 +200,14 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 
 			//render deletion button
 			if ($elem['allowDeletion']==1 AND $this->conf['enableDeletions']==1) {
-				$markerArray['###BUTTON_DELETE###'] =$this->pi_linkTP_keepPiVars('<img src="'.$this->iconPath.'garbage.gif'.'" style="border-width: 0px"/>',array('showUid'=>'','confirmDeleteUID'=>$elem['uid'],'editUID'=>'','catEditUID'=>''));
+				$markerArray['###BUTTON_DELETE###'] = $cObj->cObjGetSingle($this->conf['filelist.']['button_delete'], $this->conf['filelist.']['button_delete.']);
 			} else {
 				$markerArray['###BUTTON_DELETE###'] ='';
 			}
 			//render edit button
 			if ($elem['allowEdit']==1 AND $this->conf['enableEdits']==1) {
-				$markerArray['###BUTTON_EDIT###'] =$this->pi_linkTP_keepPiVars('<img src="'.$this->iconPath.'edit_fe.gif'.'" style="border-width: 0px"/>',array('showUid'=>'','confirmDeleteUID'=>'','editUID'=>$elem['uid'],'catEditUID'=>''));
-				$markerArray['###BUTTON_CATEDIT###'] =$this->pi_linkTP_keepPiVars('<img src="'.$this->iconPath.'edit_fe.gif'.'" style="border-width: 0px"/>',array('showUid'=>'','confirmDeleteUID'=>'','editUID'=>'','catEditUID'=>$elem['uid']));
+				$markerArray['###BUTTON_EDIT###'] = $cObj->cObjGetSingle($this->conf['filelist.']['button_edit'], $this->conf['filelist.']['button_edit.']);
+				$markerArray['###BUTTON_CATEDIT###'] = $cObj->cObjGetSingle($this->conf['filelist.']['button_catedit'], $this->conf['filelist.']['button_catedit.']);
 			} else {
 				$markerArray['###BUTTON_EDIT###'] ='';
 				$markerArray['###BUTTON_CATEDIT###'] ='';
@@ -300,9 +296,9 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 			$content = tslib_CObj::getSubpart($this->fileContent, '###SORTLINK###');
 			
 			$this->piVars['sort_'.$key] = 'ASC';
-			$this->piVars['sort_'.$key] = 'DESC';
-			
 			$content = tsLib_CObj::substituteMarker($content, '###SORTLINK_ASC###', $this->pi_linkTP_keepPiVars($this->cObj->cObjGetSingle($this->conf['filelist.']['sortlinks.']['asc'], $this->conf['filelist.']['sortlinks.']['asc.'])));
+			
+			$this->piVars['sort_'.$key] = 'DESC';
 			$content = tsLib_CObj::substituteMarker($content, '###SORTLINK_DESC###', $this->pi_linkTP_keepPiVars($this->cObj->cObjGetSingle($this->conf['filelist.']['sortlinks.']['desc'], $this->conf['filelist.']['sortlinks.']['desc.'])));	
 			
 			unset($this->piVars['sort_'.$key]);
@@ -355,6 +351,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 	 */
  	function renderSingleView($record) {
  		$cObj = t3lib_div::makeInstance('tslib_cObj');
+ 		$cObj->start($record, 'tx_dam');
  		$single_Code = tslib_CObj::getSubpart($this->fileContent,'###SINGLEVIEW###');
 		// TODO: clean up
  		// Formating Timefields and filesize
@@ -366,9 +363,14 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
  		$this->pi_loadLL();
  		$markerArray = $this->recordToMarkerArray($record,'SingleView');
  		$markerArray['###CRDATE_AGE###'] =  $cObj->stdWrap($record['crdate'], $this->conf['renderFields.']['crdate_age.']);
+ 		$markerArray['###LINK_DOWNLOAD###'] = $cObj->cObjGetSingle($this->conf['SingleView.']['link_download'], $this->conf['SingleView.']['link_download.']);
+ 		
+ 		$markerArray['###BACK_LINK###'] = $this->cObj->typolink($cObj->cObjGetSingle($this->conf['SingleView.']['backLink'], $this->conf['SingleView.']['backLink.']), array('parameter' => $record['backPid'])); 
  		$markerArray =$markerArray + $this->substituteLangMarkers($single_Code);
  		if (!is_null($this->staticInfoObj)) { $markerArray['###LANGUAGE###'] 	= $this->staticInfoObj->getStaticInfoName('LANGUAGES', $record['language'], '', '', false);}
  		$content=tslib_cObj::substituteMarkerArray($single_Code, $markerArray);
+ 		
+ 		
  		// TODO: we should do it with foreach on record, so new fields could be easily introduced without editing this lines
  		$content = tslib_cObj::substituteMarker($content, '###TITLE_SINGLEVIEW###',$markerArray['###TITLE###']);
  		

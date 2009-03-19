@@ -139,6 +139,14 @@
  							</config>
  						</TCEforms>
  					</FilterUserGroup>
+ 					<useLatestList>
+ 						<TCEforms>
+ 							<label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_useLatestList</label>
+ 							<config>
+ 								<type>check</type>
+ 							</config>
+ 						</TCEforms>
+ 					</useLatestList>
 				</el>
 			</ROOT>
 		</sOptions>

@@ -231,7 +231,15 @@ class tx_damfrontend_pi1 extends tslib_pibase {
  				}
  			}
 		}
-
+		// TODO insert pre defined sorting here
+		#pre defined sorting is only used, as long a user did not sort by himself
+		if (!$this->internal['list']['sorting'] ) {
+			if ($this->conf['filelist.']['orderBy']) {
+				$this->internal['list']['sorting']= $this->conf['filelist.']['orderBy']; 	# example ['filelist.']['orderBy'] = crdate DESC	
+			}	
+		}
+		
+		
 		$this->listState->syncListState($this->internal['list']);
 
 		if (!isset($this->internal['list']['listLength'])) $this->internal['list']['listLength'] = 10;
@@ -240,7 +248,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		/*
 		 * if a filter criteria is changed, the pagebrowsing is reseted to the beginning value
 		 */
-// TODO: why is this not needed anymore?
+		// TODO: why is this not needed anymore? because it works also with out it
 		//		if (t3lib_div::_GP('setFilter') || !empty($this->internal['catPlus']) ||
 		//				!empty($this->internal['catPlus']) || !empty($this->internal['catMinus']) ||
 		//				!empty($this->internal['catEquals']) || !empty($this->internal['catPlus_Rec']) || !empty($this->internal['catMinus_Rec']))
@@ -303,7 +311,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->internal['editUID'] = intval($this->piVars['editUID']);
 		$this->internal['saveUID'] = intval(t3lib_div::_POST('saveUID'));
 		$this->internal['catEditUID'] = intval($this->piVars['catEditUID']);
-
+		$this->internal['backPid'] = intval($this->piVars['backPid']);
+		
 		$this->internal['filter']['searchAllCats'] = 0;
 		// values for searching
 		// Setting new values
@@ -355,6 +364,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->conf['FilterUserGroup'] = strip_tags($this->pi_getFFvalue($flexform, 'FilterUserGroup', 'sOptions'));
 		$this->internal['uploadCatSelection'] =strip_tags($this->pi_getFFvalue($flexform, 'uploadMounts', 'sUploadSettings'));
 		$this->internal['catPreSelection'] =explode(',',$this->pi_getFFvalue($flexform, 'catPreSelection', 'sPreSelectSettings'));
+		$this->conf['useLatestList'] = strip_tags($this->pi_getFFvalue($flexform, 'useLatestList', 'sOptions'));
 	}
 
 
@@ -628,6 +638,14 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				}
 			}
 		}
+		
+		if ($this->conf['useLatestList']==1) {
+			$this->docLogic->conf['useLatestList'] = true;
+			$this->docLogic->conf['latestField'] = ($this->conf['filelist.']['latestField']) ? $this->conf['filelist.']['latestField'] : 'crdate';
+			$this->docLogic->conf['latestLimit'] = ($this->conf['filelist.']['latestLimit']) ? $this->conf['filelist.']['latestField'] : 30;
+		} 
+		
+		
 		if (count($cats)) {
 			foreach($cats as $catList) {
 				if (count($catList)) $hasCats = true;
@@ -724,6 +742,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		if ($this->docLogic->checkAccess($singleID, 1)) {
 			if (intval($singleID) && $singleID != 0) {
 				$record = $this->docLogic->getDocument($singleID);
+				$record['backPid']= $this->internal['backPid'];
 				$content = $this->renderer->renderSingleView($record);
 
 				if ($this->docLogic->checkAccess($singleID, 2)) {

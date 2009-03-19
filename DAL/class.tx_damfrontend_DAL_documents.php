@@ -73,6 +73,9 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		var $resultCount;				// After any executed query - this var contains the rowcount of the result
 		var $catLogic;					// Pointer to the Category access Layer
 		var $searchwords;				// array of searchwords, the user might have searched for
+		
+		var $conf =array();				// Configuration Array
+		
 
 		var $catTable = 'tx_dam_cat';
 		var $docTable = 'tx_dam';
@@ -305,81 +308,101 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			if(!is_array($this->categories)) {
 				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getDcoumentList: for the this->categories is no array. Given value was:' .$this->categories, 'dam_frontend',3);
 			}
-			if (count($this->categories)) {
-
-				/*
-				 * Building the from clause manually by joining the DAM tables
-				 *
-				 *
-				 */
-				$select = $this->docTable.'.uid';
-				$from = $this->docTable.' INNER JOIN '.$this->mm_Table.' ON '.$this->mm_Table.'.uid_local  = '.$this->docTable.
-				'.uid INNER JOIN '.$this->catTable.' ON '.$this->mm_Table.'.uid_foreign = '.$this->catTable.'.uid';
-
-				// TODO: is there a reason not to use API: Enablefields?
-					$filter = ' AND '.$this->docTable.'.deleted = 0  AND '.$this->docTable.'.hidden = 0';
-					$filter .= ' AND ('.$this->docTable.'.starttime > '.time().' OR '.$this->docTable.'.starttime = 0)';
-					$filter .= ' AND ('.$this->docTable.'.endtime < '.time().' OR '.$this->docTable.'.endtime = 0)';
+			// TODO: is there a reason not to use API: Enablefields?
+			$filter = ' AND '.$this->docTable.'.deleted = 0  AND '.$this->docTable.'.hidden = 0';
+			$filter .= ' AND ('.$this->docTable.'.starttime > '.time().' OR '.$this->docTable.'.starttime = 0)';
+			$filter .= ' AND ('.$this->docTable.'.endtime < '.time().' OR '.$this->docTable.'.endtime = 0)';
+			
+			if ($this->conf['useLatestList']==true) {
+					#query without using categories and restricting via latest date.
+					
+				# get the date of the last record, that the list can be limited via a where condition, then is the list later sortable from the fe_user
+				# otherwise, if the fe_user would sort by date asc not the last x files would be shown, but the oldest one
+				
+				/**$select= $this->conf['latestField'];
+				$from=$this->docTable;
+				$where.= ' 1=1  '.$filter;				
+			
+					
+					$select=$this->conf['latestField'];
 					$filter .= $this->additionalFilter;
-
-				// preparing the category array - deleting all empty entries
-				// TODO: rethinking if it is a good idea to change $this->categories in a function for reading entrys?
-				foreach($this->categories as $number => $catList) {
-					if (!count($catList)) {
-						unset($this->categories[$number]);
-					}
-				}
-
-				$queryText = array();
-				$z = 0;
-				/**
-				 * every element in the categories array stores a list of cats that are associated with an array
-				 *
-				 *
-				 *
-				 */
-				//FIXME : seachAllCats must be discussed
-				foreach($this->categories as $number => $catList) {
-						
-						if ($this->searchAllCats === true) {
-							$catString = "1=1";
-						}
-						else {
-							$catString = '( '.$this->catTable.'.uid='.implode(' OR '.$this->catTable.'.uid=',$catList).')';
-						}
-
-					if ($z != count($this->categories)-1) {
-						if (!count($queryText)) {
-							$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery($select,$from, $catString);
-						}
-						else {
-							$where = $this->docTable.'.uid IN ('.$queryText[count($queryText)- 1].') AND '.$catString;
-							$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery('tx_dam.uid', $from, $where);
-						}
-					}
-					// building the last element of the list - final building of the list
-					else {
-						if(count($this->categories ) > 1) {
-							$where = $this->docTable.'.uid IN ('.$queryText[count($queryText)- 1].') AND '.$catString.$filter;
-						}
-						// list is having more then one "AND" criteria
-						else {
-							// TODO: can we reach this part of the code? The part is only executed if (count($this->categories))
-							$where = $catString.$filter;
-						}
-						$select = '  DISTINCT '.$this->docTable.'.*';
-					}
-					$z++;
-				}
-			} else {
-				#query without using categories
-				// TODO add permission check for dam records itself
-				$filter .= $this->additionalFilter;
-				$select='*';
-				$from='tx_dam';
-				$where.= ' deleted=0 AND hidden=0 '.$filter;
+			
+					$from=$this->docTable;
+					$where.= ' 1=1  '.$filter;**/				
 			}
-
+			else {
+				
+				if (count($this->categories)) {
+	
+					/*
+					 * Building the from clause manually by joining the DAM tables
+					 *
+					 *
+					 */
+					$select = $this->docTable.'.uid';
+					$from = $this->docTable.' INNER JOIN '.$this->mm_Table.' ON '.$this->mm_Table.'.uid_local  = '.$this->docTable.
+					'.uid INNER JOIN '.$this->catTable.' ON '.$this->mm_Table.'.uid_foreign = '.$this->catTable.'.uid';
+	
+					$filter .= $this->additionalFilter;
+	
+					// preparing the category array - deleting all empty entries
+					// TODO: rethinking if it is a good idea to change $this->categories in a function for reading entrys?
+					foreach($this->categories as $number => $catList) {
+						if (!count($catList)) {
+							unset($this->categories[$number]);
+						}
+					}
+	
+					$queryText = array();
+					$z = 0;
+					/**
+					 * every element in the categories array stores a list of cats that are associated with an array
+					 *
+					 *
+					 *
+					 */
+	
+					foreach($this->categories as $number => $catList) {
+							
+							if ($this->searchAllCats === true) {
+								$catString = "1=1";
+							}
+							else {
+								$catString = '( '.$this->catTable.'.uid='.implode(' OR '.$this->catTable.'.uid=',$catList).')';
+							}
+	
+						if ($z != count($this->categories)-1) {
+							if (!count($queryText)) {
+								$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery($select,$from, $catString);
+							}
+							else {
+								$where = $this->docTable.'.uid IN ('.$queryText[count($queryText)- 1].') AND '.$catString;
+								$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery('tx_dam.uid', $from, $where);
+							}
+						}
+						// building the last element of the list - final building of the list
+						else {
+							if(count($this->categories ) > 1) {
+								$where = $this->docTable.'.uid IN ('.$queryText[count($queryText)- 1].') AND '.$catString.$filter;
+							}
+							// list is having more then one "AND" criteria
+							else {
+								// TODO: can we reach this part of the code? The part is only executed if (count($this->categories))
+								$where = $catString.$filter;
+							}
+							$select = '  DISTINCT '.$this->docTable.'.*';
+						}
+						$z++;
+					}
+				} 
+				else {
+					#query without using categories
+					$filter .= $this->additionalFilter;
+					$select='*';
+					$from='tx_dam';
+					$where.= ' 1=1 '.$filter;
+				}
+			}
 			// TODO: is there a reason not to define SELECT here?
 			// TODO: do not use '*' but whitlist defined via TypoScript
 			$select = ' DISTINCT '.$this->docTable.'.*';
@@ -795,8 +818,12 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 * @return	bool	true if fe_user has access, false if not
 	 */
 		function checkDocumentAccess($docFEGroups) {
+			
 			// if no fe group is asigned, access is given
-			if (!$docFEGroups) return true;
+			if (!$docFEGroups) {
+				return true;
+				//FIXME must check if option showOnlyFilesWithPermission = 1 is set, then here must be returned False 
+			}
 			
 			$access = false;
 			
