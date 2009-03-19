@@ -45,24 +45,32 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
  *
  *
  *
- *   69: class tx_damfrontend_DAL_documents
- *  100:     function tx_damfrontend_DAL_documents()
- *  111:     function getCategoriesbyDoc($docID)
- *  136:     function checkAccess_fileRef($filePath)
- *  158:     function checkAccess($docID, $relID)
- *  183:     function getResultCount()
- *  207:     function createCatString()
- *  221:     function getDocumentFEGroups($docID, $relID)
- *  261:     function getDocument($docID)
- *  280:     function getDocumentList()
- *  365:     function getCategoriesByDoc_Rootline($docID)
- *  411:     function setFilter($filterArray)
- *  454:     function getSearchwordWhereString($searchword)
- *  466:     function evalDateError($day, $month, $year)
- *  484:     function addDocument($path, $docData='')
- *  535:     function categoriseDocument($uid, $catArray)
+ *   77: class tx_damfrontend_DAL_documents
+ *  114:     function setFullTextSearchFields($fieldlist)
+ *  124:     function tx_damfrontend_DAL_documents()
+ *  137:     function getCategoriesbyDoc($docID,$simple=false)
+ *  169:     function checkAccess_fileRef($filePath)
+ *  191:     function checkAccess($docID, $relID)
+ *  216:     function getResultCount()
+ *  240:     function createCatString()
+ *  254:     function getDocumentFEGroups($docID, $relID)
+ *  294:     function getDocument($docID)
+ *  314:     function getDocumentList($userUID=0)
+ *  436:     function getCategoriesByDoc_Rootline($docID)
+ *  482:     function setFilter($filterArray)
+ *  539:     function getSearchwordWhereString($searchword)
+ *  557:     function evalDateError($day, $month, $year)
+ *  573:     function saveMetaData($docID, $docData)
+ *  591:     function addDocument($path, $docData='')
+ *  642:     function categoriseDocument($uid, $catArray)
+ *  660:     function delete_document ($uid)
+ *  674:     function get_FEUserName ($uid=0)
+ *  696:     function createNewVersion($docID)
+ *  769:     function overrideData($docID)
+ *  812:     function delete_category ($uid, $catID)
+ *  826:     function checkDocumentAccess($docFEGroups)
  *
- * TOTAL FUNCTIONS: 15
+ * TOTAL FUNCTIONS: 23
  * (This index is automatically created/updated by the extension "extdeveval")
  *
  */
@@ -92,17 +100,17 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			'1' => 'readaccess',
 			'2' => 'downloadaccess'
 		);
-		
+
 		var $feuser;			// pointing to the fe user object instance - please use this instead of GLOBALS['TSFE]
 
 		/**
-		 * Sets fullTextSearchFields - in which fields should be searched
-		 *
-		 * @param string $fieldlist kommaseparated list of fields (f.e. 'title,
-		 * description')
-		 *
-		 * @return void
-		 */
+ * Sets fullTextSearchFields - in which fields should be searched
+ *
+ * description')
+ *
+ * @param	string		$fieldlist kommaseparated list of fields (f.e. 'title,
+ * @return	void
+ */
 		function setFullTextSearchFields($fieldlist) {
 			$this->fullTextSearchFields = $fieldlist;
 		}
@@ -123,6 +131,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 * includes also parent categories of the assigned categories
 	 *
 	 * @param	int		$fileUid: ...
+	 * @param	[type]		$simple: ...
 	 * @return	array		list of all categories
 	 */
 		function getCategoriesbyDoc($docID,$simple=false) {
@@ -299,6 +308,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 * selection is filterd by the given list of categories and the
 	 * access restrictions  -> relation "READ ACCESS" defined for the document
 	 *
+	 * @param	[type]		$userUID: ...
 	 * @return	[array]		returns an array which contains all selected records
 	 */
 		function getDocumentList($userUID=0) {
@@ -340,7 +350,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				 */
 				//FIXME : seachAllCats must be discussed
 				foreach($this->categories as $number => $catList) {
-						
+
 						if ($this->searchAllCats === true) {
 							$catString = "1=1";
 						}
@@ -388,7 +398,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			// executing the final query and convert the results into an array
 			// is defnied as: $this->internal['list']['limit'] = $this->internal['list']['pointer'].','. ($this->internal['list']['listLength']);
 			list($pointer, $listLength) = explode (',',$this->limit);
-						
+
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where,'',$this->orderBy);
 			$result = array();
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
@@ -514,7 +524,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			if ($filterArray['owner'] > 0 ) $this->additionalFilter .=   ' AND '.$this->docTable.'.tx_damfrontend_feuser_upload  ='.$filterArray['owner'];
 
 			if (trim($filterArray['LanguageSelector']) != '' && $filterArray['LanguageSelector'] != 'nosel') $this->additionalFilter .=  ' AND '.$this->docTable.'.language = "'.trim($filterArray['LanguageSelector']).'"';
-			
+
 			if ($filterArray['showOnlyFilesWithPermission'] == 1) $this->additionalFilter .=  ' AND '.$this->docTable.'.fe_group <>"" AND '.$this->docTable.'.fe_group <>"-1" AND '.$this->docTable.'.fe_group <>"-2" AND '.$this->docTable.'.fe_group <>"0"';
 			return $errors;
 		}
@@ -553,8 +563,13 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				}
 		}
 
-
-
+	/**
+	 * [Describe function...]
+	 *
+	 * @param	[type]		$docID: ...
+	 * @param	[type]		$docData: ...
+	 * @return	[type]		...
+	 */
 		function saveMetaData($docID, $docData) {
 			foreach( $docData as $key => $value ) {
 				$DATA[$key] = $value;
@@ -566,13 +581,13 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 
 
 		/**
-		 * adding an document to the index
-		 *
-		 * @param	[string]		$path: ...
-		 * @param	[array]		$docData: ...
-		 * @return	[int]		...
-		 * @todo get the pid for the indexer = media folder
-		 */
+ * adding an document to the index
+ *
+ * @param	[string]		$path: ...
+ * @param	[array]		$docData: ...
+ * @return	[int]		...
+ * @todo get the pid for the indexer = media folder
+ */
 		function addDocument($path, $docData='') {
 
 			// the indexer gets the metadata from the document
@@ -638,11 +653,10 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		}
 
 		/**
-		 *
-		 * @author stefan
-		 * @param int $uid UID of the dam entry, which should be created
-		 * @return boolean true, if the deletion was sucessful
-		 */
+ * @param	int		$uid UID of the dam entry, which should be created
+ * @return	boolean		true, if the deletion was sucessful
+ * @author stefan
+ */
 		function delete_document ($uid) {
 			$table="tx_dam";
 			$where="uid=" .$uid;
@@ -651,6 +665,12 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			return $res ;
 	}
 
+	/**
+	 * [Describe function...]
+	 *
+	 * @param	[type]		$uid: ...
+	 * @return	[type]		...
+	 */
 		function get_FEUserName ($uid=0) {
 
 			if ($uid >0) {
@@ -740,6 +760,12 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 
 		}
 
+	/**
+	 * [Describe function...]
+	 *
+	 * @param	[type]		$docID: ...
+	 * @return	[type]		...
+	 */
 		function overrideData($docID) {
 
 			// getting the new record
@@ -778,9 +804,11 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		}
 
 		/**
-		 * @author stefan
-		 *
-		 */
+ * @param	[type]		$uid: ...
+ * @param	[type]		$catID: ...
+ * @return	[type]		...
+ * @author stefan
+ */
 		 function delete_category ($uid, $catID) {
 			if (!intval($uid)) die('Parametererror in categoryDocument: Check DatabaseID:' . $uid);
 			if (!intval($catID)) die('one categoryID was not delivered as Integer');
@@ -789,34 +817,35 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		}
 
 	 /**
-	 * Checks if the FE_User has Access to the Document
-	 * @author Stefan Busemann
-	 * @param	string		$docFEGroup -> fe_group the document is restricted to
-	 * @return	bool	true if fe_user has access, false if not
-	 */
+ * Checks if the FE_User has Access to the Document
+ *
+ * @param	string		$docFEGroup -> fe_group the document is restricted to
+ * @return	bool		true if fe_user has access, false if not
+ * @author Stefan Busemann
+ */
 		function checkDocumentAccess($docFEGroups) {
 			// if no fe group is asigned, access is given
 			if (!$docFEGroups) return true;
-			
+
 			$access = false;
-			
+
 			// get all usergroups of the fe_user
 			$feuserGroups=$GLOBALS['TSFE']->fe_user->groupData['uid'];
-			
+
 			// if fe_user is not assigned to group return false, because a fe_user has to be at least member of one group
 			if (!is_array($feuserGroups)) return false;
-			
+
 			$docFEGroups = explode(',',$docFEGroups);
 			// check if at least one fe_group has access to file
 			foreach ($feuserGroups as $group ){
-				
+
 				if (array_search($group,$docFEGroups, true)===false) {
 					//if the array search founds no value - nothing is to do
-					// TODO is there a more elegantly way for this construction? - stefan 
+					// TODO is there a more elegantly way for this construction? - stefan
 				} else {
 					$access = true;
 				}
-			}  
+			}
 			return $access;
 		}
 	}
