@@ -28,6 +28,9 @@
 			<label index="flexform_enableEdits">enable edits of meta data</label>
 			<label index="flexform_dropDown">Dropdown Catmenu</label>
 			<label index="tx_damfrontend_feuser_upload">belongs to this frontend user</label>
+			<label index="flexform_catPreSelection">category preselection</label>
+			<label index="flexform_display_form">display this view</label>
+			<label index="upload_settings">allowed categories for upload</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="flexform_display_title">Was soll angezeigt werden</label>
@@ -52,6 +55,9 @@
 			<label index="flexform_enableEdits">erlaube Änderung der Metadaten</label>
 			<label index="flexform_dropDown">Dropdown Catmenu</label>
 			<label index="tx_damfrontend_feuser_upload">gehört zu diesem Frontend Benutzer</label>
+			<label index="flexform_catPreSelection">Kategorie Vorauswahl</label>
+			<label index="flexform_display_form">Anzeige von</label>
+			<label index="upload_settings">erlaubte Kategorien für den upload</label>
 		</languageKey>
 	</data>
 </T3locallang>
