@@ -1,0 +1,6 @@
+plugin.tx_damfrontend_pi1.templateFile = EXT:dam_frontend/pi1/template.html
+plugin.tx_damfrontend_pi1.singleID = 0
+plugin.tx_damfrontend_pi1.filter.errorWrap = <span style="color: red; font-weight: bold">|</span>
+plugin.tx_damfrontend_pi1.browsePointerWrap = '<span style="border: 1px solid black">'|</span>
+plugin.tx_damfrontend_pi1.mediafolder =
+plugin.tx_damfrontend_pi1.doNotUsePushFile = 0
