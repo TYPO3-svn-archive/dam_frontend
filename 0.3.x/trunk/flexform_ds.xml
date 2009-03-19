@@ -13,7 +13,7 @@
 				<el>
 					<viewID>
 						<TCEforms>
-							<label>Display Form</label>
+							<label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_display_form</label>
 							<config>
 								<type>select</type>
 								<items>
@@ -151,7 +151,7 @@
 				<el>
 					<uploadMounts>
 						<TCEforms>
-							<label>Upload Settings</label>
+							<label>LLL:EXT:dam_frontend/locallang_tca.xml:ipload_settings</label>
 							<config>
 								<type>select</type>							
 								<form_type>user</form_type>
