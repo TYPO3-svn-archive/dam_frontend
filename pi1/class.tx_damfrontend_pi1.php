@@ -168,7 +168,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
  		$this->internal['filter']['filetype'] = strip_tags(t3lib_div::_GP('filetype'));
 		$this->internal['filter']['searchword'] = strip_tags(t3lib_div::_GP('searchword'));
 
-		
+
 		// if all categories should be searched
 		if (t3lib_div::_GP('dam_fe_allCats')=='true') {
 			$this->internal['filter']['searchAllCats'] = true;
@@ -205,7 +205,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		} else {
 			$this->internal['filter']['showOnlyFilesWithPermission']=0;
 		}
-		
+
 		$this->docLogic->setFilter($this->internal['filter']);
 	}
 
@@ -238,8 +238,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$this->internal['list']['sorting']= $this->conf['filelist.']['orderBy']; 	# example ['filelist.']['orderBy'] = crdate DESC	
 			}	
 		}
-		
-		
+
 		$this->listState->syncListState($this->internal['list']);
 
 		if (!isset($this->internal['list']['listLength'])) $this->internal['list']['listLength'] = 10;
@@ -312,7 +311,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->internal['saveUID'] = intval(t3lib_div::_POST('saveUID'));
 		$this->internal['catEditUID'] = intval($this->piVars['catEditUID']);
 		$this->internal['backPid'] = intval($this->piVars['backPid']);
-		
+
 		$this->internal['filter']['searchAllCats'] = 0;
 		// values for searching
 		// Setting new values
@@ -403,7 +402,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$this->userLoggedIn = false;
 		}
 
-		$this->getInputTree();
+			$this->getInputTree();
 
 		if ($this->internal['useStaticCatSelection']) {
 			$this->internal['incomingtreeID'] = $this->internal['treeID'];
@@ -491,6 +490,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	function getInputTree() {
 
 		if (is_array($this->piVars['dropdown'])) {
+
+
+
 			$this->internal['incomingtreeID'] = 999;
 			$count = count($this->piVars['dropdown']);
 
@@ -523,24 +525,25 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$this->catList->op_Plus($sub['uid'], $this->internal['incomingtreeID']);
 			}
 		}
-		
-		
+
+
 		if ($this->internal['catPreSelection'] || $this->catList->getCatSelection($this->internal['incomingtreeID'])==null) {
 			// if a preselection is activated and no cat is selected yet, the preselected cats will be loaded
-			
+
 			if (is_array($this->internal['catPreSelection'])) {
 				foreach ($this->internal['catPreSelection'] as $catMount) {
 					if (strlen($catMount)) {
 						$subs = $this->catLogic->getSubCategories($catMount);
 						foreach ($subs as $sub) {
 							$this->catList->op_Plus($sub['uid'], $this->internal['incomingtreeID']);
-						}
+	}
 					}
 				}
 			}
 		}
 	}
 	}
+
 
 
 	/**
@@ -576,6 +579,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		else {
 			$cats = $this->catList->getCatSelection(0,$this->pid);
 		}
+
 
 		$hasCats = false; // true if any category has been selected yet
 		if ($this->conf['enableDeletions']==1) {
@@ -650,8 +654,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			foreach($cats as $catList) {
 				if (count($catList)) $hasCats = true;
 			}
-		}		
-		
+		}
+
 		if ($hasCats===true || $this->internal['filter']['searchAllCats']===true ) {
 			
 			/***************************
@@ -676,6 +680,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 			else {
 				// render error
+				// @TODO: IMHO it is not an error to have an empty category!
 				$content = $this->renderer->renderError('noDocInCat');
 			}
 		}
@@ -856,8 +861,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 								// File exists - show versioning options
 								if ($this->versionate) {
 									return $this->versioningForm();
-								}
-								else {
+						}
+						else {
 									$this->getIncomingDocData();
 									return $this->editForm($newID);
 								}
@@ -1035,14 +1040,14 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				}
 				$uploadfile = PATH_site.$feuploaddir.$_FILES[$uploadHandler->prefixId]['name'];
 
-				// check if the current file is already present  - preparing for
-				// displaying the versioning options
-				if (is_file($uploadfile)) {
-					$this->versionate = true;
-					$_FILES[$uploadHandler->prefixId]['name'] = $_FILES[$uploadHandler->prefixId]['name'].'_versionate';
-				}
-				$this->documentData['title'] = $_FILES[$uploadHandler->prefixId]['name'];
-				$this->documentData['tx_damfrontend_feuser_upload'] = $this->userUID;
+			// check if the current file is already present  - preparing for
+			// displaying the versioning options
+			if (is_file($uploadfile)) {
+				$this->versionate = true;
+				$_FILES[$uploadHandler->prefixId]['name'] = $_FILES[$uploadHandler->prefixId]['name'].'_versionate';
+			}
+			$this->documentData['title'] = $_FILES[$uploadHandler->prefixId]['name'];
+			$this->documentData['tx_damfrontend_feuser_upload'] = $this->userUID;
 				// set fe_user group
 				if ($this->conf['upload.']['autoAsignFEGroups']==1){
 					// fetch the usergroups the fe_user is belonging and put them into the access field
@@ -1429,6 +1434,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					// If the mount is expanded, go down:
 				if (true||$isOpen)	{
 					if ($tree->addSelfId)	$this->ids[] = $uid;
+					//@TODO: $depthD is not available
 					$tree->getTree($uid,999,$depthD,'',$rootRec['_SUBCSSCLASS']);
 				}
 				$treeArr=array_merge($treeArr,$tree->tree);

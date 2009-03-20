@@ -73,7 +73,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		var $resultCount;				// After any executed query - this var contains the rowcount of the result
 		var $catLogic;					// Pointer to the Category access Layer
 		var $searchwords;				// array of searchwords, the user might have searched for
-		
+
 		var $conf =array();				// Configuration Array
 		
 
@@ -95,7 +95,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			'1' => 'readaccess',
 			'2' => 'downloadaccess'
 		);
-		
+
 		var $feuser;			// pointing to the fe user object instance - please use this instead of GLOBALS['TSFE]
 
 		/**
@@ -332,37 +332,38 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			}
 			else {
 				
-				if (count($this->categories)) {
-	
-					/*
-					 * Building the from clause manually by joining the DAM tables
-					 *
-					 *
-					 */
-					$select = $this->docTable.'.uid';
-					$from = $this->docTable.' INNER JOIN '.$this->mm_Table.' ON '.$this->mm_Table.'.uid_local  = '.$this->docTable.
-					'.uid INNER JOIN '.$this->catTable.' ON '.$this->mm_Table.'.uid_foreign = '.$this->catTable.'.uid';
-	
+			if (count($this->categories)) {
+
+
+				/*
+				 * Building the from clause manually by joining the DAM tables
+				 *
+				 *
+				 */
+				$select = $this->docTable.'.uid';
+				$from = $this->docTable.' INNER JOIN '.$this->mm_Table.' ON '.$this->mm_Table.'.uid_local  = '.$this->docTable.
+				'.uid INNER JOIN '.$this->catTable.' ON '.$this->mm_Table.'.uid_foreign = '.$this->catTable.'.uid';
+
 					$filter .= $this->additionalFilter;
-	
-					// preparing the category array - deleting all empty entries
-					// TODO: rethinking if it is a good idea to change $this->categories in a function for reading entrys?
-					foreach($this->categories as $number => $catList) {
-						if (!count($catList)) {
-							unset($this->categories[$number]);
-						}
+
+
+				// preparing the category array - deleting all empty entries
+				// TODO: rethinking if it is a good idea to change $this->categories in a function for reading entrys?
+				foreach($this->categories as $number => $catList) {
+					if (!count($catList)) {
+						unset($this->categories[$number]);
 					}
-	
-					$queryText = array();
-					$z = 0;
-					/**
-					 * every element in the categories array stores a list of cats that are associated with an array
-					 *
-					 *
-					 *
-					 */
-	
-					foreach($this->categories as $number => $catList) {
+				}
+
+				$queryText = array();
+				$z = 0;
+				/**
+				 * every element in the categories array stores a list of cats that are associated with an array
+				 *
+				 *
+				 *
+				 */
+				foreach($this->categories as $number => $catList) {
 							
 							if ($this->searchAllCats === true) {
 								$catString = "1=1";
@@ -371,37 +372,37 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 								$catString = '( '.$this->catTable.'.uid='.implode(' OR '.$this->catTable.'.uid=',$catList).')';
 							}
 	
-						if ($z != count($this->categories)-1) {
-							if (!count($queryText)) {
-								$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery($select,$from, $catString);
-							}
-							else {
-								$where = $this->docTable.'.uid IN ('.$queryText[count($queryText)- 1].') AND '.$catString;
-								$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery('tx_dam.uid', $from, $where);
-							}
+					if ($z != count($this->categories)-1) {
+						if (!count($queryText)) {
+							$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery($select,$from, $catString);
 						}
-						// building the last element of the list - final building of the list
 						else {
-							if(count($this->categories ) > 1) {
-								$where = $this->docTable.'.uid IN ('.$queryText[count($queryText)- 1].') AND '.$catString.$filter;
-							}
-							// list is having more then one "AND" criteria
-							else {
-								// TODO: can we reach this part of the code? The part is only executed if (count($this->categories))
-								$where = $catString.$filter;
-							}
-							$select = '  DISTINCT '.$this->docTable.'.*';
+							$where = $this->docTable.'.uid IN ('.$queryText[count($queryText)- 1].') AND '.$catString;
+							$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery('tx_dam.uid', $from, $where);
 						}
-						$z++;
 					}
+					// building the last element of the list - final building of the list
+					else {
+						if(count($this->categories ) > 1) {
+							$where = $this->docTable.'.uid IN ('.$queryText[count($queryText)- 1].') AND '.$catString.$filter;
+						}
+						// list is having more then one "AND" criteria
+						else {
+							// TODO: can we reach this part of the code? The part is only executed if (count($this->categories))
+							$where = $catString.$filter;
+						}
+						$select = ' DISTINCT '.$this->docTable.'.*';
+					}
+					$z++;
+				}
 				} 
 				else {
-					#query without using categories
-					$filter .= $this->additionalFilter;
-					$select='*';
-					$from='tx_dam';
+				#query without using categories
+				$filter .= $this->additionalFilter;
+				$select='*';
+				$from='tx_dam';
 					$where.= ' 1=1 '.$filter;
-				}
+			}
 			}
 			// TODO: is there a reason not to define SELECT here?
 			// TODO: do not use '*' but whitlist defined via TypoScript
@@ -411,7 +412,8 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			// executing the final query and convert the results into an array
 			// is defnied as: $this->internal['list']['limit'] = $this->internal['list']['pointer'].','. ($this->internal['list']['listLength']);
 			list($pointer, $listLength) = explode (',',$this->limit);
-						
+
+			// limit = "pointer,counter"
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where,'',$this->orderBy);
 			$result = array();
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
@@ -537,7 +539,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			if ($filterArray['owner'] > 0 ) $this->additionalFilter .=   ' AND '.$this->docTable.'.tx_damfrontend_feuser_upload  ='.$filterArray['owner'];
 
 			if (trim($filterArray['LanguageSelector']) != '' && $filterArray['LanguageSelector'] != 'nosel') $this->additionalFilter .=  ' AND '.$this->docTable.'.language = "'.trim($filterArray['LanguageSelector']).'"';
-			
+
 			if ($filterArray['showOnlyFilesWithPermission'] == 1) $this->additionalFilter .=  ' AND '.$this->docTable.'.fe_group <>"" AND '.$this->docTable.'.fe_group <>"-1" AND '.$this->docTable.'.fe_group <>"-2" AND '.$this->docTable.'.fe_group <>"0"';
 			return $errors;
 		}
@@ -823,7 +825,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			if (!$docFEGroups) {
 				return true;
 				//FIXME must check if option showOnlyFilesWithPermission = 1 is set, then here must be returned False 
-			}
+		}
 			
 			$access = false;
 			
@@ -842,11 +844,12 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 					// TODO is there a more elegantly way for this construction? - stefan 
 				} else {
 					$access = true;
-				}
+	}
 			}  
 			return $access;
 		}
 	}
+
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/DAL/class.tx_damfrontend_DAL_documents.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/DAL/class.tx_damfrontend_DAL_documents.php']);
