@@ -8,7 +8,7 @@ $TCA["tx_damfrontend_filterStates"] = Array (
 	),
 	"feInterface" => $TCA["tx_damfrontend_filterStates"]["feInterface"],
 	"columns" => Array (
-		"hidden" => Array (		
+		"hidden" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:lang/locallang_general.xml:LGL.hidden",
 			"config" => Array (
@@ -16,27 +16,27 @@ $TCA["tx_damfrontend_filterStates"] = Array (
 				"default" => "0"
 			)
 		),
-		"title" => Array (		
-			"exclude" => 1,		
-			"label" => "LLL:EXT:damfrontend/locallang_db.xml:tx_damfrontend_filterStates.title",		
+		"title" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:dam_frontend/locallang_db.xml:tx_damfrontend_filterStates.title",
 			"config" => Array (
-				"type" => "input",	
-				"size" => "30",	
+				"type" => "input",
+				"size" => "30",
 				"eval" => "required",
 			)
 		),
-		"description" => Array (		
-			"exclude" => 1,		
-			"label" => "LLL:EXT:damfrontend/locallang_db.xml:tx_damfrontend_filterStates.description",		
+		"description" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:dam_frontend/locallang_db.xml:tx_damfrontend_filterStates.description",
 			"config" => Array (
 				"type" => "text",
-				"cols" => "30",	
+				"cols" => "30",
 				"rows" => "5",
 			)
 		),
-		"filter_from" => Array (		
-			"exclude" => 1,		
-			"label" => "LLL:EXT:damfrontend/locallang_db.xml:tx_damfrontend_filterStates.from",		
+		"filter_from" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:dam_frontend/locallang_db.xml:tx_damfrontend_filterStates.from",
 			"config" => Array (
 				"type" => "input",
 				"size" => "8",
@@ -46,9 +46,9 @@ $TCA["tx_damfrontend_filterStates"] = Array (
 				"default" => "0"
 			)
 		),
-		"filter_to" => Array (		
-			"exclude" => 1,		
-			"label" => "LLL:EXT:damfrontend/locallang_db.xml:tx_damfrontend_filterStates.to",		
+		"filter_to" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:dam_frontend/locallang_db.xml:tx_damfrontend_filterStates.to",
 			"config" => Array (
 				"type" => "input",
 				"size" => "8",
@@ -58,11 +58,11 @@ $TCA["tx_damfrontend_filterStates"] = Array (
 				"default" => "0"
 			)
 		),
-		"searchword" => Array (		
-			"exclude" => 1,		
-			"label" => "LLL:EXT:damfrontend/locallang_db.xml:tx_damfrontend_filterStates.searchword",		
+		"searchword" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:dam_frontend/locallang_db.xml:tx_damfrontend_filterStates.searchword",
 			"config" => Array (
-				"type" => "input",	
+				"type" => "input",
 				"size" => "30",
 			)
 		),

@@ -4,14 +4,14 @@ if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 
 
 /**************************************
- * 
+ *
  * Adding the category browser to the page - TCEForm
- * 
+ *
  **************************************/
 $tempColumns = Array (
-	"tx_damtree_dam_cats" => Array (		
-		"exclude" => 1,		
-		"label" => "LLL:EXT:dam_frontend/locallang_db.xml:pages.tx_damtree_dam_cats",		
+	"tx_damtree_dam_cats" => Array (
+		"exclude" => 1,
+		"label" => "LLL:EXT:dam_frontend/locallang_db.xml:pages.tx_damtree_dam_cats",
 		"config" => Array (
 			'type' => 'select',
 			'form_type' => 'user',
@@ -45,65 +45,65 @@ t3lib_extMgm::addStaticFile($_EXTKEY,"static/","DAM Frontend Static Template");
 
 
 /***************************************
- * 
+ *
  * Adding relations to frontend groups to DAM - Categories TCEForm
- * 
+ *
  ***************************************/
 $tempColumns = Array (
-	"tx_damtree_fe_groups_readaccess" => Array (		
-		"exclude" => 1,		
+	"tx_damtree_fe_groups_readaccess" => Array (
+		"exclude" => 1,
 		"label" => "LLL:EXT:dam_frontend/locallang_db.php:tx_dam_cat.readaccess",
 		"config" => Array (
 			"items" => Array(
 				Array("LLL:EXT:dam_frontend/locallang_db.php:tx_damtree_fe_groups_all", -1),
 				Array("LLL:EXT:dam_frontend/locallang_db.php:tx_damtree_fe_groups_none", -2),
 				Array("LLL:EXT:dam_frontend/locallang_db.php:tx_damtree_fe_groups", '--div--')
-			), 	
+			),
 			'exclusiveKeys' => '-1,-2',
 			"type" => "select",
-			"foreign_table" =>"fe_groups",	
-			"internal_type" => "db",	
-			"size" => 5,	
+			"foreign_table" =>"fe_groups",
+			"internal_type" => "db",
+			"size" => 5,
 			"minitems" => 0,
-			"maxitems" => 50,	
+			"maxitems" => 50,
 			"MM" => "tx_dam_cat_readaccess_mm",
 		)
 	),
-	"tx_damtree_fe_groups_downloadaccess" => Array (		
-		"exclude" => 1,		
-		"label" => "LLL:EXT:dam_frontend/locallang_db.php:tx_dam_cat.downloadaccess",		
+	"tx_damtree_fe_groups_downloadaccess" => Array (
+		"exclude" => 1,
+		"label" => "LLL:EXT:dam_frontend/locallang_db.php:tx_dam_cat.downloadaccess",
 		"config" => Array (
 			"items" => Array(
 				Array("alle Gruppen freigeben", -1),
 				Array("keine Gruppe freigeben", -2),
 				Array("-----einzelne Gruppen------", '--div--')
-			), 	
+			),
 			'exclusiveKeys' => '-1,-2',
-			"type" => "select",	
+			"type" => "select",
 			"internal_type" => "db",
-			"foreign_table" => "fe_groups",	
-			"size" => 5,	
+			"foreign_table" => "fe_groups",
+			"size" => 5,
 			"minitems" => 0,
-			"maxitems" => 50,	
+			"maxitems" => 50,
 			"MM" => "tx_dam_cat_downloadaccess_mm",
 		)
 	),
-	"tx_damtree_fe_groups_uploadaccess" => Array (		
-		"exclude" => 1,		
-		"label" => "LLL:EXT:dam_frontend/locallang_db.php:tx_dam_cat.uploadaccess",		
+	"tx_damtree_fe_groups_uploadaccess" => Array (
+		"exclude" => 1,
+		"label" => "LLL:EXT:dam_frontend/locallang_db.php:tx_dam_cat.uploadaccess",
 		"config" => Array (
 			"items" => Array(
 				Array("alle Gruppen freigeben", -1),
 				Array("keine Gruppe freigeben", -2),
 				Array("-----einzelne Gruppen------", '--div--')
-			), 	
+			),
 			'exclusiveKeys' => '-1,-2',
-			"type" => "select",	
+			"type" => "select",
 			"internal_type" => "db",
-			"foreign_table" => "fe_groups",	
-			"size" => 5,	
+			"foreign_table" => "fe_groups",
+			"size" => 5,
 			"minitems" => 0,
-			"maxitems" => 50,	
+			"maxitems" => 50,
 			"MM" => "tx_dam_cat_uploadaccess_mm",
 		)
 	),
@@ -117,21 +117,21 @@ t3lib_extMgm::addToAllTCAtypes("tx_dam_cat","tx_damtree_fe_groups_readaccess;;;;
 
 
 
-/********************************* 
- * 
+/*********************************
+ *
  * 	Adding the filter State table to the $TCA
- * 
+ *
  **********************************/
 $TCA["tx_damfrontend_filterStates"] = Array (
 	"ctrl" => Array (
-		'title' => 'LLL:EXT:damfrontend/locallang_db.xml:tx_damfrontend_filterStates',		
-		'label' => 'uid',	
+		'title' => 'LLL:EXT:dam_frontend/locallang_db.xml:tx_damfrontend_filterStates',
+		'label' => 'uid',
 		'tstamp' => 'tstamp',
 		'crdate' => 'crdate',
 		'cruser_id' => 'cruser_id',
-		"default_sortby" => "ORDER BY crdate",	
-		"delete" => "deleted",	
-		"enablecolumns" => Array (		
+		"default_sortby" => "ORDER BY crdate",
+		"delete" => "deleted",
+		"enablecolumns" => Array (
 			"disabled" => "hidden",
 		),
 		"dynamicConfigFile" => t3lib_extMgm::extPath($_EXTKEY)."tca.php",
@@ -154,14 +154,14 @@ include_once(t3lib_extMgm::extPath('dam_frontend').'tx_dam_flexFunc.php');
 
 
 $tempColumns = Array (
-	"tx_damdownloadlist_records" => Array (		
-		"exclude" => 0,		
-		"label" => "LLL:EXT:dam_frontend/locallang_db.php:tt_content.tx_damdownloadlist_records",		
+	"tx_damdownloadlist_records" => Array (
+		"exclude" => 0,
+		"label" => "LLL:EXT:dam_frontend/locallang_db.php:tt_content.tx_damdownloadlist_records",
 		"config" => Array (
-			"type" => "group",	
-			"internal_type" => "db",	
-			"allowed" => "tx_dam",	
-			"size" => 10,	
+			"type" => "group",
+			"internal_type" => "db",
+			"allowed" => "tx_dam",
+			"size" => 10,
 			"minitems" => 1,
 			"maxitems" => 100,
 			"show_thumbs" => 1,
@@ -183,24 +183,24 @@ $TCA["tt_content"]["types"]["list"]["subtypes_addlist"][$_EXTKEY."_pi2"]="tx_dam
 #############
 
 $tempColumns = Array (
-	"tx_damfrontend_use_request_form" => Array (		
-		"exclude" => 0,		
-		"label" => "LLL:EXT:dam_frontend/locallang_tca.php:tx_damfrontend_use_request_form",		
-		"config" => Array (	
+	"tx_damfrontend_use_request_form" => Array (
+		"exclude" => 0,
+		"label" => "LLL:EXT:dam_frontend/locallang_tca.php:tx_damfrontend_use_request_form",
+		"config" => Array (
 			'type' => 'check',
 			'default' => '0',
 		),
 	),
-	"tx_damfrontend_feuser_upload" => Array (		
-		"exclude" => 0,		
-		"label" => "LLL:EXT:dam_frontend/locallang_tca.php:tx_damfrontend_feuser_upload",		
-		"config" => Array (	
-			"type" => "select",	
+	"tx_damfrontend_feuser_upload" => Array (
+		"exclude" => 0,
+		"label" => "LLL:EXT:dam_frontend/locallang_tca.php:tx_damfrontend_feuser_upload",
+		"config" => Array (
+			"type" => "select",
 			"internal_type" => "db",
-			"foreign_table" => "fe_users",	
-			"size" => 1,	
+			"foreign_table" => "fe_users",
+			"size" => 1,
 			"minitems" => 0,
-			"maxitems" => 1,	
+			"maxitems" => 1,
 		),
 	),
 );
@@ -212,10 +212,10 @@ t3lib_extMgm::addToAllTCAtypes("tx_dam","tx_damfrontend_use_request_form;;;;1-1-
 
 /*
 $tempColumns = Array (
-	"tx_damfrontend_feuser_upload" => Array (		
-		"exclude" => 0,		
-		"label" => "LLL:EXT:dam_frontend/locallang_tca.php:tx_damfrontend_feuser_upload",		
-		"config" => Array (	
+	"tx_damfrontend_feuser_upload" => Array (
+		"exclude" => 0,
+		"label" => "LLL:EXT:dam_frontend/locallang_tca.php:tx_damfrontend_feuser_upload",
+		"config" => Array (
 			'type' => 'int',
 			'default' => '0',
 		),
@@ -227,9 +227,9 @@ t3lib_extMgm::addTCAcolumns("tx_dam",$tempColumns,1);
 t3lib_extMgm::addToAllTCAtypes("tx_dam","tx_damfrontend_feuser_upload;;;;1-1-1");*/
 
 /**********************************************
- * 
+ *
  * 	Adding frontend - plugin to the system
- *  
+ *
  ***********************************************/
 t3lib_div::loadTCA('tt_content');
 $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_pi1'] = 'pi_flexform';
