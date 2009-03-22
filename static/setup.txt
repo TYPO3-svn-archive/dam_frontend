@@ -278,6 +278,8 @@ plugin.tx_damfrontend_pi1 {
 			desc < .asc
 			desc.data = LLL:EXT:dam_frontend/pi1/locallang.xml:desc
 		}
+		browselink.wrap= |
+		browselinkCurrent.wrap= <span style="border: 1px solid black">|</span>
 	}
 
 	# configuration for subpart ###NEWFILTER_LINK###

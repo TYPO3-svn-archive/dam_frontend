@@ -271,11 +271,12 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		for ($z = 0; $z <= $resultcount; $z = $z + $listLength) {
 			$this->piVars['pointer'] = $z;
 			if ($count == round(($pointer/$listLength)) + 1) {
-				#@todo default style ersetzen
-				$listElems .=  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', '<span style="border: 1px solid black">'.$this->pi_linkTP_keepPiVars($count).'</span>');
+				#current page
+				$listElems .=  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP_keepPiVars($count),$this->conf['filelist.']['browselinkCurrent.']));
 			}
 			else {
-				$listElems .=  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->pi_linkTP_keepPiVars($count));
+				#link to other pages
+				$listElems .=  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP_keepPiVars($count),$this->conf['filelist.']['browselink.']));
 			}
 			$count++;
 		}
