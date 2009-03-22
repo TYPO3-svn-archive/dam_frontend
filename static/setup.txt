@@ -170,7 +170,7 @@ plugin.tx_damfrontend_pi1 {
 		form_url.parameter.data = TSFE:id
 		form_url.addQueryString = 1
 		# stdWrap : how many items should be default in the filelist
-		defaultLength = 10
+		defaultLength = 5
 
 		# comma separated list of dam columns, which should be searched (use only text columns)
 		searchwordFields = title, description

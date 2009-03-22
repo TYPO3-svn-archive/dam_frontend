@@ -218,6 +218,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		// setting internal values for pagebrowsing from the incoming request
  		if (t3lib_div::_GP('setListLength')) {
+			t3lib_div::debug('setListLength');
+			
 			$this->internal['list']['listLength'] = t3lib_div::_GP('listLength') != null ? intval(t3lib_div::_GP('listLength')) : 10;
  		}
 
@@ -231,17 +233,25 @@ class tx_damfrontend_pi1 extends tslib_pibase {
  				}
  			}
 		}
-		// TODO insert pre defined sorting here
 		#pre defined sorting is only used, as long a user did not sort by himself
 		if (!$this->internal['list']['sorting'] ) {
 			if ($this->conf['filelist.']['orderBy']) {
 				$this->internal['list']['sorting']= $this->conf['filelist.']['orderBy']; 	# example ['filelist.']['orderBy'] = crdate DESC	
 			}	
 		}
-
+		if (!isset($this->internal['list']['listLength'])) {
+			if ($this->conf['filelist.']['defaultLength']) {
+				$this->internal['list']['listLength'] = $this->conf['filelist.']['defaultLength'];
+			} 
+			else {
+				$this->internal['list']['listLength'] = 10;
+			}
+		}
+		
 		$this->listState->syncListState($this->internal['list']);
 
-		if (!isset($this->internal['list']['listLength'])) $this->internal['list']['listLength'] = 10;
+		
+
 
 		// deactived: these lines are not necessary
 		/*
