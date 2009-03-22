@@ -1,4 +1,6 @@
-Version 0.3.0 Beta
+Version 0.4.0
+Change in standard ts template: stdWrap in renderCategoryTree move to the corresponding objects 
+example stdWrapEqualsIcon is now in equalsIcon
 
 Version 0.2.1
 - fixed bug 1885: if multiple Views are used on different pages, category selection sometimes hasn't worked

@@ -4,3 +4,5 @@ plugin.tx_damfrontend_pi1.filter.errorWrap = <span style="color: red; font-weigh
 plugin.tx_damfrontend_pi1.browsePointerWrap = '<span style="border: 1px solid black">'|</span>
 plugin.tx_damfrontend_pi1.mediafolder =
 plugin.tx_damfrontend_pi1.doNotUsePushFile = 0
+# Path to all (following) IMAGE Objects in renderCategoryTree
+plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath = EXT:dam_frontend/res/ico/tree/	

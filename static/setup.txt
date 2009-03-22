@@ -14,13 +14,50 @@ plugin.tx_damfrontend_pi1 {
 	}
 
 	renderCategoryTree {
-		stdWrapPlusIcon.wrap = |
-		stdWrapEqualsIcon.wrap = |
-		stdWrapMinusIcon.wrap = |
+		# plus control to select categories
+		plusIcon = IMAGE 
+		plusIcon {
+			file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}catplus.gif
+			wrap = |
+			params.width = 8
+			params.height = 11
+		}
+		
+		minusIcon < .plusIcon
+		minusIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}catminus.gif
+
+		equalsIcon < .plusIcon
+		equalsIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}catequals.gif
+		
 		stdWrap.wrap = <div class="cattree">|</div>
 		stdWrapControl.wrap = <div class="control" >|</div>
-		# TypoLink
+		# TypoLink for category title
 		wrapTitle.ATagParams = class="titlewrap"
+
+		#IMAGE Objects for rendering the cat tree
+		treeRootIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}catfolder.gif
+		treePlusIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}plus.gif
+		treePlusIconBottom.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}plusbottom.gif
+		treeMinusIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}minus.gif
+		treeMinusIconBottom.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}minusbottom.gif
+		treeJoinIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}join.gif
+		treeJoinIconBottom.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}joinbottom.gif
+		treeCatIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}cat.gif
+				
+		treeNavIcons {
+			# default objects are IMAGE
+			line.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}line.gif
+			line.params.widht = 18
+			line.params.height= 16
+			blank < .line
+			blank.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}blank.gif
+			
+		}
+		
+
+
+		#tree root stdWrap
+		treeRoot.wrap 
 	}
 
 	renderFields {

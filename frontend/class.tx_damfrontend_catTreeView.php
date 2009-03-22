@@ -93,9 +93,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 
 		// other Path are used, than in the original file
 		// @todo make the path dynamically
-		$this->iconName = 'cat.gif';
-		$this->iconPath = 'typo3conf/ext/dam/i/';
-		$this->rootIcon = 'typo3conf/ext/dam/i/catfolder.gif';
+	#	$this->rootIcon = 'typo3conf/ext/dam/i/catfolder.gif';
 
 		$this->fieldArray = array('uid','title');
 		if($this->parentField) $this->fieldArray[] = $this->parentField;
@@ -127,6 +125,8 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 		if (isset($plugin)) $this->plugin = $plugin;
 		$this->cObj = $this->plugin->cObj;
 		$this->conf = $this->plugin->conf;
+		#$this->iconPath = $this->conf['renderCategoryTree.']['iconPath'];
+		#$this->rootIcon = $this->conf['renderCategoryTree.']['treeRootIcon'];
 	}
 
 	/**
@@ -225,7 +225,33 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 		// return '<a href="'.htmlspecialchars($aUrl).'"'.$name.'>'.$icon.'</a>';
 	}
 
-
+	/**
+	 * Generate the plus/minus icon for the browsable tree.
+	 *
+	 * @param	array		record for the entry
+	 * @param	integer		The current entry number
+	 * @param	integer		The total number of entries. If equal to $a, a "bottom" element is returned.
+	 * @param	integer		The number of sub-elements to the current element.
+	 * @param	boolean		The element was expanded to render subelements if this flag is set.
+	 * @return	string		Image tag with the plus/minus icon.
+	 * @access private
+	 * @see t3lib_pageTree::PMicon()
+	 */
+	function PMicon($row,$a,$c,$nextCount,$exp)	{
+		
+		$renderElement = $nextCount ? ($exp?'treeMinusIcon':'treePlusIcon') : 'treeJoinIcon';
+		
+		$BTM = ($a==$c)?'Bottom':'';		
+		$icon=$this->cObj->IMAGE($this->conf['renderCategoryTree.'][$renderElement.$BTM.'.']);
+				
+		if ($nextCount)	{
+			$cmd=$this->bank.'_'.($exp?'0_':'1_').$row['uid'].'_'.$this->treeName;
+			$bMark=($this->bank.'_'.$row['uid']);
+			$icon = $this->PM_ATagWrap($icon,$cmd,$bMark);
+		}
+		
+		return $icon;
+	}
 
 	/**
 	 * Renders the +-= buttons with corresponding commands
@@ -260,9 +286,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 			// TODO: use TypoScript
 			$url = t3lib_div::linkThisScript($urlVars);
 
-			$icon =	'<img'.t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'],$this->iconPath.'plus.gif', 'width="8" height="11"').' alt="" border="0"/>';
-
-			$icon = $cObj->stdWrap($icon, $this->conf['renderCategoryTree.']['stdWrapPlusIcon.']);
+			$icon = $cObj->cObjGetSingle($this->conf['renderCategoryTree.']['plusIcon'], $this->conf['renderCategoryTree.']['plusIcon.']);
 			// TODO: use TypoScript
 			$control .= '<a href="'.$url.'">'.$icon.'</a>';
 
@@ -279,8 +303,8 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 			if ($id != '') $param_array['id'] = $id;
 			// TODO: use TypoScript
 			$url = $cObj->getTypoLink_URL($GLOBALS['TSFE']->id, $urlVars);
-			$icon =	'<img'.t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'],$this->iconPath.'equals.gif', 'width="8" height="11"').' alt="" border="0"/>';
-			$icon = $cObj->stdWrap($icon, $this->conf['renderCategoryTree.']['stdWrapEqualsIcon.']);
+			
+			$icon = $cObj->cObjGetSingle($this->conf['renderCategoryTree.']['equalsIcon'], $this->conf['renderCategoryTree.']['equalsIcon.']);
 			$control .= '<a href="'.$url.'">'.$icon.'</a>';
 
 			// generate minus button
@@ -295,8 +319,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 			);
 			if ($id != '') $param_array['id'] = $id;
 			$url = $cObj->getTypoLink_URL($GLOBALS['TSFE']->id, $urlVars);
-			$icon =	'<img'.t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'],$this->iconPath.'/minus.gif', 'width="8" height="11"').' alt="" border="0"/>';
-			$icon = $cObj->stdWrap($icon, $this->conf['renderCategoryTree.']['stdWrapMinusIcon.']);
+			$icon = $cObj->cObjGetSingle($this->conf['renderCategoryTree.']['minusIcon'], $this->conf['renderCategoryTree.']['minusIcon.']);
 			$control .= '<a href="'.$url.'">'.$icon.'</a>';
 		}
 		$control = $cObj->stdWrap($control, $this->conf['renderCategoryTree.']['stdWrapControl.']);
@@ -312,7 +335,8 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	 */
 	function printTree($treeArr='')	{
 		// 0 - show root icon always
-		if(!$this->rootIconIsSet AND count($treeArr)) {
+		if(count($treeArr)) {
+		#if(!$this->rootIconIsSet AND count($treeArr)) {
 			// Artificial record for the tree root, id=0
 			// TODO: AFAIK 9 is missleading - since it has no effect?
 			$rootRec = $this->getRootRecord(9);
@@ -343,10 +367,11 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 					$sel_class = $test ? "tree_selectedCats" : "tree_unselectedCats";
 				}
 				$idAttr = htmlspecialchars($this->domIdPrefix.$this->getId($v['row']).'_'.$v['bank']);
+				
 				$title = $this->getTitleStr($v['row'], $titleLen);
 
 				$control = $this->getControl($title, $v['row'], $v['bank']);
-
+				
 				$out.='
 					<tr class="'.$class.'">
 						<td id="'.$idAttr.'" class="'.$sel_class.'">'.
@@ -384,14 +409,196 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	}
 
 	/**
-	 * calls the parrent methoad getBrowsableTree
+	 * builds the tree for the treeview
 	 *
-	 * @return	[html]		...
+	 * @return	[arr]		Array of the treeelements
 	 */
 	function getBrowsableTree() {
-		return  parent::getBrowsableTree();
+		
+			// Get stored tree structure AND updating it if needed according to incoming PM GET var.
+		$this->initializePositionSaving();
+
+			// Init done:
+		$titleLen=intval($this->BE_USER->uc['titleLen']);
+		$treeArr=array();
+	
+			// Traverse mounts:
+		foreach($this->MOUNTS as $idx => $uid)	{
+
+				// Set first:
+			$this->bank=$idx;
+			$isOpen = $this->stored[$idx][$uid] || $this->expandFirst;
+
+				// Save ids while resetting everything else.
+			$curIds = $this->ids;
+			$this->reset();
+			$this->ids = $curIds;
+
+				// Set PM icon for root of mount:
+			$cmd=$this->bank.'_'.($isOpen?"0_":"1_").$uid.'_'.$this->treeName;
+			
+			if ($isOpen) {
+				$icon=$this->cObj->IMAGE($this->conf['renderCategoryTree.']['treeMinusIcon.']);
+			}
+			else {
+				$icon=$this->cObj->IMAGE($this->conf['renderCategoryTree.']['treePlusIcon.']);
+			}
+			
+			$firstHtml= $this->PM_ATagWrap($icon,$cmd);
+
+				// Preparing rootRec for the mount
+			if ($uid)	{
+				$rootRec = $this->getRecord($uid);
+				$firstHtml.=$this->getIcon($rootRec);
+			} else {
+					// Artificial record for the tree root, id=0
+				$rootRec = $this->getRootRecord($uid);
+				$firstHtml.=$this->getRootIcon($rootRec);
+			}
+
+			if (is_array($rootRec))	{
+				$uid = $rootRec['uid'];		// In case it was swapped inside getRecord due to workspaces.
+
+					// Add the root of the mount to ->tree
+				$this->tree[]=array('HTML'=>$firstHtml, 'row'=>$rootRec, 'bank'=>$this->bank);
+
+					// If the mount is expanded, go down:
+				if ($isOpen)	{
+						// Set depth:
+					$depthD='<img'.t3lib_iconWorks::skinImg($this->backPath,'gfx/ol/blank.gif','width="18" height="16"').' alt="" />';
+					if ($this->addSelfId)	$this->ids[] = $uid;
+					$this->getTree($uid,999,$depthD,'',$rootRec['_SUBCSSCLASS']);
+				}
+
+					// Add tree:
+				$treeArr=array_merge($treeArr,$this->tree);
+			}
+		}
+		return $this->printTree($treeArr);
 	}
-}
+
+
+	/********************************
+	 *
+	 * tree data buidling
+	 *
+	 ********************************/
+
+	/**
+	 * Fetches the data for the tree
+	 *
+	 * @param	integer		item id for which to select subitems (parent id)
+	 * @param	integer		Max depth (recursivity limit)
+	 * @param	string		HTML-code prefix for recursive calls.
+	 * @param	string		? (internal)
+	 * @param	string		CSS class to use for <td> sub-elements
+	 * @return	integer		The count of items on the level
+	 */
+	function getTree($uid, $depth=999, $depthData='',$blankLineCode='',$subCSSclass='')	{
+		// Buffer for id hierarchy is reset:
+		$this->buffer_idH=array();
+
+			// Init vars
+		$depth=intval($depth);
+		$HTML='';
+		$a=0;
+
+		$res = $this->getDataInit($uid,$subCSSclass);
+		$c = $this->getDataCount($res);
+		$crazyRecursionLimiter = 999;
+
+			// Traverse the records:
+		while ($crazyRecursionLimiter>0 && $row = $this->getDataNext($res,$subCSSclass))	{
+			$a++;
+			$crazyRecursionLimiter--;
+
+			$newID = $row['uid'];
+
+			if ($newID==0)	{
+				t3lib_BEfunc::typo3PrintError ('Endless recursion detected', 'TYPO3 has detected an error in the database. Please fix it manually (e.g. using phpMyAdmin) and change the UID of '.$this->table.':0 to a new value.<br /><br />See <a href="http://bugs.typo3.org/view.php?id=3495" target="_blank">bugs.typo3.org/view.php?id=3495</a> to get more information about a possible cause.',0);
+				exit;
+			}
+
+			$this->tree[]=array();		// Reserve space.
+			end($this->tree);
+			$treeKey = key($this->tree);	// Get the key for this space
+			$LN = ($a==$c)?'blank':'line';
+
+				// If records should be accumulated, do so
+			if ($this->setRecs)	{
+				$this->recs[$row['uid']] = $row;
+			}
+
+				// Accumulate the id of the element in the internal arrays
+			$this->ids[] = $idH[$row['uid']]['uid'] = $row['uid'];
+			$this->ids_hierarchy[$depth][] = $row['uid'];
+			$this->orig_ids_hierarchy[$depth][] = $row['_ORIG_uid'] ? $row['_ORIG_uid'] : $row['uid'];
+
+			
+				// Make a recursive call to the next level
+			$HTML_depthData = $depthData.$this->cObj->IMAGE($this->conf['renderCategoryTree.']['treeNavIcons.'][$LN]);
+			if ($depth>1 && $this->expandNext($newID) && !$row['php_tree_stop'])	{
+				$nextCount=$this->getTree(
+						$newID,
+						$depth-1,
+						$this->makeHTML ? $HTML_depthData : '',
+						$blankLineCode.','.$LN,
+						$row['_SUBCSSCLASS']
+					);
+				if (count($this->buffer_idH))	$idH[$row['uid']]['subrow']=$this->buffer_idH;
+				$exp=1;	// Set "did expand" flag
+			} else {
+				$nextCount=$this->getCount($newID);
+				$exp=0;	// Clear "did expand" flag
+			}
+
+				// Set HTML-icons, if any:
+			if ($this->makeHTML)	{
+				$HTML = $depthData.$this->PMicon($row,$a,$c,$nextCount,$exp);
+				$HTML.=$this->wrapStop($this->getIcon($row),$row);
+			}
+
+				// Finally, add the row/HTML content to the ->tree array in the reserved key.
+			$this->tree[$treeKey] = Array(
+				'row'=>$row,
+				'HTML'=>$HTML,
+				'HTML_depthData' => $this->makeHTML==2 ? $HTML_depthData : '',
+				'invertedDepth'=>$depth,
+				'blankLineCode'=>$blankLineCode,
+				'bank' => $this->bank
+			);
+		}
+
+		$this->getDataFree($res);
+		$this->buffer_idH=$idH;
+		return $c;
+	}
+
+	/**
+	 * Returns the root icon for a tree/mountpoint (defaults to the globe)
+	 *
+	 * @param	array		Record for root.
+	 * @return	string		Icon image tag.
+	 */
+	function getRootIcon($rec) {
+		return $this->wrapIcon($this->cObj->IMAGE($this->conf['renderCategoryTree.']['treeRootIcon.']),$rec);
+	}
+	
+		/**
+	 * Get icon for the row.
+	 * If $this->iconPath and $this->iconName is set, try to get icon based on those values.
+	 *
+	 * @param	array		Item row.
+	 * @return	string		Image tag.
+	 */
+	function getIcon($row) {
+			$icon = $this->cObj->IMAGE($this->conf['renderCategoryTree.']['treeCatIcon.']);
+			$icon = $this->wrapIcon($icon,$row);
+
+		return $icon;
+	}
+	
+}	
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_catTreeView.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_catTreeView.php']);
 }
