@@ -55,33 +55,46 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  *
  *
  *
- *   87: class tx_damfrontend_pi1 extends tslib_pibase
- *  117:     function init()
- *  136:     function initFilter()
- *  172:     function initList()
- *  214:     function initUpload()
- *  223:     function convertPiVars()
- *  283:     function loadFlexForm()
- *  306:     function main($content,$conf)
- *  416:     function getInputTree()
- *  447:     function catTree()
- *  460:     function getTree($mount= '')
- *  480:     function fileList($useRequestForm)
- *  527:     function filterView()
- *  540:     function catSelection()
- *  569:     function singleView()
- *  597:     function filterList()
+ *  101: class tx_damfrontend_pi1 extends tslib_pibase
+ *  136:     function init()
+ *  164:     function initFilter()
+ *  230:     function initList()
+ *  273:     function initUpload()
+ *  282:     function convertPiVars()
+ *  354:     function loadFlexForm()
+ *  380:     function main($content,$conf)
+ *  493:     function getInputTree()
+ *  545:     function catTree()
+ *  566:     function fileList($useRequestForm)
+ *  681:     function filterView()
+ *  697:     function catSelection()
+ *  726:     function singleView()
+ *  754:     function filterList()
  *
  *              SECTION: FILE UPLOAD AND CATEGORISATION
- *  743:     function uploadForm()
- *  804:     function handleUpload()
- *  864:     function loadFileUploadTS()
- *  880:     function getIncomingDocData()
- *  925:     function categoriseForm()
- *  947:     function saveCategorisation()
+ *  793:     function uploadForm()
+ *  885:     function dropDown()
+ *  920:     function isSubNodeOf($arr,$node,$subnode)
+ *  943:     function getSubNodesCount($arr,$parent)
+ *  959:     function getSubNodes($arr,$parent)
+ *  980:     function getSubNodesOptions($arr,$parent,$selVal=-1)
+ *  998:     function versioningForm()
+ * 1012:     function handleUpload()
+ * 1078:     function loadFileUploadTS()
+ * 1094:     function getIncomingDocData()
+ * 1127:     function categoriseForm($docData='')
+ * 1166:     function saveCategorisation($docID)
+ * 1181:     function get_FEUserList ($fe_group=0,$currentUser ='')
+ * 1221:     function myFiles ()
+ * 1314:     function handleVersioning($code)
+ * 1336:     function editForm ($uid=0)
+ * 1367:     function overRide2()
+ * 1383:     function overRide()
+ * 1412:     function getTreeMap()
+ * 1473:     function getTree($mount= '')
+ * 1487:     function saveMetaData ($saveUID)
  *
- *
- * TOTAL FUNCTIONS: 21
+ * TOTAL FUNCTIONS: 35
  * (This index is automatically created/updated by the extension "extdeveval")
  *
  */
@@ -430,7 +443,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 
 
-		#processing edition of meta data
+			#processing edition of meta data
 		if ($this->internal['saveUID'] >0){
 			$returnCode = $this->saveMetaData($this->internal['saveUID']);
 			if ($returnCode<>true) {
@@ -441,13 +454,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					#first check, if the saved id is the id of the uploaded file
 				if ($this->internal['saveUID'] ==$GLOBALS['TSFE']->fe_user->getKey('ses','saveID')  ) {
 
-					#set categoriseID, that next step of upload form function is processed
+						#set categoriseID, that next step of upload form function is processed
 					$GLOBALS['TSFE']->fe_user->setKey('ses','categoriseID', $this->internal['saveUID']);
 
-					#delete saveID, that edit form is not shown anymore
+						#delete saveID, that edit form is not shown anymore
 					$GLOBALS['TSFE']->fe_user->setKey('ses','saveID', '');
 
-					#set internal control to true
+						#set internal control to true
 					$this->categorise=true;
 				}
 			}
@@ -546,7 +559,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 						$subs = $this->catLogic->getSubCategories($catMount);
 						foreach ($subs as $sub) {
 							$this->catList->op_Plus($sub['uid'], $this->internal['incomingtreeID']);
-	}
+						}
 					}
 				}
 			}
@@ -847,48 +860,46 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					return $this->categoriseForm();
 				}
 				else {
-					// UPLOAD DONE - > show File edit FOrm
-
+						// UPLOAD DONE - > show File edit FOrm
 					if ($this->saveMetaData) {
 						return $this->editForm($docID = intval($GLOBALS['TSFE']->fe_user->getKey('ses','saveID')));
 					}
 					else {
 						// -- ULPOAD HANDLING --
 
-					// document gets uploaded - handle the upload and proceed
-					// with the categorisation
+						// document gets uploaded - handle the upload and proceed
+						// with the categorisation
 					if ($this->upload) {
 						$returnCode = $this->handleUpload();
 						if (intval($returnCode) != 0) {
-
 								// -- UPLOAD SUCCESSFUL CATEGORISATION OR VERSIONING --
 
-							// upload was successful - proceeding with categorisation
+								// upload was successful - proceeding with categorisation
 							$newID = $returnCode;
 
 							$this->catList->unsetAllCategories();
-								$GLOBALS['TSFE']->fe_user->setKey('ses','saveID', $newID);
+							$GLOBALS['TSFE']->fe_user->setKey('ses','saveID', $newID);
 								// File exists - show versioning options
-								if ($this->versionate) {
-									return $this->versioningForm();
-						}
-						else {
-									$this->getIncomingDocData();
-									return $this->editForm($newID);
-								}
+							if ($this->versionate) {
+								return $this->versioningForm();
 							}
 							else {
+								$this->getIncomingDocData();
+								return $this->editForm($newID);
+							}
+						}
+						else {
 								// -- UPLOAD NOT SUCCESSFUL --
 
-							// rendering of an error message - messages from the upload extension
-								return $returnCode . '<br><br>' . $this->renderer->renderUploadForm();
+								// rendering of an error message - messages from the upload extension
+							return $returnCode . '<br><br>' . $this->renderer->renderUploadForm();
 						}
 					}
 					else {
 							// -- SHOW UPLOAD FORM --
 
 							// simply render the upload form
-							return $this->renderer->renderUploadForm();
+						return $this->renderer->renderUploadForm();
 					}
 				}
 			}
@@ -1050,27 +1061,52 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				}
 				$uploadfile = PATH_site.$feuploaddir.$_FILES[$uploadHandler->prefixId]['name'];
 
-			// check if the current file is already present  - preparing for
-			// displaying the versioning options
-			if (is_file($uploadfile)) {
-				$this->versionate = true;
-				$_FILES[$uploadHandler->prefixId]['name'] = $_FILES[$uploadHandler->prefixId]['name'].'_versionate';
-			}
-			$this->documentData['title'] = $_FILES[$uploadHandler->prefixId]['name'];
-			$this->documentData['tx_damfrontend_feuser_upload'] = $this->userUID;
+				// check if the current file is already present  - preparing for
+				// displaying the versioning options
+				if (is_file($uploadfile)) {
+					$this->versionate = true;
+					$_FILES[$uploadHandler->prefixId]['name'] = $_FILES[$uploadHandler->prefixId]['name'].'_versionate';
+				}
+				$this->documentData['title'] = $_FILES[$uploadHandler->prefixId]['name'];
+				$this->documentData['tx_damfrontend_feuser_upload'] = $this->userUID;
+				
 				// set fe_user group
 				if ($this->conf['upload.']['autoAsignFEGroups']==1){
 					// fetch the usergroups the fe_user is belonging and put them into the access field
 					$userGroups=$GLOBALS['TSFE']->fe_user->groupData['uid'];
 					if (is_array($userGroups)) $this->documentData['fe_group']= implode(',',$userGroups);
 				}
-				
+				// autofill fe_user data
+				if ($this->conf['upload.']['autoFillFEUserData.']){
+					// fetch the usergroups the fe_user is belonging and put them into the access field
+					foreach ($this->conf['upload.']['autoFillFEUserData.'] as $key=>$value) {
+						$this->documentData[$key] = $GLOBALS['TSFE']->fe_user->user[$value];
+					}
+					
+				}				
 				// final upload
 				$uploadHandler->handleUpload();
 
 				// adding the uploaded file to the DAM System, if no error occured
 				if (is_file($uploadfile)) {
-					return $this->docLogic->addDocument($uploadfile, $this->documentData);
+					$newID = $this->docLogic->addDocument($uploadfile, $this->documentData);
+					
+					// add predefined category setting: TODO discuss: should there only categories passible the fe user has access to?
+					if ($this->conf['upload.']['enableCategoryPreSelection']==1) {
+						if (is_array($this->internal['catPreSelection'])) {
+							$catArr = array();
+							foreach ($this->internal['catPreSelection'] as $catMount) {
+								if (strlen($catMount)) {
+									$subs = $this->catLogic->getSubCategories($catMount);
+									foreach ($subs as $sub) {
+										$catArr[]= $sub['uid'];
+									}
+								}
+							}
+							$returnCode = $this->docLogic->categoriseDocument($newID,$catArr);
+						}
+					}
+					return $newID; 
 				}
 				else {
 					$errorContent = '';
@@ -1320,7 +1356,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	function handleVersioning($code) {
 		$trigger = t3lib_div::_GP('version_method');
 		$docID = $GLOBALS['TSFE']->fe_user->getKey('ses','saveID');
-		if (!isset($trigger)) die('Aufruf der Funktion handleversioning ohne URL - Parameter');
+		if (!isset($trigger)) die('call of this function (handleversioning) without url - parameter');
 
 		switch ($trigger) {
 			case 'override':

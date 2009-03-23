@@ -362,11 +362,11 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 
  		// converting all fields in the record to marker (recordfields and markername must match)
  		$this->pi_loadLL();
- 		$markerArray = $this->recordToMarkerArray($record,'SingleView');
+ 		$markerArray = $this->recordToMarkerArray($record,'singleView');
  		$markerArray['###CRDATE_AGE###'] =  $cObj->stdWrap($record['crdate'], $this->conf['renderFields.']['crdate_age.']);
- 		$markerArray['###LINK_DOWNLOAD###'] = $cObj->cObjGetSingle($this->conf['SingleView.']['link_download'], $this->conf['SingleView.']['link_download.']);
+ 		$markerArray['###LINK_DOWNLOAD###'] = $cObj->cObjGetSingle($this->conf['singleView.']['link_download'], $this->conf['singleView.']['link_download.']);
  		
- 		$markerArray['###BACK_LINK###'] = $this->cObj->typolink($cObj->cObjGetSingle($this->conf['SingleView.']['backLink'], $this->conf['SingleView.']['backLink.']), array('parameter' => $record['backPid'])); 
+ 		$markerArray['###BACK_LINK###'] = $this->cObj->typolink($cObj->cObjGetSingle($this->conf['singleView.']['backLink'], $this->conf['singleView.']['backLink.']), array('parameter' => $record['backPid'])); 
  		$markerArray =$markerArray + $this->substituteLangMarkers($single_Code);
  		if (!is_null($this->staticInfoObj)) { $markerArray['###LANGUAGE###'] 	= $this->staticInfoObj->getStaticInfoName('LANGUAGES', $record['language'], '', '', false);}
  		$content=tslib_cObj::substituteMarkerArray($single_Code, $markerArray);

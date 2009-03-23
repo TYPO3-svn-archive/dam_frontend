@@ -593,9 +593,9 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		/**
 		 * adding an document to the index
 		 *
-		 * @param	[string]		$path: ...
-		 * @param	[array]		$docData: ...
-		 * @return	[int]		...
+		 * @param	[string]	$path: path where file is stored
+		 * @param	[array]		$docData: array of the document data
+		 * @return	[int]		$newID: new UID of the dam_record
 		 * @todo get the pid for the indexer = media folder
 		 */
 		function addDocument($path, $docData='') {
@@ -659,7 +659,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				);
 				$GLOBALS['TYPO3_DB']->exec_INSERTquery($this->mm_Table, $newrow);
 			}
-
+	 		// TODO function should return true if success
 		}
 
 		/**
@@ -803,7 +803,9 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		}
 
 		/**
-		 * @author stefan
+		 * 	@author stefan
+		 *	@param int $uid: uid of the dam record
+		 *	@param int $catID category which should be deleted
 		 *
 		 */
 		 function delete_category ($uid, $catID) {

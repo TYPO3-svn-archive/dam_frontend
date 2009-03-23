@@ -91,8 +91,8 @@ plugin.tx_damfrontend_pi1 {
 			no_cache  = 1
 		}
 	}
-	SingleView < .renderFields
-	SingleView {
+	singleView < .renderFields
+	singleView {
 		file_name {
 			typolink.parameter.data = TSFE:id
   			typolink.additionalParams = &eID=dam_frontend_push&docID={field:uid}
@@ -327,6 +327,11 @@ plugin.tx_damfrontend_pi1 {
   	}
   	upload {
   		autoAsignFEGroups = 1
+  		autoFillFEUserData {
+  			#left side column of the dam record - right side fe_user column
+  			creator = name
+  		}
+  		enableCategoryPreSelection =1
   	}
   	_CSS_DEFAULT_STYLE (
 		/*---------------------------------- category tree */
