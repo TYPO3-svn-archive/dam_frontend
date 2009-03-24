@@ -234,7 +234,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		// setting internal values for pagebrowsing from the incoming request
  		if (t3lib_div::_GP('setListLength')) {
 			t3lib_div::debug('setListLength');
-
+			
 			$this->internal['list']['listLength'] = t3lib_div::_GP('listLength') != null ? intval(t3lib_div::_GP('listLength')) : 10;
  		}
 
@@ -252,7 +252,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		if (!$this->internal['list']['sorting'] ) {
 			if ($this->conf['filelist.']['orderBy']) {
 				$this->internal['list']['sorting']= $this->conf['filelist.']['orderBy']; 	# example ['filelist.']['orderBy'] = crdate DESC
-			}
+			}	
 		}
 		if (!isset($this->internal['list']['listLength'])) {
 			if ($this->conf['filelist.']['defaultLength']) {
@@ -262,9 +262,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$this->internal['list']['listLength'] = 10;
 			}
 		}
-
+		
 		$this->listState->syncListState($this->internal['list']);
 
+		
 
 
 
@@ -357,7 +358,17 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		if (t3lib_div::_POST('upload_file')) {
 			$this->upload = true;
 		}
-
+		
+		// cancel category editing
+		if (t3lib_div::_POST('cancelCatEdit')) {
+			$this->internal['catEditUID']=null;
+		}
+		// cancel category editing
+		if (t3lib_div::_POST('cancelEdit')) {
+			$this->internal['editUID']=null;
+		}
+		
+		
 		// incoming command of saving the current category selection
 		$this->saveCategorisation = strip_tags(t3lib_div::_POST('catOK')) != '' ? true : false;
 
@@ -667,14 +678,14 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				}
 			}
 		}
-
+		
 		if ($this->conf['useLatestList']==1) {
 			$this->docLogic->conf['useLatestList'] = true;
 			$this->docLogic->conf['latestField'] = ($this->conf['filelist.']['latestField']) ? $this->conf['filelist.']['latestField'] : 'crdate';
 			$this->docLogic->conf['latestLimit'] = ($this->conf['filelist.']['latestLimit']) ? $this->conf['filelist.']['latestField'] : 30;
-		}
-
-
+		} 
+		
+		
 		if (count($cats)) {
 			foreach($cats as $catList) {
 				if (count($catList)) $hasCats = true;
@@ -682,7 +693,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 
 		if ($hasCats===true || $this->internal['filter']['searchAllCats']===true ) {
-
+			
 			/***************************
 			 *
 			 *    search and sorting values are transfered to the user
@@ -1071,7 +1082,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				}
 				$this->documentData['title'] = $_FILES[$uploadHandler->prefixId]['name'];
 				$this->documentData['tx_damfrontend_feuser_upload'] = $this->userUID;
-
+				
 				// set fe_user group
 				if ($this->conf['upload.']['autoAsignFEGroups']==1){
 					// fetch the usergroups the fe_user is belonging and put them into the access field
@@ -1084,15 +1095,15 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					foreach ($this->conf['upload.']['autoFillFEUserData.'] as $key=>$value) {
 						$this->documentData[$key] = $GLOBALS['TSFE']->fe_user->user[$value];
 					}
-
-				}
+					
+				}				
 				// final upload
 				$uploadHandler->handleUpload();
 
 				// adding the uploaded file to the DAM System, if no error occured
 				if (is_file($uploadfile)) {
 					$newID = $this->docLogic->addDocument($uploadfile, $this->documentData);
-
+					
 					// add predefined category setting: TODO discuss: should there only categories passible the fe user has access to?
 					if ($this->conf['upload.']['enableCategoryPreSelection']==1) {
 						if (is_array($this->internal['catPreSelection'])) {
@@ -1108,7 +1119,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 							$returnCode = $this->docLogic->categoriseDocument($newID,$catArr);
 						}
 					}
-					return $newID;
+					return $newID; 
 				}
 				else {
 					$errorContent = '';

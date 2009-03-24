@@ -153,7 +153,8 @@ plugin.tx_damfrontend_pi1 {
 
 		backLink = IMAGE
 		backLink {
-			file = EXT:dam_frontend/res/ico/edit_rtewiz.gif
+			file = EXT:dam_frontend/res/ico/turn_left.gif
+			wrap = | 
 		}
 	}
 
@@ -280,7 +281,7 @@ plugin.tx_damfrontend_pi1 {
 		security_options {
 			showOnlyFilesWithPermission=0
 		}
-
+		
 		sortlinks {
 			asc = TEXT
 			asc.data = LLL:EXT:dam_frontend/pi1/locallang.xml:asc

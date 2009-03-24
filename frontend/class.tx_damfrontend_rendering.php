@@ -830,8 +830,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		$markerArray = $this->recordToMarkerArray($docData);
 
 		$markerArray['###BUTTON_CONFIRM###'] = '<input name="catOK" type="submit" value="'.$this->pi_getLL('BUTTON_CONFIRM').'">';
-		$markerArray['###CANCEL###'] = $this->pi_linkTP_keepPiVars('<img src="'.$this->iconPath.'turn_left.gif'.'" style="border-width: 0px"/> &nbsp;'.$this->pi_getLL('BUTTON_BACK'),   array('catEditUID'=>''));
-
+		$markerArray['###CANCEL###']='<input name="cancelCatEdit" type="submit" value="'.$this->pi_getLL('CANCEL').'">';
 		$markerArray['###TITLE_FILEUPLOAD###'] = $this->pi_getLL('TITLE_FILEUPLOAD');
 		$markerArray['###LABEL_FILE###'] =  $this->pi_getLL('LABEL_FILE');
 		$markerArray['###LABEL_TITLE###'] =  $this->pi_getLL('LABEL_TITLE');
@@ -860,7 +859,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 			$catCode = $this->renderError('noCatSelected');
 			$markerArray['###CANCEL###'] = '';
 		}
-
+		
 		$markerArray['###HIDDENFIELDS###'] = '';
 		if (isset($versioning))  {
 			if ($versioning=='editCats') {
@@ -1076,7 +1075,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 			$formCode = tslib_cObj::substituteMarker($formCode, '###CANCEL###','');
 		}
 		else {
-			$formCode = tslib_cObj::substituteMarker($formCode, '###CANCEL###', $this->pi_linkTP_keepPiVars('<img src="'.$this->iconPath.'turn_left.gif'.'" style="border-width: 0px"/> &nbsp;'.$this->pi_getLL('BUTTON_BACK'),   array('editUID'=>'')));
+			$markerArray['###CANCEL###']='<input name="cancelEdit" type="submit" value="'.$this->pi_getLL('CANCEL').'">';
 		}
 		return tslib_cObj::substituteMarkerArray($formCode, $markerArray);
 	}
