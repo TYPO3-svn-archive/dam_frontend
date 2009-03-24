@@ -833,7 +833,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		$markerArray = $this->recordToMarkerArray($docData);
 
 		$markerArray['###BUTTON_CONFIRM###'] = '<input name="catOK" type="submit" value="'.$this->pi_getLL('BUTTON_CONFIRM').'">';
-		$markerArray['###CANCEL###'] = $this->pi_linkTP_keepPiVars('<img src="'.$this->iconPath.'turn_left.gif'.'" style="border-width: 0px"/> &nbsp;'.$this->pi_getLL('BUTTON_BACK'),   array('catEditUID'=>''));
+		$markerArray['###CANCEL###'] = $this->pi_linkTP_keepPiVars('<img src="'.$this->iconPath.'turn_left.gif'.'" style="border-width: 0px"/> &nbsp;'.$this->pi_getLL('BUTTON_BACK'),   array('catEditUID'=>'', 'catPlus'=>'','treeID'=>''));
 
 		$markerArray['###TITLE_FILEUPLOAD###'] = $this->pi_getLL('TITLE_FILEUPLOAD');
 		$markerArray['###LABEL_FILE###'] =  $this->pi_getLL('LABEL_FILE');
