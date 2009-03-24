@@ -245,6 +245,15 @@ class tx_damfrontend_pi1 extends tslib_pibase {
  			}
 		}
 
+		if (!isset($this->internal['list']['listLength'])) {
+			if ($this->conf['filelist.']['defaultLength']) {
+				$this->internal['list']['listLength'] = $this->conf['filelist.']['defaultLength'];
+			} 
+			else {
+				$this->internal['list']['listLength'] = 10;
+			}
+		}
+		
 		$this->listState->syncListState($this->internal['list']);
 
 		if (!isset($this->internal['list']['listLength'])) $this->internal['list']['listLength'] = 10;
