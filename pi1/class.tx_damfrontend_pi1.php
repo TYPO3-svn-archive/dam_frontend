@@ -233,8 +233,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		// setting internal values for pagebrowsing from the incoming request
  		if (t3lib_div::_GP('setListLength')) {
-			t3lib_div::debug('setListLength');
-			
 			$this->internal['list']['listLength'] = t3lib_div::_GP('listLength') != null ? intval(t3lib_div::_GP('listLength')) : 10;
  		}
 
@@ -316,7 +314,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		// getting the incoming treeID
 		$this->internal['incomingtreeID'] = intval($this->piVars['treeID']);
-
+		
 		// check if we are still on the same page. If we are at a different page,
 		$incommingPID = $GLOBALS['TSFE']->id;
 
@@ -441,6 +439,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$this->getInputTree();
 
 		if ($this->internal['useStaticCatSelection']) {
+			
 			$this->internal['incomingtreeID'] = $this->internal['treeID'];
 			$this->catList->unsetAllCategories();
 			if (is_array($this->internal['catMounts'])) {
@@ -525,6 +524,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 */
 	function getInputTree() {
 
+
 		if (is_array($this->piVars['dropdown'])) {
 
 
@@ -540,44 +540,28 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$this->catList->op_Equals($lastID,999);
 		}
 		else {
-		if ($this->internal['catPlus']) {
-			$this->catList->op_Plus($this->internal['catPlus'], $this->internal['incomingtreeID']);
-		}
-		else if ($this->internal['catMinus']) {
-			$this->catList->op_Minus($this->internal['catMinus'], $this->internal['incomingtreeID']);
-		}
-		else if ($this->internal['catEquals']) {
-			$this->catList->op_Equals($this->internal['catEquals'], $this->internal['incomingtreeID']);
-		}
-		else if ($this->internal['catMinus_Rec']) {
-			$subs = $this->catLogic->getSubCategories($this->internal['catMinus_Rec']);
-			foreach ($subs as $sub) {
-				$this->catList->op_Minus($sub['uid'], $this->internal['incomingtreeID']);
+			if ($this->internal['catPlus']) {
+				$this->catList->op_Plus($this->internal['catPlus'], $this->internal['incomingtreeID']);
 			}
-		}
-		else if ($this->internal['catPlus_Rec']) {
-			$subs = $this->catLogic->getSubCategories($this->internal['catPlus_Rec']);
-			foreach ($subs as $sub) {
-				$this->catList->op_Plus($sub['uid'], $this->internal['incomingtreeID']);
+			else if ($this->internal['catMinus']) {
+				$this->catList->op_Minus($this->internal['catMinus'], $this->internal['incomingtreeID']);
 			}
-		}
-
-
-		if ($this->internal['catPreSelection'] || $this->catList->getCatSelection($this->internal['incomingtreeID'])==null) {
-			// if a preselection is activated and no cat is selected yet, the preselected cats will be loaded
-
-			if (is_array($this->internal['catPreSelection'])) {
-				foreach ($this->internal['catPreSelection'] as $catMount) {
-					if (strlen($catMount)) {
-						$subs = $this->catLogic->getSubCategories($catMount);
-						foreach ($subs as $sub) {
-							$this->catList->op_Plus($sub['uid'], $this->internal['incomingtreeID']);
-						}
-					}
+			else if ($this->internal['catEquals']) {
+				$this->catList->op_Equals($this->internal['catEquals'], $this->internal['incomingtreeID']);
+			}
+			else if ($this->internal['catMinus_Rec']) {
+				$subs = $this->catLogic->getSubCategories($this->internal['catMinus_Rec']);
+				foreach ($subs as $sub) {
+					$this->catList->op_Minus($sub['uid'], $this->internal['incomingtreeID']);
 				}
 			}
+			else if ($this->internal['catPlus_Rec']) {
+				$subs = $this->catLogic->getSubCategories($this->internal['catPlus_Rec']);
+				foreach ($subs as $sub) {
+					$this->catList->op_Plus($sub['uid'], $this->internal['incomingtreeID']);
+				}
+			}		
 		}
-	}
 	}
 
 
@@ -588,6 +572,26 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @return	html		category tree - ready for display
 	 */
 	function catTree() {
+		if ($this->internal['catPreSelection']) {
+			
+			$currentCats = $this->catList->getCatSelection($this->internal['treeID']);
+			
+			if (empty($currentCats[$this->internal['treeID']])){
+				// if a preselection is activated and no cat is selected yet, the preselected cats will be loaded
+				
+				if (is_array($this->internal['catPreSelection'])) {
+					foreach ($this->internal['catPreSelection'] as $catMount) {
+						
+						if (strlen($catMount)) {
+							$subs = $this->catLogic->getSubCategories($catMount);
+							foreach ($subs as $sub) {
+								$this->catList->op_Plus($sub['uid'], $this->internal['treeID']);
+							}
+						}
+					}
+				}
+			}
+		}	
 		##### Adding a treeview to the output
 		$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeView');
 		$tree->init($this->internal['treeID'], $this);
