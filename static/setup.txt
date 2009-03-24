@@ -15,20 +15,20 @@ plugin.tx_damfrontend_pi1 {
 
 	renderCategoryTree {
 		# plus control to select categories
-		plusIcon = IMAGE 
+		plusIcon = IMAGE
 		plusIcon {
 			file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}catplus.gif
 			wrap = |
 			params.width = 8
 			params.height = 11
 		}
-		
+
 		minusIcon < .plusIcon
 		minusIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}catminus.gif
 
 		equalsIcon < .plusIcon
 		equalsIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}catequals.gif
-		
+
 		stdWrap.wrap = <div class="cattree">|</div>
 		stdWrapControl.wrap = <div class="control" >|</div>
 		# TypoLink for category title
@@ -43,7 +43,7 @@ plugin.tx_damfrontend_pi1 {
 		treeJoinIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}join.gif
 		treeJoinIconBottom.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}joinbottom.gif
 		treeCatIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}cat.gif
-				
+
 		treeNavIcons {
 			# default objects are IMAGE
 			line.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}line.gif
@@ -51,13 +51,13 @@ plugin.tx_damfrontend_pi1 {
 			line.params.height= 16
 			blank < .line
 			blank.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}blank.gif
-			
+
 		}
-		
+
 
 
 		#tree root stdWrap
-		treeRoot.wrap 
+		treeRoot.wrap
 	}
 
 	renderFields {
@@ -72,9 +72,18 @@ plugin.tx_damfrontend_pi1 {
 		tstamp.strftime =  %Y / %m / %d
 		# stdWrap : Creation Timestamp of file
 		crdate.strftime =  %Y / %m / %d
-		
+		crdate.prepend = TEXT
+		crdate.prepend {
+			value = (new)
+			lang.de = (neu)
+			if.isLessThan.data = date:U
+			if.value.field = crdate
+			if.value.stdWrap.wrap = |+ {$plugin.tx_damfrontend_pi1.newUntilSeconds}
+			if.value.prioriCalc = 1
+		}
+
 		crdate_age.stdWrap.age = 1
-		
+
 		title.typolink.parameter.data = TSFE:id
   		title.typolink.additionalParams = &eID=dam_frontend_push&docID={field:uid}
 		title.typolink.additionalParams.insertData = 1
@@ -141,7 +150,7 @@ plugin.tx_damfrontend_pi1 {
 			stdWrap.override = Please set constant "plugin.tx_damfrondend_pi1.mediafolder".
 			stdWrap.override.if.isFalse = {$plugin.tx_damfrondend_pi1.mediafolder}
 		}
-		
+
 		backLink = IMAGE
 		backLink {
 			file = EXT:dam_frontend/res/ico/edit_rtewiz.gif
@@ -178,12 +187,12 @@ plugin.tx_damfrontend_pi1 {
 		#pre defined sorting
 		usePreDefinedSorting=1
 		orderBy = crdate DESC
-		
+
 		# shows only the last nr. of items
 		latestLimit = 10
 		#latestField must be date field
 		latestField = crdate
-		
+
 		# configuration for an list item
 		item {
 			# stdWrap : Timestamp of file
@@ -191,9 +200,9 @@ plugin.tx_damfrontend_pi1 {
 			# stdWrap : Creation Timestamp of file
 			crdate.strftime =  %Y / %m  /  %d
 		}
-		
+
 		useAlternatingRows = 0
-		
+
 		link_select_download {
 			typolink.returnLast = url
 			typolink.parameter.data = TSFE:id
@@ -220,7 +229,7 @@ plugin.tx_damfrontend_pi1 {
 			5.value = thumbnail
 			5.lang.de = Thumbnail
 		}
-		
+
 		link_download = IMAGE
 		link_download {
 			file = EXT:dam_frontend/res/ico/clip_pasteafter.gif
@@ -251,14 +260,14 @@ plugin.tx_damfrontend_pi1 {
 				additionalParams = &tx_damfrontend_pi1[showUid]=&tx_damfrontend_pi1[confirmDeleteUID]=&tx_damfrontend_pi1[editUID]=&tx_damfrontend_pi1[catEditUID]={field:uid}
 			}
 		}
-		
+
 		button_edit  < .link_single
 		button_edit {
 			file = EXT:dam_frontend/res/ico/edit_fe.gif
 			stdWrap.typolink {
 				additionalParams = &tx_damfrontend_pi1[showUid]=&tx_damfrontend_pi1[confirmDeleteUID]=&tx_damfrontend_pi1[editUID]={field:uid}&tx_damfrontend_pi1[catEditUID]=
 			}
-		}				
+		}
 
 		button_delete  < .link_single
 		button_delete {
@@ -267,11 +276,11 @@ plugin.tx_damfrontend_pi1 {
 				additionalParams = &tx_damfrontend_pi1[showUid]=&tx_damfrontend_pi1[confirmDeleteUID]={field:uid}&tx_damfrontend_pi1[editUID]=&tx_damfrontend_pi1[catEditUID]=
 			}
 		}
-		
+
 		security_options {
 			showOnlyFilesWithPermission=0
 		}
-		
+
 		sortlinks {
 			asc = TEXT
 			asc.data = LLL:EXT:dam_frontend/pi1/locallang.xml:asc
