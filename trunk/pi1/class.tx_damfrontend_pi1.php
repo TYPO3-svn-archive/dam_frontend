@@ -691,9 +691,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					//get the html from the renderer
 				$rescount = $this->docLogic->resultCount;
 					// check if pointer is ok
-				$noOfPages = intval($rescount / $this->internal['list']['listLength']);
+				$limiter=0;
+				if ($this->internal['list']['listLength']==1) $limiter = 1;
+				$noOfPages = intval($rescount / $this->internal['list']['listLength'])-$limiter;
 				
-				if($this->internal['list']['pointer'] >=$noOfPages) {
+				if($this->internal['list']['pointer'] >$noOfPages) {
 					// set pointer to max value
 					return  $this->renderer->renderError('noPointerError');					
 				}
