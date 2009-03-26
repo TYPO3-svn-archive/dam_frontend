@@ -139,12 +139,12 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 			if (TYPO3_DLOG)	t3lib_div::devLog('tx_damfrontend_rendering.renderFileList: Invalid resultcount. Counter is less than 1 or null. Allowed values are integer >0','dam_frontend',2,$list);
  			return $this->pi_getLL('noDocInCat');
 		}
-		if(!intval($pointer) || $pointer < 1 ) $pointer = 1;
+		if(!intval($pointer) || $pointer < 0 ) $pointer = 0;
 		if(!intval($listLength) || $listLength < 1 ) $listLength = $this->cObj->stdWrap($this->conf['filelist.']['defaultLength'],$this->conf['filelist.']['defaultLength.']);
 		if (!isset($this->fileContent)) return $this->pi_getLL('error_renderFileList_template');
 
 
-		// Optionsplit for ###FILELIST_RECORD###
+			// Optionsplit for ###FILELIST_RECORD###
 		if (!isset($this->conf['marker.']['filelist_record'])) { $this->conf['marker.']['filelist_record'] = '###FILELIST_RECORD###'; }
 
 		$filelist_record_marker = $GLOBALS['TSFE']->tmpl->splitConfArray(array('cObjNum' => $this->conf['marker.']['filelist_record']), count($list));
@@ -159,7 +159,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
  			$cObj->start($elem, 'tx_dam');
  			$countElement++;
  			$elem['count_id'] =$countElement;
- 			if ($pointer>1) $elem['count_id'] = $countElement  + $pointer;
+ 			if ($pointer>0) $elem['count_id'] = $countElement  + $pointer*$listLength;
  			$markerArray = $this->recordToMarkerArray($elem, 'renderFields');
  			$markerArray =$markerArray + $this->substituteLangMarkers($record_Code);
 
@@ -259,26 +259,38 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 	/**
 	 * renders a listbrowser which divides the resultlist of the selected files in better viewable parts
 	 *
-	 * @param	[type]		$resultcount: ...
-	 * @param	[type]		$pointer: ...
-	 * @param	[type]		$listLength: ...
+	 * @param	[type]		$resultcount: number of items in a list
+	 * @param	[type]		$pointer: which page of the resultset should be shown
+	 * @param	[type]		$listLength: how many elements of the list should be shown
 	 * @return	[type]		...
 	 */
 	function renderBrowseResults($resultcount, $pointer, $listLength) {
 		$listCode = tslib_CObj::getSubpart($this->fileContent, '###BROWSERESULTLIST###');
 		$listElem = tslib_CObj::getSubpart($listCode, '###BROWSERESULT_ENTRY###');
-		$count = 1;
-		for ($z = 0; $z <= $resultcount; $z = $z + $listLength) {
+		
+		if ($listLength==1) {
+				//correction if listLength = 1, then we must subtract one page (even if a listlength of 1 makes no sense)
+			$limiter = 1;
+		} 
+		else {
+			$limiter = 0;	
+		}
+		// get the number of pages of the browseresult
+		$noOfPages = intval($resultcount / $listLength)-$limiter;
+		
+		if ($resultcount % $listLength==0) $noOfPages = $noOfPages-1+$limiter;
+
+		
+		for ($z = 0; $z <= $noOfPages; $z++) {
 			$this->piVars['pointer'] = $z;
-			if ($count == round(($pointer/$listLength)) + 1) {
+			if ($z == $pointer ) {
 				#current page
-				$listElems .=  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP_keepPiVars($count),$this->conf['filelist.']['browselinkCurrent.']));
+				$listElems .=  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP_keepPiVars($z+1),$this->conf['filelist.']['browselinkCurrent.']));
 			}
 			else {
 				#link to other pages
-				$listElems .=  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP_keepPiVars($count),$this->conf['filelist.']['browselink.']));
+				$listElems .=  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP_keepPiVars($z+1),$this->conf['filelist.']['browselink.']));
 			}
-			$count++;
 		}
 		$listCode = tslib_CObj::substituteSubpart($listCode, '###BROWSERESULT_ENTRY###', $listElems);
 		return $listCode;
@@ -412,6 +424,9 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
  				break;
  			case 'noFilterStates':
  				$message = $this->pi_getLL('noFilterStates');
+ 				break;
+ 			 case 'noPointerError':
+ 				$message = $this->pi_getLL('noPointerError') . '&nbsp;'. $this->pi_linkTP ($this->pi_getLL('BUTTON_NEXT'));
  				break;
  			case 'uploadFormFieldError':
  				$message = $this->pi_getLL('uploadFormFieldError') . $customMessage . ' '. $this->pi_getLL('uploadFormFieldErrorLength') . ' ' . $customMessage2 ;
@@ -645,7 +660,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
  			$markerArray[$marker] = $this->cObj->stdWrap($this->pi_getLL($marker, $marker, false),$this->conf['newfilter.'][strtolower($marker).'.']);
  		}
 
- 					// FORM URL
+ 			// FORM URL
  		if (!isset($this->conf['newfilter.']['form_url.']['parameter'])) {
 			$this->conf['newfilter.']['form_url.']['parameter'] = $GLOBALS['TSFE']->id;
 		}
@@ -983,7 +998,6 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 			$whereLanguages = 'lg_iso_2 IN ( '.$languages.')';
 		}
 		$mergeArray = array('nosel'=>'---');
-		#t3lib_div::debug( $this->staticInfoObj->buildStaticInfoSelector('LANGUAGES', 'LanguageSelector','',$currentLanguage,'','','','',$whereLanguages,'',1,$mergeArray));
 
 		return  $this->staticInfoObj->buildStaticInfoSelector('LANGUAGES', 'LanguageSelector','',$currentLanguage,'','','','',$whereLanguages,'',1,$mergeArray);
 	}

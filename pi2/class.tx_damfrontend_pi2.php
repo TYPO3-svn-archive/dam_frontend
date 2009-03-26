@@ -67,7 +67,6 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 		$this->conf = $conf;
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
-// t3lib_div::debug($conf);
 		if ($GLOBALS['TSFE']->beUserLogin
 			||  $GLOBALS['TSFE']->isUserOrGroupSet()) {
 			// TODO: use USER_INT instead of using set_no_cache!
@@ -293,7 +292,6 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 		//
 
 		$damRecord['file_name'] = $damRecord['file_name'] ? $damRecord['file_name'] : $this->pi_getLL('not_set');
-		//debug('Dateiname: '.$damRecord['file_name']);
 		// ident field:
 		$damRecord['ident'] = $damRecord['ident'] ? $damRecord['ident'] : $this->pi_getLL('not_set');
 

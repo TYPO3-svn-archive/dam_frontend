@@ -232,11 +232,33 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	function initList() {
 
 		// setting internal values for pagebrowsing from the incoming request
+		
+		$this->internal['list']['pointer'] =  $this->piVars['pointer'] != null ? intval($this->piVars['pointer']) :0;
+		
  		if (t3lib_div::_GP('setListLength')) {
 			$this->internal['list']['listLength'] = t3lib_div::_GP('listLength') != null ? intval(t3lib_div::_GP('listLength')) : 10;
+			$listLengthArr = array();
+			$listLengthArr['listLength'.$this->cObj->data['uid']]=$this->internal['list']['listLength'];
+			$this->listState->setArrayToUser($listLengthArr);
+ 		} else {
+ 			$listLengthArr = $this->listState->getArrayFromUser();
+ 			$this->internal['list']['listLength']=$listLengthArr['listLength'.$this->cObj->data['uid']];
  		}
+ 		
+ 		if (!isset($this->internal['list']['listLength'])) {
+			if ($this->conf['filelist.']['defaultLength']) {
+				$this->internal['list']['listLength'] = $this->conf['filelist.']['defaultLength'];
+			}
+			else {
+				$this->internal['list']['listLength'] = 10;
+			}
+		} 
+		else {
+			if ($this->internal['list']['listLength']==0) $this->internal['list']['listLength']=10;
+		} 
+		
 
-		$this->internal['list']['pointer'] =  $this->piVars['pointer'] != null ? intval($this->piVars['pointer']) : 0;
+		
 		// setting the internal values for sorting
 		foreach ($this->piVars as $postvar => $postvalue) {
  			// clearing SQL Injection
@@ -252,14 +274,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$this->internal['list']['sorting']= $this->conf['filelist.']['orderBy']; 	# example ['filelist.']['orderBy'] = crdate DESC
 			}	
 		}
-		if (!isset($this->internal['list']['listLength'])) {
-			if ($this->conf['filelist.']['defaultLength']) {
-				$this->internal['list']['listLength'] = $this->conf['filelist.']['defaultLength'];
-			}
-			else {
-				$this->internal['list']['listLength'] = 10;
-			}
-		}
 		
 		$this->listState->syncListState($this->internal['list']);
 
@@ -267,17 +281,20 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 
 
-		// deactived: these lines are not necessary
 		/*
 		 * if a filter criteria is changed, the pagebrowsing is reseted to the beginning value
 		 */
-		// TODO: why is this not needed anymore? because it works also with out it
-		//		if (t3lib_div::_GP('setFilter') || !empty($this->internal['catPlus']) ||
-		//				!empty($this->internal['catPlus']) || !empty($this->internal['catMinus']) ||
-		//				!empty($this->internal['catEquals']) || !empty($this->internal['catPlus_Rec']) || !empty($this->internal['catMinus_Rec']))
-		//		{
-		//			$this->internal['list']['pointer'] = 0;
-		//		}
+		if (	t3lib_div::_GP('setFilter') || 
+				!empty($this->internal['catPlus']) ||
+				!empty($this->internal['catPlus']) || 
+				!empty($this->internal['catMinus']) ||
+				!empty($this->internal['catEquals']) || 
+				!empty($this->internal['catPlus_Rec']) || 
+				!empty($this->internal['catMinus_Rec']) ||
+				t3lib_div::_GP('listLength')
+		){
+			$this->internal['list']['pointer'] = 0;
+		}
 		$this->internal['list']['limit'] = $this->internal['list']['pointer'].','. ($this->internal['list']['listLength']);
 		$this->listState->setListState($this->internal['list']);
 	}
@@ -713,9 +730,17 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$this->docLogic->selectionMode = $this->internal['selectionMode'];
 			$files = $this->docLogic->getDocumentList($this->userUID);
 			if (is_array($files)) {
-				//get the html from the renderer
+					
 				$rescount = $this->docLogic->resultCount;
-				# if a request form should be rendered
+					// check if pointer is ok
+				$noOfPages = intval($rescount / $this->internal['list']['listLength']);
+				
+				if($this->internal['list']['pointer'] >=$noOfPages) {
+					// set pointer to max value
+					return  $this->renderer->renderError('noPointerError');					
+				}
+					
+				 //get the html from the renderer
 				$content = $this->renderer->renderFileList($files, $rescount, $this->internal['list']['pointer'], $this->internal['list']['listLength'],$useRequestForm);
 			}
 			else {
