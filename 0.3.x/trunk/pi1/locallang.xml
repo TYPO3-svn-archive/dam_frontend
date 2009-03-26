@@ -18,6 +18,7 @@
 			<label index="noCatSelected">no categories selected</label>
 			<label index="noUserLoggedIn">no user is currenty logged in!</label>
 			<label index="noFilterStates">no filter is created yet</label>
+			<label index="noPointerError">Parameter error (pointer). Please click to reset this view. </label>
 			<label index="setFilter">set Filter</label>
 			<label index="resetFilter">reset Filter</label>
 			<label index="label_todate">to (tt / mm / yyyy)</label>
@@ -127,6 +128,7 @@
 			<label index="noUserLoggedIn">derzeit ist kein User eingeloggt!</label>
 			<label index="noFilterStates">es existieren keine gespeicherten Filtervorlagen</label>
 			<label index="setFilter">Filter anwenden</label>
+			<label index="noPointerError">Parameter Fehler (pointer). Bitte klicken Sie auf  click to reset this view. </label>
 			<label index="resetFilter">Filter zurücksetzen</label>
 			<label index="label_todate">bis (tt / mm / yyyy)</label>
 			<label index="label_fromdate">von (tt / mm / yyyy)</label>
@@ -195,15 +197,15 @@
 
 			<label index="LABEL_WARNING">Warnung!</label>
 			<label index="MESSAGE_DELETION_WARNING">Sie möchten eine Datei löschen. Bitte überprüfen Sie die Detaildaten unterhalb und bestätigen Sie die Löschung.</label>
-			<label index="BUTTON_NEXT">Next</label>
+			<label index="BUTTON_NEXT">Weiter</label>
 			<label index="LABEL_MESSAGE">Hinweis</label>
-			<label index="MESSAGE_TEXT_DELETION_SUCESS">The file was deleted sucessful.</label>
-			<label index="BUTTON_CONFIRM">confirm</label>
-			<label index="BUTTON_BACK">back</label>
+			<label index="MESSAGE_TEXT_DELETION_SUCESS">Die Datei wurde erfolgreich gelöscht.</label>
+			<label index="BUTTON_CONFIRM">bestätigen</label>
+			<label index="BUTTON_BACK">zurück</label>
 			<label index="LANGUAGE_HEADER">Sprache</label>
 			<label index="CREATOR_HEADER">Autor</label>
 			<label index="OWNER_HEADER">Besitzer</label>
-			<label index="NO_OWNERS">No FE_User Group in BE selected</label>
+			<label index="NO_OWNERS">Keine FE_Gruppe ist in den Einstellungen hinterlegt.</label>
 			<label index="VERSIONING_FILE_EXISTS">Die Datei ist bereits im System vorhanden. Wie soll verfahren werden ?</label>
 			<label index="VERSIONING_OVERWRITES">Vorhandene Datei überschreiben und Metadaten aktualisieren.</label>
 			<label index="VERSIONING_NEW_VERSION">Neue (zusätzliche) Datei anlegen.</label>
