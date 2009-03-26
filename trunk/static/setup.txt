@@ -158,6 +158,8 @@ plugin.tx_damfrontend_pi1 {
 		security_options {
 			showOnlyFilesWithPermission=0
 		}
+		browselink.wrap= |
+		browselinkCurrent.wrap= <span style="border: 1px solid black">|</span>
 	}
 
 	# configuration for subpart ###NEWFILTER_LINK###
