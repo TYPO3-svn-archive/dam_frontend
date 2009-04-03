@@ -284,7 +284,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 
 			if ($id != '') $param_array['id'] = $id;
 			// TODO: use TypoScript
-			$url = t3lib_div::linkThisScript($urlVars);
+			$url = $cObj->getTypoLink_URL($GLOBALS['TSFE']->id, $urlVars);
 
 			$icon = $cObj->cObjGetSingle($this->conf['renderCategoryTree.']['plusIcon'], $this->conf['renderCategoryTree.']['plusIcon.']);
 			// TODO: use TypoScript

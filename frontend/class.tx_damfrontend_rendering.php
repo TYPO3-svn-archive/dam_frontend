@@ -845,7 +845,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		$markerArray = $this->recordToMarkerArray($docData);
 
 		$markerArray['###BUTTON_CONFIRM###'] = '<input name="catOK" type="submit" value="'.$this->pi_getLL('BUTTON_CONFIRM').'">';
-		$markerArray['###CANCEL###']='<input name="cancelCatEdit" type="submit" value="'.$this->pi_getLL('CANCEL').'">';
+		$markerArray['###CANCEL###']='<input name="cancelCatEdit" type="submit" value="'.$this->pi_getLL('BUTTON_BACK').'">';
 		$markerArray['###TITLE_FILEUPLOAD###'] = $this->pi_getLL('TITLE_FILEUPLOAD');
 		$markerArray['###LABEL_FILE###'] =  $this->pi_getLL('LABEL_FILE');
 		$markerArray['###LABEL_TITLE###'] =  $this->pi_getLL('LABEL_TITLE');
@@ -872,14 +872,14 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		}
 		else {
 			$catCode = $this->renderError('noCatSelected');
-			$markerArray['###CANCEL###'] = '';
+			#$markerArray['###CANCEL###'] = '';
 		}
 		
 		$markerArray['###HIDDENFIELDS###'] = '';
 		if (isset($versioning))  {
 			if ($versioning=='editCats') {
 				#hide confirm button if edit is active (otherwise the user would see the message 'upload successful')
-				$markerArray['###BUTTON_CONFIRM###'] ='';
+				$markerArray['###HIDDENFIELDS###'] ='<input type="hidden" name="version_method" value="'.$versioning.'" />';
 			}
 			else {
 				$markerArray['###HIDDENFIELDS###'] = '<input type="hidden" name="version_method" value="'.$versioning.'" />';
@@ -1085,12 +1085,13 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		$hiddenFields = '<input type="hidden" name="saveUID" value="'.$record['uid'].'" />';
  		$markerArray['###HIDDENFIELDS###'] = $hiddenFields;
 		$markerArray =$markerArray + $this->substituteLangMarkers($formCode);
-		if ($GLOBALS['TSFE']->fe_user->getKey('ses','saveID')>0) {
-			$formCode = tslib_cObj::substituteMarker($formCode, '###CANCEL###','');
-		}
-		else {
-			$markerArray['###CANCEL###']='<input name="cancelEdit" type="submit" value="'.$this->pi_getLL('CANCEL').'">';
-		}
+		
+		#if ($GLOBALS['TSFE']->fe_user->getKey('ses','saveID')>0) {
+		#	$formCode = tslib_cObj::substituteMarker($formCode, '###CANCEL###','');
+		#}
+		#else {
+		$markerArray['###CANCEL###']='<input name="cancelEdit" type="submit" value="'.$this->pi_getLL('CANCEL').'">';
+		#}
 		return tslib_cObj::substituteMarkerArray($formCode, $markerArray);
 	}
 

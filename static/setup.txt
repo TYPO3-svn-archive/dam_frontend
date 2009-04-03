@@ -13,7 +13,8 @@ plugin.tx_damfrontend_pi1 {
 		filelist_record = ###FILELIST_RECORD###
 	}
 
-	renderCategoryTree {
+	categoryTree {
+		preSelectChildCategories = 0
 		# plus control to select categories
 		plusIcon = IMAGE
 		plusIcon {
@@ -33,7 +34,7 @@ plugin.tx_damfrontend_pi1 {
 		stdWrapControl.wrap = <div class="control" >|</div>
 		# TypoLink for category title
 		wrapTitle.ATagParams = class="titlewrap"
-
+		
 		#IMAGE Objects for rendering the cat tree
 		treeRootIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}catfolder.gif
 		treePlusIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}plus.gif
@@ -53,13 +54,18 @@ plugin.tx_damfrontend_pi1 {
 			blank.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}blank.gif
 
 		}
-
-
-
 		#tree root stdWrap
 		treeRoot.wrap
 	}
-
+	
+	categorisationTree < .categoryTree
+	
+	# renderCategoryTree is depreceated. Please use in future categoryTree
+	renderCategoryTree < .categoryTree
+	# this object is depreceated, Please use in future categoryTree
+	renderCategoryTree.info = this ts conf is depreceated
+	
+	
 	renderFields {
 	# set stdWrap config for each field
 		file_size {
@@ -158,6 +164,11 @@ plugin.tx_damfrontend_pi1 {
 		}
 	}
 
+	# SingleView Setting is depreceated. Please use in future singleView
+	SingleView < .singleView
+	# SingleView Setting is depreceated. Please use in future singleView
+	SingleView.info = Setting is depreceated
+	
 	filterView {
 		from_day.ifEmpty =
 		from_month.ifEmpty =
@@ -280,6 +291,7 @@ plugin.tx_damfrontend_pi1 {
 
 		security_options {
 			showOnlyFilesWithPermission=0
+			deleteFilesOfDeletedRecords = 1
 		}
 		
 		sortlinks {
@@ -342,6 +354,7 @@ plugin.tx_damfrontend_pi1 {
   			creator = name
   		}
   		enableCategoryPreSelection =1
+  		preSelectChildCategories = 0
   	}
   	_CSS_DEFAULT_STYLE (
 		/*---------------------------------- category tree */

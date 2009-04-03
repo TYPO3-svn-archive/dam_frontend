@@ -652,6 +652,9 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 */
 		function categoriseDocument($uid, $catArray) {
 			if (!intval($uid) || !is_array($catArray)) die('Parametererror in categoryDocument: Check DatabaseID:' . $uid);
+			// clear all cats
+			$GLOBALS['TYPO3_DB']->exec_DELETEquery($this->mm_Table, 'uid_local ='.$uid);
+			
 			foreach($catArray as $catID) {
 				if (!intval($catID)) die('one categoryID was not delivered as Integer');
 				$newrow = array(
@@ -669,12 +672,22 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		 * @param int $uid UID of the dam entry, which should be created
 		 * @return boolean true, if the deletion was sucessful
 		 */
-		function delete_document ($uid) {
-			$table="tx_dam";
-			$where="uid=" .$uid;
-			$fields_values=array('deleted'=>'1');
-			$res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery($table,$where,$fields_values,$no_quote_fields=FALSE);
-			return $res ;
+		function delete_document ($uid,$deleteFile=false, $userUID = 0) {
+			$doc = $this->getDocument($uid)	;
+			if ($doc['tx_damfrontend_feuser_upload']==$userUID) {
+				if ($deleteFile==1){
+					unlink(PATH_site.$doc['file_path'].$doc['file_name']);
+				}
+				$table="tx_dam";
+				$where="uid=" .$uid;
+				$fields_values=array('deleted'=>'1');
+				$res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery($table,$where,$fields_values,$no_quote_fields=FALSE);
+				return $res ;
+			} 
+			else {
+				return false;
+			}
+
 	}
 
 		function get_FEUserName ($uid=0) {
@@ -697,8 +710,11 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		}
 
 
-
-		// if a file is added twice to the system, a new version is genreated
+		/**
+		 * if a file is added twice to the system, a new version is genreated
+		 * @author stefan
+		 *	@param int $docID ID of the file which should be versionized
+		 */
 		function createNewVersion($docID) {
 			// ---- getting the new record
 			$FIELDS = '*';
@@ -766,6 +782,65 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 
 		}
 
+		/**
+		 * 	restores the last version of a versionized file
+		 * 	@author stefan
+		 *	@param int $docID ID of the doc which should be rollbacked
+		 */
+		function rollbackVersion($docID) {
+				// ---- getting the current record
+			$currentDoc = $this->getDocument($docID);
+			
+				// save the file information of the newly uploaded file
+			$filename = $currentDoc['file_name'];
+			$filetype = $currentDoc['file_type'];
+			$filepath = $currentDoc['file_path'];
+			
+			if ($currentDoc['tx_damfrontend_version']==0) {
+				return false; // record is not versionized
+			}
+			
+			// ---- get the version id of the old file
+			$FIELDS = 'MAX(tx_damfrontend_version),uid, tx_damfrontend_version';
+			$TABLE = 'tx_dam';
+			$GROUPBY = 'tx_damfrontend_version';
+			$WHERE = 'file_dl_name = \''.$filename.' \' AND uid != '.$docID;
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($FIELDS,$TABLE,$WHERE,$GROUPBY);
+			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+				$oldID = $row['uid'];
+				$oldversion = $row['tx_damfrontend_version'];
+			}
+			if ($oldversion == '') {
+				return false; //no versionzid record is found
+			} 
+			else {
+					// ---- getting rest of the old record
+				$oldDoc = $this->getDocument($oldID);
+					// restore all old values
+	
+					// rename the old filename to the current file to delete filename
+				rename(PATH_site.$filepath.$filename,PATH_site.$filepath.$filename.'_delete');
+				
+				rename(PATH_site.$oldDoc['file_path'].$oldDoc['file_name'],PATH_site.$filepath.$filename);
+				
+					//copying the old data to the new id
+					// record with the old file
+				$oldDoc['uid']=$docID;
+				$oldDoc['file_name']=$filename;
+				$oldDoc['file_type']=$filetype;
+				$oldDoc['file_path']=$filepath;
+				$TABLE = 'tx_dam';
+				$WHERE = 'uid = '.$oldID;
+				$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$oldDoc);
+	
+				$currentDoc['uid'] = $oldID;
+				$currentDoc['file_name']=$filename.'_delete';				
+				$WHERE = 'uid = '.$docID;
+				$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$currentDoc);
+									
+				return true;
+			}
+		}
 		function overrideData($docID) {
 
 			// getting the new record

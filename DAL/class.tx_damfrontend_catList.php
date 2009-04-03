@@ -111,9 +111,10 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 		if (!intval($treeID)){
 			if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function op_Minus: for the treeID only integer values are allowed. Given value was:' .$treeID, 'dam_frontend',3);
 		}
+		
 		$catarray = $this->getArrayFromUser();
 
-		if (!empty($catarray)) {	
+		if (!empty($catarray) && $catarray[$treeID]) {	
 			$test = array_search($catID,$catarray[$treeID]);
 			unset($catarray[$treeID][$test]);
 		}
