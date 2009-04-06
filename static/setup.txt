@@ -32,8 +32,8 @@ plugin.tx_damfrontend_pi1 {
 
 		stdWrap.wrap = <div class="cattree">|</div>
 		stdWrapControl.wrap = <div class="control" >|</div>
-		# TypoLink for category title
-		wrapTitle.ATagParams = class="titlewrap"
+		# TypoLink for categoryTitle
+		categoryTitle.ATagParams = class="titlewrap"
 		
 		#IMAGE Objects for rendering the cat tree
 		treeRootIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}catfolder.gif
@@ -59,6 +59,9 @@ plugin.tx_damfrontend_pi1 {
 	}
 	
 	categorisationTree < .categoryTree
+	categorisationTree {
+		categoryTitleNoAccess.wrap = <span style="color: #aaa">|</span>
+	}
 	
 	# renderCategoryTree is depreceated. Please use in future categoryTree
 	renderCategoryTree < .categoryTree

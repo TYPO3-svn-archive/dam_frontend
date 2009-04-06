@@ -73,7 +73,8 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 	var $treeID;											// ID Number of the tree given from the flexform configuration
 	var $piVars;											// PiVars for keeping the vars in the links (must be set from the place where this class is used)
 	var $cObj;                       						// for RealURL
-
+	var $conf;												// configuration array
+	
 	/**
 	 * prepares the category tree
 	 *
@@ -96,9 +97,9 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 
 		// other Path are used, than in the original file
 		// @todo make the path dynamically
-		$this->iconName = 'cat.gif';
-		$this->iconPath = 'typo3conf/ext/dam/i/';
-		$this->rootIcon = 'typo3conf/ext/dam/i/catfolder.gif';
+		#$this->iconName = 'cat.gif';
+		#$this->iconPath = 'typo3conf/ext/dam/i/';
+		#$this->rootIcon = 'typo3conf/ext/dam/i/catfolder.gif';
 
 		$this->fieldArray = array('uid','title');
 		if($this->parentField) $this->fieldArray[] = $this->parentField;
@@ -127,7 +128,8 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
  		$this->user =& $GLOBALS['TSFE']->fe_user;
  		$this->backPath = 'typo3/';
 		if (isset($plugin)) $this->plugin = $plugin;
-
+		$this->cObj = $this->plugin->cObj;
+		$this->conf = $this->plugin->conf;
  	}
 
 	/**
@@ -186,28 +188,27 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 	 * @return	string		html ...
 	 */
 	function wrapTitle($title,$row,$bank=0) {
+		t3lib_div::debug($this->catLogic->checkCategoryAccess($GLOBALS['TSFE']->fe_user->user['uid'],$row['uid']));
+		t3lib_div::debug('catid:'.$row['uid']);
 		if ($this->catLogic->checkCategoryAccess($GLOBALS['TSFE']->fe_user->user['uid'],$row['uid'])) {
 			$id = t3lib_div::_GET('id');
-			/**$param_array = array (
-				'catPlus' => $row['uid'],
-				'treeID' => $this->treeID
-			);*/
-		$param_array = array (
-			'tx_damfrontend_pi1[catPlus]' => $row['uid'],
-			'tx_damfrontend_pi1[catEquals]' => null,
-			'tx_damfrontend_pi1[catMinus]' => null,
-			'tx_damfrontend_pi1[catPlus_Rec]' => null,
-			'tx_damfrontend_pi1[catMinus_Rec]' => null,
-			'tx_damfrontend_pi1[treeID]' => $this->treeID
-		);
-		if ($id != '') $param_array['id'] = $id;
-		$param_array = array_merge($this->piVars,$param_array);
-    	$url = $this->cObj->getTypoLink_URL($GLOBALS['TSFE']->id, $param_array);
-		$title = '<a href="'.$url.'">'.$title.'</a>';
-		return $title;
-	}
+			$param_array = array (
+				'tx_damfrontend_pi1' => '', // ok, the t3lib_div::linkThisScript cant work with arrays
+				'tx_damfrontend_pi1[catPlus]' => $row['uid'],
+				'tx_damfrontend_pi1[catEquals]' => null,
+				'tx_damfrontend_pi1[catMinus]' => null,
+				'tx_damfrontend_pi1[catPlus_Rec]' => null,
+				'tx_damfrontend_pi1[catMinus_Rec]' => null,
+				'tx_damfrontend_pi1[treeID]' => $this->treeID,
+				'tx_damfrontend_pi1[catEditUID]' => $row['uid']
+			);
+			$param_array =array_unique(array_merge($param_array, $this->piVars));
+			$this->conf['categorisationTree.']['categoryTitle.']['parameter'] = $GLOBALS['TSFE']->id;
+			$this->conf['categorisationTree.']['categoryTitle.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
+			return $this->cObj->typoLink($title, $this->conf['categorisationTree.']['categoryTitle.']);
+		}
 		else {
-			return '<span style="color: #aaa" >'.$title.'</span>';
+			return  $this->cObj->stdWrap($title,$this->conf['categorisationTree.']['categoryTitleNoAccess.']);
 		}
 
 	}

@@ -79,7 +79,8 @@ class tx_damfrontend_DAL_categories {
 	);
 	var $mm_table_readaccess = '';  // mm Table which stores the groups, which have readaccess to a category
 	var $mm_table_downloadaccess = ''; // mm Table which stores the groups
-
+	var $debug = true;
+	
 	function getCategory($catID) {
 		if (!intval($catID)) {
 			if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getCategory: for the catID only integer values are allowed. Given value was:' .$catID, 'dam_frontend',3);
@@ -228,7 +229,7 @@ class tx_damfrontend_DAL_categories {
 	 *
 	 * @param	int		$userID: id of the user, who has the right to use the system
 	 * @param	int		$relID: id to specify read / downloadaccess
-	 * @return	array		array of all category records
+	 * @return	array	array of all category records
 	 */
 		function getCategories($userID, $relID) {
 			if (!isset($userID) || !isset($relID) || $userID == '' || $relID == '') {
@@ -240,6 +241,7 @@ class tx_damfrontend_DAL_categories {
 			$foreign_table = 'fe_groups';
 			$where = 'AND '.$local_table.'.uid = '. (int)$userID ;
 			$select = $local_table.'.*';
+			t3lib_div::debug($select.' / '.$local_table.' / '. $mm_table.' / '. $foreign_table.' / '. $where);
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query($select,$local_table, $mm_table, $foreign_table, $where);
 
 			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
@@ -292,9 +294,9 @@ class tx_damfrontend_DAL_categories {
 	 * searches for an uid in an given array and returns the found row. If multiple
 	 * records with the same uid exists in the list
 	 *
-	 * @param	array		$list: various kind of array
+	 * @param	array	$list: various kind of array
 	 * @param	int		$id: uid to search in the list
-	 * @return	array		returns the resultrow as an array
+	 * @return	array	returns the resultrow as an array
 	 */
 		function findUidinList($list, $id)
 		{
@@ -311,25 +313,37 @@ class tx_damfrontend_DAL_categories {
 		}
 
 		/**
- * searches for an uid in an given array and returns the found row. If multiple
- * records with the same uid exists in the list
- *
- * @param	array		$list: various kind of array
- * @param	int		$id: uid to search in the list
- * @return	array		returns the resultrow as an array
- */
+		 * searches for an uid in an given array and returns the found row. If multiple
+		 * records with the same uid exists in the list
+		 *
+		 * @param	array	$list: various kind of array
+		 * @param	int		$id: uid to search in the list
+		 * @return	array	returns the resultrow as an array
+		 */
 		function checkCategoryAccess($userID, $catID) {
 
 			$catRow = $this->getCategory($catID);
 			// check first, if no usergroup has been assigned to the given category
 			if ($catRow['tx_damtree_fe_groups_uploadaccess'] == 0) {
+				if ($this->debug ==1) {
+					t3lib_div::debug('checkCategoryAccess = true (no group selected) catID: '.$catID);
+				}
 				return true;
 			}
 			else {
 				if($this->findUidinList($this->getCategories($userID,3),$catID)) {
+					if ($this->debug ==1) {
+						t3lib_div::debug('checkCategoryAccess = true catID: '.$catID);
+						t3lib_div::debug($userID);
+						$cats = $this->getCategories($userID,3);
+						t3lib_div::debug($cats); 
+					}
 					return true;
 				}
 				else {
+					if ($this->debug ==1) {
+						t3lib_div::debug('checkCategoryAccess = false catID: '.$catID);
+					}
 					return false;
 				}
 			}

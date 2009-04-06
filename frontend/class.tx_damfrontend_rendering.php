@@ -838,8 +838,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		// initalisation of the treeview
 		$tree = t3lib_div::makeInstance('tx_damfrontend_categorisationTree');
 		$tree->MOUNTS = explode(',',$uploadCats);
-		$tree->init(-1);
-		$tree->cObj = $this->cObj;
+		$tree->init(-1,$this);
 		if ($this->piVars['catEditUID']>0) {
 			$tree->piVars = array('tx_damfrontend_pi1[catEditUID]'=>$docData['uid']);
 		}

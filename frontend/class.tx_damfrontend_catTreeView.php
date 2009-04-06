@@ -198,8 +198,8 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 			'tx_damfrontend_pi1[treeID]' => $this->treeID
 		);
 		if ($id > 0) { $param_array['tx_damfrontend_pi1[id]'] = $id; }
-		$this->conf['renderCategoryTree.']['wrapTitle.']['parameter'] = $GLOBALS['TSFE']->id;
-		$this->conf['renderCategoryTree.']['wrapTitle.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
+		$this->conf['categoryTree.']['categoryTitle.']['parameter'] = $GLOBALS['TSFE']->id;
+		$this->conf['categoryTree.']['categoryTitle.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
 		return $this->cObj->typoLink($title, $this->conf['renderCategoryTree.']['wrapTitle.']);
 	}
 
