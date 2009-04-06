@@ -79,7 +79,7 @@ class tx_damfrontend_DAL_categories {
 	);
 	var $mm_table_readaccess = '';  // mm Table which stores the groups, which have readaccess to a category
 	var $mm_table_downloadaccess = ''; // mm Table which stores the groups
-	var $debug = true;
+	var $debug = false;
 	
 	function getCategory($catID) {
 		if (!intval($catID)) {
@@ -241,7 +241,6 @@ class tx_damfrontend_DAL_categories {
 			$foreign_table = 'fe_groups';
 			$where = 'AND '.$local_table.'.uid = '. (int)$userID ;
 			$select = $local_table.'.*';
-			t3lib_div::debug($select.' / '.$local_table.' / '. $mm_table.' / '. $foreign_table.' / '. $where);
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query($select,$local_table, $mm_table, $foreign_table, $where);
 
 			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
@@ -307,7 +306,7 @@ class tx_damfrontend_DAL_categories {
 		 * @param	int		$id: uid to search in the list
 		 * @return	array	returns the resultrow as an array
 		 */
-		function checkCategoryAccess($userID, $catID) {
+		function checkCategoryUploadAccess($userID, $catID) {
 
 			$catRow = $this->getCategory($catID);
 			// check first, if no usergroup has been assigned to the given category
@@ -318,27 +317,24 @@ class tx_damfrontend_DAL_categories {
 				return true;
 			}
 			else {
-				
-				$usergroups = $this->feuser->groupData['uid'];
-				$valid = true;
-				foreach($docgroups as $docgroup) {
-					$valid = $valid && array_search($docgroup['uid'], $usergroups);
+					// get all usergroups a fe_user belongs to
+				$usergroups = implode(',',$GLOBALS['TSFE']->fe_user->groupData['uid']) ;
+					// TODO error handling
+				$mm_table = 'tx_dam_cat_uploadaccess_mm';
+					// executing database search: should return a row with the usergroup(s)
+				$local_table = $this->catTable;
+				$foreign_table = 'fe_groups';
+				$where = 'AND '. $foreign_table.'.uid in ('.$usergroups.') AND ' .$local_table .'.uid = '.$catID ;
+				$select = $local_table.'.*';
+				$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query($select,$local_table, $mm_table, $foreign_table, $where);
+	
+				while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+					$resultlist[] = $row;
 				}
-				return $valid;
-				
-				if($this->findUidinList($this->getCategories($userID,3),$catID)) {
-					if ($this->debug ==1) {
-						t3lib_div::debug('checkCategoryAccess = true catID: '.$catID);
-						t3lib_div::debug($userID);
-						$cats = $this->getCategories($userID,3);
-						t3lib_div::debug($cats); 
-					}
+				if ($resultlist) {
 					return true;
 				}
 				else {
-					if ($this->debug ==1) {
-						t3lib_div::debug('checkCategoryAccess = false catID: '.$catID);
-					}
 					return false;
 				}
 			}

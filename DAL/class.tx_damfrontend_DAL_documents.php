@@ -611,7 +611,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$indexer->setDryRun(true); // just getting metadata from the dock
 			$indexer->setPID(tx_dam_db::getPid());
 			$indexer->setRunType("man");
-
 			$data = $indexer->indexfile($path,0);
 			$newrecord = $data['fields'];
 
@@ -637,7 +636,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			unset($newrecord['file_perms']);
 			unset($newrecord['file_writable']);
 			unset($newrecord['file_readable']);
-
+			t3lib_div::debug($newrecord);
 			// executing the insert operation for the database
 			$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_dam', $newrecord);
 			$newID = $GLOBALS['TYPO3_DB']->sql_insert_id();
@@ -652,7 +651,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 * @return	[void]		...
 	 */
 		function categoriseDocument($uid, $catArray) {
-			if (!intval($uid) || !is_array($catArray)) die('Parametererror in categoryDocument: Check DatabaseID:' . $uid);
+			if (!intval($uid) || !is_array($catArray)) die('Parametererror in categoriseDocument: Check DatabaseID:' . $uid);
 			// clear all cats
 			$GLOBALS['TYPO3_DB']->exec_DELETEquery($this->mm_Table, 'uid_local ='.$uid);
 			
@@ -981,7 +980,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		 *
 		 */
 		 function delete_category ($uid, $catID) {
-			if (!intval($uid)) die('Parametererror in categoryDocument: Check DatabaseID:' . $uid);
+			if (!intval($uid)) die('Parametererror in delete_category: Check DatabaseID:' . $uid);
 			if (!intval($catID)) die('one categoryID was not delivered as Integer');
 			$where = ' uid_local=' .$uid .' AND uid_foreign= ' . $catID;
 			return $GLOBALS['TYPO3_DB']->exec_DELETEquery($this->mm_Table, $where);

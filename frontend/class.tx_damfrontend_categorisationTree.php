@@ -188,9 +188,7 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 	 * @return	string		html ...
 	 */
 	function wrapTitle($title,$row,$bank=0) {
-		t3lib_div::debug($this->catLogic->checkCategoryAccess($GLOBALS['TSFE']->fe_user->user['uid'],$row['uid']));
-		t3lib_div::debug('catid:'.$row['uid']);
-		if ($this->catLogic->checkCategoryAccess($GLOBALS['TSFE']->fe_user->user['uid'],$row['uid'])) {
+		if ($this->catLogic->checkCategoryUploadAccess($GLOBALS['TSFE']->fe_user->user['uid'],$row['uid'])) {
 			$id = t3lib_div::_GET('id');
 			$param_array = array (
 				'tx_damfrontend_pi1' => '', // ok, the t3lib_div::linkThisScript cant work with arrays
@@ -235,7 +233,33 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 
 	}
 
-
+	/**
+	 * Generate the plus/minus icon for the browsable tree.
+	 *
+	 * @param	array		record for the entry
+	 * @param	integer		The current entry number
+	 * @param	integer		The total number of entries. If equal to $a, a "bottom" element is returned.
+	 * @param	integer		The number of sub-elements to the current element.
+	 * @param	boolean		The element was expanded to render subelements if this flag is set.
+	 * @return	string		Image tag with the plus/minus icon.
+	 * @access private
+	 * @see t3lib_pageTree::PMicon()
+	 */
+	function PMicon($row,$a,$c,$nextCount,$exp)	{
+		
+		$renderElement = $nextCount ? ($exp?'treeMinusIcon':'treePlusIcon') : 'treeJoinIcon';
+		
+		$BTM = ($a==$c)?'Bottom':'';		
+		$icon=$this->cObj->IMAGE($this->conf['categorisationTree.'][$renderElement.$BTM.'.']);
+				
+		if ($nextCount)	{
+			$cmd=$this->bank.'_'.($exp?'0_':'1_').$row['uid'].'_'.$this->treeName;
+			$bMark=($this->bank.'_'.$row['uid']);
+			$icon = $this->PM_ATagWrap($icon,$cmd,$bMark);
+		}
+		
+		return $icon;
+	}
 // TODO: check why/if this function is not needed anymore
 
 	/**
@@ -343,12 +367,212 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 
 
 	/**
-	 * calls the parrent method getBrowsableTree
+	 * Returns the title for the input record. If blank, a "no title" label (localized) will be returned.
+	 * Do NOT htmlspecialchar the string from this function - has already been done.
 	 *
-	 * @return	[type]		...
+	 * This is an overload of the parent's method which uses BE objects not available in the FE
+	 *
+	 * @param	array		The input row array (where the key "title" is used for the title)
+	 * @param	integer		Title length (30)
+	 * @return	string		The title.
+	 */
+	function getTitleStr($row, $titleLen = 30)	{
+		$conf['sys_language_uid'] = $GLOBALS['TSFE']->sys_language_uid;
+		// this line can be used for DAM Version 1.1+
+		$row = tx_dam_db::getRecordOverlay($this->table, $row, $conf);
+		$title = trim($row['title']);
+		if (empty($title)) $title = '<em>['.$this->plugin->pi_getLL('no_title').']</em>';
+		return $title;
+	}
+
+	/**
+	 * builds the tree for the treeview
+	 *
+	 * @return	[arr]		Array of the treeelements
 	 */
 	function getBrowsableTree() {
-		return  parent::getBrowsableTree();
+		
+			// Get stored tree structure AND updating it if needed according to incoming PM GET var.
+		$this->initializePositionSaving();
+
+			// Init done:
+		$titleLen=intval($this->BE_USER->uc['titleLen']);
+		$treeArr=array();
+	
+			// Traverse mounts:
+		foreach($this->MOUNTS as $idx => $uid)	{
+
+				// Set first:
+			$this->bank=$idx;
+			$isOpen = $this->stored[$idx][$uid] || $this->expandFirst;
+
+				// Save ids while resetting everything else.
+			$curIds = $this->ids;
+			$this->reset();
+			$this->ids = $curIds;
+
+				// Set PM icon for root of mount:
+			$cmd=$this->bank.'_'.($isOpen?"0_":"1_").$uid.'_'.$this->treeName;
+			
+			if ($isOpen) {
+				$icon=$this->cObj->IMAGE($this->conf['categorisationTree.']['treeMinusIcon.']);
+			}
+			else {
+				$icon=$this->cObj->IMAGE($this->conf['categorisationTree.']['treePlusIcon.']);
+			}
+			
+			$firstHtml= $this->PM_ATagWrap($icon,$cmd);
+
+				// Preparing rootRec for the mount
+			if ($uid)	{
+				$rootRec = $this->getRecord($uid);
+				$firstHtml.=$this->getIcon($rootRec);
+			} else {
+					// Artificial record for the tree root, id=0
+				$rootRec = $this->getRootRecord($uid);
+				$firstHtml.=$this->getRootIcon($rootRec);
+			}
+
+			if (is_array($rootRec))	{
+				$uid = $rootRec['uid'];		// In case it was swapped inside getRecord due to workspaces.
+
+					// Add the root of the mount to ->tree
+				$this->tree[]=array('HTML'=>$firstHtml, 'row'=>$rootRec, 'bank'=>$this->bank);
+
+					// If the mount is expanded, go down:
+				if ($isOpen)	{
+						// Set depth:
+					$depthD='<img'.t3lib_iconWorks::skinImg($this->backPath,'gfx/ol/blank.gif','width="18" height="16"').' alt="" />';
+					if ($this->addSelfId)	$this->ids[] = $uid;
+					$this->getTree($uid,999,$depthD,'',$rootRec['_SUBCSSCLASS']);
+				}
+
+					// Add tree:
+				$treeArr=array_merge($treeArr,$this->tree);
+			}
+		}
+		return $this->printTree($treeArr);
+	}
+
+
+	/********************************
+	 *
+	 * tree data buidling
+	 *
+	 ********************************/
+
+	/**
+	 * Fetches the data for the tree
+	 *
+	 * @param	integer		item id for which to select subitems (parent id)
+	 * @param	integer		Max depth (recursivity limit)
+	 * @param	string		HTML-code prefix for recursive calls.
+	 * @param	string		? (internal)
+	 * @param	string		CSS class to use for <td> sub-elements
+	 * @return	integer		The count of items on the level
+	 */
+	function getTree($uid, $depth=999, $depthData='',$blankLineCode='',$subCSSclass='')	{
+		// Buffer for id hierarchy is reset:
+		$this->buffer_idH=array();
+
+			// Init vars
+		$depth=intval($depth);
+		$HTML='';
+		$a=0;
+
+		$res = $this->getDataInit($uid,$subCSSclass);
+		$c = $this->getDataCount($res);
+		$crazyRecursionLimiter = 999;
+
+			// Traverse the records:
+		while ($crazyRecursionLimiter>0 && $row = $this->getDataNext($res,$subCSSclass))	{
+			$a++;
+			$crazyRecursionLimiter--;
+
+			$newID = $row['uid'];
+
+			if ($newID==0)	{
+				t3lib_BEfunc::typo3PrintError ('Endless recursion detected', 'TYPO3 has detected an error in the database. Please fix it manually (e.g. using phpMyAdmin) and change the UID of '.$this->table.':0 to a new value.<br /><br />See <a href="http://bugs.typo3.org/view.php?id=3495" target="_blank">bugs.typo3.org/view.php?id=3495</a> to get more information about a possible cause.',0);
+				exit;
+			}
+
+			$this->tree[]=array();		// Reserve space.
+			end($this->tree);
+			$treeKey = key($this->tree);	// Get the key for this space
+			$LN = ($a==$c)?'blank':'line';
+
+				// If records should be accumulated, do so
+			if ($this->setRecs)	{
+				$this->recs[$row['uid']] = $row;
+			}
+
+				// Accumulate the id of the element in the internal arrays
+			$this->ids[] = $idH[$row['uid']]['uid'] = $row['uid'];
+			$this->ids_hierarchy[$depth][] = $row['uid'];
+			$this->orig_ids_hierarchy[$depth][] = $row['_ORIG_uid'] ? $row['_ORIG_uid'] : $row['uid'];
+
+			
+				// Make a recursive call to the next level
+			$HTML_depthData = $depthData.$this->cObj->IMAGE($this->conf['categorisationTree.']['treeNavIcons.'][$LN]);
+			if ($depth>1 && $this->expandNext($newID) && !$row['php_tree_stop'])	{
+				$nextCount=$this->getTree(
+						$newID,
+						$depth-1,
+						$this->makeHTML ? $HTML_depthData : '',
+						$blankLineCode.','.$LN,
+						$row['_SUBCSSCLASS']
+					);
+				if (count($this->buffer_idH))	$idH[$row['uid']]['subrow']=$this->buffer_idH;
+				$exp=1;	// Set "did expand" flag
+			} else {
+				$nextCount=$this->getCount($newID);
+				$exp=0;	// Clear "did expand" flag
+			}
+
+				// Set HTML-icons, if any:
+			if ($this->makeHTML)	{
+				$HTML = $depthData.$this->PMicon($row,$a,$c,$nextCount,$exp);
+				$HTML.=$this->wrapStop($this->getIcon($row),$row);
+			}
+
+				// Finally, add the row/HTML content to the ->tree array in the reserved key.
+			$this->tree[$treeKey] = Array(
+				'row'=>$row,
+				'HTML'=>$HTML,
+				'HTML_depthData' => $this->makeHTML==2 ? $HTML_depthData : '',
+				'invertedDepth'=>$depth,
+				'blankLineCode'=>$blankLineCode,
+				'bank' => $this->bank
+			);
+		}
+
+		$this->getDataFree($res);
+		$this->buffer_idH=$idH;
+		return $c;
+	}
+
+	/**
+	 * Returns the root icon for a tree/mountpoint (defaults to the globe)
+	 *
+	 * @param	array		Record for root.
+	 * @return	string		Icon image tag.
+	 */
+	function getRootIcon($rec) {
+		return $this->wrapIcon($this->cObj->IMAGE($this->conf['categorisationTree.']['treeRootIcon.']),$rec);
+	}
+	
+		/**
+	 * Get icon for the row.
+	 * If $this->iconPath and $this->iconName is set, try to get icon based on those values.
+	 *
+	 * @param	array		Item row.
+	 * @return	string		Image tag.
+	 */
+	function getIcon($row) {
+			$icon = $this->cObj->IMAGE($this->conf['categorisationTree.']['treeCatIcon.']);
+			$icon = $this->wrapIcon($icon,$row);
+
+		return $icon;
 	}
 }
 ?>

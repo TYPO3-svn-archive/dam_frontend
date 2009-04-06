@@ -1279,6 +1279,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 									}
 								}
 							}
+							t3lib_div::debug($newID);
+							t3lib_div::debug($catArr);
 							$returnCode = $this->docLogic->categoriseDocument($newID,$catArr);
 						}
 					}
@@ -1681,8 +1683,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	}
 	
 	function testCase () {
-		$this->catLogic->
-		return $content;
+		#$this->catLogic->
+		#return $content;
 	}
 
 	/**

@@ -222,7 +222,6 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 		$linkConf['section'] = $bMark;
 		if ($bMark) $linkConf['ATagParams'] = ' name="'.$bMark.'" ';
 		return $this->cObj->typoLink($icon, $linkConf);
-		// return '<a href="'.htmlspecialchars($aUrl).'"'.$name.'>'.$icon.'</a>';
 	}
 
 	/**
@@ -242,7 +241,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 		$renderElement = $nextCount ? ($exp?'treeMinusIcon':'treePlusIcon') : 'treeJoinIcon';
 		
 		$BTM = ($a==$c)?'Bottom':'';		
-		$icon=$this->cObj->IMAGE($this->conf['renderCategoryTree.'][$renderElement.$BTM.'.']);
+		$icon=$this->cObj->IMAGE($this->conf['categoryTree.'][$renderElement.$BTM.'.']);
 				
 		if ($nextCount)	{
 			$cmd=$this->bank.'_'.($exp?'0_':'1_').$row['uid'].'_'.$this->treeName;
@@ -286,7 +285,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 			// TODO: use TypoScript
 			$url = $cObj->getTypoLink_URL($GLOBALS['TSFE']->id, $urlVars);
 
-			$icon = $cObj->cObjGetSingle($this->conf['renderCategoryTree.']['plusIcon'], $this->conf['renderCategoryTree.']['plusIcon.']);
+			$icon = $cObj->cObjGetSingle($this->conf['categoryTree.']['plusIcon'], $this->conf['categoryTree.']['plusIcon.']);
 			// TODO: use TypoScript
 			$control .= '<a href="'.$url.'">'.$icon.'</a>';
 
@@ -304,7 +303,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 			// TODO: use TypoScript
 			$url = $cObj->getTypoLink_URL($GLOBALS['TSFE']->id, $urlVars);
 			
-			$icon = $cObj->cObjGetSingle($this->conf['renderCategoryTree.']['equalsIcon'], $this->conf['renderCategoryTree.']['equalsIcon.']);
+			$icon = $cObj->cObjGetSingle($this->conf['categoryTree.']['equalsIcon'], $this->conf['categoryTree.']['equalsIcon.']);
 			$control .= '<a href="'.$url.'">'.$icon.'</a>';
 
 			// generate minus button
@@ -319,10 +318,10 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 			);
 			if ($id != '') $param_array['id'] = $id;
 			$url = $cObj->getTypoLink_URL($GLOBALS['TSFE']->id, $urlVars);
-			$icon = $cObj->cObjGetSingle($this->conf['renderCategoryTree.']['minusIcon'], $this->conf['renderCategoryTree.']['minusIcon.']);
+			$icon = $cObj->cObjGetSingle($this->conf['categoryTree.']['minusIcon'], $this->conf['categoryTree.']['minusIcon.']);
 			$control .= '<a href="'.$url.'">'.$icon.'</a>';
 		}
-		$control = $cObj->stdWrap($control, $this->conf['renderCategoryTree.']['stdWrapControl.']);
+		$control = $cObj->stdWrap($control, $this->conf['categoryTree.']['stdWrapControl.']);
 		// $control = '<div class="control" >'.$control . '</div>';
 		return $control;
 	}
@@ -438,10 +437,10 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 			$cmd=$this->bank.'_'.($isOpen?"0_":"1_").$uid.'_'.$this->treeName;
 			
 			if ($isOpen) {
-				$icon=$this->cObj->IMAGE($this->conf['renderCategoryTree.']['treeMinusIcon.']);
+				$icon=$this->cObj->IMAGE($this->conf['categoryTree.']['treeMinusIcon.']);
 			}
 			else {
-				$icon=$this->cObj->IMAGE($this->conf['renderCategoryTree.']['treePlusIcon.']);
+				$icon=$this->cObj->IMAGE($this->conf['categoryTree.']['treePlusIcon.']);
 			}
 			
 			$firstHtml= $this->PM_ATagWrap($icon,$cmd);
@@ -536,7 +535,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 
 			
 				// Make a recursive call to the next level
-			$HTML_depthData = $depthData.$this->cObj->IMAGE($this->conf['renderCategoryTree.']['treeNavIcons.'][$LN]);
+			$HTML_depthData = $depthData.$this->cObj->IMAGE($this->conf['categoryTree.']['treeNavIcons.'][$LN]);
 			if ($depth>1 && $this->expandNext($newID) && !$row['php_tree_stop'])	{
 				$nextCount=$this->getTree(
 						$newID,
@@ -581,7 +580,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	 * @return	string		Icon image tag.
 	 */
 	function getRootIcon($rec) {
-		return $this->wrapIcon($this->cObj->IMAGE($this->conf['renderCategoryTree.']['treeRootIcon.']),$rec);
+		return $this->wrapIcon($this->cObj->IMAGE($this->conf['categoryTree.']['treeRootIcon.']),$rec);
 	}
 	
 		/**
@@ -592,7 +591,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	 * @return	string		Image tag.
 	 */
 	function getIcon($row) {
-			$icon = $this->cObj->IMAGE($this->conf['renderCategoryTree.']['treeCatIcon.']);
+			$icon = $this->cObj->IMAGE($this->conf['categoryTree.']['treeCatIcon.']);
 			$icon = $this->wrapIcon($icon,$row);
 
 		return $icon;
