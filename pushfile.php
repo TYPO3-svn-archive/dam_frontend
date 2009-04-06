@@ -244,6 +244,8 @@ if (!$docLogic->checkDocumentAccess($doc['fe_group'])) {
 	die('<h1>Error</h1><p>You have no access to this file.');
 }
 $filePath = PATH_site.$doc['file_path'].$doc['file_name'];
+t3lib_div::debug($filePath);
+
 if (!sendFile($filePath, $doc['file_name'])) {
 	die ('<h1>Error</h1><p>The requested file was not found! Please contact the adminstrator and tell him that the id: '.$docID .' was not found');
 }

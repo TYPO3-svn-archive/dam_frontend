@@ -676,6 +676,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$doc = $this->getDocument($uid)	;
 			if ($doc['tx_damfrontend_feuser_upload']==$userUID) {
 				if ($deleteFile==1){
+						// TOOO error handling
 					unlink(PATH_site.$doc['file_path'].$doc['file_name']);
 				}
 				$table="tx_dam";
@@ -841,8 +842,15 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				return true;
 			}
 		}
-		function overrideData($docID) {
-
+		
+		/**
+		 * returns the UID of the record which should be overwritten
+		 * 
+		 * @author stefan
+		 *
+		 */
+		function versioningOverridePrepare($docID) {
+			
 			// getting the new record
 			$FIELDS = '*';
 			$TABLE = 'tx_dam';
@@ -861,23 +869,65 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$WHERE = 'file_name = \''.$filename.' \' AND uid <>'.$docID ;
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($FIELDS,$TABLE,$WHERE);
 			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				$oldUID = $row['uid'];
+				$oldDoc = $row;
 			}
-
+				
+				// store the ID of the old record, so that if can be overwritten in the last step
+			$GLOBALS['TSFE']->fe_user->setKey('ses','versioningOverrideID',$oldDoc['uid']);
 			// DELETE the old file
-			unlink(PATH_site.$newDoc['file_path'].$newDoc['file_name']);
+			// unlink(PATH_site.$newDoc['file_path'].$newDoc['file_name']);
 
 			// Rename the uploaded file to the new name
-			rename(PATH_site.$newDoc['file_path'].$newDoc['file_name'].'_versionate', PATH_site.$newDoc['file_path'].$newDoc['file_name']);
+			// rename(PATH_site.$newDoc['file_path'].$newDoc['file_name'].'_versionate', PATH_site.$newDoc['file_path'].$newDoc['file_name']);
 
-			// deleting the new record
+			// copy the values of the old file to new one
+			
+			$oldDoc['date_mod']=time();
+			$oldDoc['file_name']=$newDoc['file_name'];
+			$oldDoc['file_path']=$newDoc['file_path'];
+				// set deleted to 1, that the new record (not yet saved thru the user) is not shown in the FE
+			$oldDoc['deleted']=1;
+			
 			$TABLE = 'tx_dam';
 			$WHERE = 'uid = '.$docID;
-			$GLOBALS['TYPO3_DB']->exec_DELETEquery($TABLE,$WHERE);
-
-			return $oldUID;
+			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$oldDoc);
+			
+			// TODO insert error handling
+			
+			return $docID;
 		}
+		
+		function versioningOverrideExecute($docID) {
+			
+			$newDoc =  $this->getDocument($docID);
+			
+			$oldDoc = $this->getDocument($GLOBALS['TSFE']->fe_user->getKey('ses','versioningOverrideID'));
+				
+				// store the ID of the old record, so that if can be overwritten in the last step
+			$GLOBALS['TSFE']->fe_user->getKey('ses','versioningOverrideID');
+			// DELETE the old file
+			// unlink(PATH_site.$newDoc['file_path'].$newDoc['file_name']);
 
+			// Rename the uploaded file to the new name
+			// rename(PATH_site.$newDoc['file_path'].$newDoc['file_name'].'_versionate', PATH_site.$newDoc['file_path'].$newDoc['file_name']);
+
+			// copy the values of the old file to new one
+			
+			$oldDoc['date_mod']=time();
+			$oldDoc['file_name']=$newDoc['file_name'];
+			$oldDoc['file_path']=$newDoc['file_path'];
+				// set deleted to 1, that the new record (not yet saved thru the user) is not shown in the FE
+			$oldDoc['deleted']=1;
+			
+			$TABLE = 'tx_dam';
+			$WHERE = 'uid = '.$docID;
+			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$oldDoc);
+			
+			// TODO insert error handling
+			
+			return $docID;
+		}
+		
 		/**
 		 * 	@author stefan
 		 *	@param int $uid: uid of the dam record

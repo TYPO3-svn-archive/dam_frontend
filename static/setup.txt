@@ -353,8 +353,103 @@ plugin.tx_damfrontend_pi1 {
   			#left side column of the dam record - right side fe_user column
   			creator = name
   		}
-  		enableCategoryPreSelection =1
+  		enableCategoryPreSelection = 1
   		preSelectChildCategories = 0
+  		conf {
+  			checkMime = 0
+			mimeInclude = image/gif,image/jpeg,application/x-zip-compressed
+			mimeExclude = application/octet-stream
+			checkExt = 1
+			extExclude = exe,php,php3
+			extInclude = *
+			maxsize = 5000000
+			path =fileadmin/
+			uploadTempDir = dam_frontend_upload/
+			FEuserHomePath=0
+			FEuserHomePath.field = username
+			noOverwrite = 1
+			fileMode = 0755
+			_CSS_DEFAULT_STYLE (
+			
+			)
+			_LOCAL_LANG.default {
+		
+			}
+			_DEFAULT_PI_VARS {
+		
+			}
+			
+			#	This cObject must contain the upload-form
+			#
+			#	The upload form must at least contain the following:
+			#
+			#	a) an input field of type "file" and name "tx_fileupload_pi1"
+			#	b) an input field of type "submit" and name "tx_fileupload_pi1[do_upload]"
+			#
+			#	If you insert the marker ###STATUS### it will be replaced by any status messages that was generated
+			#	following an upload
+			#
+			
+			uploadformcObject = TEXT
+			uploadformcObject.insertData = 1
+			uploadformcObject.value(
+			
+							###STATUS###
+			
+							<form enctype="multipart/form-data" method="POST">
+							<input type="hidden" name="MAX_FILE_SIZE" value="500000">
+							<input name="tx_fileupload_pi1" type="file"><br>
+							<input type="submit" name="tx_fileupload_pi1[do_upload]" value="{LLL:EXT:fileupload/pi1/locallang.php:submitupload}"><br>
+							</form>	
+			)
+			
+			
+			#	These are the status messages that can be displayed after an upload request has been processed
+			
+			message{
+			
+				#File already exists on server
+				exist = TEXT
+				exist.value = <p>{LLL:EXT:fileupload/pi1/locallang.php:error.exist}</p>
+				exist.insertData = 1
+		
+		
+				#File too big
+				toobig = TEXT
+				toobig.value = <p>{LLL:EXT:fileupload/pi1/locallang.php:error.toobig}</p>
+				toobig.insertData = 1
+		
+				#Mime type not allowed
+				mimenotallowed = TEXT
+				mimenotallowed.value = <p>{LLL:EXT:fileupload/pi1/locallang.php:error.mimenotallowed}</p>
+				mimenotallowed.insertData = 1
+				
+				#File extension not allowed
+				extensionnotallowed = TEXT
+				extensionnotallowed.value = <p>{LLL:EXT:fileupload/pi1/locallang.php:error.extensionnotallowed}</p>
+				extensionnotallowed.insertData = 1
+		
+				#Upload was succesfull
+				uploadsuccesfull = TEXT
+				uploadsuccesfull.value = <p>{LLL:EXT:fileupload/pi1/locallang.php:uploadsuccesfull}</p>
+				uploadsuccesfull.insertData = 1
+				
+				#File was only partially uploaded
+				partial = TEXT
+				partial.value = <p>{LLL:EXT:fileupload/pi1/locallang.php:error.partial}</p>
+				partial.insertData = 1
+		
+				#No file was uploaded
+				nofile = TEXT
+				nofile.value = <p>{LLL:EXT:fileupload/pi1/locallang.php:error.nofile}</p>
+				nofile.insertData = 1
+		
+				#Unknown error
+				unknown = TEXT
+				unknown.value = <p>{LLL:EXT:fileupload/pi1/locallang.php:error.unknown}</p>
+				unknown.insertData = 1
+			}
+  		}
   	}
   	_CSS_DEFAULT_STYLE (
 		/*---------------------------------- category tree */

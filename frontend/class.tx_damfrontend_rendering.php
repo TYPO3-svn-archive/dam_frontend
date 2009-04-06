@@ -1085,13 +1085,8 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		$hiddenFields = '<input type="hidden" name="saveUID" value="'.$record['uid'].'" />';
  		$markerArray['###HIDDENFIELDS###'] = $hiddenFields;
 		$markerArray =$markerArray + $this->substituteLangMarkers($formCode);
-		
-		#if ($GLOBALS['TSFE']->fe_user->getKey('ses','saveID')>0) {
-		#	$formCode = tslib_cObj::substituteMarker($formCode, '###CANCEL###','');
-		#}
-		#else {
 		$markerArray['###CANCEL###']='<input name="cancelEdit" type="submit" value="'.$this->pi_getLL('CANCEL').'">';
-		#}
+
 		return tslib_cObj::substituteMarkerArray($formCode, $markerArray);
 	}
 
