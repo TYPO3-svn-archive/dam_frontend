@@ -712,136 +712,186 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 
 
 		/**
-		 * if a file is added twice to the system, a new version is genreated
-		 * @author stefan
+		 *	 if a file is added twice to the system, a new version is genreated
+		 * 	@author stefan
 		 *	@param int $docID ID of the file which should be versionized
 		 */
-		function createNewVersion($docID) {
-			// ---- getting the new record
-			$FIELDS = '*';
-			$TABLE = 'tx_dam';
-			$WHERE = 'uid = '.$docID;
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($FIELDS,$TABLE,$WHERE);
-			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				$newDoc = $row;
-			}
-			$filename = $newDoc['file_name'];
+		function versioningCreateNewVersionPrepare($docID) {
+			
+				// ---- getting the new record
+			$newDoc = $this->getDocument($docID);
+			$filename = $GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
 			$filetype = $newDoc['file_type'];
-			$filepath = $newDoc['file_path'];
-
-			// ---- get the version id of the old file
+			
+				// ---- get the latest version id of an existing old file
 			$FIELDS = 'MAX(tx_damfrontend_version),uid, tx_damfrontend_version';
 			$TABLE = 'tx_dam';
 			$GROUPBY = 'tx_damfrontend_version';
-			$WHERE = 'file_dl_name = \''.$filename.' \' AND uid != '.$docID;
+			$WHERE = 'file_dl_name = \''.$filename.' \' AND uid != '.$docID . ' AND deleted = 0';
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($FIELDS,$TABLE,$WHERE,$GROUPBY);
 			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				$oldID = $row['uid'];
 				$oldversion = $row['tx_damfrontend_version'];
 			}
-			if ($oldversion == '') $oldversion = 1;
-
-			// ---- getting rest of the old record
-			$FIELDS = '*';
+			if ($oldversion == '') $oldversion = 0;
+				// store the ID of the old record, so that if can be overwritten in the last step
+			$GLOBALS['TSFE']->fe_user->setKey('ses','versioningNewVersionID',$oldID);
+			
+				// ---- getting rest of the old record
+			$oldDoc = $this->getDocument($oldID);
+			$newVersion = $oldversion +1;
+				// copying the old data to the new id
+				// record with the old file
+			$oldDoc['uid']=$docID;
+			$oldDoc['tx_damfrontend_version']=$newVersion;
+			$oldDoc['file_name']=$newDoc['file_name'];
+			$oldDoc['file_path']=$newDoc['file_path'];
+			$oldDoc['tstamp']=time();
 			$TABLE = 'tx_dam';
-			$WHERE = 'uid = '.$oldID;
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($FIELDS,$TABLE,$WHERE);
-			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				$oldDoc = $row;
-			}
+			$WHERE = 'uid = '.$docID;
+			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$oldDoc);
 
-			//copying the old data to the new id
-			// record with the old file
+			return $docID;
+
+		}
+
+		/**
+		 * if a file is added twice to the system, a new version is genreated
+		 * @author stefan
+		 *	@param int $docID ID of the file which should be versionized
+		 */
+		function versioningCreateNewVersionExecute($docID) {
+			$newDoc = $this->getDocument($docID);
+			
+				// TODO access check	
+				// TODO insert error handling
+			
+			$filename = $GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
+			$filetype = $newDoc['file_type'];
+			$filepath = $newDoc['file_path'];
+
+				// ---- getting the pure filename
+			list($purename,$type) = split('\.',$filename);
+			$newversion = $newDoc['tx_damfrontend_version'];
+			$new_filename = $purename.'_v'.$newversion.'.'.$filetype;
+				// copy the new file from temp dir to destionation dir with new version number
+			copy(PATH_site.$newDoc['file_path'].$newDoc['file_name'],$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$new_filename);
+				// delete the temp file
+			unlink($newDoc['file_path'].$newDoc['file_name']);
+			
+				//copying the old data to the new id
+				// record with the old file
+			$oldDoc = $this->getDocument($GLOBALS['TSFE']->fe_user->getKey('ses','versioningNewVersionID'));
+
+			// set the record of the old version to new ID 
+			$oldID = $oldDoc['uid'];
 			$oldDoc['uid']=$docID;
 			$TABLE = 'tx_dam';
 			$WHERE = 'uid = '.$docID;
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$oldDoc);
 
-			// ---- getting the pure filename
-			list($versionname,$type) = split('\.',$filename);
-			list($purename,$version) = split('_v',$versionname);
-			$newversion = $oldversion+ 1;
-			$new_filename = $purename.'_v'.$newversion.'.'.$filetype;
-
-			// ---- changing the id's of the records and copying the old meta data to the file
-			//record with the new file
-			$oldDoc['uid'] = $oldID;
-			$oldDoc['tx_damfrontend_version'] = $newversion;
-			$oldDoc['file_name']=$new_filename;
-			$oldDoc['tx_damfrontend_version']= $newversion;
-			$oldDoc['crdate']=time();
-			$oldDoc['date_mod']=time();
-			$DATA = array('uid' => $oldID);
+				// ---- changing the id's of the records and copying the old meta data to the file
+				//record with the new file
+			$newDoc['uid'] = $oldID;
+			$newDoc['deleted']=0;
+			$newDoc['file_name']=$new_filename;
+			$newDoc['file_path']=$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath');
+			$newDoc['tx_damfrontend_version']= $newversion;
+			$newDoc['date_mod']=time();
 			$TABLE = 'tx_dam';
 			$WHERE = 'uid = '.$oldID;
-			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$oldDoc);
+			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$newDoc);
+			
+			// change the categories UID
+			$newDoc = array();
+			$newDoc[uid_local]='-'.$GLOBALS['TSFE']->fe_user->user['uid'];
+			$TABLE = 'tx_dam_mm_cat';
+			$WHERE = 'uid_local = '.$oldID;
+			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$newDoc);
 
-			// ---- renaming the new file with the version number
-			rename(PATH_site.$filepath.$filename.'_versionate',PATH_site.$filepath.$new_filename);
-
+			// change the categories UID
+			$newDoc = array();
+			$newDoc[uid_local]=$oldID;
+			$TABLE = 'tx_dam_mm_cat';
+			$WHERE = 'uid_local = '.$docID;
+			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$newDoc);
+			
+			// change the categories UID
+			$newDoc = array();
+			$newDoc[uid_local]=$docID;
+			$TABLE = 'tx_dam_mm_cat';
+			$WHERE = 'uid_local = -'.$GLOBALS['TSFE']->fe_user->user['uid'];
+			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$newDoc);
+			
+			$GLOBALS['TSFE']->fe_user->setKey('ses','versioningNewVersionID','');
+			$GLOBALS['TSFE']->fe_user->setKey('ses','versioning','');
+			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFilePath','');
+			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFileName','');	
+			
 			return $oldID;
 
 		}
-
+		
 		/**
+		 * 	not finished 
 		 * 	restores the last version of a versionized file
 		 * 	@author stefan
 		 *	@param int $docID ID of the doc which should be rollbacked
 		 */
-		function rollbackVersion($docID) {
-				// ---- getting the current record
-			$currentDoc = $this->getDocument($docID);
-			
-				// save the file information of the newly uploaded file
-			$filename = $currentDoc['file_name'];
-			$filetype = $currentDoc['file_type'];
-			$filepath = $currentDoc['file_path'];
-			
-			if ($currentDoc['tx_damfrontend_version']==0) {
-				return false; // record is not versionized
-			}
-			
-			// ---- get the version id of the old file
-			$FIELDS = 'MAX(tx_damfrontend_version),uid, tx_damfrontend_version';
-			$TABLE = 'tx_dam';
-			$GROUPBY = 'tx_damfrontend_version';
-			$WHERE = 'file_dl_name = \''.$filename.' \' AND uid != '.$docID;
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($FIELDS,$TABLE,$WHERE,$GROUPBY);
-			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				$oldID = $row['uid'];
-				$oldversion = $row['tx_damfrontend_version'];
-			}
-			if ($oldversion == '') {
-				return false; //no versionzid record is found
-			} 
-			else {
-					// ---- getting rest of the old record
-				$oldDoc = $this->getDocument($oldID);
-					// restore all old values
-	
-					// rename the old filename to the current file to delete filename
-				rename(PATH_site.$filepath.$filename,PATH_site.$filepath.$filename.'_delete');
-				
-				rename(PATH_site.$oldDoc['file_path'].$oldDoc['file_name'],PATH_site.$filepath.$filename);
-				
-					//copying the old data to the new id
-					// record with the old file
-				$oldDoc['uid']=$docID;
-				$oldDoc['file_name']=$filename;
-				$oldDoc['file_type']=$filetype;
-				$oldDoc['file_path']=$filepath;
-				$TABLE = 'tx_dam';
-				$WHERE = 'uid = '.$oldID;
-				$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$oldDoc);
-	
-				$currentDoc['uid'] = $oldID;
-				$currentDoc['file_name']=$filename.'_delete';				
-				$WHERE = 'uid = '.$docID;
-				$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$currentDoc);
-									
-				return true;
-			}
-		}
+//		function rollbackVersion($docID) {
+//				// ---- getting the current record
+//			$currentDoc = $this->getDocument($docID);
+//			
+//				// save the file information of the newly uploaded file
+//			$filename = $currentDoc['file_name'];
+//			$filetype = $currentDoc['file_type'];
+//			$filepath = $currentDoc['file_path'];
+//			
+//			if ($currentDoc['tx_damfrontend_version']==0) {
+//				return false; // record is not versionized
+//			}
+//			
+//			// ---- get the version id of the old file
+//			$FIELDS = 'MAX(tx_damfrontend_version),uid, tx_damfrontend_version';
+//			$TABLE = 'tx_dam';
+//			$GROUPBY = 'tx_damfrontend_version';
+//			$WHERE = 'file_dl_name = \''.$filename.' \' AND uid != '.$docID;
+//			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($FIELDS,$TABLE,$WHERE,$GROUPBY);
+//			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+//				$oldID = $row['uid'];
+//				$oldversion = $row['tx_damfrontend_version'];
+//			}
+//			if ($oldversion == '') {
+//				return false; //no versionzid record is found
+//			} 
+//			else {
+//					// ---- getting rest of the old record
+//				$oldDoc = $this->getDocument($oldID);
+//					// restore all old values
+//	
+//					// rename the old filename to the current file to delete filename
+//				rename(PATH_site.$filepath.$filename,PATH_site.$filepath.$filename.'_delete');
+//				
+//				rename(PATH_site.$oldDoc['file_path'].$oldDoc['file_name'],PATH_site.$filepath.$filename);
+//				
+//					//copying the old data to the new id
+//					// record with the old file
+//				$oldDoc['uid']=$docID;
+//				$oldDoc['file_name']=$filename;
+//				$oldDoc['file_type']=$filetype;
+//				$oldDoc['file_path']=$filepath;
+//				$TABLE = 'tx_dam';
+//				$WHERE = 'uid = '.$oldID;
+//				$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$oldDoc);
+//	
+//				$currentDoc['uid'] = $oldID;
+//				$currentDoc['file_name']=$filename.'_delete';				
+//				$WHERE = 'uid = '.$docID;
+//				$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$currentDoc);
+//									
+//				return true;
+//			}
+//		}
 		
 		/**
 		 * returns the UID of the record which should be overwritten
@@ -851,81 +901,76 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		 */
 		function versioningOverridePrepare($docID) {
 			
-			// getting the new record
+				// getting the new record
+			$newDoc = $this->getDocument($docID);
+			
+			$filename = $GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
+				// getting the old dataset id
 			$FIELDS = '*';
-			$TABLE = 'tx_dam';
-			$WHERE = 'uid = '.$docID;
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($FIELDS,$TABLE,$WHERE);
-
-
-			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				$newDoc = $row;
-			}
-			$filename = $newDoc['file_name'];
-
-			// getting the old dataset id
-			$FIELDS = 'uid';
 			$TABLE = 'tx_dam';
 			$WHERE = 'file_name = \''.$filename.' \' AND uid <>'.$docID ;
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($FIELDS,$TABLE,$WHERE);
+				// TODO insert error handling
 			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				$oldDoc = $row;
 			}
 				
 				// store the ID of the old record, so that if can be overwritten in the last step
 			$GLOBALS['TSFE']->fe_user->setKey('ses','versioningOverrideID',$oldDoc['uid']);
-			// DELETE the old file
-			// unlink(PATH_site.$newDoc['file_path'].$newDoc['file_name']);
-
-			// Rename the uploaded file to the new name
-			// rename(PATH_site.$newDoc['file_path'].$newDoc['file_name'].'_versionate', PATH_site.$newDoc['file_path'].$newDoc['file_name']);
-
-			// copy the values of the old file to new one
-			
+						
 			$oldDoc['date_mod']=time();
 			$oldDoc['file_name']=$newDoc['file_name'];
 			$oldDoc['file_path']=$newDoc['file_path'];
 				// set deleted to 1, that the new record (not yet saved thru the user) is not shown in the FE
 			$oldDoc['deleted']=1;
-			
+			$oldDoc['uid']=$docID;
+				// copy the old data to the new record
 			$TABLE = 'tx_dam';
 			$WHERE = 'uid = '.$docID;
+				// TODO insert error handling
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$oldDoc);
-			
-			// TODO insert error handling
-			
+						
 			return $docID;
 		}
 		
 		function versioningOverrideExecute($docID) {
 			
-			$newDoc =  $this->getDocument($docID);
+			$newDoc = $this->getDocument($docID);
 			
-			$oldDoc = $this->getDocument($GLOBALS['TSFE']->fe_user->getKey('ses','versioningOverrideID'));
+				// TODO access check	
+				// delete the old file
+			unlink($GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName'));
+				// TODO insert error handling
 				
-				// store the ID of the old record, so that if can be overwritten in the last step
-			$GLOBALS['TSFE']->fe_user->getKey('ses','versioningOverrideID');
-			// DELETE the old file
-			// unlink(PATH_site.$newDoc['file_path'].$newDoc['file_name']);
-
-			// Rename the uploaded file to the new name
-			// rename(PATH_site.$newDoc['file_path'].$newDoc['file_name'].'_versionate', PATH_site.$newDoc['file_path'].$newDoc['file_name']);
-
-			// copy the values of the old file to new one
+				// copy the new file from temp dir to destionation dir
+			copy(PATH_site.$newDoc['file_path'].$newDoc['file_name'],$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName'));
+				// delete the temp file
+			unlink($newDoc['file_path'].$newDoc['file_name']);
 			
-			$oldDoc['date_mod']=time();
-			$oldDoc['file_name']=$newDoc['file_name'];
-			$oldDoc['file_path']=$newDoc['file_path'];
+				// update the new file
+			$newDoc['file_name']=$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
+			$newDoc['file_path']=$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath');
 				// set deleted to 1, that the new record (not yet saved thru the user) is not shown in the FE
-			$oldDoc['deleted']=1;
+			$newDoc['deleted']=0;
+			$newDoc['uid']=$GLOBALS['TSFE']->fe_user->getKey('ses','versioningOverrideID');
 			
 			$TABLE = 'tx_dam';
+			$WHERE = 'uid = '.$GLOBALS['TSFE']->fe_user->getKey('ses','versioningOverrideID');
+				// TODO insert error handling
+			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$newDoc);
+
+				// delete the temp dam record (in case of overwrite action, the record is not needed anymore)
+			$TABLE = 'tx_dam';
 			$WHERE = 'uid = '.$docID;
-			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$oldDoc);
+				// TODO insert error handling
+			$GLOBALS['TYPO3_DB']->exec_DELETEquery($TABLE,$WHERE);
 			
-			// TODO insert error handling
+			$GLOBALS['TSFE']->fe_user->setKey('ses','versioningNewVersionID','');
+			$GLOBALS['TSFE']->fe_user->setKey('ses','versioning','');
+			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFilePath','');
+			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFileName','');	
 			
-			return $docID;
+			return 1;
 		}
 		
 		/**
@@ -972,9 +1017,49 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 					// TODO is there a more elegantly way for this construction? - stefan 
 				} else {
 					$access = true;
-	}
+				}
 			}  
 			return $access;
+		}
+	
+		function storeDocument($docID) {
+		
+			// handle versioning
+			switch ($GLOBALS['TSFE']->fe_user->getKey('ses','versioning')){
+				case 'override':
+					$this->versioningOverrideExecute($docID);
+					break;
+				case 'new_version':
+					$this->versioningCreateNewVersionExecute($docID);
+					break;
+				default:
+						
+						// correct filename & filepath
+					$newDoc = $this->getDocument($docID);
+					
+						// copy file to the final destination
+					$uploadFile = $GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
+					
+						// TODO insert error handling
+					copy(PATH_site.$newDoc['file_path'].$newDoc['file_name'],$uploadFile);
+						// delete the temp file
+					unlink($newDoc['file_path'].$newDoc['file_name']);
+		
+						// set the dam record info the the final state	
+					$newDoc['deleted']=0;
+					$newDoc['file_name']=$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
+					$newDoc['file_path']=$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath');
+
+					$GLOBALS['TSFE']->fe_user->setKey('ses','versioningNewVersionID','');
+					$GLOBALS['TSFE']->fe_user->setKey('ses','versioning','');
+					$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFilePath','');
+					$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFileName','');	
+										
+					$TABLE = 'tx_dam';
+					$WHERE = 'uid = '.$docID;
+					$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$newDoc);
+					break;	
+			}
 		}
 	}
 

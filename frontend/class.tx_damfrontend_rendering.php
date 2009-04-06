@@ -130,6 +130,8 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 	 * @return	[type]		...
 	 */
  	function renderFileList($list, $resultcount, $pointer, $listLength, $useRequestForm) {
+ 		
+		
  		if(!is_array($list)){
  			//no result is given
  			return $this->pi_getLL('noDocInCat');
@@ -152,7 +154,6 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
  		$countElement = 0;
 		$rows = '';
 		$cObj = t3lib_div::makeInstance('tslib_cObj');
-
  		foreach ($list as $elem) {
 			$record_Code = tsLib_CObj::getSubpart($this->fileContent,$filelist_record_marker[$countElement]['cObjNum']);
  			// TODO: correct table-name?
@@ -227,14 +228,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		$this->conf['filelist.']['form_url.']['returnLast'] = 'url';
 		$content = tslib_cObj::substituteMarker($content, '###FORM_URL###', $this->cObj->typolink('', $this->conf['filelist.']['form_url.']));
 
-		// substitute Links for Sorting
- 		$record = $list[0];
- 		foreach ($record as $key=>$value) {
-			$content = tsLib_CObj::substituteMarker($content, '###SORTLINK_'.strtoupper($key).'###', $this->renderSortLink($key));
- 		}
- 		foreach (array('FILELIST_BATCH_SELECT', 'FILELIST_BATCH_GO', 'FILELIST_BATCH_CREATEZIPFILE', 'FILELIST_BATCH_SENDASMAIL', 'FILELIST_BATCH_SENDZIPPEDFILESASMAIL', 'FILELIST_BATCH_SENDFILELINK', 'FILELIST_BATCH_SENDZIPPEDFILELINK', 'FILENAME_HEADER', 'FILENAME_HEADER', 'FILETYPE_HEADER', 'CR_DATE_HEADER') as $label) {
- 			$content = tsLib_CObj::substituteMarker($content, '###'.$label.'###', $this->pi_getLL($label, $label));
- 		}
+
 
  		$content = tsLib_CObj::substituteMarker($content, '###FILENAME_HEADER###', $this->pi_getLL('FILENAME_HEADER'));
  		$content = tsLib_CObj::substituteMarker($content, '###FILETYPE_HEADER###', $this->pi_getLL('FILETYPE_HEADER'));
@@ -253,6 +247,15 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		// substitute Links for Browseresult
 		$browseresults = $this->renderBrowseResults($resultcount, $pointer, $listLength);
 		$content = tsLib_CObj::substituteMarker($content, '###BROWSERESULTS###', $browseresults);
+		
+ 			// substitute Links for Sorting
+ 		$record = $list[0];
+ 		foreach ($record as $key=>$value) {
+			$content = tsLib_CObj::substituteMarker($content, '###SORTLINK_'.strtoupper($key).'###', $this->renderSortLink($key));
+ 		}
+ 		foreach (array('FILELIST_BATCH_SELECT', 'FILELIST_BATCH_GO', 'FILELIST_BATCH_CREATEZIPFILE', 'FILELIST_BATCH_SENDASMAIL', 'FILELIST_BATCH_SENDZIPPEDFILESASMAIL', 'FILELIST_BATCH_SENDFILELINK', 'FILELIST_BATCH_SENDZIPPEDFILELINK', 'FILENAME_HEADER', 'FILENAME_HEADER', 'FILETYPE_HEADER', 'CR_DATE_HEADER') as $label) {
+ 			$content = tsLib_CObj::substituteMarker($content, '###'.$label.'###', $this->pi_getLL($label, $label));
+ 		}
  		return $content;
  	}
 
@@ -279,7 +282,6 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		$noOfPages = intval($resultcount / $listLength)-$limiter;
 		
 		if ($resultcount % $listLength==0) $noOfPages = $noOfPages-1+$limiter;
-
 		
 		for ($z = 0; $z <= $noOfPages; $z++) {
 			$this->piVars['pointer'] = $z;
@@ -606,7 +608,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
  	function renderUploadForm() {
 		$this->pi_loadLL();
 		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###UPLOADFORM###');
-		$markerArray['###BUTTON_UPLOAD###'] = $this->pi_getLL('BUTTON_UPLOAD');
+		$markerArray['###BUTTON_UPLOAD###'] = $this->cObj->stdWrap('<input name="upload_file" type="submit" value="'.$this->pi_getLL('BUTTON_UPLOAD').'" />',$this->conf['upload.']['renderUploadForm.']['button_upload.']);
 		$markerArray['###TITLE_FILEUPLOAD###'] = $this->pi_getLL('TITLE_FILEUPLOAD');
 		$markerArray['###LABEL_FILE###'] =  $this->pi_getLL('LABEL_FILE');
 		if (!isset($this->conf['filterview.']['form_url.']['parameter'])) {
@@ -897,7 +899,13 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 	 */
 	function renderUploadSuccess() {
 		$this->pi_loadLL();
-		return $this->pi_getLL('UPLOAD_SUCCESS');
+		$subpart = tslib_CObj::getSubpart($this->fileContent,'###MESSAGE###');
+		$markerArray['###FORM_URL###'] = tslib_cObj::substituteMarker($content, '###FORM_URL###', $this->cObj->typolink('', $this->conf['upload.']['successMessage.']['form_url.']));
+ 		$markerArray['###LABEL_MESSAGE###']=$this->pi_getLL('LABEL_MESSAGE');
+ 		$markerArray['###MESSAGE_TEXT###']=$this->pi_getLL('UPLOAD_SUCCESS');
+ 		$markerArray['###BUTTON_NEXT###']= '<input name="ok" type="submit" value="'.$this->pi_getLL('BUTTON_NEXT').'">';
+ 		$content=tslib_cObj::substituteMarkerArray($subpart, $markerArray);
+		return $content;
 	}
 
 	/**
@@ -917,6 +925,9 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
  		// converting all fields in the record to marker (recordfields and markername must match)
  		$markerArray = $this->recordToMarkerArray($record);
  		$markerArray =$markerArray + $this->substituteLangMarkers($single_Code);
+ 		$markerArray['###FORM_URL###']= $this->cObj->typolink('', $this->conf['filelist.']['fileDeleteMessage.']['form_url.']);
+ 		$hiddenFields = '<input type="hidden" name="deleteUID" value="'.$record['uid'].'" />';
+ 		$markerArray['###HIDDENFIELDS###'] = $hiddenFields;
  		$this->pi_loadLL();
  		$content=tslib_cObj::substituteMarkerArray($single_Code, $markerArray);
  		$content = tslib_cObj::substituteMarker($content, '###TITLE_SINGLEVIEW###',$record['title']);
@@ -929,9 +940,9 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
  		$content = tslib_cObj::substituteMarker($content, '###TITLE_SINGLEVIEW_HEADER###',$this->pi_getLL('TITLE_SINGLEVIEW_HEADER'));
  		$content = tslib_cObj::substituteMarker($content, '###LABEL_WARNING###',$this->pi_getLL('LABEL_WARNING'));
 		$content = tslib_cObj::substituteMarker($content, '###MESSAGE_DELETION_WARNING###',$this->pi_getLL('MESSAGE_DELETION_WARNING'));
-		$content = tslib_cObj::substituteMarker($content, '###CANCEL_DELETION_UID###', $this->pi_linkTP_keepPiVars('<img src="'.$this->iconPath.'turn_left.gif'.'" style="border-width: 0px"/> &nbsp;'.$this->pi_getLL('BUTTON_BACK'),   array('showUid'=>$record['uid'],'confirmDeleteUID'=>'')));
-		$content = tslib_cObj::substituteMarker($content, '###CONFIRM_DELETION_UID###',$this->pi_linkTP_keepPiVars('<img src="'.$this->iconPath.'garbage.gif'.'" style="border-width: 0px"/> &nbsp;'.$this->pi_getLL('BUTTON_CONFIRM'),		array('showUid'=>''            ,'deleteUID'=>$record['uid'], 'confirmDeleteUID'=>'')));
- 		return $content;
+		$content = tslib_cObj::substituteMarker($content, '###CONFIRM_DELETION_UID###',$this->cObj->stdWrap('<input name="CONFIRM_DELETION" type="submit" value="'.$this->pi_getLL('BUTTON_CONFIRM').'">',$this->conf['filelist.']['fileDeleteMessage.']['buttonConfirm.']));
+		$content = tslib_cObj::substituteMarker($content, '###CANCEL_DELETION_UID###',$this->cObj->stdWrap('<input name="CANCEL_DELETION" type="submit" value="'.$this->pi_getLL('BUTTON_BACK').'">',$this->conf['filelist.']['fileDeleteMessage.']['buttonCancel.']));
+		return $content;
  }
 
 	/**
@@ -942,9 +953,11 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 	function renderFileDeletionSuccess() {
 		$this->pi_loadLL();
 		$subpart = tslib_CObj::getSubpart($this->fileContent,'###MESSAGE###');
+		$markerArray['###FORM_URL###']= $this->cObj->typolink('', $this->conf['filelist.']['fileDeleteSuccessMessage.']['form_url.']);
  		$markerArray['###LABEL_MESSAGE###']=$this->pi_getLL('LABEL_MESSAGE');
  		$markerArray['###MESSAGE_TEXT###']=$this->pi_getLL('MESSAGE_TEXT_DELETION_SUCESS');
- 		$markerArray['###BUTTON_NEXT###']= $this->pi_linkTP_keepPiVars('<img src="'.$this->iconPath.'icon_ok2.gif'.'" style="border-width: 0px"/> &nbsp;'.$this->pi_getLL('BUTTON_NEXT'),array('showUid'=>'','deleteUID'=>'', 'confirmDeleteUID'=>''));
+ 		$markerArray['###BUTTON_NEXT###']= '<input name="ok" type="submit" value="'.$this->pi_getLL('BUTTON_NEXT').'">';
+ 		#$this->pi_linkTP_keepPiVars('<img src="'.$this->iconPath.'icon_ok2.gif'.'" style="border-width: 0px"/> &nbsp;'.$this->pi_getLL('BUTTON_NEXT'),array('showUid'=>'','deleteUID'=>'', 'confirmDeleteUID'=>''));
  		$content=tslib_cObj::substituteMarkerArray($subpart, $markerArray);
 		return $content;
 	}
@@ -1069,7 +1082,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		$this->pi_loadLL();
 
 		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###EDITFORM###');
-		$markerArray['###BUTTON_CONFIRM###'] = $this->pi_getLL('BUTTON_CONFIRM');
+		
 		$markerArray['###TITLE_FILEUPLOAD###'] = $this->pi_getLL('TITLE_FILEUPLOAD');
 		$markerArray['###LABEL_FILE###'] =  $this->pi_getLL('LABEL_FILE');
 		$markerArray['###LABEL_TITLE###'] =  $this->pi_getLL('LABEL_TITLE');
@@ -1085,7 +1098,9 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		$hiddenFields = '<input type="hidden" name="saveUID" value="'.$record['uid'].'" />';
  		$markerArray['###HIDDENFIELDS###'] = $hiddenFields;
 		$markerArray =$markerArray + $this->substituteLangMarkers($formCode);
-		$markerArray['###CANCEL###']='<input name="cancelEdit" type="submit" value="'.$this->pi_getLL('CANCEL').'">';
+		
+		$markerArray['###BUTTON_CONFIRM###'] =$this->cObj->stdWrap('<input name="editok" type="submit" value="'.$this->pi_getLL('BUTTON_CONFIRM').'"',$this->conf['filelist.']['renderFileEdit.']['button_confirm.']);
+		$markerArray['###CANCEL###']=$this->cObj->stdWrap('<input name="cancelEdit" type="submit" value="'.$this->pi_getLL('CANCEL').'">',$this->conf['filelist.']['renderFileEdit.']['button_cancel.']);
 
 		return tslib_cObj::substituteMarkerArray($formCode, $markerArray);
 	}

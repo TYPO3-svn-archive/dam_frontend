@@ -347,7 +347,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		//editing of dam records
 		$this->internal['confirmDeleteUID'] = intval($this->piVars['confirmDeleteUID']);
-		$this->internal['deleteUID'] = intval($this->piVars['deleteUID']);
+		$this->internal['deleteUID'] = intval(t3lib_div::_POST('deleteUID'));
 		$this->internal['editUID'] = intval($this->piVars['editUID']);
 		$this->internal['saveUID'] = intval(t3lib_div::_POST('saveUID'));
 		$this->internal['catEditUID'] = intval($this->piVars['catEditUID']);
@@ -386,7 +386,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$this->internal['cancelEdit']=true;
 		}
 		
-		
+		if (t3lib_div::_POST('CANCEL_DELETION')) {
+			$this->internal['deleteUID']=null;
+			$this->internal['confirmDeleteUID']=null;
+		}		
 		// incoming command of saving the current category selection
 		$this->saveCategorisation = strip_tags(t3lib_div::_POST('catOK')) != '' ? true : false;
 		
@@ -605,7 +608,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 *	
 	 */
 	function fileListBasicFuncionality () {
-		
+
 		$hasCats = false; // true if any category has been selected yet
 		if ($this->conf['enableDeletions']==1) {
 			if ($this->userLoggedIn == true) {
@@ -935,11 +938,14 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				// TODO show warning 
 			$this->internal['saveUID'] =null;
 			$GLOBALS['TSFE']->fe_user->setKey('ses','saveID','');
+			$GLOBALS['TSFE']->fe_user->setKey('ses','versioningOverrideID','');
+			$GLOBALS['TSFE']->fe_user->setKey('ses','versioning','');
+			$GLOBALS['TSFE']->fe_user->setKey('ses','versioningNewVersionID','');
 			$this->saveCategorisation=false;
 			$this->saveMetaData=false;
 			$this->categorise=false;
 			$this->upload=false;
-			// todo delete file & metadata
+				// todo delete file & metadata
 			$step = 1;
 		}		
 		// $GLOBALS['TSFE']->fe_user->setKey('ses','uploadID',$newID)
@@ -947,11 +953,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		if (is_array($GLOBALS['TSFE']->fe_user->user)) {
 			
 			// TODO check access for the FE User
-			t3lib_div::debug('upload: '.$this->upload);
 			
 			if ($this->upload) {
 				$returnCode = $this->handleUpload();
-				t3lib_div::debug($returnCode);
 				
 				if (intval($returnCode) != 0) {
 						// -- UPLOAD SUCCESSFUL CATEGORISATION OR VERSIONING --
@@ -1009,13 +1013,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$step = 3;
 			}
 			
-			t3lib_div::debug('save cat: '.$this->saveCategorisation);
-			
 			if($this->saveCategorisation==1) {
 				$docID = intval($GLOBALS['TSFE']->fe_user->getKey('ses','categoriseID'));
 				$this->saveCategories($docID);
-				$GLOBALS['TSFE']->fe_user->setKey('ses','categoriseID', null);
-				$this->catList->clearCatSelection(-1);
+				$this->categorise=false;
 				$step = 4;
 			}
 		}
@@ -1209,12 +1210,15 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				
 				$uploadfile = PATH_site.$uploaddir.$feuploaddir.$_FILES[$uploadHandler->prefixId]['name'];
 				$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFileName',$_FILES[$uploadHandler->prefixId]['name']); 
+				$this->documentData['file_dl_name']=$_FILES[$uploadHandler->prefixId]['name']; 
 				$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFilePath',$uploaddir.$feuploaddir);
+				
 					// check if the current file is already present  - preparing for
 					// displaying the versioning options
 				if (is_file($uploadfile)) {
 					$this->versionate = true;
 				}
+				
 				$this->documentData['title'] = $_FILES[$uploadHandler->prefixId]['name'];
 				$this->documentData['tx_damfrontend_feuser_upload'] = $this->userUID;
 					
@@ -1253,7 +1257,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$uploadHandler->handleUpload();
 				
 					// adding the uploaded file to the DAM System, if no error occured
-				t3lib_div::debug($uploadfile);
 				
 				if (is_file($uploadfile)) {
 					$newID = $this->docLogic->addDocument($uploadfile, $this->documentData);
@@ -1356,16 +1359,26 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$docID = intval($GLOBALS['TSFE']->fe_user->getKey('ses','categoriseID'));
 			$docData = $this->docLogic->getDocument($docID);
 			$versioning = t3lib_div::_GP('version_method');
-			#get all categories, which a user has selected
 		}
 
 			// check if a category is allready selected, if not if will tried to load the categories out of the database
-
 		$cats = $this->catList->getCatSelection(-1,0);
-		
 		if ($cats==null) {
 				// if no cats are given by an user, search in the database for cats (this should usually done only once)
-			$cats=$this->docLogic->getCategoriesbyDoc($docID,true);	
+			switch ($GLOBALS['TSFE']->fe_user->getKey('ses','versioning')){
+				case 'override':
+						// get the cats of the doc which should be overwritten
+					$cats=$this->docLogic->getCategoriesbyDoc($GLOBALS['TSFE']->fe_user->getKey('ses','versioningOverrideID'),true);	
+					break;
+				case 'new_version':
+						// get the cats of the doc which should get a new version
+					$cats=$this->docLogic->getCategoriesbyDoc($GLOBALS['TSFE']->fe_user->getKey('ses','versioningNewVersionID'),true);		
+					break;
+				default:
+					$cats=$this->docLogic->getCategoriesbyDoc($docID,true);	
+					break;
+			}
+			
 				// store cat selection in the user array
 			if (is_array($cats)) {
 				$catarray[-1] = $cats;
@@ -1402,48 +1415,15 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		if (is_array($cats)) $this->docLogic->categoriseDocument($docID, $cats);
 
 		if ($upload==true) {
-			// handle versioning
-			switch ($GLOBALS['TSFE']->fe_user->getKey('ses','versioning')){
-				case 'override':
-					t3lib_div::debug('versioning override');
-					break;
-				case 'new_version':
-					t3lib_div::debug('versioning new_version');
-					break;
-				default:
-					t3lib_div::debug('versioning default');
-					
-						// correct filename & filepath
-					$newDoc = $this->docLogic->getDocument($docID);
-					
-						// copy file to destination
-					$uploadFile = $GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
-					
-					copy(PATH_site.$newDoc['file_path'].$newDoc['file_name'],$uploadFile);
-					// unlink($newDoc['file_path'].$newDoc['file_name']);
-		
-					$newDoc['deleted']=0;
-					$newDoc['file_name']=$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
-					$newDoc['file_path']=$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath');
-											
-					$TABLE = 'tx_dam';
-					$WHERE = 'uid = '.$docID;
-					$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$newDoc);
-					break;
-			}
-			
-				// finisch up with cleaning
-			$this->catList->clearCatSelection(-1);
-			$GLOBALS['TSFE']->fe_user->setKey('ses','categoriseID','');
+			$this->docLogic->storeDocument($docID);
 			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadID','');
-				// set record to visible
-			return $this->renderer->renderUploadSuccess();	
-		} 
-		else {
-			return true;
+			$GLOBALS['TSFE']->fe_user->setKey('ses','saveID', '');
 		}
-		
-		
+			// finisch up with cleaning
+		$this->catList->clearCatSelection(-1);
+		$GLOBALS['TSFE']->fe_user->setKey('ses','categoriseID','');
+			// set record to visible
+		return $this->renderer->renderUploadSuccess();	
 	}
 
 	/**
@@ -1460,16 +1440,16 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$SELECT = 'recuid';
 			$FROM = 'sys_refindex';
 			$WHERE = 'tablename ="fe_users" AND ref_table = "fe_groups" AND ref_uid in ('.$fe_group .')' ;
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE);
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE);
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				$recuid[]=$row['recuid'];
-	}
+			}
 			#get all direct user of fe_user_group uid
 
 			#todo resolve all subgroups of the given
 			# Build a Where Clause
 			$userListOfFEGroups=' AND uid in('. implode(',',$recuid) .') ';
-}
+		}
 		$SELECT = '*';
 		$FROM = 'fe_users';
 		$WHERE = 'deleted = 0 AND disable = 0 AND starttime <' .time() . ' AND (endtime = 0 OR endtime > '. time().')' . $userListOfFEGroups;
@@ -1478,7 +1458,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			if ($currentUser<>'' AND ($currentUser == $row['name'] or $currentUser == $row['username'] or $currentUser == $row['uid'])) {
 				$row['selected']=1;
-			} else {
+			} 
+			else {
 				$row['selected']=0;
 			}
 			$feUserList[]=$row;
@@ -1493,6 +1474,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * TODO: documentation
 	 */
 	function myFiles () {
+		$this->renderer->piVars = $this->piVars;
 		if ($this->userLoggedIn==false){
 			return $this->renderer->renderError('noUserLoggedIn');
 		}
@@ -1546,10 +1528,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				break;
 			case 'new_version':
 				$GLOBALS['TSFE']->fe_user->setKey('ses','versioning','new_version');
-				return $this->docLogic->createNewVersion($docID);
+				return $this->docLogic->versioningCreateNewVersionPrepare($docID);
 				break;
 		}
-
 	}
 
 	/**

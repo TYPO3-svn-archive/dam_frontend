@@ -302,6 +302,27 @@ plugin.tx_damfrontend_pi1 {
 		}
 		browselink.wrap= |
 		browselinkCurrent.wrap= <span style="border: 1px solid black">|</span>
+		
+		fileDeleteSuccessMessage {
+			# typolink : formurl action
+			form_url.parameter.data = TSFE:id
+			form_url.addQueryString = 1
+			form_url.returnLast = url
+			form_url.additionalParams = &tx_damfrontend_pi1[deleteUID]=
+		}
+		fileDeleteMessage {
+			# typolink : formurl action
+			form_url.parameter.data = TSFE:id
+			form_url.addQueryString = 1
+			form_url.returnLast = url
+			form_url.additionalParams = &tx_damfrontend_pi1[confirmDeleteUID]=
+			buttonConfirm.wrap = |
+			buttonCancel.wrap = |
+		}
+		renderFileEdit {
+			button_confirm.wrap = |
+			button_cancel.wrap = |
+		}
 	}
 
 	# configuration for subpart ###NEWFILTER_LINK###
@@ -355,6 +376,15 @@ plugin.tx_damfrontend_pi1 {
   		}
   		enableCategoryPreSelection = 1
   		preSelectChildCategories = 0
+  		successMessage {
+			# typolink : formurl action
+			form_url.parameter.data = TSFE:id
+			form_url.addQueryString = 1
+			form_url.returnLast = url
+		}
+		renderUploadForm {
+			button_upload.wrap = |
+		}
   		conf {
   			checkMime = 0
 			mimeInclude = image/gif,image/jpeg,application/x-zip-compressed

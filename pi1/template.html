@@ -445,41 +445,46 @@ Template for displaying a single document in a list
 
 ********************************** -->
 <!-- ###FILE_DELETION### begin-->
-<div class="dam_frontend_Message">
-	<h2 class="warning">###LABEL_WARNING###</h2>
-	<p>###MESSAGE_DELETION_WARNING###</p>
-	<table class="file_singleView" border="1">
-			<tr>
-			<th>###TITLE_SINGLEVIEW_HEADER###:</th><th>###TITLE_SINGLEVIEW###</th>
+<form action="###FORM_URL###" method="post" enctype="multipart/form-data">
+	<div class="dam_frontend_Message">
+		<h2 class="warning">###LABEL_WARNING###</h2>
+		<p>###MESSAGE_DELETION_WARNING###</p>
+		<table class="file_singleView" border="1">
+				<tr>
+				<th>###TITLE_SINGLEVIEW_HEADER###:</th><th>###TITLE_SINGLEVIEW###</th>
+				</tr>
+				<tr>
+				<td class="title">###CR_DATE_HEADER###:</td><td>###CRDATE###</td>
+				</tr>
+				<tr>
+				<td class="title">###CR_DESCRIPTION_HEADER###:</td><td>###DESCRIPTION###</td>
+				</tr>
+				<tr>
+				<td class="title">###FILE_SIZE_HEADER###:</td><td>###FILE_SIZE###</td>
+				</tr>
+				<tr>
+				<td class="title">###COPYRIGHT_HEADER###:</td><td>###COPYRIGHT###</td>
 			</tr>
 			<tr>
-			<td class="title">###CR_DATE_HEADER###:</td><td>###CRDATE###</td>
+				<td class="title">###FILETYPE_HEADER###:</td><td>###FILE_TYPE###</td>
 			</tr>
 			<tr>
-			<td class="title">###CR_DESCRIPTION_HEADER###:</td><td>###DESCRIPTION###</td>
+				<td class="ButtonCancel">###CANCEL_DELETION_UID###</td><td class="ButtonConfirmWarning">###CONFIRM_DELETION_UID###</td>
+				###HIDDENFIELDS###
 			</tr>
-			<tr>
-			<td class="title">###FILE_SIZE_HEADER###:</td><td>###FILE_SIZE###</td>
-			</tr>
-			<tr>
-			<td class="title">###COPYRIGHT_HEADER###:</td><td>###COPYRIGHT###</td>
-		</tr>
-		<tr>
-			<td class="title">###FILETYPE_HEADER###:</td><td>###FILE_TYPE###</td>
-		</tr>
-		<tr>
-			<td class="ButtonCancel">###CANCEL_DELETION_UID###</td><td class="ButtonConfirmWarning">###CONFIRM_DELETION_UID###</td>
-		</tr>
-	</table>
-</div>
+		</table>
+	</div>
+</form>
 <!-- ###FILE_DELETION### end-->
 
 <!-- ###MESSAGE### begin-->
-<div class="dam_frontend_Message">
-	<h2 class="info">###LABEL_MESSAGE###</h2>
-	<p>###MESSAGE_TEXT###</p>
-	<p>###BUTTON_NEXT###</p>
-</div>
+<form action="###FORM_URL###" method="post" enctype="multipart/form-data">
+	<div class="dam_frontend_Message">
+		<h2 class="info">###LABEL_MESSAGE###</h2>
+		<p>###MESSAGE_TEXT###</p>
+		<p>###BUTTON_NEXT###</p>
+	</div>
+</form>
 <!-- ###MESSAGE### end-->
 
 
@@ -493,7 +498,7 @@ Template for displaying a single document in a list
 				<td><input name="file" type="file" /></td>
 			</tr>
 		</table>
-		<input name="upload_file" type="submit" value="###BUTTON_UPLOAD###" />
+		###BUTTON_UPLOAD###
 	</fieldset>
 </form>
 <!-- ###UPLOADFORM### end -->
@@ -581,7 +586,7 @@ Template for displaying a single document in a list
 			</tr>
 			<tr>
 				<td>
-					<input name="editok" type="submit" value="###BUTTON_CONFIRM###">
+					###BUTTON_CONFIRM###"
 				</td>
 				<td class="ButtonCancel">###CANCEL###</td>
 			</tr>
