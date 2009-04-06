@@ -488,6 +488,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			case 8:
 				$content .= $this->fileList(true);
 				break;
+			case 9:
+				$content .= $this->testCase();
 			case 99:
 				$content = $this->dropDown();
 				break;
@@ -1677,7 +1679,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		if ($mount != '') $tree->MOUNTS;
 		return $tree;
 	}
-
+	
+	function testCase () {
+		$this->catLogic->
+		return $content;
+	}
 
 	/**
 	 * @author stefan

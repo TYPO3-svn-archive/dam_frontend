@@ -93,7 +93,8 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 
 		var $relations = array(
 			'1' => 'readaccess',
-			'2' => 'downloadaccess'
+			'2' => 'downloadaccess',
+			'3' => 'uploadaccess'
 		);
 
 		var $feuser;			// pointing to the fe user object instance - please use this instead of GLOBALS['TSFE]

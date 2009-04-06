@@ -227,11 +227,11 @@ class tx_damfrontend_DAL_categories {
 	/**
 	 * returns all categories, the current user has access to
 	 *
-	 * @param	int		$userID: id of the user, who has the right to use the system
-	 * @param	int		$relID: id to specify read / downloadaccess
+	 * @param	int		$groupArr: id of the user, who has the right to use the system
+	 * @param	int		$relID: id to specify read / download / upload access
 	 * @return	array	array of all category records
 	 */
-		function getCategories($userID, $relID) {
+		function getCategories($groupArr, $relID) {
 			if (!isset($userID) || !isset($relID) || $userID == '' || $relID == '') {
 				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getCategories: userID and relID must be set and empty strings are not allowed! Given value were$userID:' .$userID .' and relID: ' . $relID, 'dam_frontend',2);
 			}
@@ -248,19 +248,6 @@ class tx_damfrontend_DAL_categories {
 				$resultlist[] = $row;
 			}
 			return $resultlist;
-		}
-
-	/**
-	 * gets all categories related to an user, also categories,
-	 * which are related via pagetree inheritence
-	 *
-	 * @param	int		$userID: id of the user
-	 * @param	int		$relID: id of the relation in the
-	 * @return	void		...
-	 * @todo getCategories_Rootline: this function is not ready!
-	 */
-		function getCategories_Rootline($userID, $relID) {
-
 		}
 
 
@@ -331,6 +318,14 @@ class tx_damfrontend_DAL_categories {
 				return true;
 			}
 			else {
+				
+				$usergroups = $this->feuser->groupData['uid'];
+				$valid = true;
+				foreach($docgroups as $docgroup) {
+					$valid = $valid && array_search($docgroup['uid'], $usergroups);
+				}
+				return $valid;
+				
 				if($this->findUidinList($this->getCategories($userID,3),$catID)) {
 					if ($this->debug ==1) {
 						t3lib_div::debug('checkCategoryAccess = true catID: '.$catID);
