@@ -1279,8 +1279,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 									}
 								}
 							}
-							t3lib_div::debug($newID);
-							t3lib_div::debug($catArr);
 							$returnCode = $this->docLogic->categoriseDocument($newID,$catArr);
 						}
 					}
@@ -1557,7 +1555,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			if ($docData['tx_damfrontend_feuser_upload']==$this->userUID) {
 				return $this->renderer->renderFileEdit($docData);
 			} else {
-				return $this->renderer->renderError('custom','You are not allowed to edit this file!');
+				return $this->renderer->renderError('custom','Editform: You are not allowed to edit this file!');
 			}
 		}
 		else {

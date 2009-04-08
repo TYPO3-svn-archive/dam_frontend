@@ -636,9 +636,10 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			unset($newrecord['file_perms']);
 			unset($newrecord['file_writable']);
 			unset($newrecord['file_readable']);
-			t3lib_div::debug($newrecord);
 			// executing the insert operation for the database
 			$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_dam', $newrecord);
+			// TODO check if all fields exist, because a user can enter his own fields (mapping of fe_user data to dam records)
+			// TODO insert error handling, if $newID is empty or 0 
 			$newID = $GLOBALS['TYPO3_DB']->sql_insert_id();
 			return $newID;
 		}
