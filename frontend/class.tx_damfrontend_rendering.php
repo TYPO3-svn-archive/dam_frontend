@@ -899,7 +899,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 	function renderUploadSuccess() {
 		$this->pi_loadLL();
 		$subpart = tslib_CObj::getSubpart($this->fileContent,'###MESSAGE###');
-		$markerArray['###FORM_URL###'] = tslib_cObj::substituteMarker($subpart, '###FORM_URL###', $this->cObj->typolink('', $this->conf['upload.']['successMessage.']['form_url.']));
+		$markerArray['###FORM_URL###'] = $this->cObj->typolink('', $this->conf['upload.']['successMessage.']['form_url.']);
  		$markerArray['###LABEL_MESSAGE###']=$this->pi_getLL('LABEL_MESSAGE');
  		$markerArray['###MESSAGE_TEXT###']=$this->pi_getLL('UPLOAD_SUCCESS');
  		$markerArray['###BUTTON_NEXT###']= '<input name="ok" type="submit" value="'.$this->pi_getLL('BUTTON_NEXT').'">';
