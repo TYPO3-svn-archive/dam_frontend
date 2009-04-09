@@ -387,6 +387,9 @@ plugin.tx_damfrontend_pi1 {
 		}
 		renderUploadForm {
 			button_upload.wrap = |
+			# typolink : formurl action
+			form_url.parameter.data = TSFE:id
+			form_url.addQueryString = 1
 		}
   		conf {
   			checkMime = 0

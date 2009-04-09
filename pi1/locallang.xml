@@ -101,7 +101,7 @@
 			<label index="LABEL_WARNING">Warning!</label>
 			<label index="MESSAGE_DELETION_WARNING">You want to delete this file (see detail information above). Please confirm the deletion.</label>
 			<label index="BUTTON_NEXT">Next</label>
-			<label index="LABEL_MESSAGE">Hinweis</label>
+			<label index="LABEL_MESSAGE">Message</label>
 			<label index="MESSAGE_TEXT_DELETION_SUCESS">The file was deleted sucessful.</label>
 			<label index="BUTTON_CONFIRM">confirm</label>
 			<label index="BUTTON_BACK">back</label>

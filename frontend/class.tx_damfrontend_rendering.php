@@ -611,11 +611,11 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		$markerArray['###BUTTON_UPLOAD###'] = $this->cObj->stdWrap('<input name="upload_file" type="submit" value="'.$this->pi_getLL('BUTTON_UPLOAD').'" />',$this->conf['upload.']['renderUploadForm.']['button_upload.']);
 		$markerArray['###TITLE_FILEUPLOAD###'] = $this->pi_getLL('TITLE_FILEUPLOAD');
 		$markerArray['###LABEL_FILE###'] =  $this->pi_getLL('LABEL_FILE');
-		if (!isset($this->conf['filterview.']['form_url.']['parameter'])) {
-			$this->conf['filterview.']['form_url.']['parameter'] = $GLOBALS['TSFE']->id;
+		if (!isset($this->conf['renderUploadForm.']['form_url.']['parameter'])) {
+			$this->conf['upload.']['renderUploadForm.']['form_url.']['parameter'] = $GLOBALS['TSFE']->id;
 		}
-		$this->conf['filterview.']['form_url.']['returnLast'] = 'url';
-		$markerArray['###FORM_URL###'] = $this->cObj->typolink('', $this->conf['filterview.']['form_url.']);
+		$this->conf['upload.']['filterview.']['form_url.']['returnLast'] = 'url';
+		$markerArray['###FORM_URL###'] = $this->cObj->typolink('', $this->conf['upload.']['filterview.']['form_url.']);
 		$markerArray =$markerArray + $this->substituteLangMarkers($formCode);
 
 		return tslib_cObj::substituteMarkerArray($formCode, $markerArray);
@@ -899,7 +899,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 	function renderUploadSuccess() {
 		$this->pi_loadLL();
 		$subpart = tslib_CObj::getSubpart($this->fileContent,'###MESSAGE###');
-		$markerArray['###FORM_URL###'] = tslib_cObj::substituteMarker($content, '###FORM_URL###', $this->cObj->typolink('', $this->conf['upload.']['successMessage.']['form_url.']));
+		$markerArray['###FORM_URL###'] = tslib_cObj::substituteMarker($subpart, '###FORM_URL###', $this->cObj->typolink('', $this->conf['upload.']['successMessage.']['form_url.']));
  		$markerArray['###LABEL_MESSAGE###']=$this->pi_getLL('LABEL_MESSAGE');
  		$markerArray['###MESSAGE_TEXT###']=$this->pi_getLL('UPLOAD_SUCCESS');
  		$markerArray['###BUTTON_NEXT###']= '<input name="ok" type="submit" value="'.$this->pi_getLL('BUTTON_NEXT').'">';
