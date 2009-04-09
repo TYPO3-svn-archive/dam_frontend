@@ -125,8 +125,8 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 		if (isset($plugin)) $this->plugin = $plugin;
 		$this->cObj = $this->plugin->cObj;
 		$this->conf = $this->plugin->conf;
-		#$this->iconPath = $this->conf['renderCategoryTree.']['iconPath'];
-		#$this->rootIcon = $this->conf['renderCategoryTree.']['treeRootIcon'];
+		#$this->iconPath = $this->conf['categoryTree.']['iconPath'];
+		#$this->rootIcon = $this->conf['categoryTree.']['treeRootIcon'];
 	}
 
 	/**
@@ -200,7 +200,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 		if ($id > 0) { $param_array['tx_damfrontend_pi1[id]'] = $id; }
 		$this->conf['categoryTree.']['categoryTitle.']['parameter'] = $GLOBALS['TSFE']->id;
 		$this->conf['categoryTree.']['categoryTitle.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
-		return $this->cObj->typoLink($title, $this->conf['renderCategoryTree.']['wrapTitle.']);
+		return $this->cObj->typoLink($title, $this->conf['categoryTree.']['categoryTitle.']);
 	}
 
 
@@ -400,9 +400,8 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	 */
 	function getTitleStr($row, $titleLen = 30)	{
 		$conf['sys_language_uid'] = $GLOBALS['TSFE']->sys_language_uid;
-		// this line can be used for DAM Version 1.1+
 		$row = tx_dam_db::getRecordOverlay($this->table, $row, $conf);
-		$title = trim($row['title']);
+		$title =  trim($row['title']);
 		if (empty($title)) $title = '<em>['.$this->plugin->pi_getLL('no_title').']</em>';
 		return $title;
 	}

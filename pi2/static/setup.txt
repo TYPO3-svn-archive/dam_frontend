@@ -14,8 +14,19 @@ plugin.tx_damfrontend_pi2 {
   	link_download.typolink.additionalParams = &eID=dam_frontend_push&docID={field:uid}
 	link_download.typolink.additionalParams.insertData = 1
   	
-  	description.trim = 1
-  	description.htmlSpecialChars = 1
+  	description {
+  		trim = 1
+	  	description.htmlSpecialChars = 1
+  		prepend = IMAGE
+		prepend.file {
+			import.dataWrap = {field:file_path}{field:file_name}|
+			width = 100m
+			height = 100m
+		}
+		# Only if the file could be rendered
+		prepend.stdWrap.if.isTrue.data = TSFE:lastImageInfo|0
+		prepend.stdWrap.wrap = |<br />
+	}
   	title.htmlSpecialChars = 1
     title.case = upper
 	file_size {
@@ -25,15 +36,7 @@ plugin.tx_damfrontend_pi2 {
 		bytes.labels = Bytes| Kilobyte| Megabyte| Gigabyte
 	}
 	file_name {
-		prepend = IMAGE
-		prepend.file {
-			import.dataWrap = {field:file_path}{field:file_name}|
-			width = 100m
-			height = 100m
-		}
-		# Only if the file could be rendered
-		prepend.stdWrap.if.isTrue.data = TSFE:lastImageInfo|0
-		prepend.stdWrap.wrap = |<br />
+
 	}
   	file_mtime.strftime = %m/%d/%y
   	
