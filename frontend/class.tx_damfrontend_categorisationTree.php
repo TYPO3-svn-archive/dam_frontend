@@ -513,7 +513,7 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 
 			
 				// Make a recursive call to the next level
-			$HTML_depthData = $depthData.$this->cObj->IMAGE($this->conf['categorisationTree.']['treeNavIcons.'][$LN]);
+			$HTML_depthData = $depthData.$this->cObj->IMAGE($this->conf['categorisationTree.']['treeNavIcons.'][$LN.'.']);
 			if ($depth>1 && $this->expandNext($newID) && !$row['php_tree_stop'])	{
 				$nextCount=$this->getTree(
 						$newID,

@@ -504,7 +504,6 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 		$res = $this->getDataInit($uid,$subCSSclass);
 		$c = $this->getDataCount($res);
 		$crazyRecursionLimiter = 999;
-
 			// Traverse the records:
 		while ($crazyRecursionLimiter>0 && $row = $this->getDataNext($res,$subCSSclass))	{
 			$a++;
@@ -531,10 +530,9 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 			$this->ids[] = $idH[$row['uid']]['uid'] = $row['uid'];
 			$this->ids_hierarchy[$depth][] = $row['uid'];
 			$this->orig_ids_hierarchy[$depth][] = $row['_ORIG_uid'] ? $row['_ORIG_uid'] : $row['uid'];
-
 			
 				// Make a recursive call to the next level
-			$HTML_depthData = $depthData.$this->cObj->IMAGE($this->conf['categoryTree.']['treeNavIcons.'][$LN]);
+			$HTML_depthData = $depthData.$this->cObj->IMAGE($this->conf['categoryTree.']['treeNavIcons.'][$LN.'.']);
 			if ($depth>1 && $this->expandNext($newID) && !$row['php_tree_stop'])	{
 				$nextCount=$this->getTree(
 						$newID,
