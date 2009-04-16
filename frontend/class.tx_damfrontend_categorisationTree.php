@@ -168,6 +168,25 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
  	}
 
 	/**
+	 * expand the tree for the first view
+	 *
+	 *	@param int $levelDeepth defines how deep the tree is expanded
+	 * 	@return	void
+	 */
+ 	function expandTreeLevel($levelDeepth=0) {
+			// expand only if tree was not expanded yet and level > 0
+		if ($this->user->getKey("ses",$this->treeID.'expandTreeLevel')<>1 && $levelDeepth>0) {
+			foreach ($this->MOUNTS as $mount => $ID) {
+				$this->stored[$mount][$ID]=1;
+				$this->savePosition();
+				// TODO support more than one level
+				$this->user->setKey("ses",$this->treeID.'expandTreeLevel', 1);			
+			}	
+		}
+ 	}
+ 	
+ 	
+	/**
 	 * saves treestate inside of the fe_user Session Data
 	 *
 	 * @return	[type]		...
@@ -260,7 +279,8 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 		
 		return $icon;
 	}
-// TODO: check why/if this function is not needed anymore
+		// TODO: check why/if this function is not needed anymore: 
+		// stefab: the plus minus buttons are not used for categorization, but maybe we will reaktivate it, if we combine cattree with categorization tree)
 
 	/**
 	 * Renders the +-= buttons with corresponding commands
@@ -348,8 +368,9 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 					$sel_class = $test ? "tree_selectedCats" : "tree_unselectedCats";
 				}
 				$idAttr = htmlspecialchars($this->domIdPrefix.$this->getId($v['row']).'_'.$v['bank']);
-				$title = $this->getTitleStr($v['row'], $titleLen);
-				// TODO: how/where are the controls rendered?
+				$title = $this->cObj->stdWrap ($this->getTitleStr($v['row'], $titleLen),$this->conf['categoryTree.']['catTitle.']);
+
+				// TODO: how/where are the controls rendered ==> in the parent class (t3lib_treeview...) @martin h- stefan
 				$control = $this->getControl($title, $v['row'], $v['bank']);
 				$out.='
 					<tr class="'.$class.'">

@@ -23,7 +23,9 @@ plugin.tx_damfrontend_pi1 {
 			params.width = 8
 			params.height = 11
 		}
-
+		catTitle.stdWrap.wrap = |
+		
+		expandTreeLevel = 1
 		minusIcon < .plusIcon
 		minusIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}catminus.gif
 

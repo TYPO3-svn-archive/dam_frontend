@@ -145,8 +145,7 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 
 		$firstRecord = null;
 		if (!is_array($this->damUidList)) {
-			// TODO: Error Handling
-			return '';
+			return $this->renderMessage('custom', $this->pi_getLL('Error_damUidList'));
 		}
 		// render records keeping dam uid list order:
 		foreach($this->damUidList as $uid) {
@@ -373,6 +372,30 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 		fwrite($fh, date("Y-m-d H:i:s") . " - " . $msg . "\n");
 		fclose($fh);
 		*/
+	}
+	/**
+	 * Message 
+	 * @author stefan
+	 * @return	[string]	$return:		html of the form
+	 */
+	function renderMessage($msg = 'default', $customMessage="",$customMessage2="") {
+		$this->pi_loadLL();
+		$subpart = tslib_CObj::getSubpart($this->fileContent,'###MESSAGE###');
+		
+		switch ($msg) {
+ 			
+ 			case 'custom':
+ 				$message = strip_tags($customMessage. '&nbsp;'. $customMessage2);
+ 				break;
+ 			default:
+ 				$message = $this->pi_getLL('standardErrorMessage');
+ 		}
+		$markerArray['###FORM_URL###']= $this->cObj->typolink('', $this->conf['renderMessage.']['form_url.']);
+ 		$markerArray['###LABEL_MESSAGE###']=$this->pi_getLL('LABEL_MESSAGE');
+ 		$markerArray['###MESSAGE_TEXT###']=$this->cObj->stdWrap($message,$this->conf['renderMessage.']['message_text.']);
+ 		$markerArray['###BUTTON_NEXT###']= '<input name="ok" type="submit" value="'.$this->pi_getLL('BUTTON_NEXT').'">';
+ 		$content=tslib_cObj::substituteMarkerArray($subpart, $markerArray);
+		return $content;
 	}
 }
 

@@ -167,6 +167,24 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
  	}
 
 	/**
+	 * expand the tree for the first view
+	 *
+	 *	@param int $levelDeepth defines how deep the tree is expanded
+	 * 	@return	void
+	 */
+ 	function expandTreeLevel($levelDeepth=0) {
+			// expand only if tree was not expanded yet and level > 0
+		if ($this->user->getKey("ses",$this->treeID.'expandTreeLevel')<>1 && $levelDeepth>0) {
+			foreach ($this->MOUNTS as $mount => $ID) {
+				$this->stored[$mount][$ID]=1;
+				$this->savePosition();
+				// TODO support more than one level
+				$this->user->setKey("ses",$this->treeID.'expandTreeLevel', 1);			
+			}	
+		}
+ 	}
+ 	
+	/**
 	 * saves treestate inside of the fe_user Session Data
 	 *
 	 * @return	[void]
@@ -335,10 +353,8 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	function printTree($treeArr='')	{
 		// 0 - show root icon always
 		if(count($treeArr)) {
-		#if(!$this->rootIconIsSet AND count($treeArr)) {
-			// Artificial record for the tree root, id=0
-			// TODO: AFAIK 9 is missleading - since it has no effect?
-			$rootRec = $this->getRootRecord(9);
+				// Artificial record for the tree root, id=0
+			$rootRec = $this->getRootRecord(0);
 			$firstHtml =$this->getRootIcon($rootRec);
 			$treeArr = array_merge(array(array('HTML' => $firstHtml,'row' => $rootRec,'bank'=>0)), $treeArr);
 		}
@@ -367,7 +383,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 				}
 				$idAttr = htmlspecialchars($this->domIdPrefix.$this->getId($v['row']).'_'.$v['bank']);
 				
-				$title = $this->getTitleStr($v['row'], $titleLen);
+				$title = $this->cObj->stdWrap ($this->getTitleStr($v['row'], $titleLen),$this->conf['categoryTree.']['catTitle.']);
 
 				$control = $this->getControl($title, $v['row'], $v['bank']);
 				

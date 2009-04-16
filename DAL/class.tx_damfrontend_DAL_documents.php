@@ -309,38 +309,34 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			if(!is_array($this->categories)) {
 				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getDcoumentList: for the this->categories is no array. Given value was:' .$this->categories, 'dam_frontend',3);
 			}
-			// TODO: is there a reason not to use API: Enablefields?
+				// TODO: is there a reason not to use API: Enablefields?
 			$filter = ' AND '.$this->docTable.'.deleted = 0  AND '.$this->docTable.'.hidden = 0';
 			$filter .= ' AND ('.$this->docTable.'.starttime > '.time().' OR '.$this->docTable.'.starttime = 0)';
 			$filter .= ' AND ('.$this->docTable.'.endtime < '.time().' OR '.$this->docTable.'.endtime = 0)';
 			
 			if ($this->conf['useLatestList']==true) {
-					#query without using categories and restricting via latest date.
+					// query without using categories and restricting via latest date.
 					
-				# get the date of the last record, that the list can be limited via a where condition, then is the list later sortable from the fe_user
-				# otherwise, if the fe_user would sort by date asc not the last x files would be shown, but the oldest one
+					// get the date of the last record, that the list can be limited via a where condition, then is the list later sortable from the fe_user
+					// otherwise, if the fe_user would sort by date asc not the last x files would be shown, but the oldest one
 				
 				/**$select= $this->conf['latestField'];
 				$from=$this->docTable;
 				$where.= ' 1=1  '.$filter;				
 			
-					
-					$select=$this->conf['latestField'];
-					$filter .= $this->additionalFilter;
-			
-					$from=$this->docTable;
-					$where.= ' 1=1  '.$filter;**/				
+				$select=$this->conf['latestField'];
+				$filter .= $this->additionalFilter;
+		
+				$from=$this->docTable;
+				$where.= ' 1=1  '.$filter;**/				
 			}
 			else {
 				
-			if (count($this->categories)) {
+				if (count($this->categories)) {
 
-
-				/*
-				 * Building the from clause manually by joining the DAM tables
-				 *
-				 *
-				 */
+					/*
+					 * Building the from clause manually by joining the DAM tables
+					 */
 				$select = $this->docTable.'.uid';
 				$from = $this->docTable.' INNER JOIN '.$this->mm_Table.' ON '.$this->mm_Table.'.uid_local  = '.$this->docTable.
 				'.uid INNER JOIN '.$this->catTable.' ON '.$this->mm_Table.'.uid_foreign = '.$this->catTable.'.uid';
@@ -348,8 +344,8 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 					$filter .= $this->additionalFilter;
 
 
-				// preparing the category array - deleting all empty entries
-				// TODO: rethinking if it is a good idea to change $this->categories in a function for reading entrys?
+					// preparing the category array - deleting all empty entries
+					// TODO: rethinking if it is a good idea to change $this->categories in a function for reading entrys?
 				foreach($this->categories as $number => $catList) {
 					if (!count($catList)) {
 						unset($this->categories[$number]);
@@ -366,73 +362,73 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				 */
 				foreach($this->categories as $number => $catList) {
 							
-							if ($this->searchAllCats === true) {
-								$catString = "1=1";
+						if ($this->searchAllCats === true) {
+							$catString = "1=1";
+						}
+						else {
+							$catString = '( '.$this->catTable.'.uid='.implode(' OR '.$this->catTable.'.uid=',$catList).')';
+						}
+	
+						if ($z != count($this->categories)-1) {
+							if (!count($queryText)) {
+								$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery($select,$from, $catString);
 							}
 							else {
-								$catString = '( '.$this->catTable.'.uid='.implode(' OR '.$this->catTable.'.uid=',$catList).')';
+								$where = $this->docTable.'.uid IN ('.$queryText[count($queryText)- 1].') AND '.$catString;
+								$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery('tx_dam.uid', $from, $where);
 							}
-	
-					if ($z != count($this->categories)-1) {
-						if (!count($queryText)) {
-							$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery($select,$from, $catString);
 						}
+							// building the last element of the list - final building of the list
 						else {
-							$where = $this->docTable.'.uid IN ('.$queryText[count($queryText)- 1].') AND '.$catString;
-							$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery('tx_dam.uid', $from, $where);
+							if(count($this->categories ) > 1) {
+								$where = $this->docTable.'.uid IN ('.$queryText[count($queryText)- 1].') AND '.$catString.$filter;
+							}
+								// list is having more then one "AND" criteria
+							else {
+									// filter is added in case there is only one cat selected 
+								$where = $catString.$filter;
+							}
+							$select = ' DISTINCT '.$this->docTable.'.*';
 						}
+						$z++;
 					}
-					// building the last element of the list - final building of the list
-					else {
-						if(count($this->categories ) > 1) {
-							$where = $this->docTable.'.uid IN ('.$queryText[count($queryText)- 1].') AND '.$catString.$filter;
-						}
-						// list is having more then one "AND" criteria
-						else {
-							// TODO: can we reach this part of the code? The part is only executed if (count($this->categories))
-							$where = $catString.$filter;
-						}
-						$select = ' DISTINCT '.$this->docTable.'.*';
-					}
-					$z++;
-				}
 				} 
 				else {
-				#query without using categories
+					// query without using categories
 				$filter .= $this->additionalFilter;
 				$select='*';
 				$from='tx_dam';
 					$where.= ' 1=1 '.$filter;
+				}
 			}
-			}
-			// TODO: is there a reason not to define SELECT here?
+			// TODO: is there a reason not to define SELECT here? 
 			// TODO: do not use '*' but whitlist defined via TypoScript
 			$select = ' DISTINCT '.$this->docTable.'.*';
 
 			$resultCounter=0;
-			// executing the final query and convert the results into an array
-			// is defnied as: $this->internal['list']['limit'] = $this->internal['list']['pointer'].','. ($this->internal['list']['listLength']);
+				// executing the final query and convert the results into an array
+				// is defnied as: $this->internal['list']['limit'] = $this->internal['list']['pointer'].','. ($this->internal['list']['listLength']);
 			list($pointer, $listLength) = explode (',',$this->limit);
 			$startRecord = $pointer * $listLength;
 
-			// limit = "pointer,counter"
+				// limit = "pointer,counter"
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where,'',$this->orderBy);
 			$result = array();
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				if ($this->checkAccess($row['uid'], 1) && $this->checkDocumentAccess($row['fe_group'])) {
-					//add a delete information
+						//add a delete information
 					if ($userUID == $row['tx_damfrontend_feuser_upload'] AND $userUID>0){
 						$row['allowDeletion']=1;
 						$row['allowEdit']=1;
 					}
 					$row['tx_damfrontend_feuser_upload']= $this->get_FEUserName($row['tx_damfrontend_feuser_upload']);
 
-					// TODO: we should use SQL-LIMIT instead! Cant we create an SQL-Syntax for $this->checkAccess($row['uid'], 1) && $this->checkDocumentAccess($row['fe_group']) ??
-					// add row only, if the current resultID is between the limit range
+						// TODO: we should use SQL-LIMIT instead! Cant we create an SQL-Syntax for $this->checkAccess($row['uid'], 1) && $this->checkDocumentAccess($row['fe_group']) ??
+						// add row only, if the current resultID is between the limit range
 					if ($resultCounter >=$startRecord && $resultCounter<=($startRecord+$listLength-1)){
 						$result[] = $row;
 					}
-					// pointer starts at "0" so the first result counter has to be 0 too
+						// pointer starts at "0" so the first result counter has to be 0 too
 					$resultCounter++;
 				}
 			}
@@ -638,8 +634,8 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			unset($newrecord['file_readable']);
 			// executing the insert operation for the database
 			$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_dam', $newrecord);
-			// TODO check if all fields exist, because a user can enter his own fields (mapping of fe_user data to dam records)
-			// TODO insert error handling, if $newID is empty or 0 
+			// FIXME check if all fields exist, because a user can enter his own fields (mapping of fe_user data to dam records)
+			// FIXME insert error handling, if $newID is empty or 0 
 			$newID = $GLOBALS['TYPO3_DB']->sql_insert_id();
 			return $newID;
 		}
@@ -664,7 +660,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				);
 				$GLOBALS['TYPO3_DB']->exec_INSERTquery($this->mm_Table, $newrow);
 			}
-	 		// TODO function should return true if success
+	 		// FIXME function should return true if success
 		}
 
 		/**
@@ -764,8 +760,8 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		function versioningCreateNewVersionExecute($docID) {
 			$newDoc = $this->getDocument($docID);
 			
-				// TODO access check	
-				// TODO insert error handling
+				// FIXME access check	
+				// FIXME insert error handling
 			
 			$filename = $GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
 			$filetype = $newDoc['file_type'];
@@ -911,7 +907,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$TABLE = 'tx_dam';
 			$WHERE = 'file_name = \''.$filename.' \' AND uid <>'.$docID ;
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($FIELDS,$TABLE,$WHERE);
-				// TODO insert error handling
+				// FIXME insert error handling
 			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				$oldDoc = $row;
 			}
@@ -928,7 +924,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				// copy the old data to the new record
 			$TABLE = 'tx_dam';
 			$WHERE = 'uid = '.$docID;
-				// TODO insert error handling
+				// FIXME insert error handling
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$oldDoc);
 						
 			return $docID;
@@ -938,10 +934,10 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			
 			$newDoc = $this->getDocument($docID);
 			
-				// TODO access check	
-				// delete the old file
+				// FIXME access check	
+				// FIXME the old file
 			unlink($GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName'));
-				// TODO insert error handling
+				// FIXME insert error handling
 				
 				// copy the new file from temp dir to destionation dir
 			copy(PATH_site.$newDoc['file_path'].$newDoc['file_name'],$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName'));
@@ -957,13 +953,13 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			
 			$TABLE = 'tx_dam';
 			$WHERE = 'uid = '.$GLOBALS['TSFE']->fe_user->getKey('ses','versioningOverrideID');
-				// TODO insert error handling
+				// FIXME insert error handling
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$newDoc);
 
 				// delete the temp dam record (in case of overwrite action, the record is not needed anymore)
 			$TABLE = 'tx_dam';
 			$WHERE = 'uid = '.$docID;
-				// TODO insert error handling
+				// FIXME insert error handling
 			$GLOBALS['TYPO3_DB']->exec_DELETEquery($TABLE,$WHERE);
 			
 			$GLOBALS['TSFE']->fe_user->setKey('ses','versioningNewVersionID','');
@@ -1041,7 +1037,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 						// copy file to the final destination
 					$uploadFile = $GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
 					
-						// TODO insert error handling
+						// FIXME insert error handling
 					copy(PATH_site.$newDoc['file_path'].$newDoc['file_name'],$uploadFile);
 						// delete the temp file
 					unlink($newDoc['file_path'].$newDoc['file_name']);

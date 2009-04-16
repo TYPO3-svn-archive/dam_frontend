@@ -11,16 +11,20 @@
         <languageKey index="default" type="array">
             <label index="hidden">hidden1234</label>
             <label index="not_set">N/A1234</label>
+            <label index="BUTTON_NEXT">Next</label>
+            <label index="Error_damUidList">Sorry, no valid records found!</label>
         </languageKey>
         <languageKey index="dk" type="array">
         </languageKey>
         <languageKey index="de" type="array">
+            <label index="Error_damUidList">Entschuldigung, es wurden keine gültigen Datensätze gefunden!</label>
         </languageKey>
         <languageKey index="no" type="array">
         </languageKey>
         <languageKey index="it" type="array">
             <label index="hidden">nascosto</label>
             <label index="not_set">N/D</label>
+            <label index="BUTTON_NEXT">Weiter</label>
         </languageKey>
         <languageKey index="fr" type="array">
         </languageKey>

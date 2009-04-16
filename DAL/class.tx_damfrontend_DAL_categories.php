@@ -81,6 +81,11 @@ class tx_damfrontend_DAL_categories {
 	var $mm_table_downloadaccess = ''; // mm Table which stores the groups
 	var $debug = false;
 	
+	/**
+	 * 	returns th detail datea of a caegory
+	 * 	@author martin
+	 *	@param int $catID id of the category which should be returned
+	 */
 	function getCategory($catID) {
 		if (!intval($catID)) {
 			if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getCategory: for the catID only integer values are allowed. Given value was:' .$catID, 'dam_frontend',3);
@@ -319,7 +324,7 @@ class tx_damfrontend_DAL_categories {
 			else {
 					// get all usergroups a fe_user belongs to
 				$usergroups = implode(',',$GLOBALS['TSFE']->fe_user->groupData['uid']) ;
-					// TODO error handling
+					// FIXME error handling
 				$mm_table = 'tx_dam_cat_uploadaccess_mm';
 					// executing database search: should return a row with the usergroup(s)
 				$local_table = $this->catTable;

@@ -601,7 +601,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		$tree->selectedCats = $selCats[$this->internal['treeID']];
 		if (is_array($this->internal['catMounts'])) $tree->MOUNTS = $this->internal['catMounts'];
-		return  $this->cObj->stdWrap($tree->getBrowsableTree(), $this->conf['renderCategoryTree.']['stdWrap.']);
+		$tree->expandTreeLevel($this->conf['categoryTree.']['expandTreeLevel']);
+		return  $this->cObj->stdWrap($tree->getBrowsableTree(), $this->conf['categoryTree.']['stdWrap.']);
 	}
 
 
@@ -954,7 +955,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		
 		if (is_array($GLOBALS['TSFE']->fe_user->user)) {
 			
-			// TODO check access for the FE User
+			// FIXME check access for the FE User
 			
 			if ($this->upload) {
 				$returnCode = $this->handleUpload();
@@ -1473,7 +1474,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 
 	/**
-	 * TODO: documentation
+	 * 	Renders the myFile view
+	 * @return html the list of files of a user or an error string
+	 * @author stefan
 	 */
 	function myFiles () {
 		$this->renderer->piVars = $this->piVars;
@@ -1692,7 +1695,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 function saveMetaData ($saveUID) {
 
 		if ($this->userLoggedIn==true) {
-			// TODO check access			
+			// FIXME check access			
 			// load doc compare userID whit
 			
 			#set edit UID to zero, so the edit form isnot shown anymore

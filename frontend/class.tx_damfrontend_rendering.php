@@ -96,7 +96,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		$this->iconBaseAddress = $this->conf['iconBaseAddress'];
 		$this->langFile = $this->conf['langFile'];
 		$this->debug = $this->conf['debug'];
-		// TODO: check if it is possible to make staticinfotables optional
+			// TODO: check if it is possible to make staticinfotables optional
 		$this->staticInfoObj = null;
 		if (t3lib_extMgm::isLoaded('static_info_tables')) {
 			$this->staticInfoObj = t3lib_div::getUserObj('&tx_staticinfotables_pi1');
@@ -156,7 +156,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		$cObj = t3lib_div::makeInstance('tslib_cObj');
  		foreach ($list as $elem) {
 			$record_Code = tsLib_CObj::getSubpart($this->fileContent,$filelist_record_marker[$countElement]['cObjNum']);
- 			// TODO: correct table-name?
+ 				// TODO: correct table-name?
  			$cObj->start($elem, 'tx_dam');
  			$countElement++;
  			$elem['count_id'] =$countElement;
@@ -168,23 +168,22 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 
 			if (!is_null($this->staticInfoObj)) { $markerArray['###LANGUAGE###'] 	= $this->staticInfoObj->getStaticInfoName('LANGUAGES', $elem['language'], '', '', false); }
 
- 			// adding Markers for links to download and single View
+ 				// adding Markers for links to download and single View
 			$markerArray['###LINK_SINGLE###'] = $cObj->cObjGetSingle($this->conf['filelist.']['link_single'], $this->conf['filelist.']['link_single.']);
 
-			// this is a field in the database, if true, then the fe user has to fill out a request form
+				// this is a field in the database, if true, then the fe user has to fill out a request form
 			if ($useRequestForm==1 && $elem['tx_damfrontend_use_request_form'] == 1) {
  				die('this function is not implemented at this time!');
-				$paramAnforderung = array(
+				$paramRequest = array(
  					'docID' => $elem['uid'],
  					'showRequestform' => 1
  				);
  				// TODO implement me with cObj
- 				$markerArray['###LINK_DOWNLOAD###'] = $this->pi_linkTP('request', $paramAnforderung);
+ 				$markerArray['###LINK_DOWNLOAD###'] = $this->pi_linkTP('request', $paramRequest);
 
  			} else {
 	 			$markerArray['###LINK_DOWNLOAD###'] = $cObj->cObjGetSingle($this->conf['filelist.']['link_download'], $this->conf['filelist.']['link_download.']);
 	 		}
-			// TODO: Create from TypoScript
 			$markerArray['###LINK_SELECT_DOWNLOAD###'] = '';
 			if (is_array($this->conf['filelist.']['link_select_download.'])) {
 
@@ -199,13 +198,13 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 			}
  			$markerArray['###FILEICON###'] = $cObj->stdWrap('<img src="'.$this->getFileIconHref($elem['file_mime_type'],$elem['file_mime_subtype'] ).'" title="'.$elem['title'].'"  alt="'.$elem['title'].'"/>',$this->conf['renderFields.']['fileicon.']);
 
-			//render deletion button
+				//render deletion button
 			if ($elem['allowDeletion']==1 AND $this->conf['enableDeletions']==1) {
 				$markerArray['###BUTTON_DELETE###'] = $cObj->cObjGetSingle($this->conf['filelist.']['button_delete'], $this->conf['filelist.']['button_delete.']);
 			} else {
 				$markerArray['###BUTTON_DELETE###'] ='';
 			}
-			//render edit button
+				//render edit button
 			if ($elem['allowEdit']==1 AND $this->conf['enableEdits']==1) {
 				$markerArray['###BUTTON_EDIT###'] = $cObj->cObjGetSingle($this->conf['filelist.']['button_edit'], $this->conf['filelist.']['button_edit.']);
 				$markerArray['###BUTTON_CATEDIT###'] = $cObj->cObjGetSingle($this->conf['filelist.']['button_catedit'], $this->conf['filelist.']['button_catedit.']);
@@ -228,8 +227,6 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		$this->conf['filelist.']['form_url.']['returnLast'] = 'url';
 		$content = tslib_cObj::substituteMarker($content, '###FORM_URL###', $this->cObj->typolink('', $this->conf['filelist.']['form_url.']));
 
-
-
  		$content = tsLib_CObj::substituteMarker($content, '###FILENAME_HEADER###', $this->pi_getLL('FILENAME_HEADER'));
  		$content = tsLib_CObj::substituteMarker($content, '###FILETYPE_HEADER###', $this->pi_getLL('FILETYPE_HEADER'));
  		$content = tsLib_CObj::substituteMarker($content, '###CR_DATE_HEADER###', $this->pi_getLL('CR_DATE_HEADER'));
@@ -237,14 +234,14 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		$content = tslib_cObj::substituteMarker($content, '###OWNER_HEADER###',$this->pi_getLL('OWNER_HEADER'));
 		$content = tslib_cObj::substituteMarker($content, '###CREATOR_HEADER###',$this->pi_getLL('CREATOR_HEADER'));
 
- 		// substitute static markers
+ 			// substitute static user defined markers
  		$this->pi_loadLL();
  		$staticMarkers['###SETROWSPERVIEW###'] = $this->pi_getLL('setRowsPerView');
  		$staticMarkers['###LABEL_COUNT###'] = $this->pi_getLL('label_Count');
 		$staticMarkers =$staticMarkers + $this->substituteLangMarkers($list_Code);
  		$content = tslib_cObj::substituteMarkerArray($content, $staticMarkers);
 
-		// substitute Links for Browseresult
+			// substitute Links for Browseresult
 		$browseresults = $this->renderBrowseResults($resultcount, $pointer, $listLength);
 		$content = tsLib_CObj::substituteMarker($content, '###BROWSERESULTS###', $browseresults);
 		
@@ -368,27 +365,21 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
  		$cObj = t3lib_div::makeInstance('tslib_cObj');
  		$cObj->start($record, 'tx_dam');
  		$single_Code = tslib_CObj::getSubpart($this->fileContent,'###SINGLEVIEW###');
-		// TODO: clean up
- 		// Formating Timefields and filesize
- 		// $record['tstamp'] = date('d.m.Y', $record['tstamp']);
- 		// $record['crdate'] = date('d.m.Y', $record['crdate']);
- 		#$record['file_size'] = t3lib_div::formatSize($record['file_size'],' bytes | kb| mb| gb');
-
- 		// converting all fields in the record to marker (recordfields and markername must match)
+ 			
  		$this->pi_loadLL();
+ 		
+ 			// converting all fields in the record to marker (recordfields and markername must match)
  		$markerArray = $this->recordToMarkerArray($record,'singleView');
  		$markerArray['###CRDATE_AGE###'] =  $cObj->stdWrap($record['crdate'], $this->conf['renderFields.']['crdate_age.']);
  		$markerArray['###LINK_DOWNLOAD###'] = $cObj->cObjGetSingle($this->conf['singleView.']['link_download'], $this->conf['singleView.']['link_download.']);
- 		
  		$markerArray['###BACK_LINK###'] = $this->cObj->typolink($cObj->cObjGetSingle($this->conf['singleView.']['backLink'], $this->conf['singleView.']['backLink.']), array('parameter' => $record['backPid'])); 
+			
+			// adding static user definded markers 
  		$markerArray =$markerArray + $this->substituteLangMarkers($single_Code);
  		if (!is_null($this->staticInfoObj)) { $markerArray['###LANGUAGE###'] 	= $this->staticInfoObj->getStaticInfoName('LANGUAGES', $record['language'], '', '', false);}
  		$content=tslib_cObj::substituteMarkerArray($single_Code, $markerArray);
  		
- 		
- 		// TODO: we should do it with foreach on record, so new fields could be easily introduced without editing this lines
  		$content = tslib_cObj::substituteMarker($content, '###TITLE_SINGLEVIEW###',$markerArray['###TITLE###']);
- 		
  		$content = tslib_cObj::substituteMarker($content, '###CR_DATE_HEADER###',$this->pi_getLL('CR_DATE_HEADER'));
  		$content = tslib_cObj::substituteMarker($content, '###FILE_SIZE_HEADER###',$this->pi_getLL('FILE_SIZE_HEADER'));
  		$content = tslib_cObj::substituteMarker($content, '###CR_DESCRIPTION_HEADER###',$this->pi_getLL('CR_DESCRIPTION_HEADER'));
@@ -434,8 +425,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
  				$message = $this->pi_getLL('uploadFormFieldError') . $customMessage . ' '. $this->pi_getLL('uploadFormFieldErrorLength') . ' ' . $customMessage2 ;
  				break;
  			case 'custom':
-				// TODO: <br> in strip_tags? makes no sense - perhaps stdWrap? where it is used?
- 				$message = strip_tags($customMessage. ' <br>'. $customMessage2);
+ 				$message = strip_tags($customMessage. '&nbsp;'. $customMessage2);
  				break;
  			default:
  				$message = $this->pi_getLL('standardErrorMessage');
@@ -839,6 +829,7 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		$tree = t3lib_div::makeInstance('tx_damfrontend_categorisationTree');
 		$tree->MOUNTS = explode(',',$uploadCats);
 		$tree->init(-1,$this);
+		$tree->expandTreeLevel($this->conf['categoryTree.']['expandTreeLevel']);
 		if ($this->piVars['catEditUID']>0) {
 			$tree->piVars = array('tx_damfrontend_pi1[catEditUID]'=>$docData['uid']);
 		}
