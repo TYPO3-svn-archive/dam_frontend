@@ -1,3 +1,8 @@
+Version 0.3.2 (23.04.2009)
+- fixed Bug #2942: filelist.defaultLength does not work
+- fixed Bug #2943: Catedit: Cancel button adds category again to a document
+- fixed Bug #2977: browse link / pointer / listlength issues
+
 Version 0.3.1 (19.03.2009)
 + 2809 Major Feature	Resolved 	Must have 	change pushfile to eID feature Martin Holtz 2009-03-14 23:26 
 + 2492 Major Feature 	Closed 		Should have	Edit of Meta data Stefan Busemann2009-01-22 10:21 
@@ -27,13 +32,13 @@ Version 0.2.1
 - fixed bug 1922: label for "flexform_useStaticCatSelection" were missing in english
 
 Version	0.2.0
-+ feature 1297: Static category selection in pi1 (thanks to Frank NŠgler)
++ feature 1297: Static category selection in pi1 (thanks to Frank Nï¿½gler)
 + feature 1261: Fileupload and categorisation in pi1 
 + feature 1319: Counter feature in filelist in pi1 (thanks to Tom Ruether)
 + feature 1370: increase max upload files in pi2 (thanks to Joe Berger)
 
 Version	0.1.2: stdWrap for all fields (pi1)
-Thanks to Frank NŠgler. Now it is posible to use typoscript for the views "single view" and "file list". Each database field, wich is used in the view can be customized with typoscript.
+Thanks to Frank Nï¿½gler. Now it is posible to use typoscript for the views "single view" and "file list". Each database field, wich is used in the view can be customized with typoscript.
 
 Version	0.1.1: Security Bugfix  [Ticket#2008052210000041] 
 - fixed multiple vulnerabilities in extension  dam_frontend. Thanks to the security team and Marcus Krause
@@ -48,15 +53,15 @@ Version	0.0.6
 Bugfixes for saving the state of lists and filters
 
 Version	0.0.5
-ZusammenfŸhren der Frontend Plugins der Listendarstellung mit dem DAM - Frontend Plugin
-Alpha Version der mehereren BŠume
+Zusammenfï¿½hren der Frontend Plugins der Listendarstellung mit dem DAM - Frontend Plugin
+Alpha Version der mehereren Bï¿½ume
 
 Version	0.0.3
-Ersetzen der statischen Texte durch Ÿbersetzbare locallang - Labels durch Eingriffe im
+Ersetzen der statischen Texte durch ï¿½bersetzbare locallang - Labels durch Eingriffe im
 Frontend rendering.
 
 Version	0.0.2
-Bugfix Release - id wird auch bei den plus/minus Links im querystring mit Ÿbergeben
+Bugfix Release - id wird auch bei den plus/minus Links im querystring mit ï¿½bergeben
 Methode  PM_ATagWrap in der Klasse tx_damfrontend_catTreeView wurde neu implementiert
 
 
