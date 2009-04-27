@@ -1235,6 +1235,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFileName',$_FILES[$uploadHandler->prefixId]['name']); 
 				$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFilePath',$uploaddir.$feuploaddir);
 				
+				if(!is_dir($uploaddir.$feuploaddir)){
+					if(!mkdir($uploaddir.$feuploaddir)){
+						return 'error: can not create target folder [upload]';
+					}
+				}
 				 
 					// check if the current file is already present  - preparing for versioning
 				if (is_file($uploadfile)) {
