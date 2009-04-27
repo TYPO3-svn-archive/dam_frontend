@@ -374,7 +374,7 @@ plugin.tx_damfrontend_pi1 {
 		}
   	}
   	upload {
-  		autoAsignFEGroups = 1
+  		autoAsignFEGroups = 0
   		autoFillFEUserData {
   			#left side column of the dam record - right side fe_user column
   			creator = name
@@ -400,10 +400,10 @@ plugin.tx_damfrontend_pi1 {
 			checkExt = 1
 			extExclude = exe,php,php3
 			extInclude = *
-			maxsize = 5000000
+			maxsize = 5242880
 			path =fileadmin/
 			uploadTempDir = dam_frontend_upload/
-			FEuserHomePath=0
+			FEuserHomePath=1
 			FEuserHomePath.field = username
 			noOverwrite = 1
 			fileMode = 0755

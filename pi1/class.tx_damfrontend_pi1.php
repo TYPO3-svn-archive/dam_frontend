@@ -1172,7 +1172,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @return	int		the ID of uploaded file in the dam table, if there is an error, the error message is returned
 	 */
 		function handleUpload() {
-				// make Instance of the class for fileupload handling
+			global $TYPO3_CONF_VARS;
+			// make Instance of the class for fileupload handling
 			if (!t3lib_extMgm::isLoaded('fileupload')) {
 				return $this->renderer->renderError('uploadExtensionNotInstalled');
 			} 
@@ -1188,52 +1189,80 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				if($fileUploadTS['path']){
 					$path=$this->cObj->stdWrap($fileUploadTS['path'],$fileUploadTS['path.']);
 				}
-				
-				$uploaddir = is_dir($path)?$path:$TYPO3_CONF_VARS['BE']['fileadminDir'];
-
+				if (is_dir($path)) {
+					$uploaddir = $path;
+				}
+				else {
+						// try to get default path of the BE
+					if (is_dir($TYPO3_CONF_VARS['BE']['fileadminDir'])) {
+						$uploaddir = $TYPO3_CONF_VARS['BE']['fileadminDir'];
+					}
+					else {
+						return  $this->pi_getLL('upload_path_error');
+					}
+					
+				}
+	
+					// temp upload folder for dam_frontend (default =  dam_frontend_upload)
 				if($fileUploadTS['uploadTempDir']){
 					$path=$this->cObj->stdWrap($fileUploadTS['uploadTempDir'],$fileUploadTS['uploadTempDir.']);
 				}
-				$uploadTempDir = is_dir($uploaddir.$path)?$path:$TYPO3_CONF_VARS['BE']['fileadminDir'];
-				
-				if($fileUploadTS['FEuserHomePath.']['field']){
-					$feuploaddir=$GLOBALS["TSFE"]->fe_user->user[$fileUploadTS['FEuserHomePath.']['field']].'/';
+					// check if the temp folder exists
+				$uploadTempDir = is_dir($uploaddir.$path)?$path:'';
+				if($fileUploadTS['FEuserHomePath']==1){
+					if($fileUploadTS['FEuserHomePath.']['field']){
+						$feuploaddir=$GLOBALS["TSFE"]->fe_user->user[$fileUploadTS['FEuserHomePath.']['field']].'/';
+					}
+					else {
+						$feuploaddir=$GLOBALS["TSFE"]->fe_user->user["uid"].'/';
+					}
+						// disable FEuserHomePath of fileupload, because dam_fe handles itself
+					$fileUploadTS['FEuserHomePath']=0;					
 				}
 				else {
-					$feuploaddir=$GLOBALS["TSFE"]->fe_user->user["uid"].'/';
+					$feuploaddir='';
 				}
-								
+				
 				$fileUploadTS['path'] = $uploaddir.$uploadTempDir;
 				
 				$uploadHandler->cObj = $this->cObj;
 				$uploadHandler->main('',$fileUploadTS);
 				$_FILES[$uploadHandler->prefixId] = $_FILES['file'];
 
-
-				
+					// set the complete filename & path where the file should be stored in the last step of the upload process
 				$uploadfile = PATH_site.$uploaddir.$feuploaddir.$_FILES[$uploadHandler->prefixId]['name'];
+					// store the filename of the final destination in the session, that the file can be copied in the last step form temp upload dir to final destination
 				$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFileName',$_FILES[$uploadHandler->prefixId]['name']); 
-				$this->documentData['file_dl_name']=$_FILES[$uploadHandler->prefixId]['name']; 
 				$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFilePath',$uploaddir.$feuploaddir);
 				
-					// check if the current file is already present  - preparing for
-					// displaying the versioning options
+				 
+					// check if the current file is already present  - preparing for versioning
 				if (is_file($uploadfile)) {
 					$this->versionate = true;
 				}
-				
+
+					// set values for the dam record
+				$this->documentData['file_dl_name']=$_FILES[$uploadHandler->prefixId]['name'];
 				$this->documentData['title'] = $_FILES[$uploadHandler->prefixId]['name'];
 				$this->documentData['tx_damfrontend_feuser_upload'] = $this->userUID;
 					
-					// overwrite TS Setting for upload
+					// *************************************************
+					// overwrite TS Setting of the fileupload Extention
+					// 
+					
+					// set a temp filename and path for the first upload
 				$uploadTimeStamp = time();
 				$GLOBALS['TSFE']->fe_user->setKey('ses','uploadTimeStamp',$uploadTimeStamp); 
 				$_FILES[$uploadHandler->prefixId]['name'] = $GLOBALS["TSFE"]->fe_user->user["uid"].'_'.$uploadTimeStamp.'_'.$_FILES[$uploadHandler->prefixId]['name'];
 				
-					// overwrite TS Setting of the fileupload Extenstion, so that the file is stored in tempDir 
+					// store in tempDir 
 				$fileUploadTS['path'] = $uploaddir.$uploadTempDir;
-				$uploadfile=PATH_site.$uploaddir.$uploadTempDir.$_FILES[$uploadHandler->prefixId]['name'] ;
+				$uploadfile=PATH_site.$uploaddir.$uploadTempDir.$_FILES[$uploadHandler->prefixId]['name'];
 				
+					//
+					// end overwirting of ts settings
+					//*************************************************
+
 					// delete existing file in temp upload
 				if (is_file($uploadfile)) {
 					unlink($uploadfile);
