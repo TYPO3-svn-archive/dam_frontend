@@ -736,6 +736,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @return	html		HTML - list of all selected documents
 	 */
 	function fileList($useRequestForm) {
+		
 		$result =$this->fileListBasicFuncionality();  
 		if ($result<>1) {
 			return  $result;
