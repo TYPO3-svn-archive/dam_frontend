@@ -581,6 +581,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		function saveMetaData($docID, $docData) {
 			foreach( $docData as $key => $value ) {
 				$DATA[$key] = $value;
+				$DATA['tstamp']=time();
 			}
 			$TABLE = 'tx_dam';
 			$WHERE = 'uid = '.$docID;
@@ -743,6 +744,8 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$oldDoc['tx_damfrontend_version']=$newVersion;
 			$oldDoc['file_name']=$newDoc['file_name'];
 			$oldDoc['file_path']=$newDoc['file_path'];
+			$oldDoc['date_cr']=$newDoc['date_cr'];
+			$oldDoc['date_mod']=$newDoc['date_mod'];
 			$oldDoc['tstamp']=time();
 			$TABLE = 'tx_dam';
 			$WHERE = 'uid = '.$docID;
@@ -753,8 +756,8 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		}
 
 		/**
-		 * if a file is added twice to the system, a new version is genreated
-		 * @author stefan
+		 * 	if a file is added twice to the system, a new version is genreated
+		 * 	@author stefan
 		 *	@param int $docID ID of the file which should be versionized
 		 */
 		function versioningCreateNewVersionExecute($docID) {
@@ -787,14 +790,16 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$WHERE = 'uid = '.$docID;
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$oldDoc);
 
-				// ---- changing the id's of the records and copying the old meta data to the file
-				//record with the new file
+				// 	---- changing the id's of the records and copying the old meta data to the file
+				//	record with the new file
 			$newDoc['uid'] = $oldID;
 			$newDoc['deleted']=0;
 			$newDoc['file_name']=$new_filename;
 			$newDoc['file_path']=$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath');
 			$newDoc['tx_damfrontend_version']= $newversion;
 			$newDoc['date_mod']=time();
+			$newDoc['crdate']=time();
+			
 			$TABLE = 'tx_dam';
 			$WHERE = 'uid = '.$oldID;
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$newDoc);
@@ -915,9 +920,12 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				// store the ID of the old record, so that if can be overwritten in the last step
 			$GLOBALS['TSFE']->fe_user->setKey('ses','versioningOverrideID',$oldDoc['uid']);
 						
-			$oldDoc['date_mod']=time();
+			$oldDoc['tstamp']=time();
 			$oldDoc['file_name']=$newDoc['file_name'];
 			$oldDoc['file_path']=$newDoc['file_path'];
+			$oldDoc['date_cr']=$newDoc['date_cr'];
+			$oldDoc['date_mod']=$newDoc['date_mod'];
+			
 				// set deleted to 1, that the new record (not yet saved thru the user) is not shown in the FE
 			$oldDoc['deleted']=1;
 			$oldDoc['uid']=$docID;
