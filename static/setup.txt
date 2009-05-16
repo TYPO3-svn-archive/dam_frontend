@@ -22,6 +22,8 @@ plugin.tx_damfrontend_pi1 {
 			wrap = |
 			params.width = 8
 			params.height = 11
+			# additional parameters are added via extension
+			typolink.parameter.data = TSFE:id
 		}
 		catTitle.stdWrap.wrap = |
 		

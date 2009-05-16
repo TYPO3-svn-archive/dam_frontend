@@ -279,56 +279,7 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 		
 		return $icon;
 	}
-		// TODO: check why/if this function is not needed anymore: 
-		// stefab: the plus minus buttons are not used for categorization, but maybe we will reaktivate it, if we combine cattree with categorization tree)
 
-	/**
-	 * Renders the +-= buttons with corresponding commands
-	 *
-	 * @param	string		$title: ...
-	 * @param	resultslist		$row: ...
-	 * @return	string		HTML Output
-	 */
-/**
-	function getControl($title,$row) {
-		// retrieving the current page id
-		$id = (int)t3lib_div::_GET('id');
-		$control = '<div class="control" >';
-		if ($this->modeSelIcons
-			AND !($this->mode=='tceformsSelect')
-			AND ($row['uid'] OR ($row['uid'] == '0' AND $this->linkRootCat))) {
-
-			// genrating plus button
-			$urlVars = array(
-				'tx_damfrontend_pi1[catPlus]' => null,
-				'tx_damfrontend_pi1[catEquals]' => null,
-				'tx_damfrontend_pi1[catMinus]' => null,
-				'tx_damfrontend_pi1[catPlus_Rec]' => $row['uid'],
-				'tx_damfrontend_pi1[catMinus_Rec]' => null,
-				'tx_damfrontend_pi1[treeID]' => $this->treeID
-			);
-			if ($id != '') $param_array['id'] = $id;
-			$url = t3lib_div::linkThisScript($urlVars);
-			$icon =	'<img'.t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'],$this->iconPath.'plus.gif', 'width="8" height="11"').' alt="" border="0"/>';
-			$control .= '<a href="'.$url.'">'.$icon.'</a>';
-
-			// generate minus button
-			$urlVars = array(
-				'tx_damfrontend_pi1[catPlus]' => null,
-				'tx_damfrontend_pi1[catEquals]' => null,
-				'tx_damfrontend_pi1[catMinus]' => null,
-				'tx_damfrontend_pi1[catPlus_Rec]' => null,
-				'tx_damfrontend_pi1[catMinus_Rec]' => $row['uid'],
-				'tx_damfrontend_pi1[treeID]' => $this->treeID
-			);
-			if ($id != '') $param_array['id'] = $id;
-			$url = t3lib_div::linkThisScript($urlVars);
-			$icon =	'<img'.t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'],$this->iconPath.'/minus.gif', 'width="8" height="11"').' alt="" border="0"/>';
-			$control .= '<a href="'.$url.'">'.$icon.'</a>';
-		}
-		$control .= '</div>';
-		return $control;
-	}*/
 
 
 	/* Compiles the HTML code for displaying the structure found inside the ->tree array

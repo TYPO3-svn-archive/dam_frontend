@@ -235,7 +235,6 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	function PM_ATagWrap($icon,$cmd,$bMark='treeroot')	{
 		$linkConf = array();
 		$linkConf['parameter.']['data'] = 'TSFE:id';
-		// TODO: htmlspecialvars or rawurlencode? IMHO rawurlencode
 		$linkConf['additionalParams'] = '&tx_damfrontend_pi1[treeID]='.$this->treeID.'&PM='.htmlspecialchars($cmd);
 		$linkConf['section'] = $bMark;
 		if ($bMark) $linkConf['ATagParams'] = ' name="'.$bMark.'" ';
@@ -282,7 +281,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 		$id = intval(t3lib_div::_GET('id'));
 		$param_array = array();
 		$cObj = t3lib_div::makeInstance('tslib_cObj');
-		$cObj->start($row, 'tx_dam_cat'); // TODO: check if that is the correct table?
+		$cObj->start($row, 'tx_dam_cat');
 
 		if ($this->modeSelIcons
 			AND !($this->mode=='tceformsSelect')
@@ -303,9 +302,11 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 			// TODO: use TypoScript
 			$url = $cObj->getTypoLink_URL($GLOBALS['TSFE']->id, $urlVars);
 
+
 			$icon = $cObj->cObjGetSingle($this->conf['categoryTree.']['plusIcon'], $this->conf['categoryTree.']['plusIcon.']);
-			// TODO: use TypoScript
-			$control .= '<a href="'.$url.'">'.$icon.'</a>';
+			$this->conf['categoryTree.']['plusIcon.']['typolink.']['additionalParams'] .= '&tx_damfrontend_pi1[catPlus]=&tx_damfrontend_pi1[catEquals]=&tx_damfrontend_pi1[catMinus]=&tx_damfrontend_pi1[catPlus_Rec]='.$row['uid'].'&tx_damfrontend_pi1[catMinus_Rec]=&tx_damfrontend_pi1[treeID]='. $this->treeID;
+			
+			$control .= $cObj->stdWrap($icon,$this->conf['categoryTree.']['plusIcon.']['typolink.'] );
 
 			// generating equals buttons
 			$urlVars = array(
