@@ -2,7 +2,7 @@
 require_once(PATH_tslib.'class.tslib_content.php');
 require_once(PATH_tslib.'class.tslib_pibase.php');
 require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfrontend_categorisationTree.php');
-require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinfotables_pi1.php');
+
 
 /***************************************************************
 *  Copyright notice
@@ -96,9 +96,9 @@ require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinf
 		$this->iconBaseAddress = $this->conf['iconBaseAddress'];
 		$this->langFile = $this->conf['langFile'];
 		$this->debug = $this->conf['debug'];
-			// TODO: check if it is possible to make staticinfotables optional
 		$this->staticInfoObj = null;
 		if (t3lib_extMgm::isLoaded('static_info_tables')) {
+			require_once(t3lib_extMgm::extPath('static_info_tables').'pi1/class.tx_staticinfotables_pi1.php');
 			$this->staticInfoObj = t3lib_div::getUserObj('&tx_staticinfotables_pi1');
 			if (!method_exists($this->staticInfoObj, 'needsInit') || $this->staticInfoObj->needsInit())	{
 				$this->staticInfoObj->init();
