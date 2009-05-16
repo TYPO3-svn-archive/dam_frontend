@@ -156,7 +156,6 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		$cObj = t3lib_div::makeInstance('tslib_cObj');
  		foreach ($list as $elem) {
 			$record_Code = tsLib_CObj::getSubpart($this->fileContent,$filelist_record_marker[$countElement]['cObjNum']);
- 				// TODO: correct table-name?
  			$cObj->start($elem, 'tx_dam');
  			$countElement++;
  			$elem['count_id'] =$countElement;

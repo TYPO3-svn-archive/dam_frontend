@@ -43,8 +43,6 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 
 	var $fieldDamUidList = 'tx_damdownloadlist_records';
 	var $damUidList = null;
-	// TODO: dateconf should be done via TypoScript
-	var $dateConf = 'd/m/Y';
 	var $iconBaseAddress = null;
 
 	var $template = '';
@@ -188,9 +186,8 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 
 		$fieldList = array('uid','title', 'ident', 'description', 'file_path', 'file_name', 'file_size', 'file_mime_type', 'file_mime_subtype', 'file_type', 'file_mtime');
 		$damTableName = 'tx_dam';
-		// TODO: i do not think, that a Backend User should see hidden records by default - Martin Holtz
 		$whereClause = 'uid IN (' . implode(', ', $this->damUidList) . ')' .
-			t3lib_BEfunc::deleteClause($damTableName) . $this->cObj->enableFields($damTableName, $GLOBALS['TSFE']->beUserLogin);
+			t3lib_BEfunc::deleteClause($damTableName) . $this->cObj->enableFields($damTableName);
 
 		$fields = 'pid,' . t3lib_BEfunc::getCommonSelectFields($damTableName, '') . ',' . implode(', ', $fieldList);
 

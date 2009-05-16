@@ -321,7 +321,6 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 				$idAttr = htmlspecialchars($this->domIdPrefix.$this->getId($v['row']).'_'.$v['bank']);
 				$title = $this->cObj->stdWrap ($this->getTitleStr($v['row'], $titleLen),$this->conf['categoryTree.']['catTitle.']);
 
-				// TODO: how/where are the controls rendered ==> in the parent class (t3lib_treeview...) @martin h- stefan
 				$control = $this->getControl($title, $v['row'], $v['bank']);
 				$out.='
 					<tr class="'.$class.'">

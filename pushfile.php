@@ -145,7 +145,6 @@ if (is_array($post) && count($post) > 0) {
 	 */
 	function sendMail() {
 		// TODO: implement me:)
-		// TODO: don't place that here
 		// use t3lib_htmlmail
 }
 
