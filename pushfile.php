@@ -171,6 +171,17 @@ if (is_array($post) && count($post) > 0) {
 	 * @param string $file Filename including absolute path
 	 */
 	function sendFile($file, $filename) {
+			// hook returns file( path / name), file in an array 
+		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['pushfile_sendFile']) { 
+			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['pushfile_sendFile'] as $_funcRef) { 
+  				if ($_funcRef) { 
+   					$params['filename']=$filename;
+   					$params['file']=$file;
+   					t3lib_div::callUserFunction($_funcRef,$params ); 
+  				} 
+ 			} 
+		} 
+
 		$filesize = filesize($file);
 		if (!$filesize) {
 			return false;
