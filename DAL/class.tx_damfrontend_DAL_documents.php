@@ -309,7 +309,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			if(!is_array($this->categories)) {
 				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getDcoumentList: for the this->categories is no array. Given value was:' .$this->categories, 'dam_frontend',3);
 			}
-				// TODO: is there a reason not to use API: Enablefields?
+				// TODO: use API: Enablefields
 			$filter = ' AND '.$this->docTable.'.deleted = 0  AND '.$this->docTable.'.hidden = 0';
 			$filter .= ' AND ('.$this->docTable.'.starttime > '.time().' OR '.$this->docTable.'.starttime = 0)';
 			$filter .= ' AND ('.$this->docTable.'.endtime < '.time().' OR '.$this->docTable.'.endtime = 0)';
@@ -424,6 +424,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 					$row['tx_damfrontend_feuser_upload']= $this->get_FEUserName($row['tx_damfrontend_feuser_upload']);
 
 						// TODO: we should use SQL-LIMIT instead! Cant we create an SQL-Syntax for $this->checkAccess($row['uid'], 1) && $this->checkDocumentAccess($row['fe_group']) ??
+						// Problem: this code is not performant. one idea is to fetch only a limited number of rows and check in a loop if enough rows are delivered after the permission check. One prob is left, because its difficult (or impossible) to find the right position in combination with the pagelimit / pagebrowser
 						// add row only, if the current resultID is between the limit range
 					if ($resultCounter >=$startRecord && $resultCounter<=($startRecord+$listLength-1)){
 						$result[] = $row;
