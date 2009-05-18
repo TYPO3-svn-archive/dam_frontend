@@ -288,60 +288,19 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 			AND ($row['uid'] OR ($row['uid'] == '0' AND $this->linkRootCat))) {
 
 			// genrating plus button
-			$urlVars = array(
-				'tx_damfrontend_pi1' => '', // ok, the t3lib_div::linkThisScript cant work with arrays
-				'tx_damfrontend_pi1[catPlus]' => null,
-				'tx_damfrontend_pi1[catEquals]' => null,
-				'tx_damfrontend_pi1[catMinus]' => null,
-				'tx_damfrontend_pi1[catPlus_Rec]' => $row['uid'],
-				'tx_damfrontend_pi1[catMinus_Rec]' => null,
-				'tx_damfrontend_pi1[treeID]' => $this->treeID
-			);
-
-			if ($id != '') $param_array['id'] = $id;
-			// TODO: use TypoScript
-			$url = $cObj->getTypoLink_URL($GLOBALS['TSFE']->id, $urlVars);
-
-
-			$icon = $cObj->cObjGetSingle($this->conf['categoryTree.']['plusIcon'], $this->conf['categoryTree.']['plusIcon.']);
-			$this->conf['categoryTree.']['plusIcon.']['typolink.']['additionalParams'] .= '&tx_damfrontend_pi1[catPlus]=&tx_damfrontend_pi1[catEquals]=&tx_damfrontend_pi1[catMinus]=&tx_damfrontend_pi1[catPlus_Rec]='.$row['uid'].'&tx_damfrontend_pi1[catMinus_Rec]=&tx_damfrontend_pi1[treeID]='. $this->treeID;
+			$this->conf['categoryTree.']['plusIcon.']['stdWrap.']['typolink.']['additionalParams'] .= '&tx_damfrontend_pi1[catPlus]=&tx_damfrontend_pi1[catEquals]=&tx_damfrontend_pi1[catMinus]=&tx_damfrontend_pi1[catPlus_Rec]='.$row['uid'].'&tx_damfrontend_pi1[catMinus_Rec]=&tx_damfrontend_pi1[treeID]='. $this->treeID;
+			$control .= $cObj->cObjGetSingle($this->conf['categoryTree.']['plusIcon'], $this->conf['categoryTree.']['plusIcon.']);
 			
-			$control .= $cObj->stdWrap($icon,$this->conf['categoryTree.']['plusIcon.']['typolink.'] );
-
 			// generating equals buttons
-			$urlVars = array(
-				'tx_damfrontend_pi1' => '', // ok, the t3lib_div::linkThisScript cant work with arrays
-				'tx_damfrontend_pi1[catPlus]' => null,
-				'tx_damfrontend_pi1[catEquals]' => $row['uid'],
-				'tx_damfrontend_pi1[catMinus]' => null,
-				'tx_damfrontend_pi1[catPlus_Rec]' => null,
-				'tx_damfrontend_pi1[catMinus_Rec]' => null,
-				'tx_damfrontend_pi1[treeID]' => $this->treeID
-			);
-			if ($id != '') $param_array['id'] = $id;
-			// TODO: use TypoScript
-			$url = $cObj->getTypoLink_URL($GLOBALS['TSFE']->id, $urlVars);
-			
-			$icon = $cObj->cObjGetSingle($this->conf['categoryTree.']['equalsIcon'], $this->conf['categoryTree.']['equalsIcon.']);
-			$control .= '<a href="'.$url.'">'.$icon.'</a>';
+			$this->conf['categoryTree.']['equalsIcon.']['stdWrap.']['typolink.']['additionalParams'] .= '&tx_damfrontend_pi1[catPlus]=&tx_damfrontend_pi1[catEquals]='.$row['uid'].'&tx_damfrontend_pi1[catMinus]=&tx_damfrontend_pi1[catPlus_Rec]=&tx_damfrontend_pi1[catMinus_Rec]=&tx_damfrontend_pi1[treeID]='. $this->treeID;
+			$control .= $cObj->cObjGetSingle($this->conf['categoryTree.']['equalsIcon'], $this->conf['categoryTree.']['equalsIcon.']);
 
 			// generate minus button
-			$urlVars = array(
-				'tx_damfrontend_pi1' => '', // ok, the t3lib_div::linkThisScript cant work with arrays
-				'tx_damfrontend_pi1[catPlus]' => null,
-				'tx_damfrontend_pi1[catEquals]' => null,
-				'tx_damfrontend_pi1[catMinus]' => null,
-				'tx_damfrontend_pi1[catPlus_Rec]' => null,
-				'tx_damfrontend_pi1[catMinus_Rec]' => $row['uid'],
-				'tx_damfrontend_pi1[treeID]' => $this->treeID
-			);
-			if ($id != '') $param_array['id'] = $id;
-			$url = $cObj->getTypoLink_URL($GLOBALS['TSFE']->id, $urlVars);
-			$icon = $cObj->cObjGetSingle($this->conf['categoryTree.']['minusIcon'], $this->conf['categoryTree.']['minusIcon.']);
-			$control .= '<a href="'.$url.'">'.$icon.'</a>';
+			$this->conf['categoryTree.']['minusIcon.']['stdWrap.']['typolink.']['additionalParams'] .= '&tx_damfrontend_pi1[catPlus]=&tx_damfrontend_pi1[catEquals]=&tx_damfrontend_pi1[catMinus]='.$row['uid'].'&tx_damfrontend_pi1[catPlus_Rec]=&tx_damfrontend_pi1[catMinus_Rec]=&tx_damfrontend_pi1[treeID]='. $this->treeID;
+			$control .= $cObj->cObjGetSingle($this->conf['categoryTree.']['minusIcon'], $this->conf['categoryTree.']['minusIcon.']);
+			
 		}
 		$control = $cObj->stdWrap($control, $this->conf['categoryTree.']['stdWrapControl.']);
-		// $control = '<div class="control" >'.$control . '</div>';
 		return $control;
 	}
 
