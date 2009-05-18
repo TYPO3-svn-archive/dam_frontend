@@ -68,7 +68,7 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 		if ($GLOBALS['TSFE']->beUserLogin
 			||  $GLOBALS['TSFE']->isUserOrGroupSet()) {
 			// TODO: use USER_INT instead of using set_no_cache!
-			$GLOBALS['TSFE']->set_no_cache();
+			//$GLOBALS['TSFE']->set_no_cache();
 		}
 
 		// init grouping data structures:
@@ -394,6 +394,8 @@ class tx_damfrontend_pi2 extends tslib_pibase {
  		$content=tslib_cObj::substituteMarkerArray($subpart, $markerArray);
 		return $content;
 	}
+	
+
 }
 
 
