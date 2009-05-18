@@ -233,8 +233,6 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 	/**
 	 * PM_ATagWrap
 	 *
-	 * TODO: is this function in use?
-	 *
 	 * @param	string		$icon: html (img Tag)
 	 * @param	string		$cmd: ...
 	 * @param	string		$bMark: ...
@@ -244,7 +242,6 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 		$linkConf = array();
 		$linkConf['parameter'] = $GLOBALS['TSFE']->id;
 		$linkConf['additionalParams'] = t3lib_div::implodeArrayForUrl('',$this->piVars);
-		// TODO: htmlspecialvars or rawurlencode? IMHO rawurlencode
 		$linkConf['additionalParams'] .= '&PM='.htmlspecialchars($cmd);
 		$linkConf['section'] = $bMark;
 		if ($bMark) $linkConf['ATagParams'] = ' name="'.$bMark.'" ';
