@@ -73,6 +73,9 @@ plugin.tx_damfrontend_pi1 {
 	# this object is depreceated, Please use in future categoryTree
 	renderCategoryTree.info = this ts conf is depreceated
 	
+	categorySelection {
+		# TODO add settings
+	}
 	
 	renderFields {
 	# set stdWrap config for each field
