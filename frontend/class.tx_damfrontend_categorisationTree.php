@@ -95,12 +95,6 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 		$this->renderer; // keeps the reference to the frontend renderer
 		$this->catLogic= t3lib_div::makeInstance('tx_damfrontend_DAL_categories');
 
-		// other Path are used, than in the original file
-		// @todo make the path dynamically
-		#$this->iconName = 'cat.gif';
-		#$this->iconPath = 'typo3conf/ext/dam/i/';
-		#$this->rootIcon = 'typo3conf/ext/dam/i/catfolder.gif';
-
 		$this->fieldArray = array('uid','title');
 		if($this->parentField) $this->fieldArray[] = $this->parentField;
 		if($this->typeField) $this->fieldArray[] = $this->typeField;
@@ -137,7 +131,6 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 	 *
 	 * @param	[int]		$id: ...
 	 * @return	[type]		...
-	 * @todo check if this function is used?
 	 */
  	function expandNext($id)
  	{
@@ -526,6 +519,7 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 	 * @return	string		Icon image tag.
 	 */
 	function getRootIcon($rec) {
+		$this->rootIconIsSet=true;
 		return $this->wrapIcon($this->cObj->IMAGE($this->conf['categorisationTree.']['treeRootIcon.']),$rec);
 	}
 	
