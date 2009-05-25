@@ -256,7 +256,7 @@ if (!$docLogic->checkDocumentAccess($doc['fe_group'])) {
 $filePath = PATH_site.$doc['file_path'].$doc['file_name'];
 
 if (!sendFile($filePath, $doc['file_name'])) {
-	die ('<h1>Error</h1><p>The requested file was not found! Please contact the adminstrator and tell him that the id: '.$docID .' was not found');
+	die ('<h1>Sorry, file not found!</h1><p>The requested file was not found! Please contact the adminstrator and tell him that the id: '.$docID .' was not found');
 }
 
 
