@@ -32,6 +32,8 @@
 			<label index="flexform_display_form">display this view</label>
 			<label index="upload_settings">allowed categories for upload</label>
 			<label index="flexform_useLatestList">Display the latest list view</label>
+			﻿<label index="pi1_title">DAM Frontend</label>
+			<label index="pi1_plus_wiz_description">the descrition</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="flexform_display_title">Was soll angezeigt werden</label>
@@ -60,6 +62,7 @@
 			<label index="flexform_display_form">Anzeige von</label>
 			<label index="upload_settings">erlaubte Kategorien für den upload</label>
 			<label index="flexform_useLatestList">Display the latest list view</label>
+			<label index="pi1_plus_wiz_description">Add the dam_frontend plugin (filelist, upload, cattree)</label>
 		</languageKey>
 	</data>
 </T3locallang>
