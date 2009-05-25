@@ -34,15 +34,6 @@ t3lib_div::loadTCA("pages");
 t3lib_extMgm::addTCAcolumns("pages",$tempColumns,1);
 t3lib_extMgm::addToAllTCAtypes("pages","tx_damtree_dam_cats;;;;1-1-1");
 
-// Adding a static file to the script
-t3lib_extMgm::addStaticFile($_EXTKEY,"static/","DAM Frontend Static Template");
-
-
-
-
-
-
-
 
 /***************************************
  *
@@ -234,9 +225,12 @@ t3lib_extMgm::addToAllTCAtypes("tx_dam","tx_damfrontend_feuser_upload;;;;1-1-1")
 t3lib_div::loadTCA('tt_content');
 $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_pi1'] = 'pi_flexform';
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pi1']='layout,select_key, pages, recursive';
+
 t3lib_extMgm::addPlugin(array('LLL:EXT:dam_frontend/locallang_db.xml:tt_content.list_type_pi1', $_EXTKEY.'_pi1'),'list_type');
+t3lib_extMgm::addStaticFile($_EXTKEY,"pi1/static/","DAM Frontend");
 t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_pi1', 'FILE:EXT:'.$_EXTKEY.'/flexform_ds.xml');
 
+if (TYPO3_MODE=='BE') $TBE_MODULES_EXT['﻿xMOD_db_new_content_el']['﻿addElClasses']['tx_damfrontend_pi1_wizicon'] = t3lib_extMgm::extPath($_EXTKEY).'pi1/class.tx_damfrontend_pi1_wizicon.php';
 
 t3lib_div::loadTCA('tt_content');
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pi2']='layout,select_key';
