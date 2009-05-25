@@ -33,7 +33,9 @@
 			<label index="upload_settings">allowed categories for upload</label>
 			<label index="flexform_useLatestList">Display the latest list view</label>
 			﻿<label index="pi1_title">DAM Frontend</label>
-			<label index="pi1_plus_wiz_description">the descrition</label>
+			<label index="pi1_plus_wiz_description">Display files of the DAM (filelist, categories). Upload or edit files via Frontend</label>
+			﻿<label index="pi2_title">DAM Frontend Filelist</label>
+			<label index="pi2_plus_wiz_description">Select files for downloading </label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="flexform_display_title">Was soll angezeigt werden</label>
@@ -62,7 +64,10 @@
 			<label index="flexform_display_form">Anzeige von</label>
 			<label index="upload_settings">erlaubte Kategorien für den upload</label>
 			<label index="flexform_useLatestList">Display the latest list view</label>
-			<label index="pi1_plus_wiz_description">Add the dam_frontend plugin (filelist, upload, cattree)</label>
+			﻿<label index="pi1_title">DAM Frontend</label>
+			<label index="pi1_plus_wiz_description">Zeigt Dateien des DAM an (Dateiliste, Kategorien).Dateien per Frontend hochladen oder editieren</label>
+			﻿<label index="pi2_title">DAM Frontend Dateiliste</label>
+			<label index="pi2_plus_wiz_description">Daten zum Download im Backend einzeln auswählen.</label>
 		</languageKey>
 	</data>
 </T3locallang>
