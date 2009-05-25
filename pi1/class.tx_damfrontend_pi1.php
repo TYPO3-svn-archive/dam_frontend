@@ -1204,10 +1204,15 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	
 					// temp upload folder for dam_frontend (default =  dam_frontend_upload)
 				if($fileUploadTS['uploadTempDir']){
-					$path=$this->cObj->stdWrap($fileUploadTS['uploadTempDir'],$fileUploadTS['uploadTempDir.']);
+					$uploadTempDir=$this->cObj->stdWrap($fileUploadTS['uploadTempDir'],$fileUploadTS['uploadTempDir.']);
 				}
-					// check if the temp folder exists
-				$uploadTempDir = is_dir($uploaddir.$path)?$path:'';
+					
+				// check if the temp folder exists
+				if (!is_dir($uploaddir.$uploadTempDir)){
+					$uploadTempDir='';
+					t3lib_div::syslog('﻿Upload temp path is not configured correctly. The path does not exist: '.$uploaddir.$uploadTempDir. ' Please set the value uploadTempDir in plugin.dam_frontend.upload.conf ','dam_frontend',3);
+				}
+					
 				if($fileUploadTS['FEuserHomePath']==1){
 					if($fileUploadTS['FEuserHomePath.']['field']){
 						$feuploaddir=$GLOBALS["TSFE"]->fe_user->user[$fileUploadTS['FEuserHomePath.']['field']].'/';
@@ -1236,6 +1241,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				
 				if(!is_dir($uploaddir.$feuploaddir)){
 					if(!mkdir($uploaddir.$feuploaddir)){
+						// todo add localized error
 						return 'error: can not create target folder [upload]';
 					}
 				}
@@ -1261,10 +1267,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				
 					// store in tempDir 
 				$fileUploadTS['path'] = $uploaddir.$uploadTempDir;
+					
 				$uploadfile=PATH_site.$uploaddir.$uploadTempDir.$_FILES[$uploadHandler->prefixId]['name'];
 				
 					//
 					// end overwirting of ts settings
+					//
 					//*************************************************
 
 					// delete existing file in temp upload
