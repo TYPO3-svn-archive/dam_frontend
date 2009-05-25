@@ -938,7 +938,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}	
 
 		if ($this->saveMetaData==1 && $this->internal['cancelEdit']==1) {
-				//user wants to cancel the save of meta data
+				// user wants to cancel the save of meta data
 				// TODO show warning 
 			$this->internal['saveUID'] =null;
 			$GLOBALS['TSFE']->fe_user->setKey('ses','saveID','');
@@ -949,14 +949,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$this->saveMetaData=false;
 			$this->categorise=false;
 			$this->upload=false;
-				// todo delete file & metadata
+				// TODO delete file & metadata
 			$step = 1;
 		}		
-		// $GLOBALS['TSFE']->fe_user->setKey('ses','uploadID',$newID)
 		
+			// works only if a user is logged on
 		if (is_array($GLOBALS['TSFE']->fe_user->user)) {
-			
-			// FIXME check access for the FE User
+			// todo maybe built an option to restrict uploads for users
 			
 			if ($this->upload) {
 				$returnCode = $this->handleUpload();
@@ -1024,7 +1023,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$step = 4;
 			}
 		}
-	
 		else {
 			// no user currently logged in - upload feature is disabled
 			return $this->renderer->renderError('noUserLoggedIn');
@@ -1449,6 +1447,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * 
 	 */
 	function saveCategories($docID,$upload=true) {
+			//todo access check 
+			//$this->docLogic->ch
 		$cats = $this->catList->getCatSelection(-1,0);
 		if (is_array($cats)) $this->docLogic->categoriseDocument($docID, $cats);
 
