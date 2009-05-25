@@ -227,12 +227,12 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		}
 
 	/**
-	 * This function is currently not used and empty
+	 * checks if a user has the right for edits and deletions
 	 *
-	 * @return	void		...
-	 * @todo: check if we can delete it
+	 * @return	true if user is allowed to edit		...
+	 * 
 	 */
-		function createCatString() {
+		function checkOwnerRights($fe_user) {
 
 		}
 
@@ -661,8 +661,9 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 					'uid_foreign' => $catID
 				);
 				$GLOBALS['TYPO3_DB']->exec_INSERTquery($this->mm_Table, $newrow);
+					// TODO add error handling
 			}
-	 		// FIXME function should return true if success
+	 		return true;
 		}
 
 		/**
@@ -913,7 +914,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$TABLE = 'tx_dam';
 			$WHERE = 'file_name = \''.$filename.' \' AND uid <>'.$docID ;
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($FIELDS,$TABLE,$WHERE);
-				// FIXME insert error handling
+				// TODO insert error handling
 			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				$oldDoc = $row;
 			}
@@ -933,7 +934,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				// copy the old data to the new record
 			$TABLE = 'tx_dam';
 			$WHERE = 'uid = '.$docID;
-				// FIXME insert error handling
+				// TODO insert error handling
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$oldDoc);
 						
 			return $docID;
@@ -1028,6 +1029,13 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			return $access;
 		}
 	
+		/**
+		*	saves an uploaded document in the datastore and cares for versioning
+		* 
+		* 	@return void
+		*	@author stefan
+		*
+		*/
 		function storeDocument($docID) {
 		
 			// handle versioning
