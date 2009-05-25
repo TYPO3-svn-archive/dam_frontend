@@ -72,12 +72,13 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	var $plugin;											// Back-reference to the calling plugin
 	var $cObj;												// cObj
 	var $conf;												// configuration array
-
+	
+	var $rootIconIsSet = false;								// indicates, if a root icon must be added or not
 	/**
 	 * prepares the category tree
 	 *
 	 * @return	void
-	 */// some small changes from the original category Tree
+	 * some small changes from the original category Tree */
  	function tx_damfrontend_catTreeView() {
 
 		$this->treeID = 1;
@@ -91,9 +92,6 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 
 		$this->renderer; // keeps the reference to the frontend renderer
 
-		// other Path are used, than in the original file
-		// @todo make the path dynamically
-	#	$this->rootIcon = 'typo3conf/ext/dam/i/catfolder.gif';
 
 		$this->fieldArray = array('uid','title');
 		if($this->parentField) $this->fieldArray[] = $this->parentField;
@@ -312,7 +310,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	 */
 	function printTree($treeArr='')	{
 		// 0 - show root icon always
-		if(count($treeArr)) {
+		if(!$this->rootIconIsSet AND count($treeArr)) {
 				// Artificial record for the tree root, id=0
 			$rootRec = $this->getRootRecord(0);
 			$firstHtml =$this->getRootIcon($rootRec);
@@ -553,6 +551,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	 * @return	string		Icon image tag.
 	 */
 	function getRootIcon($rec) {
+		$this->rootIconIsSet=true;
 		return $this->wrapIcon($this->cObj->IMAGE($this->conf['categoryTree.']['treeRootIcon.']),$rec);
 	}
 	
