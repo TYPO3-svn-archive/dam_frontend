@@ -324,7 +324,7 @@ class tx_damfrontend_DAL_categories {
 			else {
 					// get all usergroups a fe_user belongs to
 				$usergroups = implode(',',$GLOBALS['TSFE']->fe_user->groupData['uid']) ;
-					// FIXME error handling
+					// TODO add error handling
 				$mm_table = 'tx_dam_cat_uploadaccess_mm';
 					// executing database search: should return a row with the usergroup(s)
 				$local_table = $this->catTable;
