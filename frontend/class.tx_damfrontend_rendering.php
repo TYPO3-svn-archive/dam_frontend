@@ -160,7 +160,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  			$countElement++;
  			$elem['count_id'] =$countElement;
  			if ($pointer>0) $elem['count_id'] = $countElement  + $pointer*$listLength;
- 			$markerArray = $this->recordToMarkerArray($elem, 'renderFields');
+ 			$markerArray = $this->recordToMarkerArray($elem, 'renderFields','tx_dam');
  			$markerArray =$markerArray + $this->substituteLangMarkers($record_Code);
 
 			$markerArray['###CRDATE_AGE###'] =  $cObj->stdWrap($elem['crdate'], $this->conf['renderFields.']['crdate_age.']);
@@ -341,13 +341,17 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 				$urlVars['tx_damfrontend_pi1[catEditUID]'] =$catEditUID;
 			}
 			$urlVars['tx_damfrontend_pi1[treeID]'] = $treeID != '' ?   $treeID : null;
+				// TODO implement TS Setting  & add stdWrap
 			$url = $this->cObj->getTypoLink_URL($GLOBALS['TSFE']->id,$urlVars);
+ 			
  			// static markers of the list
  			$listElem = tslib_cObj::substituteMarker($listElem, '###DELETE_URL###', $url);
  			$listElem = tslib_cObj::substituteMarker($listElem, '###TITLE###', $category['title']);
 
  			$markerArray = $this->recordToMarkerArray($category);
-
+				// adding static user definded markers 
+ 			$markerArray =$markerArray + $this->substituteLangMarkers($single_Code);
+ 			
  			$listCode .= tslib_cObj::substituteMarkerArray($listElem, $markerArray);
  		}
  		return $wholeCode = tslib_CObj::substituteSubpart($wholeCode, '###CATLIST###', $listCode);
@@ -444,14 +448,13 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	 * should be used
 	 * @return	array		Markerarray ready for substitution
 	 */
- 	function recordToMarkerArray($record, $scope = 'default') {
+ 	function recordToMarkerArray($record, $scope = 'default', $table = 'tx_dam') {
 
  		if (!is_array($record))  { die ('Parameter error in class.tx_damfrontend_rendering in function recordToMarkerArray: $record is no Array. Please inform your administrator.'); }
 
 			// we should be able to have full TypoScript Power
 	 	$cObj = t3lib_div::makeInstance('tslib_cObj');
- 			// FIXME: table should not be hardcoded
-		$cObj->start($record, 'tx_dam');
+		$cObj->start($record, $table);
 		if (!is_array($this->conf[$scope.'.'])) { $this->conf[$scope.'.'] = array(); }
 
 		foreach ($record as $key=>$value) {
