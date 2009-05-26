@@ -230,10 +230,19 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 * checks if a user has the right for edits and deletions
 	 *
 	 * @return	true if user is allowed to edit		...
-	 * 
+	 * @param int $fe_user_uid UserID
+	 * @param int	$docID id of the document
+	 * @author Stefan Busemann
+	 * @todo extend support for fe_groups
 	 */
-		function checkOwnerRights($fe_user) {
-
+		function checkOwnerRights($fe_user_uid, $docID) {
+			$doc = $this->getDocument($docID);
+			if ($doc['tx_damfrontend_feuser_upload']==$fe_user_uid) {
+				return true;
+			} 
+			else {
+				return false;
+			}
 		}
 
 
@@ -764,10 +773,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		 */
 		function versioningCreateNewVersionExecute($docID) {
 			$newDoc = $this->getDocument($docID);
-			
-				// FIXME access check	
-				// FIXME insert error handling
-			
+						
 			$filename = $GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
 			$filetype = $newDoc['file_type'];
 			$filepath = $newDoc['file_path'];
@@ -944,8 +950,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			
 			$newDoc = $this->getDocument($docID);
 			
-				// FIXME access check	
-				// FIXME the old file
 			unlink($GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName'));
 				// FIXME insert error handling
 				

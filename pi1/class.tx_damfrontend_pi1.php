@@ -953,7 +953,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$step = 1;
 		}		
 		
-			// works only if a user is logged on
+			// works only if a user is logged on -> use access rights for the content element to set the access rights for upload
+			// TODO implement upload rights 
 		if (is_array($GLOBALS['TSFE']->fe_user->user)) {
 			// todo maybe built an option to restrict uploads for users
 			
@@ -1455,21 +1456,30 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * 
 	 */
 	function saveCategories($docID,$upload=true) {
-			//todo access check 
-			//$this->docLogic->ch
-		$cats = $this->catList->getCatSelection(-1,0);
-		if (is_array($cats)) $this->docLogic->categoriseDocument($docID, $cats);
-
-		if ($upload==true) {
-			$this->docLogic->storeDocument($docID);
-			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadID','');
-			$GLOBALS['TSFE']->fe_user->setKey('ses','saveID', '');
+		if ($this->userLoggedIn==true) {
+			if ($this->docLogic->checkOwnerRights($saveUID, $this->userUID)==true){		
+			
+				$cats = $this->catList->getCatSelection(-1,0);
+				if (is_array($cats)) $this->docLogic->categoriseDocument($docID, $cats);
+		
+				if ($upload==true) {
+					$this->docLogic->storeDocument($docID);
+					$GLOBALS['TSFE']->fe_user->setKey('ses','uploadID','');
+					$GLOBALS['TSFE']->fe_user->setKey('ses','saveID', '');
+				}
+					// finisch up with cleaning
+				$this->catList->clearCatSelection(-1);
+				$GLOBALS['TSFE']->fe_user->setKey('ses','categoriseID','');
+					// set record to visible
+				return $this->renderer->renderUploadSuccess();
+			} 
+			else {
+				return $this->renderer->renderError('no_access');
+			}
 		}
-			// finisch up with cleaning
-		$this->catList->clearCatSelection(-1);
-		$GLOBALS['TSFE']->fe_user->setKey('ses','categoriseID','');
-			// set record to visible
-		return $this->renderer->renderUploadSuccess();	
+		else {
+			return $this->renderer->renderError('noUser');
+		}	
 	}
 
 	/**
@@ -1589,11 +1599,17 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 *	@return string html of the editing form
 	 */
 	function editForm ($uid=0) {
+		
 		if (intval($uid)>0) {
 			if ($this->versioning != '') {
-				$uid = $this->handleVersioning($this->versioning);
-				$GLOBALS['TSFE']->fe_user->setKey('ses','saveID', $uid);
-				$GLOBALS['TSFE']->fe_user->setKey('ses','uploadID',$uid);
+				if ($this->docLogic->checkOwnerRights($this->userUID,$uid)==true){
+					$uid = $this->handleVersioning($this->versioning);
+					$GLOBALS['TSFE']->fe_user->setKey('ses','saveID', $uid);
+					$GLOBALS['TSFE']->fe_user->setKey('ses','uploadID',$uid);
+				}
+				else {
+					return $this->renderer->renderError('no_access');
+				}
 			}
 
 			$docData = $this->docLogic->getDocument($uid);
@@ -1601,7 +1617,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			if ($docData['tx_damfrontend_feuser_upload']==$this->userUID) {
 				return $this->renderer->renderFileEdit($docData);
 			} else {
-				return $this->renderer->renderError('custom','Editform: You are not allowed to edit this file!');
+				return $this->renderer->renderError('no_access');
 			}
 		}
 		else {
@@ -1738,21 +1754,24 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 function saveMetaData ($saveUID) {
 
 		if ($this->userLoggedIn==true) {
-			// FIXME check access			
-			// load doc compare userID whit
 			
-			#set edit UID to zero, so the edit form isnot shown anymore
-			$this->internal['editUID']=0;
-
-
-			# get the data from the edit form
-			$returnCode = $this->getIncomingDocData();
-			if ($returnCode==true) {
-				$this->docLogic->saveMetaData($saveUID,$this->documentData);
-				return true;
+			if ($this->docLogic->checkOwnerRights($saveUID, $this->userUID)==true){		
+				#set edit UID to zero, so the edit form isnot shown anymore
+				$this->internal['editUID']=0;
+	
+	
+				# get the data from the edit form
+				$returnCode = $this->getIncomingDocData();
+				if ($returnCode==true) {
+					$this->docLogic->saveMetaData($saveUID,$this->documentData);
+					return true;
+				}
+				else {
+					return $returnCode;
+				}
 			}
 			else {
-				return $returnCode;
+				return $this->renderer->renderError('no_access');
 			}
 		}
 		else {
