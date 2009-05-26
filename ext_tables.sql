@@ -66,7 +66,7 @@ CREATE TABLE tx_damfrontend_filterStates (
 );
 
 #
-# fügt das Entscheidungsfeld ein, ob eine uid verwendet werden soll
+# f√ºgt das Entscheidungsfeld ein, ob eine uid verwendet werden soll
 #
 CREATE TABLE tx_dam (
     tx_damfrontend_use_request_form int(11) DEFAULT '0' NOT NULL,
