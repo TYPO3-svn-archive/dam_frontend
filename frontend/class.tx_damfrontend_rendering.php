@@ -427,6 +427,8 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  			case 'uploadFormFieldError':
  				$message = $this->pi_getLL('uploadFormFieldError') . $customMessage . ' '. $this->pi_getLL('uploadFormFieldErrorLength') . ' ' . $customMessage2 ;
  				break;
+ 			case 'no_access':
+ 				$message = $this->pi_getLL('noAccessError');
  			case 'custom':
  				$message = strip_tags($customMessage. '&nbsp;'. $customMessage2);
  				break;
