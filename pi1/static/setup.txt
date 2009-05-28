@@ -56,7 +56,7 @@ plugin.tx_damfrontend_pi1 {
 
 		}
 		#tree root stdWrap
-		treeRoot.wrap
+		treeRoot.wrap = |
 	}
 	
 	categorisationTree < .categoryTree
@@ -198,7 +198,7 @@ plugin.tx_damfrontend_pi1 {
 		form_url.addQueryString = 1
 		# stdWrap : how many items should be default in the filelist
 		defaultLength = 10
-
+		useAlternatingRows = 1
 		# comma separated list of dam columns, which should be searched (use only text columns)
 		searchwordFields = title, description
 
