@@ -918,7 +918,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	 */
 	function renderUploadSuccess() {
 		$this->pi_loadLL();
-		$subpart = tslib_CObj::getSubpart($this->fileContent,'###MESSAGE###');
+		$subpart = tslib_CObj::getSubpart($this->fileContent,'###UPLOAD_SUCESS###');
 		$markerArray['###FORM_URL###'] = $this->cObj->typolink('', $this->conf['upload.']['successMessage.']['form_url.']);
  		$markerArray['###LABEL_MESSAGE###']=$this->pi_getLL('LABEL_MESSAGE');
  		$markerArray['###MESSAGE_TEXT###']=$this->pi_getLL('UPLOAD_SUCCESS');
@@ -1001,7 +1001,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 			foreach($aLLMarkerList[0] as $LLMarker){
 				$llKey =  strtoupper(substr($LLMarker,7,strlen($LLMarker)-10));
 				$marker = $llKey;
-				$langMarkers['###LLL:'.strtoupper($marker).'###'] = trim($GLOBALS['TSFE']->sL('LLL:'.$this->langFile.':'.$llKey));
+				$langMarkers['###LLL:'.strtoupper($marker).'###'] = $this->cObj->stdWrap(trim($GLOBALS['TSFE']->sL('LLL:'.$this->langFile.':'.$llKey)),$this->conf['renderFields.'][$marker.'.']);
 			}
 		}
 	    return $langMarkers;
