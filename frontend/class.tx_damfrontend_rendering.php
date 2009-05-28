@@ -145,13 +145,8 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		if(!intval($listLength) || $listLength < 1 ) $listLength = $this->cObj->stdWrap($this->conf['filelist.']['defaultLength'],$this->conf['filelist.']['defaultLength.']);
 		if (!isset($this->fileContent)) return $this->pi_getLL('error_renderFileList_template');
 
-
 			// Optionsplit for ###FILELIST_RECORD###
-			
-		#t3lib_div::debug($this->conf['﻿filelist.']['﻿﻿useAlternatingRows']);
-		#if ($this->conf['﻿filelist.']['﻿﻿useAlternatingRows']=='1') {
-		// fixme conf does not work
-		if (1==1) {
+		if ($this->conf['filelist.']['useAlternatingRows']==1) {
 			$filelist_record_marker = $GLOBALS['TSFE']->tmpl->splitConfArray(array('cObjNum' => $this->conf['filelist.']['marker.']['filelist_record_alterning']), count($list));
 		}
 		else {
