@@ -115,6 +115,8 @@
 			<label index="VERSIONING_NEW_VERSION">Create a new (additional) file.</label>
 			<label index="LABEL_NO_CAT">Search in all Categories </label>
 			<label index="upload_path_error">Error: Please check setting of your upload path! [DAM Frontend: upload]</label>
+			<label index="BROWSELINK_PREV">previous</label>
+			<label index="BROWSELINK_NEXT">next</label>
 			
 		</languageKey>
 		<languageKey index="de" type="array">
@@ -215,8 +217,8 @@
 			<label index="VERSIONING_NEW_VERSION">Neue (zusätzliche) Datei anlegen.</label>
 			<label index="LABEL_NO_CAT">In allen Kategorien suchen</label>
 			<label index="upload_path_error">Error: Please check setting of your upload path! [DAM Frontend: upload]</label>
-			
-			
+			<label index="BROWSELINK_PREV">vorherige</label>
+			<label index="BROWSELINK_NEXT">nächste</label>
 		</languageKey>
 	</data>
 </T3locallang>

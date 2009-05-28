@@ -8,10 +8,6 @@ plugin.tx_damfrontend_pi1 {
 	filter {
 		errorWrap = {$plugin.tx_damfrontend_pi1.filter.errorWrap}
 	}
-	marker {
-		# optionSplit is possible: ###FILELIST_RECORD_ODD### |*| ###FILELIST_RECORD_EVEN### || ###FILELIST_RECORD_ODD### |*|
-		filelist_record = ###FILELIST_RECORD###
-	}
 
 	categoryTree {
 		preSelectChildCategories = 0
@@ -86,9 +82,9 @@ plugin.tx_damfrontend_pi1 {
 			bytes.labels = "Bytes| Kilobyte| Megabyte| Gigabyte"
 		}
 		# stdWrap : Timestamp of file
-		tstamp.strftime =  %Y / %m / %d
+		tstamp.strftime =  %Y/%m/%d
 		# stdWrap : Creation Timestamp of file
-		crdate.strftime =  %Y / %m / %d
+		crdate.strftime =  %Y/%m/%d
 		crdate.prepend = TEXT
 		crdate.prepend {
 			value = (new)
@@ -98,9 +94,8 @@ plugin.tx_damfrontend_pi1 {
 			if.value.stdWrap.wrap = |+ {$plugin.tx_damfrontend_pi1.newUntilSeconds}
 			if.value.prioriCalc = 1
 		}
-
 		crdate_age.stdWrap.age = 1
-
+		date_cr < .crdate
 		title.typolink.parameter.data = TSFE:id
   		title.typolink.additionalParams = &eID=dam_frontend_push&docID={field:uid}
 		title.typolink.additionalParams.insertData = 1
@@ -202,7 +197,7 @@ plugin.tx_damfrontend_pi1 {
 		form_url.parameter.data = TSFE:id
 		form_url.addQueryString = 1
 		# stdWrap : how many items should be default in the filelist
-		defaultLength = 5
+		defaultLength = 10
 
 		# comma separated list of dam columns, which should be searched (use only text columns)
 		searchwordFields = title, description
@@ -223,9 +218,12 @@ plugin.tx_damfrontend_pi1 {
 			# stdWrap : Creation Timestamp of file
 			crdate.strftime =  %Y / %m  /  %d
 		}
-
-		useAlternatingRows = 0
-
+		 
+		marker {
+			filelist_record = ###FILELIST_RECORD###
+			# optionSplit is possible:
+			filelist_record_alterning = ###FILELIST_RECORD_ODD### |*| ###FILELIST_RECORD_EVEN### || ###FILELIST_RECORD_ODD### |*|
+		}
 		link_select_download {
 			typolink.returnLast = url
 			typolink.parameter.data = TSFE:id
@@ -311,6 +309,8 @@ plugin.tx_damfrontend_pi1 {
 			desc < .asc
 			desc.data = LLL:EXT:dam_frontend/pi1/locallang.xml:desc
 		}
+		browselink.browselinkUsePrevNext = 1
+		browselink.resultList.wrap = |
 		browselink.wrap= |
 		browselinkCurrent.wrap= <span style="border: 1px solid black">|</span>
 		

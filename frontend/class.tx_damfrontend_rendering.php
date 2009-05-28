@@ -147,15 +147,24 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 
 
 			// Optionsplit for ###FILELIST_RECORD###
-		if (!isset($this->conf['marker.']['filelist_record'])) { $this->conf['marker.']['filelist_record'] = '###FILELIST_RECORD###'; }
-
-		$filelist_record_marker = $GLOBALS['TSFE']->tmpl->splitConfArray(array('cObjNum' => $this->conf['marker.']['filelist_record']), count($list));
+			
+		#t3lib_div::debug($this->conf['﻿filelist.']['﻿﻿useAlternatingRows']);
+		#if ($this->conf['﻿filelist.']['﻿﻿useAlternatingRows']=='1') {
+		// fixme conf does not work
+		if (1==1) {
+			$filelist_record_marker = $GLOBALS['TSFE']->tmpl->splitConfArray(array('cObjNum' => $this->conf['filelist.']['marker.']['filelist_record_alterning']), count($list));
+		}
+		else {
+			if (!isset($this->conf['filelist.']['marker.']['filelist_record'])) { $this->conf['filelist.']['marker.']['filelist_record'] = '###FILELIST_RECORD###'; }
+			$filelist_record_marker = $GLOBALS['TSFE']->tmpl->splitConfArray(array('cObjNum' => $this->conf['filelist.']['marker.']['filelist_record']), count($list));
+		}
+ 		
  		$list_Code = tsLib_CObj::getSubpart($this->fileContent,'###FILELIST###');
  		$countElement = 0;
 		$rows = '';
 		$cObj = t3lib_div::makeInstance('tslib_cObj');
  		foreach ($list as $elem) {
-			$record_Code = tsLib_CObj::getSubpart($this->fileContent,$filelist_record_marker[$countElement]['cObjNum']);
+ 			$record_Code = tsLib_CObj::getSubpart($this->fileContent,$filelist_record_marker[$countElement]['cObjNum']);
  			$cObj->start($elem, 'tx_dam');
  			$countElement++;
  			$elem['count_id'] =$countElement;
@@ -274,23 +283,44 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		else {
 			$limiter = 0;	
 		}
-		// get the number of pages of the browseresult
+			// get the number of pages of the browseresult
 		$noOfPages = intval($resultcount / $listLength)-$limiter;
-		
+			
 		if ($resultcount % $listLength==0) $noOfPages = $noOfPages-1+$limiter;
 		
-		for ($z = 0; $z <= $noOfPages; $z++) {
-			$this->piVars['pointer'] = $z;
-			if ($z == $pointer ) {
-				#current page
-				$listElems .=  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP_keepPiVars($z+1),$this->conf['filelist.']['browselinkCurrent.']));
+			for ($z = 0; $z <= $noOfPages; $z++) {
+				$this->piVars['pointer'] = $z;
+				if ($z == $pointer ) {
+						// this is the current page
+					$this->conf['filelist.']['browselinkCurrent.']['parameter']= $GLOBALS['TSFE']->id; 
+					$listElems .=  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->typolink ($z+1,$this->conf['filelist.']['browselinkCurrent.']));
+					if ($this->conf['filelist.']['browselink.']['browselinkUsePrevNext']==1) {
+						// previous link
+						if ($z>0) {
+							$this->piVars['pointer'] = $z-1;
+							$listElemsPrevious =  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP_keepPiVars($this->pi_getLL('BROWSELINK_PREV')),$this->conf['filelist.']['browselink.']));
+						}
+						else {
+							$listElemsPrevious =  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_getLL('BROWSELINK_PREV'),$this->conf['filelist.']['browselink.']));
+						}
+						if ($z==$noOfPages) {
+							$listElemsNext =  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_getLL('BROWSELINK_NEXT'),$this->conf['filelist.']['browselink.']));
+						}
+						else {
+							$this->piVars['pointer'] = $z+1;
+							
+							$listElemsNext =  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP_keepPiVars($this->pi_getLL('BROWSELINK_NEXT')),$this->conf['filelist.']['browselink.']));
+						}
+					}
+				}
+				else {
+						// link to other pages
+					$listElems .=  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP_keepPiVars($z+1),$this->conf['filelist.']['browselink.']));
+				}
 			}
-			else {
-				#link to other pages
-				$listElems .=  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP_keepPiVars($z+1),$this->conf['filelist.']['browselink.']));
-			}
-		}
+			$listElems = $listElemsPrevious .$listElems .$listElemsNext;
 		$listCode = tslib_CObj::substituteSubpart($listCode, '###BROWSERESULT_ENTRY###', $listElems);
+		$listCode = $this->cObj->stdWrap ($listCode,$this->conf['filelist.']['browselink.']['resultList.']);
 		return $listCode;
 	}
 
