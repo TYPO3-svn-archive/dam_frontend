@@ -22,7 +22,18 @@ plugin.tx_damfrontend_pi1 {
 			stdWrap.typolink.parameter.data = TSFE:id
 			stdWrap.typolink.additionalParams.insertData = 1
 		}
+		
+		# wrap for the category title
 		catTitle.stdWrap.wrap = |
+		
+		# wrap for the whole category line
+		category.wrap = |
+		
+		# if = 1 then a second subpart (TREE_ELEMENT_2) is used to render the even rows
+		category.useAlternatingSubpart = 1
+		
+		category.marker =  ###TREE_ELEMENT### |*| ###TREE_ELEMENT_2### || ###TREE_ELEMENT### |*|
+		showRootCategory = 0
 		
 		expandTreeLevel = 1
 		minusIcon < .plusIcon
@@ -35,6 +46,12 @@ plugin.tx_damfrontend_pi1 {
 		stdWrapControl.wrap = <div class="control" >|</div>
 		# TypoLink for categoryTitle
 		categoryTitle.ATagParams = class="titlewrap"
+		
+		categoryTitle.wrap = |
+		categoryTitle.treePlus.wrap =  <span class="groepenTxtRightArrowGrey">|</span>
+		categoryTitle.treeMinus.wrap =  <span class="groepenTxtDownArrowGrey">|</span>
+		categoryTitle.treeNoControl.wrap =  <span class="groepenTxt">|</span>
+		treeLevelCSS.paddingLeft = 16px
 		
 		#IMAGE Objects for rendering the cat tree
 		treeRootIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}catfolder.gif
@@ -63,6 +80,15 @@ plugin.tx_damfrontend_pi1 {
 	categorisationTree {
 		categoryTitleNoAccess.wrap = <span style="color: #aaa">|</span>
 	}
+	
+	# use advanced category tree
+	categoryTree.useAdvanced = 1
+	categoryTree.templateFile = EXT:dam_frontend/pi1/template_tree.html
+	categoryTree.wrap = <div class="groepenBoxGray">|</div>
+	categoryTree.category.width = 200
+	categoryTree.category.﻿indention = 10
+	
+	
 	
 	# renderCategoryTree is depreceated. Please use in future categoryTree
 	renderCategoryTree < .categoryTree

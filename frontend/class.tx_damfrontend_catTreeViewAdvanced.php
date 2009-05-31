@@ -62,7 +62,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  * (This index is automatically created/updated by the extension "extdeveval")
  *
  */
-class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
+class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 
  	var $user;   											// instead of storing the data in the backend user, this data is stored in fe user
  	var $sessionVar = 'tx_damdownloads_treeState';			// name of the key, where to store the treeState in the current Session
@@ -72,6 +72,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	var $plugin;											// Back-reference to the calling plugin
 	var $cObj;												// cObj
 	var $conf;												// configuration array
+	var $renderer;											// object of tx_damfrontend_rendering for doing the output
 	
 	var $rootIconIsSet = false;								// indicates, if a root icon must be added or not
 	/**
@@ -79,7 +80,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	 *
 	 * @return	void
 	 * some small changes from the original category Tree */
- 	function tx_damfrontend_catTreeView() {
+ 	function tx_damfrontend_catTreeViewAdvanced() {
 
 		$this->treeID = 1;
 		$this->title = 'categorytree';
@@ -266,6 +267,43 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	}
 
 	/**
+	 * Generate a plus/minus navigation for the browsable tree.
+	 *
+	 * @param	array		record for the entry
+	 * @param	integer		The current entry number
+	 * @param	integer		The total number of entries. If equal to $a, a "bottom" element is returned.
+	 * @param	integer		The number of sub-elements to the current element.
+	 * @param	boolean		The element was expanded to render subelements if this flag is set.
+	 * @param	string		wrapItem, item that is wrapped by this function
+	 * @return	string		Image tag with the plus/minus icon.
+	 * @access private
+	 * @see t3lib_pageTree::PMicon()
+	 */
+	function PM_wrap($row,$a,$c,$nextCount,$exp,$wrapItem)	{
+		t3lib_div::debug($wrapItem);
+		$renderElement = $nextCount ? ($exp?'treeMinusIcon':'treePlusIcon') : 'treeJoinIcon';
+		
+		$BTM = ($a==$c)?'Bottom':'';		
+				
+		if ($nextCount)	{
+			$cmd=$this->bank.'_'.($exp?'0_':'1_').$row['uid'].'_'.$this->treeName;
+			
+			$bMark=($this->bank.'_'.$row['uid']);
+			$wrapItem = $this->PM_ATagWrap($wrapItem,$cmd,$bMark);
+			if ($exp) {
+				$wrapItem = $this->cObj->stdWrap($wrapItem,$this->conf['categoryTree.']['categoryTitle.']['treeMinus.']);
+			}
+			else {
+				$wrapItem = $this->cObj->stdWrap($wrapItem,$this->conf['categoryTree.']['categoryTitle.']['treePlus.']);
+			}
+		}
+		else {
+			$wrapItem = $this->cObj->stdWrap($wrapItem,$this->conf['categoryTree.']['categoryTitle.']['treeNoControl.']);
+		}
+		t3lib_div::debug($wrapItem);
+		return $wrapItem;
+	}
+	/**
 	 * Renders the +-= buttons with corresponding commands
 	 *
 	 * @param	string		$title: ...
@@ -308,6 +346,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	 */
 	function printTree($treeArr='')	{
 		// 0 - show root icon always
+		$i = 0; //counter to determine of a row is even or uneven
 		if(!$this->rootIconIsSet AND count($treeArr)) {
 				// Artificial record for the tree root, id=0
 			$rootRec = $this->getRootRecord(0);
@@ -320,43 +359,30 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 			return $this->eb_printTree($treeArr);
 		} else {
 			$titleLen = intval($this->BE_USER->uc['titleLen']);
-			$out='';
-				// put a table around it with IDs to access the rows from JS
-				// not a problem if you don't need it
-				// In XHTML there is no "name" attribute of <td> elements - but Mozilla will not be able to highlight rows if the name attribute is NOT there.
-			$out .= '
-
-				<!--
-				  TYPO3 tree structure.
-				-->
-				<table class="typo3-browsetree">';
-
+			
+			$out=array();
+			#t3lib_div::debug($treeArr);
 			foreach($treeArr as $k => $v)	{
 				if (is_array($this->selectedCats)) {
 					$test = array_search($v['row']['uid'], $this->selectedCats);
 					if ($test == 0 ) $test++;
 					$sel_class = $test ? "tree_selectedCats" : "tree_unselectedCats";
 				}
-				$idAttr = htmlspecialchars($this->domIdPrefix.$this->getId($v['row']).'_'.$v['bank']);
-				
-				$title = $this->cObj->stdWrap ($this->getTitleStr($v['row'], $titleLen),$this->conf['categoryTree.']['catTitle.']);
-
+					$title = $this->cObj->stdWrap ($this->getTitleStr($v['row'], $titleLen),$this->conf['categoryTree.']['catTitle.']);
 				$control = $this->getControl($title, $v['row'], $v['bank']);
-				
-				$out.='
-					<tr class="'.$class.'">
-						<td id="'.$idAttr.'" class="'.$sel_class.'">'.
-							$v['HTML'].
-							$this->wrapTitle($title, $v['row'], $v['bank']).
-						'</td>
-						<td  id="'.$idAttr.'Control" class="typo3-browsetree-control">'.
-							($control ? $control : '<span></span>').
-						'</td>
-					</tr>';
+				$title = $this->wrapTitle($title, $v['row'], $v['bank']);
+				$idAttr = htmlspecialchars($this->domIdPrefix.$this->getId($v['row']).'_'.$v['bank']);
+				if ($this->conf['categoryTree.']['category.']['useAlternatingSubpart']==1) {
+					$marker = $GLOBALS['TSFE']->tmpl->splitConfArray(array('cObjNum' => $this->conf['categoryTree.']['category.']['marker']), count($treeArr));
+					$marker  = $marker[$i]['cObjNum'];
+				}
+				else {
+					$marker = $this->conf['categoryTree.']['category.']['marker'];
+				}
+				$i++;
+				$out['###TREE_ELEMENTS###'].= $this->renderer->renderCategoryTreeCategory($class,$idAttr,$sel_class,$v['HTML'],$title,$control,$marker);
 			}
-			$out .= '
-				</table>';
-			return $out;
+			return $this->renderer->renderCategoryTree($out);
 		}
 	}
 
@@ -422,16 +448,16 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 				$firstHtml.=$this->getIcon($rootRec);
 			} else {
 					// Artificial record for the tree root, id=0
-				$rootRec = $this->getRootRecord($uid);
-				$firstHtml.=$this->getRootIcon($rootRec);
+					$rootRec = $this->getRootRecord($uid);	
+					$firstHtml.=$this->getRootIcon($rootRec);
 			}
 
 			if (is_array($rootRec))	{
 				$uid = $rootRec['uid'];		// In case it was swapped inside getRecord due to workspaces.
-
-					// Add the root of the mount to ->tree
-				$this->tree[]=array('HTML'=>$firstHtml, 'row'=>$rootRec, 'bank'=>$this->bank);
-
+				if ($this->conf['categoryTree']['showRootCategory']==1) {
+						// Add the root of the mount to ->tree
+					$this->tree[]=array('HTML'=>$firstHtml, 'row'=>$rootRec, 'bank'=>$this->bank);
+				}
 					// If the mount is expanded, go down:
 				if ($isOpen)	{
 						// Set depth:
@@ -522,8 +548,10 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 
 				// Set HTML-icons, if any:
 			if ($this->makeHTML)	{
-				$HTML = $depthData.$this->PMicon($row,$a,$c,$nextCount,$exp);
-				$HTML.=$this->wrapStop($this->getIcon($row),$row);
+				#$HTML = $depthData.$this->PMicon($row,$a,$c,$nextCount,$exp);
+				#t3lib_div::debug($row);
+				$HTML = $this->PM_wrap($row,$a,$c,$nextCount,$exp,$row['title']);
+				#$HTML.=$this->wrapStop($this->getIcon($row),$row);
 			}
 
 				// Finally, add the row/HTML content to the ->tree array in the reserved key.
@@ -550,7 +578,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	 */
 	function getRootIcon($rec) {
 		$this->rootIconIsSet=true;
-		return $this->wrapIcon($this->cObj->IMAGE($this->conf['categoryTree.']['treeRootIcon.']),$rec);
+		return  $this->wrapIcon($this->cObj->IMAGE($this->conf['categoryTree.']['treeRootIcon.']),$rec);
 	}
 	
 		/**
@@ -567,9 +595,23 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 		return $icon;
 	}
 	
+	
+	
+	/**
+	 * sets the paths for file references
+	 *
+	 * @param	[string]		$filePath: ...
+	 * @return	[type]		...
+	 */
+ 	function setFileRef($filePath) {
+ 		$this->fileContent = tsLib_CObj::fileResource($filePath);
+ 		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###EDITFORM###');
+ 		return tslib_cObj::substituteMarkerArray($formCode, $markerArray);
+ 	}
+	
 }	
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_catTreeView.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_catTreeView.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_catTreeViewAdvanced.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_catTreeViewAdvanced.php']);
 }
 
 ?>

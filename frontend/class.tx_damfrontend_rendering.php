@@ -7,7 +7,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2006-2008 in2form.com (typo3@in2form.com)
+*  (c) 2006-2009 in2form.com (typo3@in2form.com)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -38,10 +38,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  *
  * @package typo3
  * @subpackage tx_dam_frontend
- * @author Martin Baum <typo3@in2form.com>
- * @todo add stdWrap possibilities
- * Some scripts that use this class:	--
- * Depends on:		--
+ * @author Stefan Busemann / Martin Baum <typo3@in2form.com>
  */
 /**
  * [CLASS/FUNCTION INDEX of SCRIPT]
@@ -1123,7 +1120,75 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 
 		return tslib_cObj::substituteMarkerArray($formCode, $markerArray);
 	}
+	
+ 	/**
+	 * renderCategoryTreeCategory
+	 * @author	stefan
+	 * 
+	 * @param	string	$class		css class to set the selected cats or not (example: ﻿treeelem)
+	 * @param	string	$idAttr		identyfier for tree commands (example: ﻿txdamCat6_0)
+	 * @param	string	$sel_class 	(tree_selectedCats / tree_unselectedCats)
+	 * @param	array	$v			controls for the tree
+	 * @param	string	$title		title of the category wrapped in a link
+	 * @param	string	$control	+-= signs 
+	 * @param	boolean	$alternateSubpart if true the alternative subpart is rendered
+	 * 
+	 * @return	[string]	html of the category	
+	 * 
+	 */
+	function renderCategoryTreeCategory($class,$idAttr,$sel_class,$v,$title,$control,$subpart) {
+		$this->pi_loadLL();
+		#t3lib_div::debug('start');
+		#t3lib_div::debug($class);
+		#t3lib_div::debug($idAttr);
+		#t3lib_div::debug($sel_class);
+		#t3lib_div::debug('$v');
+		#t3lib_div::debug($v);
+		#t3lib_div::debug('$title');
+		#t3lib_div::debug($title);
+		#t3lib_div::debug($control);
+		$this->fileContent= tsLib_CObj::fileResource($this->conf['categoryTree.']['templateFile']);
+		#$v = ﻿$this->cObj->stdWrap($v,$this->conf['categoryTree.']['categoryTitle.']);
+		/**
+			<tr class="'.$class.'">
+				<td id="'.$idAttr.'" class="'.$sel_class.'">'.
+					$v['HTML'].
+					$this->wrapTitle($title, $v['row'], $v['bank']).
+				'</td>
+				<td  id="'.$idAttr.'Control" class="typo3-browsetree-control">'.
+					($control ? $control : '<span></span>').
+				'</td>
+			</tr>
+		*/
+		#$class,$idAttr,$sel_class,$v['HTML'],$title,$control
+		$subpart = tslib_CObj::getSubpart($this->fileContent,$subpart);
+		$markerArray = array();
+		$markerArray['###CATEGORY_TITLE###'] = $v;
+		$markerArray['###TREELEVELCSSlo###'] = $v;
+		
+ 		$content=tslib_cObj::substituteMarkerArray($subpart, $markerArray);
+ 		t3lib_div::debug($content);
+ 		// todo support for static markers
+ 		return $this->cObj->stdWrap($content,$this->conf['categoryTree.']['category.']);
+	}
 
+	
+  	/**
+	 * renderCategoryTreeCategory
+	 * @author	stefan
+	 * @return	[string]	html of the category	
+	 * 
+	 */
+	function renderCategoryTree($markerArray) {
+		$this->pi_loadLL();
+		$this->fileContent= tsLib_CObj::fileResource($this->conf['categoryTree.']['templateFile']);
+		$subpart = tslib_CObj::getSubpart($this->fileContent,'###TREE###');
+		$markerArray['###LABEL_MESSAGE###']=$this->pi_getLL('LABEL_MESSAGE');
+		// todo support for static markers
+ 		$content=tslib_cObj::substituteMarkerArray($subpart, $markerArray);
+ 		$this->cObj->stdWrap($content,$this->conf['categoryTree.']);
+		return $content;
+	}
  }
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_rendering.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_rendering.php']);
