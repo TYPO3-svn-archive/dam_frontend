@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Advanced tree view template</title>
+</head>
+<!-- ###TREE### begin -->
+<h2>Alle groepen</h2>
+<h3>De groepen waar je lid van bent.</h3>
+<p>Selector: <span><a href="#">alles</a></span> / <span><a href="#">geen</a></span></p>
+###TREE_ELEMENTS###
+<div class="groepenBoxGray">
+</div>
+<!-- ###TREE### end -->
+
+<!-- ###TREE_ELEMENT### begin -->
+	<div ###TREELEVELCSS### class="alternateBgWhite"><span class="greenCheckWhite"><a href="#"></a></span>###CATEGORY_TITLE###</div>
+<!-- ###TREE_ELEMENT### end -->
+
+<!-- ###TREE_ELEMENT_2### begin -->
+	<div ###TREELEVELCSS### class="alternateBgGrey grey"><span class="greenCheckWhite"><a href="#"></a></span>###CATEGORY_TITLE###</div>
+<!-- ###TREE_ELEMENT_2### end -->
+
+<!-- 
+ <div class="alternateBgWhite"> <span class="greenCheckWhite"><a href="#"></a></span><span class="groepenTxtDownArrowWhite"><a href="#">Main Topic 1</a></span> </div>
+  <div class="alternateBgGrey grey padd"> <span class="greenCheckGrey"><a href="#"></a></span><span class="groepenTxt"><a href="#">Ecology</a></span> </div>
+  <div class="alternateBgWhite padd"> <span class="greenCheckWhite"><a href="#"></a></span><span class="groepenTxt"><a href="#">Second topic</a></span> </div>
+
+  <div class="alternateBgGrey"> <span class="greenCheckGrey"><a href="#"></a></span><span class="groepenTxtRightArrowGrey"><a href="#">Main Topic 2</a></span> </div>
+  <div class="alternateBgWhite"> <span class="greyCheckWhite"><a href="#"></a></span><span class="groepenTxtDownArrowGrey"><a href="#">Main topic 3</a></span> </div>
+  <div class="alternateBgGray grey padd"><span class="uncheckGrey"><a href="#"></a></span><span class="groepenTxt"><a href="#">Ecology</a></span></div>
+  <div class="alternateBgWhite padd"> <span class="uncheckWhite"><a href="#"></a></span><span class="groepenTxt"><a href="#">Topic nr 4</a></span> </div>
+
+  <div class="alternateBgGray grey padd"><span class="greyCheckGrey"><a href="#"></a></span><span class="groepenTxtDownArrowGrey"><a href="#">Another topic</a></span></div>
+  <div class="alternateBgWhite paddmore"> <span class="greenCheckWhite"><a href="#"></a></span><span class="groepenTxt"><a href="#">Subtopic 1</a></span> </div>
+  <div class="alternateBgGray grey paddmore"><span class="uncheckGrey"><a href="#"></a></span><span class="groepenTxt"><a href="#">Subtopic 2</a></span></div>
+  <div class="alternateBgWhite padd"><span class="uncheckGrey"><a href="#"></a></span><span class="groepenTxt"><a href="#">Last one</a></span></div>
+ -->
+<!-- muss selector (checkbox) -->
+<!-- optional control (dreieck)  -->
+<!-- muss title  -->
+
+				<table class="typo3-browsetree">';
+				<tr class="'.$class.'">
+						<td id="'.$idAttr.'" class="'.$sel_class.'">'.
+							$v['HTML'].
+							$this->wrapTitle($title, $v['row'], $v['bank']).
+						'</td>
+						<td  id="'.$idAttr.'Control" class="typo3-browsetree-control">'.
+							($control ? $control : '<span></span>').
+						'</td>
+					</tr>';
+				
+				</table>';
+<body>
+
+</body>
+</html>
