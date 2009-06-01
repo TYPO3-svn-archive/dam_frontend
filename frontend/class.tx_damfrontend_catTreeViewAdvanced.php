@@ -437,6 +437,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		}
 		$class="treeelem";
 		#t3lib_div::debug($treeArr);
+		t3lib_div::debug($this->selectedCats);
 		if($this->mode=='elbrowser') {
 			return $this->eb_printTree($treeArr);
 		} else {
@@ -457,40 +458,46 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				}
 					// decide how the link must be rendered
 					// check if this cat has childs
-				$childCats = $this->get_childCats($v['row']['uid']);
-				$catSelected = false;
-				$catNotSelected = false;
-				if (is_array($childCats)){
-					// has child: so check if they are selected all / partly / none
-					foreach ($childCats as $cat) {
-						$test = null;
-						$found=false;
-						$test = array_search($cat['uid'], $this->selectedCats);
-						if ($test === false) {
-							$found = false;
+				if (is_array($this->selectedCats) ) {
+					$childCats = $this->get_childCats($v['row']['uid']);
+					$catSelected = false;
+					$catNotSelected = false;
+					
+					if (is_array($childCats)){
+						// has child: so check if they are selected all / partly / none
+						t3lib_div::debug($childCats);
+						foreach ($childCats as $cat) {
+							$test = null;
+							$found=false;
+							$test = array_search($cat['uid'], $this->selectedCats);
+							t3lib_div::debug($test);
+							var_dump($test);
+							if ($test === false) {
+								$found = false;
+							}
+							else {
+								$found = true;
+							}
+							if ($found==true) {
+								$catSelected = true;
+								#t3lib_div::debug('true');
+							} 
+							else {
+								$catNotSelected = true;
+							}
 						}
-						else {
-							$found = true;
-						}
-						if ($found==true) {
-							$catSelected = true;
-							t3lib_div::debug('true');
+						if ($catSelected == false and  $catNotSelected==true) {
+								//	no cats are selected						
+							$sel_class ='tree_selectedNoCats';
 						} 
 						else {
-							$catNotSelected = true;
-						}
-					}
-					if ($catSelected == false and  $catNotSelected==true) {
-							//	no cats are selected						
-						$sel_class ='tree_selectedNoCats';
-					} 
-					else {
-						if ($catSelected == true and  $catNotSelected==false) {
-							//	all cats are selected
-							$sel_class ='tree_selectedAllCats';
-						}
-						else {
-							$sel_class ='tree_selectedPartlyCats';
+							if ($catSelected == true and  $catNotSelected==false) {
+								//	all cats are selected
+								$sel_class ='tree_selectedAllCats';
+							}
+							else {
+								$sel_class ='tree_selectedPartlyCats';
+							}
 						}
 					}
 				}
