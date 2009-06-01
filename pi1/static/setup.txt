@@ -51,7 +51,18 @@ plugin.tx_damfrontend_pi1 {
 		categoryTitle.treePlus.wrap =  <span class="groepenTxtRightArrowGrey">|</span>
 		categoryTitle.treeMinus.wrap =  <span class="groepenTxtDownArrowGrey">|</span>
 		categoryTitle.treeNoControl.wrap =  <span class="groepenTxt">|</span>
-		treeLevelCSS.paddingLeft = 16px
+		
+		categorySelection.selected.wrap = |
+		categorySelection.unselected.wrap = |
+		categorySelection.partlySelected.wrap = |
+		categorySelection.link = TYPOLINK
+		categorySelection.selectionStatus.tree_selectedCats=greenCheckGrey
+		categorySelection.selectionStatus.tree_unselectedCats=uncheckGrey	
+		categorySelection.selectionStatus.tree_selectedAllCats=greenCheckGrey	
+		categorySelection.selectionStatus.tree_selectedPartlyCats=greyCheckGrey		
+		categorySelection.selectionStatus.tree_selectedNoCats =uncheckGrey			
+		
+		treeLevelCSS.paddingLeft = 16
 		
 		#IMAGE Objects for rendering the cat tree
 		treeRootIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}catfolder.gif

@@ -852,7 +852,15 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###CATEGORISATION###');
 
 		// initalisation of the treeview
-		$tree = t3lib_div::makeInstance('tx_damfrontend_categorisationTree');
+		t3lib_div::debug($this->conf['categoryTree.']['useAdvanced']);
+		if ($this->conf['categoryTree.']['useAdvanced']==1) {
+			$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeViewAdvanced');
+			$tree->renderer = $this;	
+		}
+		else {
+			$tree = t3lib_div::makeInstance('tx_damfrontend_categorisationTree');
+		}
+		
 		$tree->MOUNTS = explode(',',$uploadCats);
 		$tree->init(-1,$this);
 		$tree->expandTreeLevel($this->conf['categoryTree.']['expandTreeLevel']);
@@ -1136,7 +1144,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	 * @return	[string]	html of the category	
 	 * 
 	 */
-	function renderCategoryTreeCategory($class,$idAttr,$sel_class,$v,$title,$control,$subpart) {
+	function renderCategoryTreeCategory($class,$idAttr,$sel_class,$dataArray,$title,$control,$subpart) {
 		$this->pi_loadLL();
 		#t3lib_div::debug('start');
 		#t3lib_div::debug($class);
@@ -1163,11 +1171,14 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		#$class,$idAttr,$sel_class,$v['HTML'],$title,$control
 		$subpart = tslib_CObj::getSubpart($this->fileContent,$subpart);
 		$markerArray = array();
-		$markerArray['###CATEGORY_TITLE###'] = $v;
-		$markerArray['###TREELEVELCSSlo###'] = $v;
+		$markerArray['###CATEGORY_TITLE###'] = $dataArray['HTML'];
+		#t3lib_div::debug($dataArray['select_cat']);
+		$markerArray['###SELECT_CAT###'] = $dataArray['select_cat'];
+		$markerArray['###SELECTIONSTATUS###'] = $this->conf['categoryTree.']['categorySelection.']['selectionStatus.'][$sel_class];
+		$markerArray['###TREELEVELCSS###'] = $dataArray['treeLevelCSS'];
 		
  		$content=tslib_cObj::substituteMarkerArray($subpart, $markerArray);
- 		t3lib_div::debug($content);
+ 		#t3lib_div::debug($content);
  		// todo support for static markers
  		return $this->cObj->stdWrap($content,$this->conf['categoryTree.']['category.']);
 	}

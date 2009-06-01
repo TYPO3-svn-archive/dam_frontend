@@ -223,6 +223,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$where = ' AND '.$catString.' AND '.$this->docTable.'.deleted = 0  AND '.$this->docTable.'.hidden = 0'.$this->additionalFilter;
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query($select,$local_table, $mm_table, $foreign_table, $where);
 			//return $GLOBALS['TYPO3_DB']->sql_num_rows($res);
+			//todo check this / fix this
 			return 10;
 		}
 

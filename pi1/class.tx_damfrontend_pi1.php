@@ -544,7 +544,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}		
 		}
 		
-		if ($this->internal['useStaticCatSelection']) {
+		if ($this->internal['useStaticCatSelection']==1) {
 			$this->internal['incomingtreeID'] = $this->internal['treeID'];
 			$this->catList->unsetAllCategories();
 			if (is_array($this->internal['catMounts'])) {
@@ -775,6 +775,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			if (is_array($this->internal['filter'])) {
 				$this->internal['filterError'] = $this->docLogic->setFilter($this->internal['filter']);
 			}
+			#t3lib_div::debug($cats);
 			$this->docLogic->orderBy = $this->internal['list']['sorting'];
 			$this->docLogic->limit = $this->internal['list']['limit'];
 			$this->docLogic->categories = $cats;
