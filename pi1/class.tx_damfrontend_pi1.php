@@ -763,7 +763,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				if (count($catList)) $hasCats = true;
 			}
 		}
-
 		if ($hasCats===true || $this->internal['filter']['searchAllCats']===true ) {
 			
 			/***************************

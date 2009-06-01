@@ -436,15 +436,13 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			#$treeArr = array_merge(array(array('HTML' => $firstHtml,'row' => $rootRec,'bank'=>0)), $treeArr);
 		}
 		$class="treeelem";
-
+		#t3lib_div::debug($treeArr);
 		if($this->mode=='elbrowser') {
 			return $this->eb_printTree($treeArr);
 		} else {
 			$titleLen = intval($this->BE_USER->uc['titleLen']);
-			
 			$out=array();
 			foreach($treeArr as $k => $v)	{
-				#t3lib_div::debug($this->selectedCats);
 				if (is_array($this->selectedCats)) {
 						// check if current category is in selection
 					$test = array_search($v['row']['uid'], $this->selectedCats);
@@ -457,13 +455,50 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				} else {
 					$sel_class = 'tree_unselectedCats';
 				}
+					// decide how the link must be rendered
+					// check if this cat has childs
+				$childCats = $this->get_childCats($v['row']['uid']);
+				$catSelected = false;
+				$catNotSelected = false;
+				if (is_array($childCats)){
+					// has child: so check if they are selected all / partly / none
+					foreach ($childCats as $cat) {
+						$test = null;
+						$found=false;
+						$test = array_search($cat['uid'], $this->selectedCats);
+						if ($test === false) {
+							$found = false;
+						}
+						else {
+							$found = true;
+						}
+						if ($found==true) {
+							$catSelected = true;
+							t3lib_div::debug('true');
+						} 
+						else {
+							$catNotSelected = true;
+						}
+					}
+					if ($catSelected == false and  $catNotSelected==true) {
+							//	no cats are selected						
+						$sel_class ='tree_selectedNoCats';
+					} 
+					else {
+						if ($catSelected == true and  $catNotSelected==false) {
+							//	all cats are selected
+							$sel_class ='tree_selectedAllCats';
+						}
+						else {
+							$sel_class ='tree_selectedPartlyCats';
+						}
+					}
+				}
+				
 				#t3lib_div::debug($sel_class);
 				$title = $this->cObj->stdWrap ($this->getTitleStr($v['row'], $titleLen),$this->conf['categoryTree.']['catTitle.']);
 				$control = $this->getControl($title, $v['row'], $v['bank']);
 				$title = $this->wrapTitle($title, $v['row'], $v['bank']);
-					// decide how the link must be rendered
-					// cat is selected > deselect link
-					// cat is not selected > select cat
 				$v['select_cat'] = $this->wrapCatSelection('&nbsp;',$v['row'],$sel_class);
 				$idAttr = htmlspecialchars($this->domIdPrefix.$this->getId($v['row']).'_'.$v['bank']);
 				if ($this->conf['categoryTree.']['category.']['useAlternatingSubpart']==1) {
@@ -815,6 +850,21 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 						$this->orderByFields
 					);
 			return $res;
+		}
+	}
+	
+	function get_childCats($catUID) {
+		$res = $this->getDataInit($catUID);
+		$c = $this->getDataCount($res);
+		if ($c > 0)	{
+			$childCats = array();
+			while ($row = $this->getDataNext($res,$subCSSclass)) {
+				$childCats[] = $row;
+			}
+			return $childCats;
+		}
+		else {
+			return false;
 		}
 	}
 }	
