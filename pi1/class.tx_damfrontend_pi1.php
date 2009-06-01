@@ -1444,10 +1444,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				
 		#get all allowed categories
 		$uploadCats = $this->internal['uploadCatSelection'];
-		
+		#t3lib_div::debug($cats);
 		if (is_array($cats)) {
 			foreach($cats as $cat) {
-				
 				$catData[] = $this->catLogic->getCategory($cat);
 			}
 			$content =  $this->renderer->renderCategorisationForm($docData,$catData,$uploadCats,$versioning);

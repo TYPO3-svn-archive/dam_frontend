@@ -444,6 +444,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			
 			$out=array();
 			foreach($treeArr as $k => $v)	{
+				#t3lib_div::debug($this->selectedCats);
 				if (is_array($this->selectedCats)) {
 						// check if current category is in selection
 					$test = array_search($v['row']['uid'], $this->selectedCats);
