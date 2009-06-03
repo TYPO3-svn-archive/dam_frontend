@@ -1470,7 +1470,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 */
 	function saveCategories($docID,$upload=true) {
 		if ($this->userLoggedIn==true) {
-			if ($this->docLogic->checkOwnerRights($saveUID, $this->userUID)==true){		
+			if ($this->docLogic->checkOwnerRights($docID, $this->userUID)==true){		
 			
 				$cats = $this->catList->getCatSelection(-1,0);
 					// fixme check upload categories, allow only cats a user has rights to
