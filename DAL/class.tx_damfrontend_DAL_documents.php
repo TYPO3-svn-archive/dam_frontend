@@ -236,7 +236,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 * @author Stefan Busemann
 	 * @todo extend support for fe_groups
 	 */
-		function checkOwnerRights($fe_user_uid, $docID) {
+		function checkOwnerRights($docID,$fe_user_uid) {
 			$doc = $this->getDocument($docID);
 			if ($doc['tx_damfrontend_feuser_upload']==$fe_user_uid) {
 				return true;

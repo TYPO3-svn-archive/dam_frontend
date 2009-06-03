@@ -1378,6 +1378,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->documentData['description'] = strip_tags(t3lib_div::_POST('description')); #65000
 		$this->documentData['copyright'] = strip_tags(t3lib_div::_POST('copyright')); #128
 		$this->documentData['language'] = strip_tags(t3lib_div::_POST('LanguageSelector')); #128
+		if ($this->documentData['language']=='nosel') $this->documentData['language']='';
+		if(strlen($this->documentData['language'])>3) {
+			return ($this->renderer->renderError('uploadFormFieldError','title','255'));
+		}
+		
 		if(strlen($this->documentData['title'])>255) {
 			return ($this->renderer->renderError('uploadFormFieldError','title','255'));
 		}
@@ -1611,7 +1616,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		
 		if (intval($uid)>0) {
 			if ($this->versioning != '') {
-				if ($this->docLogic->checkOwnerRights($this->userUID,$uid)==true){
+				if ($this->docLogic->checkOwnerRights($uid,$this->userUID)==true){
 					$uid = $this->handleVersioning($this->versioning);
 					$GLOBALS['TSFE']->fe_user->setKey('ses','saveID', $uid);
 					$GLOBALS['TSFE']->fe_user->setKey('ses','uploadID',$uid);
@@ -1761,9 +1766,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 *
 	 */
 	 function saveMetaData ($saveUID) {
-
 		if ($this->userLoggedIn==true) {
-			
 			if ($this->docLogic->checkOwnerRights($saveUID, $this->userUID)==true){		
 				#set edit UID to zero, so the edit form isnot shown anymore
 				$this->internal['editUID']=0;
