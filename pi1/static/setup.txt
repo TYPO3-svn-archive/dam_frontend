@@ -358,8 +358,11 @@ plugin.tx_damfrontend_pi1 {
 			desc < .asc
 			desc.data = LLL:EXT:dam_frontend/pi1/locallang.xml:desc
 		}
+		
 		browselink.browselinkUsePrevNext = 1
+		#wrap around the whole browselinks
 		browselink.resultList.wrap = |
+		#wrap for a single browse link e.g. 1, 2, ...
 		browselink.wrap= |
 		browselinkCurrent.wrap= <span style="border: 1px solid black">|</span>
 		
