@@ -165,6 +165,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  			$markerArray =$markerArray + $this->substituteLangMarkers($record_Code);
 
 			$markerArray['###CRDATE_AGE###'] =  $cObj->stdWrap($elem['crdate'], $this->conf['renderFields.']['crdate_age.']);
+			$markerArray['###DATE_CR_AGE###'] =  $cObj->stdWrap($elem['date_cr'], $this->conf['renderFields.']['date_cr_age.']);
 
 			if (!is_null($this->staticInfoObj)) { $markerArray['###LANGUAGE###'] 	= $this->staticInfoObj->getStaticInfoName('LANGUAGES', $elem['language'], '', '', false); }
 
@@ -281,33 +282,34 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		if ($resultcount % $listLength==0) $noOfPages = $noOfPages-1+$limiter;
 		
 			for ($z = 0; $z <= $noOfPages; $z++) {
-				$this->piVars['pointer'] = $z;
+				$pointerPiVar=array();
+				$pointerPiVar['tx_damfrontend_pi1[pointer]'] = $z;
 				if ($z == $pointer ) {
 						// this is the current page
-					$this->conf['filelist.']['browselinkCurrent.']['parameter']= $GLOBALS['TSFE']->id; 
-					$listElems .=  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->typolink ($z+1,$this->conf['filelist.']['browselinkCurrent.']));
+					$listElems .=  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($z+1,$this->conf['filelist.']['browselinkCurrent.']));
 					if ($this->conf['filelist.']['browselink.']['browselinkUsePrevNext']==1) {
-						// previous link
+							// previous link
 						if ($z>0) {
-							$this->piVars['pointer'] = $z-1;
-							$listElemsPrevious =  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP_keepPiVars($this->pi_getLL('BROWSELINK_PREV')),$this->conf['filelist.']['browselink.']));
+							$this->piVars['tx_damfrontend_pi1[pointer]'] = $z-1;
+							$listElemsPrevious =  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP($this->pi_getLL('BROWSELINK_PREV'),$pointerPiVar),$this->conf['filelist.']['browselink.']));
 						}
 						else {
+								//we are the the last first, so show only the label
 							$listElemsPrevious =  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_getLL('BROWSELINK_PREV'),$this->conf['filelist.']['browselink.']));
 						}
 						if ($z==$noOfPages) {
+								//we are the the last page, so show only the label
 							$listElemsNext =  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_getLL('BROWSELINK_NEXT'),$this->conf['filelist.']['browselink.']));
 						}
 						else {
-							$this->piVars['pointer'] = $z+1;
-							
-							$listElemsNext =  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP_keepPiVars($this->pi_getLL('BROWSELINK_NEXT')),$this->conf['filelist.']['browselink.']));
+							$pointerPiVar['tx_damfrontend_pi1[pointer]'] = $z+1;
+							$listElemsNext =  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP($this->pi_getLL('BROWSELINK_NEXT'),$pointerPiVar),$this->conf['filelist.']['browselink.']));
 						}
 					}
 				}
 				else {
 						// link to other pages
-					$listElems .=  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP_keepPiVars($z+1),$this->conf['filelist.']['browselink.']));
+					$listElems .=  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP($z+1,$pointerPiVar),$this->conf['filelist.']['browselink.']));
 				}
 			}
 			$listElems = $listElemsPrevious .$listElems .$listElemsNext;
