@@ -116,9 +116,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	 * @return	void
 	 */
  	function init($treeID = '', $plugin = null) {
-
-		
- 		$langWhere = ' AND sys_language_uid = 0'; #  . $GLOBALS['TSFE']->sys_language_uid;
+ 		$langWhere = ' AND sys_language_uid = 0';
 		parent::init($langWhere);
  		$this->treeID = $treeID;
  		$this->user =& $GLOBALS['TSFE']->fe_user;

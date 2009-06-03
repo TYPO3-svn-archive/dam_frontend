@@ -118,9 +118,8 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 	 * @return	void
 	 */
  	function init($treeID = '', $plugin = null) {
-		//todo reimplement
-		#$langWhere = ' AND sys_language_uid = ' . $GLOBALS['TSFE']->sys_language_uid;
-		parent::init($langWhere);
+		$langWhere = ' AND sys_language_uid = 0';
+ 		parent::init($langWhere);
  		$this->treeID = $treeID;
  		$this->user =& $GLOBALS['TSFE']->fe_user;
  		$this->backPath = 'typo3/';
