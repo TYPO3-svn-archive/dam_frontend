@@ -79,8 +79,6 @@ plugin.tx_damfrontend_pi1 {
 	
 	
 	categoryTreeAdvanced {
-
-		
 		templateFile = EXT:dam_frontend/pi1/template_tree.html
 		
 		# if = 1 then a second subpart (TREE_ELEMENT_2) is used to render the even rows
@@ -96,6 +94,8 @@ plugin.tx_damfrontend_pi1 {
 		categoryTitle.treeMinus.wrap =  <span class="groepenTxtDownArrowGrey">|</span>
 		categoryTitle.treeNoControl.wrap =  <span class="groepenTxt">|</span>
 		categoryTitle.length = 30
+		categoryTitle.wrap = |
+		
 		
 		categorySelection {
 			selected.wrap = |
