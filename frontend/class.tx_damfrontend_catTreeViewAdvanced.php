@@ -720,8 +720,8 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 	
 					// Set HTML-icons, if any:
 				if ($this->makeHTML)	{
-					$titleLen = $this->conf['categoryTree.']['categoryTitle.']['length'] ? $this->conf['categoryTree.']['categoryTitle.']['length']:30;
-					$title = $this->cObj->stdWrap ($this->getTitleStr($row['title'], $titleLen),$this->conf['categoryTreeAdvanced.']['catTitle.']);
+					$titleLen = $this->conf['categoryTreeAdvanced.']['categoryTitle.']['length'] ? $this->conf['categoryTreeAdvanced.']['categoryTitle.']['length']:30;
+					$title = $this->cObj->stdWrap ($this->getTitleStr($row, $titleLen),$this->conf['categoryTreeAdvanced.']['categoryTitle.']);
 					$HTML = $this->PM_wrap($row,$a,$c,$nextCount,$exp,$title);
 				}
 				#t3lib_div::debug($depth);
