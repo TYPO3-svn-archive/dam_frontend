@@ -8,9 +8,13 @@ plugin.tx_damfrontend_pi1 {
 	filter {
 		errorWrap = {$plugin.tx_damfrontend_pi1.filter.errorWrap}
 	}
-
+	useAdvancedCategoryTree = 0
+	
 	categoryTree {
+		
 		preSelectChildCategories = 0
+		
+		wrap = |
 		# plus control to select categories
 		plusIcon = IMAGE
 		plusIcon {
@@ -26,16 +30,11 @@ plugin.tx_damfrontend_pi1 {
 		# wrap for the category title
 		catTitle.stdWrap.wrap = |
 		catTitle.no_access.wrap = |
+		categoryTitle.length = 30
 		
 		# wrap for the whole category line
 		category.wrap = |
-		
-		# if = 1 then a second subpart (TREE_ELEMENT_2) is used to render the even rows
-		category.useAlternatingSubpart = 1
-		
-		category.marker =  ###TREE_ELEMENT### |*| ###TREE_ELEMENT_2### || ###TREE_ELEMENT### |*|
-		showRootCategory = 0
-		
+			
 		expandTreeLevel = 1
 		minusIcon < .plusIcon
 		minusIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}catminus.gif
@@ -49,22 +48,7 @@ plugin.tx_damfrontend_pi1 {
 		categoryTitle.ATagParams = class="titlewrap"
 		
 		categoryTitle.wrap = |
-		categoryTitle.treePlus.wrap =  <span class="groepenTxtRightArrowGrey">|</span>
-		categoryTitle.treeMinus.wrap =  <span class="groepenTxtDownArrowGrey">|</span>
-		categoryTitle.treeNoControl.wrap =  <span class="groepenTxt">|</span>
 		
-		categorySelection.selected.wrap = |
-		categorySelection.unselected.wrap = |
-		categorySelection.partlySelected.wrap = |
-		categorySelection.link = TYPOLINK
-		categorySelection.selectionStatus.tree_selectedCats=greenCheckGrey
-		categorySelection.selectionStatus.tree_unselectedCats=uncheckGrey	
-		categorySelection.selectionStatus.tree_selectedAllCats=greenCheckGrey	
-		categorySelection.selectionStatus.tree_selectedPartlyCats=greyCheckGrey		
-		categorySelection.selectionStatus.tree_selectedNoCats =uncheckGrey			
-		categorySelection.selectionStatus.no_access =no_access			
-		
-		treeLevelCSS.paddingLeft = 16
 		
 		#IMAGE Objects for rendering the cat tree
 		treeRootIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}catfolder.gif
@@ -93,14 +77,41 @@ plugin.tx_damfrontend_pi1 {
 		categoryTitleNoAccess.wrap = <span style="color: #aaa">|</span>
 	}
 	
-	# use advanced category tree
-	categoryTree.useAdvanced = 1
-	categoryTree.templateFile = EXT:dam_frontend/pi1/template_tree.html
-	categoryTree.wrap = <div class="groepenBoxGray">|</div>
-	categoryTree.category.width = 200
-	categoryTree.category.﻿indention = 10
 	
-	
+	categoryTreeAdvanced {
+
+		
+		templateFile = EXT:dam_frontend/pi1/template_tree.html
+		
+		# if = 1 then a second subpart (TREE_ELEMENT_2) is used to render the even rows
+		category.useAlternatingSubpart = 1
+		#option split, if you want to use different markers for each row of a tree
+		category.marker =  ###TREE_ELEMENT### |*| ###TREE_ELEMENT_2### || ###TREE_ELEMENT### |*|		
+		#marker if you want don't want to use alternating rows for the tree 
+		category.marker_single =  ###TREE_ELEMENT###
+		# 1 to show the root category (tree name) 
+		showRootCategory = 0
+		
+		categoryTitle.treePlus.wrap =  <span class="groepenTxtRightArrowGrey">|</span>
+		categoryTitle.treeMinus.wrap =  <span class="groepenTxtDownArrowGrey">|</span>
+		categoryTitle.treeNoControl.wrap =  <span class="groepenTxt">|</span>
+		categoryTitle.length = 30
+		
+		categorySelection {
+			selected.wrap = |
+			unselected.wrap = |
+			partlySelected.wrap = |
+			link = TYPOLINK
+			selectionStatus.tree_selectedCats=greenCheckGrey
+			selectionStatus.tree_unselectedCats=uncheckGrey	
+			selectionStatus.tree_selectedAllCats=greenCheckGrey	
+			selectionStatus.tree_selectedPartlyCats=greyCheckGrey		
+			selectionStatus.tree_selectedNoCats =uncheckGrey			
+			selectionStatus.no_access =no_access			
+		}
+		treeLevelCSS.paddingLeft = 16
+		wrap = <div class="groepenBoxGray">|</div>
+	}
 	
 	# renderCategoryTree is depreceated. Please use in future categoryTree
 	renderCategoryTree < .categoryTree

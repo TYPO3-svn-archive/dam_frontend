@@ -72,6 +72,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	var $plugin;											// Back-reference to the calling plugin
 	var $cObj;												// cObj
 	var $conf;												// configuration array
+	var $mediaFolder;										// ID of the Folder, which contains the dam records
 	
 	var $rootIconIsSet = false;								// indicates, if a root icon must be added or not
 	/**
@@ -103,6 +104,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 
 		$conf = tx_dam::config_getValue('setup.selections.'.$this->treeName);
 		$this->TSconfig = $conf['properties'];
+		$this->mediaFolder = tx_dam_db::getPid();
  	}
 
 	/**
@@ -115,7 +117,8 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	 */
  	function init($treeID = '', $plugin = null) {
 
-		$langWhere = ' AND sys_language_uid = ' . $GLOBALS['TSFE']->sys_language_uid;
+		
+ 		$langWhere = ' AND sys_language_uid = 0'; #  . $GLOBALS['TSFE']->sys_language_uid;
 		parent::init($langWhere);
  		$this->treeID = $treeID;
  		$this->user =& $GLOBALS['TSFE']->fe_user;
@@ -340,12 +343,12 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 					$sel_class = $test ? "tree_selectedCats" : "tree_unselectedCats";
 				}
 				$idAttr = htmlspecialchars($this->domIdPrefix.$this->getId($v['row']).'_'.$v['bank']);
-				
+				$titleLen = $this->conf['categoryTree.']['categoryTitle.']['length'] ? $this->conf['categoryTree.']['categoryTitle.']['length']:30;
 				$title = $this->cObj->stdWrap ($this->getTitleStr($v['row'], $titleLen),$this->conf['categoryTree.']['catTitle.']);
 
 				$control = $this->getControl($title, $v['row'], $v['bank']);
 				
-				$out.='
+				$line='
 					<tr class="'.$class.'">
 						<td id="'.$idAttr.'" class="'.$sel_class.'">'.
 							$v['HTML'].
@@ -355,10 +358,11 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 							($control ? $control : '<span></span>').
 						'</td>
 					</tr>';
+				$out.= $this->cObj->stdWrap ($line,$this->conf['categoryTree.']['category.']);
 			}
 			$out .= '
 				</table>';
-			return $out;
+			return $this->cObj->stdWrap($out,$this->conf['categoryTree.']);
 		}
 	}
 
@@ -374,6 +378,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	 */
 	function getTitleStr($row, $titleLen = 30)	{
 		$conf['sys_language_uid'] = $GLOBALS['TSFE']->sys_language_uid;
+		$row['pid']=$this->mediaFolder;
 		$row = tx_dam_db::getRecordOverlay($this->table, $row, $conf);
 		$title =  trim($row['title']);
 		if (empty($title)) $title = '<em>['.$this->plugin->pi_getLL('no_title').']</em>';

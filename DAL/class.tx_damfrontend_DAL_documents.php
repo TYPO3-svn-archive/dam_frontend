@@ -269,22 +269,24 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$grouparray = array();
 			foreach ($catlist as $category)
 			{
-				$mm_table = 'tx_dam_cat_'.$this->relations[$relID].'_mm';
-				// executing database search
-				$local_table = $this->catTable;
-				$foreign_table = 'fe_groups';
-				$where = 'AND '.$local_table.'.uid = '.$category['uid'];
-				$select = $foreign_table.'.*';
-				$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query($select,$local_table, $mm_table, $foreign_table, $where);
-
-				// adding groups from the database to the GroupArray - check if group is already in list
-				while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))
-				{
-					if (!is_array($this->catLogic->findUidinList($grouparray, $row['uid'])))
+				if ($category['uid']>0) {
+					$mm_table = 'tx_dam_cat_'.$this->relations[$relID].'_mm';
+					// executing database search
+					$local_table = $this->catTable;
+					$foreign_table = 'fe_groups';
+					$where = 'AND '.$local_table.'.uid = '.$category['uid'];
+					$select = $foreign_table.'.*';
+					$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query($select,$local_table, $mm_table, $foreign_table, $where);
+	
+					// adding groups from the database to the GroupArray - check if group is already in list
+					while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))
 					{
-						$grouparray[] = $row;
+						if (!is_array($this->catLogic->findUidinList($grouparray, $row['uid'])))
+						{
+							$grouparray[] = $row;
+						}
+	
 					}
-
 				}
 			}
 			return $grouparray;

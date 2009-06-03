@@ -35,7 +35,7 @@
  * @author Stefan Busemann <typo3@in2form.com>
  *
  * 
- * 
+ * @todo clean up the class for code that isn't needed, build a standard template
  */
 require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 require_once(t3lib_extMgm::extPath('dam_frontend').'/DAL/class.tx_damfrontend_DAL_categories.php');
@@ -75,7 +75,8 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 	var $renderer;											// object of tx_damfrontend_rendering for doing the output
 	var $categorizationMode; 								// true if the tree should display the categorization mode
 	var $rootIconIsSet = false;								// indicates, if a root icon must be added or not
-	
+	var $mediaFolder;										// ID of the Folder, which contains the dam records
+		
 	/**
 	 * prepares the category tree
 	 *
@@ -105,6 +106,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 
 		$conf = tx_dam::config_getValue('setup.selections.'.$this->treeName);
 		$this->TSconfig = $conf['properties'];
+		$this->mediaFolder = tx_dam_db::getPid();
  	}
 
 	/**
@@ -215,9 +217,9 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			'tx_damfrontend_pi1[treeID]' => $this->treeID
 		);
 		if ($id > 0) { $param_array['tx_damfrontend_pi1[id]'] = $id; }
-		$this->conf['categoryTree.']['categoryTitle.']['parameter'] = $GLOBALS['TSFE']->id;
-		$this->conf['categoryTree.']['categoryTitle.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
-		return $this->cObj->typoLink($title, $this->conf['categoryTree.']['categoryTitle.']);
+		$this->conf['categoryTreeAdvanced.']['categoryTitle.']['parameter'] = $GLOBALS['TSFE']->id;
+		$this->conf['categoryTreeAdvanced.']['categoryTitle.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
+		return $this->cObj->typoLink($title, $this->conf['categoryTreeAdvanced.']['categoryTitle.']);
 	}
 
 	/**
@@ -302,13 +304,13 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				break;
 		}
 		if ($id > 0) { $param_array['tx_damfrontend_pi1[id]'] = $id; }
-		$this->conf['categoryTree.']['categorySelection.']['link.']['parameter'] = $GLOBALS['TSFE']->id;
-		if (is_array($param_array))	$this->conf['categoryTree.']['categorySelection.']['link.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
+		$this->conf['categoryTreeAdvanced.']['categorySelection.']['link.']['parameter'] = $GLOBALS['TSFE']->id;
+		if (is_array($param_array))	$this->conf['categoryTreeAdvanced.']['categorySelection.']['link.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
 		if ($command =='no_access') {
 			return $wrapItem;
 		} 
 		else {
-			return $this->cObj->typoLink($wrapItem, $this->conf['categoryTree.']['categorySelection.']['link.']);
+			return $this->cObj->typoLink($wrapItem, $this->conf['categoryTreeAdvanced.']['categorySelection.']['link.']);
 		}
 	}
 	/**
@@ -347,7 +349,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		$renderElement = $nextCount ? ($exp?'treeMinusIcon':'treePlusIcon') : 'treeJoinIcon';
 		
 		$BTM = ($a==$c)?'Bottom':'';		
-		$icon=$this->cObj->IMAGE($this->conf['categoryTree.'][$renderElement.$BTM.'.']);
+		$icon=$this->cObj->IMAGE($this->conf['categoryTreeAdvanced.'][$renderElement.$BTM.'.']);
 				
 		if ($nextCount)	{
 			$cmd=$this->bank.'_'.($exp?'0_':'1_').$row['uid'].'_'.$this->treeName;
@@ -383,14 +385,14 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			$bMark=($this->bank.'_'.$row['uid']);
 			$wrapItem = $this->PM_ATagWrap($wrapItem,$cmd,$bMark);
 			if ($exp) {
-				$wrapItem = $this->cObj->stdWrap($wrapItem,$this->conf['categoryTree.']['categoryTitle.']['treeMinus.']);
+				$wrapItem = $this->cObj->stdWrap($wrapItem,$this->conf['categoryTreeAdvanced.']['categoryTitle.']['treeMinus.']);
 			}
 			else {
-				$wrapItem = $this->cObj->stdWrap($wrapItem,$this->conf['categoryTree.']['categoryTitle.']['treePlus.']);
+				$wrapItem = $this->cObj->stdWrap($wrapItem,$this->conf['categoryTreeAdvanced.']['categoryTitle.']['treePlus.']);
 			}
 		}
 		else {
-			$wrapItem = $this->cObj->stdWrap($wrapItem,$this->conf['categoryTree.']['categoryTitle.']['treeNoControl.']);
+			$wrapItem = $this->cObj->stdWrap($wrapItem,$this->conf['categoryTreeAdvanced.']['categoryTitle.']['treeNoControl.']);
 		}
 		#t3lib_div::debug($wrapItem);
 		return $wrapItem;
@@ -414,19 +416,19 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			AND ($row['uid'] OR ($row['uid'] == '0' AND $this->linkRootCat))) {
 
 			// genrating plus button
-			$this->conf['categoryTree.']['plusIcon.']['stdWrap.']['typolink.']['additionalParams'] .= '&tx_damfrontend_pi1[catPlus]=&tx_damfrontend_pi1[catEquals]=&tx_damfrontend_pi1[catMinus]=&tx_damfrontend_pi1[catPlus_Rec]='.$row['uid'].'&tx_damfrontend_pi1[catMinus_Rec]=&tx_damfrontend_pi1[treeID]='. $this->treeID;
-			$control .= $cObj->cObjGetSingle($this->conf['categoryTree.']['plusIcon'], $this->conf['categoryTree.']['plusIcon.']);
+			$this->conf['categoryTreeAdvanced.']['plusIcon.']['stdWrap.']['typolink.']['additionalParams'] .= '&tx_damfrontend_pi1[catPlus]=&tx_damfrontend_pi1[catEquals]=&tx_damfrontend_pi1[catMinus]=&tx_damfrontend_pi1[catPlus_Rec]='.$row['uid'].'&tx_damfrontend_pi1[catMinus_Rec]=&tx_damfrontend_pi1[treeID]='. $this->treeID;
+			$control .= $cObj->cObjGetSingle($this->conf['categoryTreeAdvanced.']['plusIcon'], $this->conf['categoryTreeAdvanced.']['plusIcon.']);
 			
 			// generating equals buttons
-			$this->conf['categoryTree.']['equalsIcon.']['stdWrap.']['typolink.']['additionalParams'] .= '&tx_damfrontend_pi1[catPlus]=&tx_damfrontend_pi1[catEquals]='.$row['uid'].'&tx_damfrontend_pi1[catMinus]=&tx_damfrontend_pi1[catPlus_Rec]=&tx_damfrontend_pi1[catMinus_Rec]=&tx_damfrontend_pi1[treeID]='. $this->treeID;
-			$control .= $cObj->cObjGetSingle($this->conf['categoryTree.']['equalsIcon'], $this->conf['categoryTree.']['equalsIcon.']);
+			$this->conf['categoryTreeAdvanced.']['equalsIcon.']['stdWrap.']['typolink.']['additionalParams'] .= '&tx_damfrontend_pi1[catPlus]=&tx_damfrontend_pi1[catEquals]='.$row['uid'].'&tx_damfrontend_pi1[catMinus]=&tx_damfrontend_pi1[catPlus_Rec]=&tx_damfrontend_pi1[catMinus_Rec]=&tx_damfrontend_pi1[treeID]='. $this->treeID;
+			$control .= $cObj->cObjGetSingle($this->conf['categoryTreeAdvanced.']['equalsIcon'], $this->conf['categoryTreeAdvanced.']['equalsIcon.']);
 
 			// generate minus button
-			$this->conf['categoryTree.']['minusIcon.']['stdWrap.']['typolink.']['additionalParams'] .= '&tx_damfrontend_pi1[catPlus]=&tx_damfrontend_pi1[catEquals]=&tx_damfrontend_pi1[catMinus]='.$row['uid'].'&tx_damfrontend_pi1[catPlus_Rec]=&tx_damfrontend_pi1[catMinus_Rec]=&tx_damfrontend_pi1[treeID]='. $this->treeID;
-			$control .= $cObj->cObjGetSingle($this->conf['categoryTree.']['minusIcon'], $this->conf['categoryTree.']['minusIcon.']);
+			$this->conf['categoryTreeAdvanced.']['minusIcon.']['stdWrap.']['typolink.']['additionalParams'] .= '&tx_damfrontend_pi1[catPlus]=&tx_damfrontend_pi1[catEquals]=&tx_damfrontend_pi1[catMinus]='.$row['uid'].'&tx_damfrontend_pi1[catPlus_Rec]=&tx_damfrontend_pi1[catMinus_Rec]=&tx_damfrontend_pi1[treeID]='. $this->treeID;
+			$control .= $cObj->cObjGetSingle($this->conf['categoryTreeAdvanced.']['minusIcon'], $this->conf['categoryTreeAdvanced.']['minusIcon.']);
 			
 		}
-		$control = $cObj->stdWrap($control, $this->conf['categoryTree.']['stdWrapControl.']);
+		$control = $cObj->stdWrap($control, $this->conf['categoryTreeAdvanced.']['stdWrapControl.']);
 		return $control;
 	}
 
@@ -446,7 +448,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			#$treeArr = array_merge(array(array('HTML' => $firstHtml,'row' => $rootRec,'bank'=>0)), $treeArr);
 		}
 		$class="treeelem";
-		#t3lib_div::debug($treeArr);
+		#t3lib_div::debug($this->conf);
 		#t3lib_div::debug($this->selectedCats);
 		if($this->mode=='elbrowser') {
 			return $this->eb_printTree($treeArr);
@@ -475,7 +477,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 					
 					if (is_array($childCats)){
 						// has child: so check if they are selected all / partly / none
-						#t3lib_div::debug($childCats);
+
 						foreach ($childCats as $cat) {
 							$test = null;
 							$found=false;
@@ -515,21 +517,20 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 					#t3lib_div::debug($this->catLogic->checkCategoryUploadAccess($GLOBALS['TSFE']->fe_user->user['uid'],$v['row']['uid']));
 					if (!$this->catLogic->checkCategoryUploadAccess($GLOBALS['TSFE']->fe_user->user['uid'],$v['row']['uid'])) {
 						$sel_class ='no_access';
-						$v['HTML'] = $this->cObj->stdWrap ($v['HTML'],$this->conf['categoryTree.']['catTitle.']['no_access.']);
+						$v['HTML'] = $this->cObj->stdWrap ($v['HTML'],$this->conf['categoryTreeAdvanced.']['catTitle.']['no_access.']);
 					}
 				}
 				#t3lib_div::debug($sel_class);
-				$title = $this->cObj->stdWrap ($this->getTitleStr($v['row'], $titleLen),$this->conf['categoryTree.']['catTitle.']);
+				$title = $this->cObj->stdWrap ($this->getTitleStr($v['row'], $titleLen),$this->conf['categoryTreeAdvanced.']['catTitle.']);
 				$control = $this->getControl($title, $v['row'], $v['bank']);
-				$title = $this->wrapTitle($title, $v['row'], $v['bank']);
 				$v['select_cat'] = $this->wrapCatSelection('&nbsp;',$v['row'],$sel_class);
 				$idAttr = htmlspecialchars($this->domIdPrefix.$this->getId($v['row']).'_'.$v['bank']);
-				if ($this->conf['categoryTree.']['category.']['useAlternatingSubpart']==1) {
-					$marker = $GLOBALS['TSFE']->tmpl->splitConfArray(array('cObjNum' => $this->conf['categoryTree.']['category.']['marker']), count($treeArr));
+				if ($this->conf['categoryTreeAdvanced.']['category.']['useAlternatingSubpart']==1) {
+					$marker = $GLOBALS['TSFE']->tmpl->splitConfArray(array('cObjNum' => $this->conf['categoryTreeAdvanced.']['category.']['marker']), count($treeArr));
 					$marker  = $marker[$i]['cObjNum'];
 				}
 				else {
-					$marker = $this->conf['categoryTree.']['category.']['marker'];
+					$marker = $this->conf['categoryTreeAdvanced.']['category.']['marker_single'];
 				}
 				 $out['###TREE_ELEMENTS###'].= $this->renderer->renderCategoryTreeCategory($class,$idAttr,$sel_class,$v,$title,$control,$marker);
 				$i++;
@@ -550,6 +551,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 	 */
 	function getTitleStr($row, $titleLen = 30)	{
 		$conf['sys_language_uid'] = $GLOBALS['TSFE']->sys_language_uid;
+		$row['pid']=$this->mediaFolder;
 		$row = tx_dam_db::getRecordOverlay($this->table, $row, $conf);
 		$title =  trim($row['title']);
 		if (empty($title)) $title = '<em>['.$this->plugin->pi_getLL('no_title').']</em>';
@@ -586,14 +588,12 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			$cmd=$this->bank.'_'.($isOpen?"0_":"1_").$uid.'_'.$this->treeName;
 			
 			if ($isOpen) {
-				$icon=$this->cObj->IMAGE($this->conf['categoryTree.']['treeMinusIcon.']);
+				$icon=$this->cObj->IMAGE($this->conf['categoryTreeAdvanced.']['treeMinusIcon.']);
 			}
 			else {
-				$icon=$this->cObj->IMAGE($this->conf['categoryTree.']['treePlusIcon.']);
+				$icon=$this->cObj->IMAGE($this->conf['categoryTreeAdvanced.']['treePlusIcon.']);
 			}
 			
-				//prüfung auf childs einbauen
-				
 			if ($uid)	{
 				$rootRec = $this->getRecord($uid);
 				#t3lib_div::debug($rootRec);
@@ -607,14 +607,14 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 					#$bMark=($this->bank.'_'.$row['uid']);
 					$firstHtml = $this->PM_ATagWrap($rootRec['title'],$cmd);
 					if ($isOpen) {
-						$firstHtml = $this->cObj->stdWrap($firstHtml,$this->conf['categoryTree.']['categoryTitle.']['treeMinus.']);
+						$firstHtml = $this->cObj->stdWrap($firstHtml,$this->conf['categoryTreeAdvanced.']['categoryTitle.']['treeMinus.']);
 					}
 					else {
-						$firstHtml = $this->cObj->stdWrap($firstHtml,$this->conf['categoryTree.']['categoryTitle.']['treePlus.']);
+						$firstHtml = $this->cObj->stdWrap($firstHtml,$this->conf['categoryTreeAdvanced.']['categoryTitle.']['treePlus.']);
 					}
 				#}
 				#else {
-				#	$firstHtml = $this->cObj->stdWrap($firstHtml,$this->conf['categoryTree.']['categoryTitle.']['treeNoControl.']);
+				#	$firstHtml = $this->cObj->stdWrap($firstHtml,$this->conf['categoryTreeAdvanced.']['categoryTitle.']['treeNoControl.']);
 				#}
 				#t3lib_div::debug($wrapItem);
 				#return $wrapItem;
@@ -622,12 +622,10 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		#$firstHtml= $this->PM_wrap($icon,$cmd);
 
 				// Preparing rootRec for the mount
-
-
 			if (is_array($rootRec))	{
 				$uid = $rootRec['uid'];		// In case it was swapped inside getRecord due to workspaces.
 				
-				if ($this->conf['categoryTree']['showRootCategory']==0) {
+				if ($this->conf['categoryTreeAdvanced']['showRootCategory']==0) {
 						// Add the root of the mount to ->tree
 					$this->tree[]=array('HTML'=>$firstHtml, 'row'=>$rootRec, 'bank'=>$this->bank);
 				}
@@ -705,7 +703,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				$this->orig_ids_hierarchy[$depth][] = $row['_ORIG_uid'] ? $row['_ORIG_uid'] : $row['uid'];
 				
 					// Make a recursive call to the next level
-				$HTML_depthData = $depthData.$this->cObj->IMAGE($this->conf['categoryTree.']['treeNavIcons.'][$LN.'.']);
+				$HTML_depthData = $depthData.$this->cObj->IMAGE($this->conf['categoryTreeAdvanced.']['treeNavIcons.'][$LN.'.']);
 				if ($depth>1 && $this->expandNext($newID) && !$row['php_tree_stop'])	{
 					$nextCount=$this->getTree(
 							$newID,
@@ -723,14 +721,16 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 	
 					// Set HTML-icons, if any:
 				if ($this->makeHTML)	{
-					#$HTML = $depthData.$this->PMicon($row,$a,$c,$nextCount,$exp);
-					#t3lib_div::debug($row);
-					$HTML = $this->PM_wrap($row,$a,$c,$nextCount,$exp,$row['title']);
-					#$HTML.=$this->wrapStop($this->getIcon($row),$row);
+					$titleLen = $this->conf['categoryTree.']['categoryTitle.']['length'] ? $this->conf['categoryTree.']['categoryTitle.']['length']:30;
+					$title = $this->cObj->stdWrap ($this->getTitleStr($row['title'], $titleLen),$this->conf['categoryTreeAdvanced.']['catTitle.']);
+					$HTML = $this->PM_wrap($row,$a,$c,$nextCount,$exp,$title);
 				}
 				#t3lib_div::debug($depth);
 				$treeDepth = 1000-$depth;
-				$paddingLeft = $treeDepth * $this->conf['categoryTree.']['treeLevelCSS.']['paddingLeft'];
+				#t3lib_div::debug($this->conf['categoryTreeAdvanced.']['treeLevelCSS.']);
+				#t3lib_div::debug($this->conf['categoryTreeAdvanced.']['treeLevelCSS,']['paddingLeft']);
+				$paddingLeft = $treeDepth * $this->conf['categoryTreeAdvanced.']['treeLevelCSS.']['paddingLeft'];
+				
 					// Finally, add the row/HTML content to the ->tree array in the reserved key.
 				$this->tree[$treeKey] = Array(
 					'row'=>$row,
@@ -766,7 +766,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			$this->orig_ids_hierarchy[$depth][] = $row['_ORIG_uid'] ? $row['_ORIG_uid'] : $row['uid'];
 			
 				// Make a recursive call to the next level
-			$HTML_depthData = $depthData.$this->cObj->IMAGE($this->conf['categoryTree.']['treeNavIcons.'][$LN.'.']);
+			$HTML_depthData = $depthData.$this->cObj->IMAGE($this->conf['categoryTreeAdvanced.']['treeNavIcons.'][$LN.'.']);
 			/*if ($depth>1 && $this->expandNext($newID) && !$row['php_tree_stop'])	{
 				$nextCount=$this->getTree(
 						$newID,
@@ -791,7 +791,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			}
 			#t3lib_div::debug($depth);
 			$treeDepth = 999-$depth;
-			#$paddingLeft = $treeDepth * $this->conf['categoryTree.']['treeLevelCSS.']['paddingLeft'];
+			#$paddingLeft = $treeDepth * $this->conf['categoryTreeAdvanced.']['treeLevelCSS.']['paddingLeft'];
 				// Finally, add the row/HTML content to the ->tree array in the reserved key.
 			$this->tree[$treeKey] = Array(
 				'row'=>$row,
@@ -815,7 +815,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 	 */
 	function getRootIcon($rec) {
 		$this->rootIconIsSet=true;
-		return  $this->wrapIcon($this->cObj->IMAGE($this->conf['categoryTree.']['treeRootIcon.']),$rec);
+		return  $this->wrapIcon($this->cObj->IMAGE($this->conf['categoryTreeAdvanced.']['treeRootIcon.']),$rec);
 	}
 	
 		/**
@@ -826,7 +826,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 	 * @return	string		Image tag.
 	 */
 	function getIcon($row) {
-			$icon = $this->cObj->IMAGE($this->conf['categoryTree.']['treeCatIcon.']);
+			$icon = $this->cObj->IMAGE($this->conf['categoryTreeAdvanced.']['treeCatIcon.']);
 			$icon = $this->wrapIcon($icon,$row);
 
 		return $icon;

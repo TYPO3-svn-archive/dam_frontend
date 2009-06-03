@@ -74,7 +74,8 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 	var $piVars;											// PiVars for keeping the vars in the links (must be set from the place where this class is used)
 	var $cObj;                       						// for RealURL
 	var $conf;												// configuration array
-	
+	var $mediaFolder;										// ID of the Folder, which contains the dam records
+		
 	/**
 	 * prepares the category tree
 	 *
@@ -105,6 +106,7 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 
 		$conf = tx_dam::config_getValue('setup.selections.'.$this->treeName);
 		$this->TSconfig = $conf['properties'];
+		$this->mediaFolder = tx_dam_db::getPid();
  	}
 
 	/**
@@ -309,20 +311,22 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 					$sel_class = $test ? "tree_selectedCats" : "tree_unselectedCats";
 				}
 				$idAttr = htmlspecialchars($this->domIdPrefix.$this->getId($v['row']).'_'.$v['bank']);
+				$titleLen = $this->conf['categoryTree.']['categoryTitle.']['length'] ? $this->conf['categoryTree.']['categoryTitle.']['length']:30;
 				$title = $this->cObj->stdWrap ($this->getTitleStr($v['row'], $titleLen),$this->conf['categoryTree.']['catTitle.']);
 
 				$control = $this->getControl($title, $v['row'], $v['bank']);
-				$out.='
+				$line='
 					<tr class="'.$class.'">
 						<td id="'.$idAttr.'" class="'.$sel_class.'">'.
 							$v['HTML'].
 							$this->wrapTitle($title, $v['row'], $v['bank']).
 						'</td>
 					</tr>';
+				$out.= $this->cObj->stdWrap ($line,$this->conf['categorisationTree.']['category.']);
 			}
 			$out .= '
 				</table>';
-			return $out;
+			return $this->cObj->stdWrap($out,$this->conf['categoryTree.']);
 		}
 	}
 
@@ -339,7 +343,7 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 	 */
 	function getTitleStr($row, $titleLen = 30)	{
 		$conf['sys_language_uid'] = $GLOBALS['TSFE']->sys_language_uid;
-		// this line can be used for DAM Version 1.1+
+		$row['pid']=$this->mediaFolder;
 		$row = tx_dam_db::getRecordOverlay($this->table, $row, $conf);
 		$title = trim($row['title']);
 		if (empty($title)) $title = '<em>['.$this->plugin->pi_getLL('no_title').']</em>';
