@@ -854,6 +854,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		// initalisation of the treeview
 		if ($this->conf['categoryTree.']['useAdvanced']==1) {
 			$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeViewAdvanced');
+			$tree->categorizationMode=true;
 			if (is_array($selectedCats)) {
 				foreach ($selectedCats as $cat) {
 					$tree->selectedCats[] = $cat['uid'];

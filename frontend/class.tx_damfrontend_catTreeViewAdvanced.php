@@ -38,7 +38,7 @@
  * 
  */
 require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
-
+require_once(t3lib_extMgm::extPath('dam_frontend').'/DAL/class.tx_damfrontend_DAL_categories.php');
 
 /**
  * [CLASS/FUNCTION INDEX of SCRIPT]
@@ -73,8 +73,9 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 	var $cObj;												// cObj
 	var $conf;												// configuration array
 	var $renderer;											// object of tx_damfrontend_rendering for doing the output
-	
+	var $categorizationMode; 								// true if the tree should display the categorization mode
 	var $rootIconIsSet = false;								// indicates, if a root icon must be added or not
+	
 	/**
 	 * prepares the category tree
 	 *
@@ -124,6 +125,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		if (isset($plugin)) $this->plugin = $plugin;
 		$this->cObj = $this->plugin->cObj;
 		$this->conf = $this->plugin->conf;
+		if ($this->categorizationMode==true) $this->catLogic= t3lib_div::makeInstance('tx_damfrontend_DAL_categories');
 	}
 
 	/**
@@ -246,6 +248,9 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			case 'tree_selectedNoCats':
 				$command ='selectAll';
 				break;
+			case 'no_access':
+				$command ='no_access';
+				break;
 			default:
 				#die('parameter error in wrapCatSelection');
 				break;
@@ -299,7 +304,12 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		if ($id > 0) { $param_array['tx_damfrontend_pi1[id]'] = $id; }
 		$this->conf['categoryTree.']['categorySelection.']['link.']['parameter'] = $GLOBALS['TSFE']->id;
 		if (is_array($param_array))	$this->conf['categoryTree.']['categorySelection.']['link.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
-		return $this->cObj->typoLink($wrapItem, $this->conf['categoryTree.']['categorySelection.']['link.']);
+		if ($command =='no_access') {
+			return $wrapItem;
+		} 
+		else {
+			return $this->cObj->typoLink($wrapItem, $this->conf['categoryTree.']['categorySelection.']['link.']);
+		}
 	}
 	/**
 	 * PM_ATagWrap
@@ -437,7 +447,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		}
 		$class="treeelem";
 		#t3lib_div::debug($treeArr);
-		t3lib_div::debug($this->selectedCats);
+		#t3lib_div::debug($this->selectedCats);
 		if($this->mode=='elbrowser') {
 			return $this->eb_printTree($treeArr);
 		} else {
@@ -465,13 +475,13 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 					
 					if (is_array($childCats)){
 						// has child: so check if they are selected all / partly / none
-						t3lib_div::debug($childCats);
+						#t3lib_div::debug($childCats);
 						foreach ($childCats as $cat) {
 							$test = null;
 							$found=false;
 							$test = array_search($cat['uid'], $this->selectedCats);
-							t3lib_div::debug($test);
-							var_dump($test);
+							#t3lib_div::debug($test);
+							#var_dump($test);
 							if ($test === false) {
 								$found = false;
 							}
@@ -501,7 +511,13 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 						}
 					}
 				}
-				
+				if ($this->categorizationMode==true) {
+					#t3lib_div::debug($this->catLogic->checkCategoryUploadAccess($GLOBALS['TSFE']->fe_user->user['uid'],$v['row']['uid']));
+					if (!$this->catLogic->checkCategoryUploadAccess($GLOBALS['TSFE']->fe_user->user['uid'],$v['row']['uid'])) {
+						$sel_class ='no_access';
+						$v['HTML'] = $this->cObj->stdWrap ($v['HTML'],$this->conf['categoryTree.']['catTitle.']['no_access.']);
+					}
+				}
 				#t3lib_div::debug($sel_class);
 				$title = $this->cObj->stdWrap ($this->getTitleStr($v['row'], $titleLen),$this->conf['categoryTree.']['catTitle.']);
 				$control = $this->getControl($title, $v['row'], $v['bank']);

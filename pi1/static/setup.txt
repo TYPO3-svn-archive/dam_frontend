@@ -25,6 +25,7 @@ plugin.tx_damfrontend_pi1 {
 		
 		# wrap for the category title
 		catTitle.stdWrap.wrap = |
+		catTitle.no_access.wrap = |
 		
 		# wrap for the whole category line
 		category.wrap = |
@@ -61,6 +62,7 @@ plugin.tx_damfrontend_pi1 {
 		categorySelection.selectionStatus.tree_selectedAllCats=greenCheckGrey	
 		categorySelection.selectionStatus.tree_selectedPartlyCats=greyCheckGrey		
 		categorySelection.selectionStatus.tree_selectedNoCats =uncheckGrey			
+		categorySelection.selectionStatus.no_access =no_access			
 		
 		treeLevelCSS.paddingLeft = 16
 		
@@ -81,7 +83,6 @@ plugin.tx_damfrontend_pi1 {
 			line.params.height= 16
 			blank < .line
 			blank.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}blank.gif
-
 		}
 		#tree root stdWrap
 		treeRoot.wrap = |

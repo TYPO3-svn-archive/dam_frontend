@@ -62,6 +62,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/DAL/class.tx_damfrontend_ba
 
 class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 
+
 /**
  * initialization of the the session
  *
@@ -90,6 +91,12 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 
 		if (!is_array($catarray)) $catarray = array();
 		$treeArray = is_array($catarray[$treeID]) ? array_unique($catarray[$treeID]) : array();
+		if ($treeID==-1 ) {
+			$catLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_categories');
+			if (!$catLogic->checkCategoryUploadAccess($GLOBALS['TSFE']->fe_user->user['uid'],$catID)) {
+				return false;				
+			}
+		}
 		if (!array_search($catID, $treeArray)) {
 			$treeArray[] = $catID;
 			$catarray[$treeID] = $treeArray;
