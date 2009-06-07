@@ -73,6 +73,9 @@
 			<label index="CATEGORISATION_TEXT_DESCRIPTION">description</label>
 			<label index="CATEGORISATION_TEXT_SEND">confirm</label>
 			<label index="CATEGORISATION_TREE_NAME">Categorisation tree</label>
+			<label index="CATEGORY_TREE_SELECTOR">Select</label>
+			<label index="CATEGORY_TREE_SELECTOR_ALL">all</label>
+			<label index="CATEGORY_TREE_SELECTOR_NONE">none</label>
 			<label index="MAIL_REQUES_TEXT1">The user</label>
 			<label index="MAIL_REQUES_TEXT2">has required this file:</label>
 			<label index="MAIL_REQUES_TEXT3">the user's data</label>
@@ -175,8 +178,11 @@
 			<label index="CATEGORISATION_TEXT_DESCRIPTION">Beschreibung</label>
 			<label index="CATEGORISATION_TEXT_SEND">Auswahl bestaetigen</label>
 			<label index="CATEGORISATION_TREE_NAME">Kategorisierung</label>
-			<label index="MAIL_REQUES_TEXT1">Der BUS Portal Benutzer</label>
-			<label index="MAIL_REQUES_TEXT2">hat folgende SI angefordert:</label>
+			<label index="CATEGORY_TREE_SELECTOR">auwählen</label>
+			<label index="CATEGORY_TREE_SELECTOR_ALL">alle</label>
+			<label index="CATEGORY_TREE_SELECTOR_NONE">keine</label>
+			<label index="MAIL_REQUES_TEXT1">Der Portal Benutzer</label>
+			<label index="MAIL_REQUES_TEXT2">hat folgendes angefordert:</label>
 			<label index="MAIL_REQUES_TEXT3">the user's data</label>
 			<label index="TITLE_FILEUPLOAD">Dateiinformationen ergänzen</label>
 			<label index="LABEL_TITLE">Titel</label>

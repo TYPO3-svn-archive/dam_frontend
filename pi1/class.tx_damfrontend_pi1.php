@@ -323,6 +323,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->internal['catEquals'] = intval($this->piVars['catEquals']);
 		$this->internal['catPlus_Rec'] = intval($this->piVars['catPlus_Rec']);
 		$this->internal['catMinus_Rec'] = intval($this->piVars['catMinus_Rec']);
+		$this->internal['catAll'] = intval($this->piVars['catAll']);
+		$this->internal['catClear'] = intval($this->piVars['catClear']);
 
 		// Aufruf der Einzelansicht
 		$this->internal['singleID'] = intval($this->piVars['showUid']);
@@ -410,7 +412,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$flexform = $this->cObj->data['pi_flexform'];
 
 		$this->internal['viewID'] = intval($this->pi_getFFvalue($flexform, 'viewID'));
-
+		$this->internal['catMounts']= array();
 		$this->internal['catMounts'] = explode(',',$this->pi_getFFvalue($flexform, 'catMounts', 'sSelection'));
 
 		$this->internal['treeName'] = strip_tags($this->pi_getFFvalue($flexform, 'treeName', 'sSelection'));
@@ -462,7 +464,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		
 			// Mapping the ViewIds - selected in the Flexform to the content
 			// that shall be rendered
-
 		switch ($this->internal['viewID']) {
 			case 1:
 				$content .= $this->fileList(false);
@@ -521,6 +522,26 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$this->catList->op_Equals($lastID,999);
 		}
 		else {
+			if ($this->internal['catClear']) {
+				$this->catList->clearCatSelection($this->internal['incomingtreeID']);
+				return true;
+			}
+			
+			if ($this->internal['catAll']) {
+				foreach ($this->internal['catMounts'] as $catMount) {
+					
+					if (!$catMount) {
+						$catMount=0;
+					}
+					$subs = $this->catLogic->getSubCategories($catMount);
+					if (is_array($subs)){
+						foreach ($subs as $sub) {
+							$this->catList->op_Plus($sub['uid'], $this->internal['incomingtreeID']);
+						}
+					}
+				}
+				return true;
+			}
 			if ($this->internal['catPlus']) {
 				$this->catList->op_Plus($this->internal['catPlus'], $this->internal['incomingtreeID']);
 			}
@@ -543,6 +564,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				}
 			}		
 		}
+		
 		
 		if ($this->internal['useStaticCatSelection']==1) {
 			$this->internal['incomingtreeID'] = $this->internal['treeID'];

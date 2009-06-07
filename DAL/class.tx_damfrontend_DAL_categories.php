@@ -146,7 +146,7 @@ class tx_damfrontend_DAL_categories {
 	 * @return	array		list of all subcategory of an extension
 	 */
 		function getSubCategories($catID, $limit=999) {
-			if (!intval($catID)) {
+			if (!intval($catID) && !$catID==0) {
 				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getSubCategories: for the catID only integer values are allowed. Given value was:' .$catID, 'dam_frontend',3);
 			}
 			else {
@@ -160,7 +160,7 @@ class tx_damfrontend_DAL_categories {
 				// retrieving subrecords
 				$SELECT = 'uid';
 				$FROM = $this->catTable;
-				$WHERE = 'parent_id = '.$catID.$this->filter;
+				$WHERE = 'parent_id = '.$catID.$this->filter . ' AND sys_language_uid = 0';
 				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE);
 
 				// adding new category records to the table

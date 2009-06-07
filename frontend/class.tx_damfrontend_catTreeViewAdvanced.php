@@ -249,7 +249,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			case 'tree_selectedNoCats':
 				$command ='selectAll';
 				break;
-			case 'no_access':
+			case 'tree_no_access':
 				$command ='no_access';
 				break;
 			default:
@@ -442,13 +442,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		$i = 0; //counter to determine of a row is even or uneven
 		if(!$this->rootIconIsSet AND count($treeArr)) {
 				// Artificial record for the tree root, id=0
-			#t3lib_div::debug($rootRec);
-			#$firstHtml =$this->getRootIcon($rootRec);
-			#$treeArr = array_merge(array(array('HTML' => $firstHtml,'row' => $rootRec,'bank'=>0)), $treeArr);
 		}
-		$class="treeelem";
-		#t3lib_div::debug($this->conf);
-		#t3lib_div::debug($this->selectedCats);
 		if($this->mode=='elbrowser') {
 			return $this->eb_printTree($treeArr);
 		} else {
@@ -515,7 +509,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				if ($this->categorizationMode==true) {
 					#t3lib_div::debug($this->catLogic->checkCategoryUploadAccess($GLOBALS['TSFE']->fe_user->user['uid'],$v['row']['uid']));
 					if (!$this->catLogic->checkCategoryUploadAccess($GLOBALS['TSFE']->fe_user->user['uid'],$v['row']['uid'])) {
-						$sel_class ='no_access';
+						$sel_class ='tree_no_access';
 						$v['HTML'] = $this->cObj->stdWrap ($v['HTML'],$this->conf['categoryTreeAdvanced.']['catTitle.']['no_access.']);
 					}
 				}
@@ -531,10 +525,11 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				else {
 					$marker = $this->conf['categoryTreeAdvanced.']['category.']['marker_single'];
 				}
-				 $out['###TREE_ELEMENTS###'].= $this->renderer->renderCategoryTreeCategory($class,$idAttr,$sel_class,$v,$title,$control,$marker);
+				 $out['###TREE_ELEMENTS###'].= $this->renderer->renderCategoryTreeCategory(
+				 $sel_class,$v,$title,$control,$marker);
 				$i++;
 			}
-			return $this->renderer->renderCategoryTree($out);
+			return $this->renderer->renderCategoryTree($out, $this->treeID);
 		}
 	}
 
@@ -595,36 +590,22 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			
 			if ($uid)	{
 				$rootRec = $this->getRecord($uid);
-				#t3lib_div::debug($rootRec);
-				#$firstHtml.=$this->getIcon($rootRec);
 			} else {
 					// Artificial record for the tree root, id=0
 					$rootRec = $this->getRootRecord($uid);	
-					#$firstHtml.=$this->getRootIcon($rootRec);
 			}
-			#t3lib_div::debug($rootRec);			
-					#$bMark=($this->bank.'_'.$row['uid']);
-					$firstHtml = $this->PM_ATagWrap($rootRec['title'],$cmd);
-					if ($isOpen) {
-						$firstHtml = $this->cObj->stdWrap($firstHtml,$this->conf['categoryTreeAdvanced.']['categoryTitle.']['treeMinus.']);
-					}
-					else {
-						$firstHtml = $this->cObj->stdWrap($firstHtml,$this->conf['categoryTreeAdvanced.']['categoryTitle.']['treePlus.']);
-					}
-				#}
-				#else {
-				#	$firstHtml = $this->cObj->stdWrap($firstHtml,$this->conf['categoryTreeAdvanced.']['categoryTitle.']['treeNoControl.']);
-				#}
-				#t3lib_div::debug($wrapItem);
-				#return $wrapItem;
-		
-		#$firstHtml= $this->PM_wrap($icon,$cmd);
+			$firstHtml = $this->PM_ATagWrap($rootRec['title'],$cmd);
+			if ($isOpen) {
+				$firstHtml = $this->cObj->stdWrap($firstHtml,$this->conf['categoryTreeAdvanced.']['categoryTitle.']['treeMinus.']);
+			}
+			else {
+				$firstHtml = $this->cObj->stdWrap($firstHtml,$this->conf['categoryTreeAdvanced.']['categoryTitle.']['treePlus.']);
+			}
 
 				// Preparing rootRec for the mount
 			if (is_array($rootRec))	{
 				$uid = $rootRec['uid'];		// In case it was swapped inside getRecord due to workspaces.
-				
-				if ($this->conf['categoryTreeAdvanced']['showRootCategory']==0) {
+				if ($this->conf['categoryTreeAdvanced.']['showRootCategory']==1 || ($uid >0 )) {
 						// Add the root of the mount to ->tree
 					$this->tree[]=array('HTML'=>$firstHtml, 'row'=>$rootRec, 'bank'=>$this->bank);
 				}
@@ -641,7 +622,6 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				$treeArr=array_merge($treeArr,$this->tree);
 			}
 		}
-		#t3lib_div::debug($treeArr);
 		return $this->printTree($treeArr);
 	}
 
@@ -662,93 +642,29 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 	 * @param	string		CSS class to use for <td> sub-elements
 	 * @return	integer		The count of items on the level
 	 */
-	function getTree($uid, $depth=999, $depthData='',$blankLineCode='',$subCSSclass='', $rootOnly = false)	{
-		// Buffer for id hierarchy is reset:
+	function getTree($uid, $depth=999, $depthData='',$blankLineCode='',$subCSSclass='')	{
+			// Buffer for id hierarchy is reset:
 		$this->buffer_idH=array();
 
 			// Init vars
 		$depth=intval($depth);
 		$HTML='';
 		$a=0;
-		if ($rootOnly==false) {
-			$res = $this->getDataInit($uid,$subCSSclass);
-			$c = $this->getDataCount($res);
-			$crazyRecursionLimiter = 999;
-				// Traverse the records:
-			while ($crazyRecursionLimiter>0 && $row = $this->getDataNext($res,$subCSSclass))	{
-				$a++;
-				$crazyRecursionLimiter--;
-	
-				$newID = $row['uid'];
-	
-				if ($newID==0)	{
-					t3lib_BEfunc::typo3PrintError ('Endless recursion detected', 'TYPO3 has detected an error in the database. Please fix it manually (e.g. using phpMyAdmin) and change the UID of '.$this->table.':0 to a new value.<br /><br />See <a href="http://bugs.typo3.org/view.php?id=3495" target="_blank">bugs.typo3.org/view.php?id=3495</a> to get more information about a possible cause.',0);
-					exit;
-				}
-	
-				$this->tree[]=array();		// Reserve space.
-				end($this->tree);
-				$treeKey = key($this->tree);	// Get the key for this space
-				$LN = ($a==$c)?'blank':'line';
-	
-					// If records should be accumulated, do so
-				if ($this->setRecs)	{
-					$this->recs[$row['uid']] = $row;
-				}
-	
-					// Accumulate the id of the element in the internal arrays
-				$this->ids[] = $idH[$row['uid']]['uid'] = $row['uid'];
-				$this->ids_hierarchy[$depth][] = $row['uid'];
-				$this->orig_ids_hierarchy[$depth][] = $row['_ORIG_uid'] ? $row['_ORIG_uid'] : $row['uid'];
-				
-					// Make a recursive call to the next level
-				$HTML_depthData = $depthData.$this->cObj->IMAGE($this->conf['categoryTreeAdvanced.']['treeNavIcons.'][$LN.'.']);
-				if ($depth>1 && $this->expandNext($newID) && !$row['php_tree_stop'])	{
-					$nextCount=$this->getTree(
-							$newID,
-							$depth-1,
-							$this->makeHTML ? $HTML_depthData : '',
-							$blankLineCode.','.$LN,
-							$row['_SUBCSSCLASS']
-						);
-					if (count($this->buffer_idH))	$idH[$row['uid']]['subrow']=$this->buffer_idH;
-					$exp=1;	// Set "did expand" flag
-				} else {
-					$nextCount=$this->getCount($newID);
-					$exp=0;	// Clear "did expand" flag
-				}
-	
-					// Set HTML-icons, if any:
-				if ($this->makeHTML)	{
-					$titleLen = $this->conf['categoryTreeAdvanced.']['categoryTitle.']['length'] ? $this->conf['categoryTreeAdvanced.']['categoryTitle.']['length']:30;
-					$title = $this->cObj->stdWrap ($this->getTitleStr($row, $titleLen),$this->conf['categoryTreeAdvanced.']['categoryTitle.']);
-					$HTML = $this->PM_wrap($row,$a,$c,$nextCount,$exp,$title);
-				}
-				#t3lib_div::debug($depth);
-				$treeDepth = 1000-$depth;
-				#t3lib_div::debug($this->conf['categoryTreeAdvanced.']['treeLevelCSS.']);
-				#t3lib_div::debug($this->conf['categoryTreeAdvanced.']['treeLevelCSS,']['paddingLeft']);
-				$paddingLeft = $treeDepth * $this->conf['categoryTreeAdvanced.']['treeLevelCSS.']['paddingLeft'];
-				
-					// Finally, add the row/HTML content to the ->tree array in the reserved key.
-				$this->tree[$treeKey] = Array(
-					'row'=>$row,
-					'HTML'=>$HTML,
-					'HTML_depthData' => $this->makeHTML==2 ? $HTML_depthData : '',
-					'invertedDepth'=>$depth,
-					'blankLineCode'=>$blankLineCode,
-					'bank' => $this->bank,
-					'treeLevelCSS' =>'style ="padding:0px 0px 0px '. $paddingLeft .'px;"'
-				);
+		$res = $this->getDataInit($uid,$subCSSclass);
+		$c = $this->getDataCount($res);
+		$crazyRecursionLimiter = 999;
+			// Traverse the records:
+		while ($crazyRecursionLimiter>0 && $row = $this->getDataNext($res,$subCSSclass))	{
+			$a++;
+			$crazyRecursionLimiter--;
+
+			$newID = $row['uid'];
+
+			if ($newID==0)	{
+				t3lib_BEfunc::typo3PrintError ('Endless recursion detected', 'TYPO3 has detected an error in the database. Please fix it manually (e.g. using phpMyAdmin) and change the UID of '.$this->table.':0 to a new value.<br /><br />See <a href="http://bugs.typo3.org/view.php?id=3495" target="_blank">bugs.typo3.org/view.php?id=3495</a> to get more information about a possible cause.',0);
+				exit;
 			}
-	
-			$this->getDataFree($res);
-			$this->buffer_idH=$idH;
-			return $c;
-		}
-		else {
-			
-			$row = $this->getRecord($uid);
+
 			$this->tree[]=array();		// Reserve space.
 			end($this->tree);
 			$treeKey = key($this->tree);	// Get the key for this space
@@ -766,7 +682,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			
 				// Make a recursive call to the next level
 			$HTML_depthData = $depthData.$this->cObj->IMAGE($this->conf['categoryTreeAdvanced.']['treeNavIcons.'][$LN.'.']);
-			/*if ($depth>1 && $this->expandNext($newID) && !$row['php_tree_stop'])	{
+			if ($depth>1 && $this->expandNext($newID) && !$row['php_tree_stop'])	{
 				$nextCount=$this->getTree(
 						$newID,
 						$depth-1,
@@ -776,21 +692,22 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 					);
 				if (count($this->buffer_idH))	$idH[$row['uid']]['subrow']=$this->buffer_idH;
 				$exp=1;	// Set "did expand" flag
-			} else {*/
+			} else {
 				$nextCount=$this->getCount($newID);
 				$exp=0;	// Clear "did expand" flag
-			#}*/
+			}
 
 				// Set HTML-icons, if any:
 			if ($this->makeHTML)	{
-				#$HTML = $depthData.$this->PMicon($row,$a,$c,$nextCount,$exp);
-				#t3lib_div::debug($row);
-				$HTML = $this->PM_wrap($row,$a,$c,$nextCount,$exp,$row['title']);
-				#$HTML.=$this->wrapStop($this->getIcon($row),$row);
+				$titleLen = $this->conf['categoryTreeAdvanced.']['categoryTitle.']['length'] ? $this->conf['categoryTreeAdvanced.']['categoryTitle.']['length']:30;
+				$title = $this->cObj->stdWrap ($this->getTitleStr($row, $titleLen),$this->conf['categoryTreeAdvanced.']['categoryTitle.']);
+				$HTML = $this->PM_wrap($row,$a,$c,$nextCount,$exp,$title);
 			}
-			#t3lib_div::debug($depth);
-			$treeDepth = 999-$depth;
-			#$paddingLeft = $treeDepth * $this->conf['categoryTreeAdvanced.']['treeLevelCSS.']['paddingLeft'];
+
+			$treeDepth = 1000-$depth;
+
+			$paddingLeft = $treeDepth * $this->conf['categoryTreeAdvanced.']['treeLevelCSS.']['paddingLeft'];
+			
 				// Finally, add the row/HTML content to the ->tree array in the reserved key.
 			$this->tree[$treeKey] = Array(
 				'row'=>$row,
@@ -801,10 +718,13 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				'bank' => $this->bank,
 				'treeLevelCSS' =>'style ="padding:0px 0px 0px '. $paddingLeft .'px;"'
 			);
-			$this->buffer_idH=$idH;
-			return $c;
 		}
+
+		$this->getDataFree($res);
+		$this->buffer_idH=$idH;
+		return $c;
 	}
+		
 
 	/**
 	 * Returns the root icon for a tree/mountpoint (defaults to the globe)
@@ -857,10 +777,6 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			}
 			return $parentId;
 		} else {
-			#t3lib_div::debug($this->table);
-			#t3lib_div::debug(implode(',',$this->fieldArray));
-			#t3lib_div::debug($this->parentField.'='.$GLOBALS['TYPO3_DB']->fullQuoteStr($parentId, $this->table).t3lib_BEfunc::deleteClause($this->table).t3lib_BEfunc::versioningPlaceholderClause($this->table).$this->clause);
-			#t3lib_div::debug($this->orderByFields);
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						implode(',',$this->fieldArray),
 						$this->table,

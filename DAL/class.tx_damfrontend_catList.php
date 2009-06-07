@@ -83,6 +83,7 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 	function op_Plus($catID, $treeID) {
 		if (!intval($catID)) {
 			if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function op_Plus: for the catID only integer values are allowed. Given value was:' .$catID, 'dam_frontend',3);
+			return false;
 		}
 		if (!intval($treeID)) {
 			if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function op_Plus: for the treeID only integer values are allowed. Given value was:' .$treeID, 'dam_frontend',3);
@@ -191,7 +192,7 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 				foreach ($ar as $key=>$value) {
 					$FIELDS = 'pid';
 					$TABLE = 'tt_content';
-					$WHERE = 'uid = '.$key;
+					$WHERE = 'uid = '.$key ;
 					$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($FIELDS,$TABLE,$WHERE);
 					while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 						if ($row['pid']==$pageID) {
