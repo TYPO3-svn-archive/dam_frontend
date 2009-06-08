@@ -227,33 +227,58 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		}
 		$this->conf['filelist.']['form_url.']['returnLast'] = 'url';
 		$content = tslib_cObj::substituteMarker($content, '###FORM_URL###', $this->cObj->typolink('', $this->conf['filelist.']['form_url.']));
+		$markerArray = array();
+		$markerArray['###FILENAME_HEADER###'] = $this->pi_getLL('FILENAME_HEADER');
+		$markerArray['###FILETYPE_HEADER###'] = $this->pi_getLL('FILETYPE_HEADER');
+		$markerArray['###CR_DATE_HEADER###']  = $this->pi_getLL('CR_DATE_HEADER');
+		$markerArray['###LANGUAGE_HEADER###'] = $this->pi_getLL('LANGUAGE_HEADER');
+		$markerArray['###OWNER_HEADER###'] = $this->pi_getLL('OWNER_HEADER');
+		$markerArray['###CREATOR_HEADER###'] = $this->pi_getLL('CREATOR_HEADER');
 
- 		$content = tsLib_CObj::substituteMarker($content, '###FILENAME_HEADER###', $this->pi_getLL('FILENAME_HEADER'));
- 		$content = tsLib_CObj::substituteMarker($content, '###FILETYPE_HEADER###', $this->pi_getLL('FILETYPE_HEADER'));
- 		$content = tsLib_CObj::substituteMarker($content, '###CR_DATE_HEADER###', $this->pi_getLL('CR_DATE_HEADER'));
-		$content = tslib_cObj::substituteMarker($content, '###LANGUAGE_HEADER###',$this->pi_getLL('LANGUAGE_HEADER'));
-		$content = tslib_cObj::substituteMarker($content, '###OWNER_HEADER###',$this->pi_getLL('OWNER_HEADER'));
-		$content = tslib_cObj::substituteMarker($content, '###CREATOR_HEADER###',$this->pi_getLL('CREATOR_HEADER'));
-
+ 			// substitute Links for Sorting
+ 		$record = $list[0];
+ 		$tmpPiVars = $this->piVars;
+ 		foreach ($record as $key=>$value) {
+			$content = tsLib_CObj::substituteMarker($content, '###SORTLINK_'.strtoupper($key).'###', $this->renderSortLink($key));
+ 			$this->piVars = $tmpPiVars;
+			if ($this->conf['filelist.']['sortLinksForTitles']==1) {
+ 				if ($this->piVars['sort_'.$key]) {
+					if ($this->piVars['sort_'.$key]=='DESC') {
+						$this->piVars['sort_'.$key] = 'ASC';
+						$tsWrap = 'ASC';
+					}
+					else {
+						$this->piVars['sort_'.$key] = 'DESC';
+						$tsWrap = 'DESC';
+					}
+				}
+				else {
+					$this->piVars['sort_'.$key] = 'ASC';
+					$tsWrap = 'ASC';
+				}
+				// check if current header is allready sorted 
+				$markerArray['###'.strtoupper($key).'_HEADER###'] = $this->cObj->stdWrap($this->pi_linkTP_keepPiVars($this->cObj->cObjGetSingle($this->conf['filelist.']['sortlinks.'][$key], $this->conf['filelist.']['sortlinks.'][$key.'.'])),$this->conf['filelist.']['sortlinks.'][$key.'.'][$tsWrap.'.']);
+					// todo unset kills the whole piVars need to find a more elegant way to deal with it
+				unset($this->piVars['sort_'.$key]);
+				$this->piVars = $tmpPiVars;
+			}
+ 		}
+ 		
+ 		foreach (array('FILELIST_BATCH_SELECT', 'FILELIST_BATCH_GO', 'FILELIST_BATCH_CREATEZIPFILE', 'FILELIST_BATCH_SENDASMAIL', 'FILELIST_BATCH_SENDZIPPEDFILESASMAIL', 'FILELIST_BATCH_SENDFILELINK', 'FILELIST_BATCH_SENDZIPPEDFILELINK', 'FILENAME_HEADER', 'FILENAME_HEADER', 'FILETYPE_HEADER', 'CR_DATE_HEADER') as $label) {
+ 			$content = tsLib_CObj::substituteMarker($content, '###'.$label.'###', $this->pi_getLL($label, $label));
+ 		}
+		$content = tslib_cObj::substituteMarkerArray($content, $markerArray);
  			// substitute static user defined markers
  		$this->pi_loadLL();
  		$staticMarkers['###SETROWSPERVIEW###'] = $this->pi_getLL('setRowsPerView');
  		$staticMarkers['###LABEL_COUNT###'] = $this->pi_getLL('label_Count');
 		$staticMarkers =$staticMarkers + $this->substituteLangMarkers($list_Code);
  		$content = tslib_cObj::substituteMarkerArray($content, $staticMarkers);
-
+ 		
 			// substitute Links for Browseresult
 		$browseresults = $this->renderBrowseResults($resultcount, $pointer, $listLength);
 		$content = tsLib_CObj::substituteMarker($content, '###BROWSERESULTS###', $browseresults);
 		
- 			// substitute Links for Sorting
- 		$record = $list[0];
- 		foreach ($record as $key=>$value) {
-			$content = tsLib_CObj::substituteMarker($content, '###SORTLINK_'.strtoupper($key).'###', $this->renderSortLink($key));
- 		}
- 		foreach (array('FILELIST_BATCH_SELECT', 'FILELIST_BATCH_GO', 'FILELIST_BATCH_CREATEZIPFILE', 'FILELIST_BATCH_SENDASMAIL', 'FILELIST_BATCH_SENDZIPPEDFILESASMAIL', 'FILELIST_BATCH_SENDFILELINK', 'FILELIST_BATCH_SENDZIPPEDFILELINK', 'FILENAME_HEADER', 'FILENAME_HEADER', 'FILETYPE_HEADER', 'CR_DATE_HEADER') as $label) {
- 			$content = tsLib_CObj::substituteMarker($content, '###'.$label.'###', $this->pi_getLL($label, $label));
- 		}
  		return $content;
  	}
 
@@ -282,16 +307,16 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		if ($resultcount % $listLength==0) $noOfPages = $noOfPages-1+$limiter;
 		
 			for ($z = 0; $z <= $noOfPages; $z++) {
-				$pointerPiVar=array();
-				$pointerPiVar['tx_damfrontend_pi1[pointer]'] = $z;
+				#$pointerPiVar=array();
+				#$pointerPiVar['tx_damfrontend_pi1[pointer]'] = $z;
 				if ($z == $pointer ) {
 						// this is the current page
 					$listElems .=  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($z+1,$this->conf['filelist.']['browselinkCurrent.']));
 					if ($this->conf['filelist.']['browselink.']['browselinkUsePrevNext']==1) {
 							// previous link
 						if ($z>0) {
-							$this->piVars['tx_damfrontend_pi1[pointer]'] = $z-1;
-							$listElemsPrevious =  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP($this->pi_getLL('BROWSELINK_PREV'),$pointerPiVar),$this->conf['filelist.']['browselink.']));
+							$this->piVars['pointer'] = $z-1;
+							$listElemsPrevious =  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP_keepPiVars($this->pi_getLL('BROWSELINK_PREV')),$this->conf['filelist.']['browselink.']));
 						}
 						else {
 								//we are the the last first, so show only the label
@@ -302,19 +327,21 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 							$listElemsNext =  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_getLL('BROWSELINK_NEXT'),$this->conf['filelist.']['browselink.']));
 						}
 						else {
-							$pointerPiVar['tx_damfrontend_pi1[pointer]'] = $z+1;
-							$listElemsNext =  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP($this->pi_getLL('BROWSELINK_NEXT'),$pointerPiVar),$this->conf['filelist.']['browselink.']));
+							$this->piVars['pointer'] = $z+1;
+							$listElemsNext =  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP_keepPiVars($this->pi_getLL('BROWSELINK_NEXT')),$this->conf['filelist.']['browselink.']));
 						}
 					}
 				}
 				else {
 						// link to other pages
-					$listElems .=  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP($z+1,$pointerPiVar),$this->conf['filelist.']['browselink.']));
+					$this->piVars['pointer'] = $z;
+					$listElems .=  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP_keepPiVars($z+1,$this->piVars),$this->conf['filelist.']['browselink.']));
 				}
 			}
 			$listElems = $listElemsPrevious .$listElems .$listElemsNext;
 		$listCode = tslib_CObj::substituteSubpart($listCode, '###BROWSERESULT_ENTRY###', $listElems);
 		$listCode = $this->cObj->stdWrap ($listCode,$this->conf['filelist.']['browselink.']['resultList.']);
+		unset($this->piVars['pointer']);
 		return $listCode;
 	}
 
@@ -326,17 +353,17 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	 * @return	string		Html	...
 	 */
 	function renderSortLink($key) {
-			
 			$this->pi_loadLL();
 			$content = tslib_CObj::getSubpart($this->fileContent, '###SORTLINK###');
-			
+			$doNotUnset=false;
+			if ($this->piVars['sort_'.$key]) $doNotUnset=true;
 			$this->piVars['sort_'.$key] = 'ASC';
 			$content = tsLib_CObj::substituteMarker($content, '###SORTLINK_ASC###', $this->pi_linkTP_keepPiVars($this->cObj->cObjGetSingle($this->conf['filelist.']['sortlinks.']['asc'], $this->conf['filelist.']['sortlinks.']['asc.'])));
 			
 			$this->piVars['sort_'.$key] = 'DESC';
 			$content = tsLib_CObj::substituteMarker($content, '###SORTLINK_DESC###', $this->pi_linkTP_keepPiVars($this->cObj->cObjGetSingle($this->conf['filelist.']['sortlinks.']['desc'], $this->conf['filelist.']['sortlinks.']['desc.'])));	
 			
-			unset($this->piVars['sort_'.$key]);
+			#if ($doNotUnset==false) unset($this->piVars['sort_'.$key]);
 			return $content;
 	}
 
@@ -1212,7 +1239,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  		$this->cObj->stdWrap($content,$this->conf['categoryTreeAdvanced.']);
 		return $content;
 	}
- }
+}
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_rendering.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_rendering.php']);
 }
