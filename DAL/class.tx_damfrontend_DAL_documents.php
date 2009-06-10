@@ -349,20 +349,20 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 					/*
 					 * Building the from clause manually by joining the DAM tables
 					 */
-				$select = $this->docTable.'.uid';
-				$from = $this->docTable.' INNER JOIN '.$this->mm_Table.' ON '.$this->mm_Table.'.uid_local  = '.$this->docTable.
-				'.uid INNER JOIN '.$this->catTable.' ON '.$this->mm_Table.'.uid_foreign = '.$this->catTable.'.uid';
+					$select = $this->docTable.'.uid';
+					$from = $this->docTable.' INNER JOIN '.$this->mm_Table.' ON '.$this->mm_Table.'.uid_local  = '.$this->docTable.
+					'.uid INNER JOIN '.$this->catTable.' ON '.$this->mm_Table.'.uid_foreign = '.$this->catTable.'.uid';
 
 					$filter .= $this->additionalFilter;
 
 
 					// preparing the category array - deleting all empty entries
 					// TODO: rethinking if it is a good idea to change $this->categories in a function for reading entrys?
-				foreach($this->categories as $number => $catList) {
-					if (!count($catList)) {
-						unset($this->categories[$number]);
+					foreach($this->categories as $number => $catList) {
+						if (!count($catList)) {
+							unset($this->categories[$number]);
+						}
 					}
-				}
 
 				$queryText = array();
 				$z = 0;
@@ -380,39 +380,52 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 						else {
 							$catString = '( '.$this->catTable.'.uid='.implode(' OR '.$this->catTable.'.uid=',$catList).')';
 						}
-	
-						if ($z != count($this->categories)-1) {
-							if (!count($queryText)) {
-								$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery($select,$from, $catString);
+						
+						if  ($this->conf['useTreeAndSelection'] == 1) {
+							if ($z != count($this->categories)-1) {
+								if (!count($queryText)) {
+									$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery($select,$from,  $catString);
+								}
+								else {
+									$where = $this->docTable.'.uid IN ('.$queryText[count($queryText)- 1].') AND '.$catString;
+									$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery('tx_dam.uid', $from, $where);
+								}
 							}
+								// building the last element of the list - final building of the list
 							else {
-								$where = $this->docTable.'.uid IN ('.$queryText[count($queryText)- 1].') AND '.$catString;
-								$queryText[] = $GLOBALS['TYPO3_DB']->SELECTquery('tx_dam.uid', $from, $where);
+								if(count($this->categories ) > 1) {
+									$where = $this->docTable.'.uid IN ('.$queryText[count($queryText)- 1].') AND '.$catString.$filter;
+								}
+									// list is having more then one "AND" criteria
+								else {
+										// filter is added in case there is only one cat selected 
+									$where = $catString.$filter;
+								}
+								$select = ' DISTINCT '.$this->docTable.'.*';
 							}
 						}
-							// building the last element of the list - final building of the list
 						else {
-							if(count($this->categories ) > 1) {
-								$where = $this->docTable.'.uid IN ('.$queryText[count($queryText)- 1].') AND '.$catString.$filter;
-							}
-								// list is having more then one "AND" criteria
-							else {
-									// filter is added in case there is only one cat selected 
-								$where = $catString.$filter;
-							}
-							$select = ' DISTINCT '.$this->docTable.'.*';
+								if ($where <>'') {
+									$where .= ' OR ';
+								}
+								$where .=  $catString;
 						}
 						$z++;
+					}
+					if  ($this->conf['useTreeAndSelection'] == 0) {
+						$where .= $filter;
 					}
 				} 
 				else {
 					// query without using categories
-				$filter .= $this->additionalFilter;
-				$select='*';
-				$from='tx_dam';
+					$filter .= $this->additionalFilter;
+					$select='*';
+					$from='tx_dam';
 					$where.= ' 1=1 '.$filter;
 				}
 			}
+			
+			
 			// TODO: is there a reason not to define SELECT here? 
 			// TODO: do not use '*' but whitlist defined via TypoScript
 			$select = ' DISTINCT '.$this->docTable.'.*';
@@ -422,7 +435,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				// is defnied as: $this->internal['list']['limit'] = $this->internal['list']['pointer'].','. ($this->internal['list']['listLength']);
 			list($pointer, $listLength) = explode (',',$this->limit);
 			$startRecord = $pointer * $listLength;
-
+			#t3lib_div::debug($where);
 				// limit = "pointer,counter"
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where,'',$this->orderBy);
 			$result = array();

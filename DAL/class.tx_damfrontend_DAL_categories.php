@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2006-2008 in2form.com (typo3@bus-netzwerk.de)
+*  (c) 2006-2009 in2form.com (typo3@in2form.com)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -36,7 +36,7 @@
  *
  * @package typo3
  * @subpackage tx_dam_frontend
- * @author Martin Baum <typo3@bus-netzwerk.de>
+ * @author Martin Baum <typo3@in2form.com>
  *
  * Some scripts that use this class:	--
  * Depends on:		---
@@ -344,7 +344,75 @@ class tx_damfrontend_DAL_categories {
 				}
 			}
 		}
+
+
+		/**
+		 * searches for an uid in an given array and returns the found row. If multiple
+		 * records with the same uid exists in the list
+		 *
+		 * @param	array	$list: various kind of array
+		 * @param	int		$id: uid to search in the list
+		 * @param	int		$relID sets the relationship (which kind of Acess should be checked)
+		 * @return	array	returns the resultrow as an array
+		 */
+		function checkCategoryAccess($userID, $catID, $relID) {
+			/*var $relations = array(
+				'1' => 'readaccess',
+				'2' => 'downloadaccess',
+				'3' => 'uploadaccess'
+			);*/
+			switch ($relID ) {
+				case 1:
+					$relCheck ='﻿tx_damtree_fe_groups_readaccess';
+					break;
+				case 2:
+					$relCheck ='﻿tx_damtree_fe_groups_downloadaccess';
+					break;
+				case 3:
+					$relCheck ='tx_damtree_fe_groups_uploadaccess';
+					break;
+				default:
+					die('no rel ID given!');
+			}
+			$catRow = $this->getCategory($catID);
+			// check first, if no usergroup has been assigned to the given category
+			
+			if ($catRow[$relCheck] == 0) {
+				if ($this->debug ==1) {
+					t3lib_div::debug('checkCategoryAccess = true (no group selected) catID: '.$catID);
+				}
+				return true;
+			}
+			else {
+					// get all usergroups a fe_user belongs to
+				$usergroups = implode(',',$GLOBALS['TSFE']->fe_user->groupData['uid']) ;
+				if ($usergroups) {
+						// TODO add error handling
+					$mm_table = 'tx_dam_cat_'.$this->relations[$relID-1].'_mm';
+						// executing database search: should return a row with the usergroup(s)
+					$local_table = $this->catTable;
+					$foreign_table = 'fe_groups';
+					$where = 'AND '. $foreign_table.'.uid in ('.$usergroups.') AND ' .$local_table .'.uid = '.$catID ;
+					$select = $local_table.'.*';
+					$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query($select,$local_table, $mm_table, $foreign_table, $where);
+		
+					while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+						$resultlist[] = $row;
+					}
+					if ($resultlist) {
+						return true;
+					}
+					else {
+						return false;
+					}
+				}
+				else {
+					return false;
+				}
+			}
+		}
 	}
+
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/DAL/class.tx_damfrontend_DAL_categories.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/DAL/class.tx_damfrontend_DAL_categories.php']);
 }

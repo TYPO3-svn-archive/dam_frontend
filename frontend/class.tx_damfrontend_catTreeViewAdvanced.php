@@ -126,6 +126,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		if (isset($plugin)) $this->plugin = $plugin;
 		$this->cObj = $this->plugin->cObj;
 		$this->conf = $this->plugin->conf;
+		#t3lib_div::debug($this->conf);
 		if ($this->categorizationMode==true) $this->catLogic= t3lib_div::makeInstance('tx_damfrontend_DAL_categories');
 	}
 
@@ -448,6 +449,8 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		} else {
 			$titleLen = intval($this->BE_USER->uc['titleLen']);
 			$out=array();
+			t3lib_div::debug($this->selectedCats);
+			t3lib_div::debug($treeArr);
 			foreach($treeArr as $k => $v)	{
 				if (is_array($this->selectedCats)) {
 						// check if current category is in selection
@@ -511,6 +514,16 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 					if (!$this->catLogic->checkCategoryUploadAccess($GLOBALS['TSFE']->fe_user->user['uid'],$v['row']['uid'])) {
 						$sel_class ='tree_no_access';
 						$v['HTML'] = $this->cObj->stdWrap ($v['HTML'],$this->conf['categoryTreeAdvanced.']['catTitle.']['no_access.']);
+					}
+				}
+				else {
+					
+					if ($this->conf['categoryTreeAdvanced.']['markNotAllowedCategories']==1) {
+						if (!$this->catLogic->checkCategoryAccess ($GLOBALS['TSFE']->fe_user->user['uid'],$v['row']['uid'],3)){
+							#t3lib_div::debug('not allowed');
+							$sel_class ='tree_no_access';
+							$v['HTML'] = $this->cObj->stdWrap ($v['HTML'],$this->conf['categoryTreeAdvanced.']['categoryTitle.']['no_cat_access.']);
+						}						
 					}
 				}
 				#t3lib_div::debug($sel_class);

@@ -138,7 +138,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		// instanciate the references to the DAL
 		$this->docLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_documents');
 		$this->docLogic->setFullTextSearchFields($this->conf['filterView.']['searchwordFields']);
-
+		$this->docLogic->conf = $this->conf;
 		$this->catLogic= t3lib_div::makeInstance('tx_damfrontend_DAL_categories');
 		$this->catList = t3lib_div::makeInstance('tx_damfrontend_catList');
 		$this->renderer = t3lib_div::makeInstance('tx_damfrontend_rendering');
@@ -580,7 +580,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				}
 			}
 		}
-		
 	}
 
 
@@ -620,7 +619,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		
 		if ($this->conf['useAdvancedCategoryTree']==1) {
 			$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeViewAdvanced');
-			$tree->renderer = $this->renderer;	
+			$tree->renderer = $this->renderer;
+			$tree->catLogic = $this->catLogic;	
 		}
 		else {
 			$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeView');	

@@ -89,9 +89,11 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 			if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function op_Plus: for the treeID only integer values are allowed. Given value was:' .$treeID, 'dam_frontend',3);
 		}
 		$catarray = $this->getArrayFromUser();
-
 		if (!is_array($catarray)) $catarray = array();
+		
+		t3lib_div::debug($catarray);
 		$treeArray = is_array($catarray[$treeID]) ? array_unique($catarray[$treeID]) : array();
+		t3lib_div::debug($treeArray);
 		if ($treeID==-1 ) {
 			$catLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_categories');
 			if (!$catLogic->checkCategoryUploadAccess($GLOBALS['TSFE']->fe_user->user['uid'],$catID)) {
@@ -123,8 +125,15 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 		$catarray = $this->getArrayFromUser();
 
 		if (!empty($catarray) && $catarray[$treeID]) {	
+			$treeCats = $catarray[$treeID];
+			foreach ($treeCats as $key=>$cat) {
+				if ($cat ==$catID) {
+					t3lib_div::debug('found: '. $catID);
+					unset($catarray[$treeID][$key]);
+				}
+			}
 			$test = array_search($catID,$catarray[$treeID]);
-			unset($catarray[$treeID][$test]);
+			
 		}
 		$this->setArrayToUser($catarray);
 	}

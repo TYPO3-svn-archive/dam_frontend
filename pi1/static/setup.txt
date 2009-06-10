@@ -9,7 +9,8 @@ plugin.tx_damfrontend_pi1 {
 		errorWrap = {$plugin.tx_damfrontend_pi1.filter.errorWrap}
 	}
 	useAdvancedCategoryTree = 0
-	
+		#if more than one tree element at a page is use, then a AND selection is used between the trees
+	useTreeAndSelection = 1 
 	categoryTree {
 		
 		preSelectChildCategories = 0
@@ -30,6 +31,7 @@ plugin.tx_damfrontend_pi1 {
 		# wrap for the category title
 		catTitle.stdWrap.wrap = |
 		catTitle.no_access.wrap = |
+		
 		categoryTitle.length = 30
 		
 		# wrap for the whole category line
@@ -87,12 +89,16 @@ plugin.tx_damfrontend_pi1 {
 		category.marker =  ###TREE_ELEMENT### |*| ###TREE_ELEMENT_2### || ###TREE_ELEMENT### |*|		
 		#marker if you want don't want to use alternating rows for the tree 
 		category.marker_single =  ###TREE_ELEMENT###
+		
 		# 1 to show the root category (tree name) 
 		showRootCategory=0
 		
+		# mark categories which a user has no download right (set visual stylse via selectionStatus.no_access)
+		markNotAllowedCategories = 1 
 		categoryTitle.treePlus.wrap =  <span class="tree_open">|</span>
 		categoryTitle.treeMinus.wrap =  <span class="tree_close">|</span>
 		categoryTitle.treeNoControl.wrap =  <span class="tree_noControl">|</span>
+		categoryTitle.no_cat_access.wrap =  <span class="tree_noControl">|</span>
 		categoryTitle.length = 30
 		categoryTitle.wrap = |
 		
