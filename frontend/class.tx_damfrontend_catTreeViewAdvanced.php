@@ -450,7 +450,8 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			$titleLen = intval($this->BE_USER->uc['titleLen']);
 			$out=array();
 			t3lib_div::debug($this->selectedCats);
-			t3lib_div::debug($treeArr);
+			#t3lib_div::debug($treeArr);
+			$treeStructure = $this->get_treeStructure($treeArr);
 			foreach($treeArr as $k => $v)	{
 				if (is_array($this->selectedCats)) {
 						// check if current category is in selection
@@ -466,8 +467,10 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				}
 					// decide how the link must be rendered
 					// check if this cat has childs
+				
 				if (is_array($this->selectedCats) ) {
-					$childCats = $this->get_childCats($v['row']['uid']);
+					$childCats = $this->get_childCats($v['row']['uid'],$treeStructure);
+					$sel_class = $this->get_selectionStatus($v['row']['uid'],$treeStructure, $this->selectedCats);
 					$catSelected = false;
 					$catNotSelected = false;
 					
@@ -804,7 +807,13 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		}
 	}
 	
-	function get_childCats($catUID) {
+	/**
+	 * returns a list with child cats and their selection status
+	 *
+	 * @param	[array]		$treeArray $
+	 * @return	[array]		array with the tree $key = catID $value = parrentID
+	 */	
+	function get_childCats($catUID, $treeStructure) {
 		$res = $this->getDataInit($catUID);
 		$c = $this->getDataCount($res);
 		if ($c > 0)	{
@@ -817,6 +826,32 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		else {
 			return false;
 		}
+	}
+	
+	/**
+	 * returns a flat array with the tree structure
+	 *
+	 * @param	[array]		$treeArray $
+	 * @return	[array]		array with the tree $key = catID $value = parrentID
+	 */	
+	function get_treeStructure ($treeArray) {
+		$treeStructure = array();
+		foreach ($treeArray as $treeElement) {
+			#t3lib_div::debug();
+			#$treeStructure = array($treeElement['row']['uid'] => $treeElement['row']['parent_id']);
+			$treeStructure = array_merge($treeStructure, array($treeElement['row']['uid'] => $treeElement['row']['parent_id'])) ;
+		}
+		return $treeStructure;
+	}
+	
+	/**
+	 * returns a flat array with the tree structure
+	 *
+	 * @param	[array]		$treeArray $
+	 * @return	[array]		array with the tree $key = catID $value = parrentID
+	 */		
+	function get_selectionStatus($catID,$treeStructure, $selectedCats) {
+		
 	}
 }	
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_catTreeViewAdvanced.php'])	{

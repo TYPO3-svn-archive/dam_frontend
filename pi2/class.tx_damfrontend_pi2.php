@@ -31,7 +31,7 @@ require_once(PATH_t3lib . 'class.t3lib_iconworks.php');
  * Plugin 'DAM Frontend Filelist' for the 'dam_frontend' extension.
  * based on dam_downloadlist by Davide Principi <d.principi@provincia.ps.it
  *
- * @author	Stefan Busemann <stefan.busemann@bus-netzwerk.de>
+ * @author	Stefan Busemann <typo3in2form.com>
  * @package	TYPO3
  * @subpackage	tx_damfrontend
  */
