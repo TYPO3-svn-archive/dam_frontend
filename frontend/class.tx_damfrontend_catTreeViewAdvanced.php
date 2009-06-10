@@ -449,11 +449,15 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		} else {
 			$titleLen = intval($this->BE_USER->uc['titleLen']);
 			$out=array();
-			t3lib_div::debug($this->selectedCats);
-			#t3lib_div::debug($treeArr);
 			$treeStructure = $this->get_treeStructure($treeArr);
+			#t3lib_div::debug('tree:');
+			#t3lib_div::debug($treeStructure);
+			#t3lib_div::debug($treeArr);
+			#t3lib_div::debug($this->get_childCats(7,$treeStructure));
+			#return false;
 			foreach($treeArr as $k => $v)	{
-				if (is_array($this->selectedCats)) {
+				
+				/*if (is_array($this->selectedCats)) {
 						// check if current category is in selection
 					$test = array_search($v['row']['uid'], $this->selectedCats);
 					if ($test == 0 ) $test++;
@@ -464,16 +468,19 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 						// if yes and no selected then tree_selectedNoCats
 				} else {
 					$sel_class = 'tree_unselectedCats';
-				}
+				} */
 					// decide how the link must be rendered
 					// check if this cat has childs
-				
+				$sel_class = 'tree_unselectedCats';
 				if (is_array($this->selectedCats) ) {
-					$childCats = $this->get_childCats($v['row']['uid'],$treeStructure);
-					$sel_class = $this->get_selectionStatus($v['row']['uid'],$treeStructure, $this->selectedCats);
+					#$childCats = $this->get_childCats($v['row']['uid'],$treeStructure);
+					#t3lib_div::debug('childs for '. $v['row']['uid']);
+					#t3lib_div::debug($childCats);
+					
+					$sel_class = $this->get_selectionStatus($v['row']['uid'],$treeStructure, $this->selectedCats); 
+					/*
 					$catSelected = false;
 					$catNotSelected = false;
-					
 					if (is_array($childCats)){
 						// has child: so check if they are selected all / partly / none
 
@@ -510,7 +517,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 								$sel_class ='tree_selectedPartlyCats';
 							}
 						}
-					}
+					}*/
 				}
 				if ($this->categorizationMode==true) {
 					#t3lib_div::debug($this->catLogic->checkCategoryUploadAccess($GLOBALS['TSFE']->fe_user->user['uid'],$v['row']['uid']));
@@ -814,10 +821,16 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 	 * @return	[array]		array with the tree $key = catID $value = parrentID
 	 */	
 	function get_childCats($catUID, $treeStructure) {
-		$res = $this->getDataInit($catUID);
-		$c = $this->getDataCount($res);
-		if ($c > 0)	{
-			$childCats = array();
+		$childs = array();
+		foreach ($treeStructure as $cat => $parent) {
+			if ($parent==$catUID) {
+				$childs[] = substr_replace($cat,'',0,4);
+			}
+		}
+		#$res = $this->getDataInit($catUID);
+		#$c = $this->getDataCount($res);
+		#if ($c > 0)	{
+		/*	$childCats = array();
 			while ($row = $this->getDataNext($res,$subCSSclass)) {
 				$childCats[] = $row;
 			}
@@ -825,7 +838,8 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		}
 		else {
 			return false;
-		}
+		}*/
+		return $childs;
 	}
 	
 	/**
@@ -839,19 +853,74 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		foreach ($treeArray as $treeElement) {
 			#t3lib_div::debug();
 			#$treeStructure = array($treeElement['row']['uid'] => $treeElement['row']['parent_id']);
-			$treeStructure = array_merge($treeStructure, array($treeElement['row']['uid'] => $treeElement['row']['parent_id'])) ;
+			$treeStructure = array_merge($treeStructure, array('cat_'.$treeElement['row']['uid'] => $treeElement['row']['parent_id'])) ;
 		}
 		return $treeStructure;
 	}
 	
 	/**
-	 * returns a flat array with the tree structure
+	 * returns the selection status for a given category
 	 *
 	 * @param	[array]		$treeArray $
-	 * @return	[array]		array with the tree $key = catID $value = parrentID
+	 * @return	[int]		tree_selectedCats, tree_unselectedCats, tree_selectedPartlyCats
 	 */		
-	function get_selectionStatus($catID,$treeStructure, $selectedCats) {
-		
+	function get_selectionStatus($catID,$treeStructure) {
+		// check if current category is in selection
+		#t3lib_div::debug('übergebene Kat');
+		#t3lib_div::debug($catID);	
+		$test = array_search($catID, $this->selectedCats);
+		if ($test == 0 ) $test++;
+		$sel_class = $test ? "tree_selectedCats" : "tree_unselectedCats";
+				#// check if current category has subcategories, 
+				#// if yes and all selected status  then tree_selectedAllCats
+				#// if yes and partly selected then status  tree_selectedPartlyCats
+				#// if yes and no selected then tree_selectedNoCats
+		$catSelected = false;
+		$catNotSelected = false;	
+		$childCats = $this->get_childCats($catID,$treeStructure);
+		#t3lib_div::debug('childs');
+		#t3lib_div::debug($childCats);
+		if (is_array($childCats) && !empty($childCats)) {
+			#t3lib_div::debug('is array');
+			// has child: so check if they are selected all / partly / none
+			foreach ($childCats as $cat) {
+				#t3lib_div::debug($cat);
+				$childSelection = $this->get_selectionStatus($cat,$treeStructure);
+				switch ($childSelection){
+					case 'tree_selectedCats':
+						$catSelected = true;
+						break;
+					case 'tree_unselectedCats':
+						$catNotSelected = true;
+						break;
+					case 'tree_selectedNoCats':
+						$catNotSelected = true;
+						break;
+					case 'tree_selectedAllCats':
+						$catSelected = true;
+						break;
+					case 'tree_selectedPartlyCats':
+						$catSelected = true;
+						$catNotSelected = true;
+						break;
+				}
+			}
+			if ($catSelected == false and  $catNotSelected==true) {
+					//	no cats are selected						
+				$sel_class ='tree_selectedNoCats';
+			} 
+			else {
+				if ($catSelected == true and  $catNotSelected==false) {
+					//	all cats are selected
+					$sel_class ='tree_selectedAllCats';
+				}
+				else {
+					$sel_class ='tree_selectedPartlyCats';
+				}
+			}
+		}
+		#t3lib_div::debug($sel_class);
+		return $sel_class;
 	}
 }	
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_catTreeViewAdvanced.php'])	{
