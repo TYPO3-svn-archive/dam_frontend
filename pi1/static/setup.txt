@@ -737,21 +737,21 @@ plugin.tx_damfrontend_pi1 {
 			display:block;
 			float:left;
 			padding-left:20px;
-			background:url(../typo3conf/ext/dam_frontend/res/images/checkbox_green.gif) no-repeat left top;
+			background:url(typo3conf/ext/dam_frontend/res/images/checkbox_green.gif) no-repeat left top;
 		}
 		
 		.checkbox a{
 			display:block;
 			float:left;
 			padding-left:20px;
-			background:url(../typo3conf/ext/dam_frontend/res/images/checkbox.gif) no-repeat left top;
+			background:url(typo3conf/ext/dam_frontend/res/images/checkbox.gif) no-repeat left top;
 		}
 
 		.checkbox_grey a{
 			display:block;
 			float:left;
 			padding-left:20px;
-			background:url(../typo3conf/ext/dam_frontend/res/images/checkbox_grey.gif) no-repeat left top;
+			background:url(typo3conf/ext/dam_frontend/res/images/checkbox_grey.gif) no-repeat left top;
 		}
 		
 		.no_access {
@@ -760,12 +760,12 @@ plugin.tx_damfrontend_pi1 {
 		
 		.tree_close {
 			padding-left: 17px;
-			background:url(../typo3conf/ext/dam_frontend/res/images/tree_close.gif) no-repeat left top;
+			background:url(typo3conf/ext/dam_frontend/res/images/tree_close.gif) no-repeat left top;
 		}
 		
 		.tree_open {
 			padding-left: 17px;
-			background:url(../typo3conf/ext/dam_frontend/res/images/tree_open.gif) no-repeat left top;
+			background:url(typo3conf/ext/dam_frontend/res/images/tree_open.gif) no-repeat left top;
 		}
 		.tree_noControll {
 			padding-left: 17px;
