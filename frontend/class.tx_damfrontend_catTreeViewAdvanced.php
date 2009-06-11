@@ -569,7 +569,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 	function getTitleStr($row, $titleLen = 30)	{
 		$conf['sys_language_uid'] = $GLOBALS['TSFE']->sys_language_uid;
 		$row['pid']=$this->mediaFolder;
-		$row = tx_dam_db::getRecordOverlay($this->table, $row, $conf);
+		if ($this->conf['categoryTreeAdvanced.']['useLanguageOverlay']==1) $row = tx_dam_db::getRecordOverlay($this->table, $row, $conf);
 		$title =  trim($row['title']);
 		if (empty($title)) $title = '<em>['.$this->plugin->pi_getLL('no_title').']</em>';
 		return $title;
@@ -827,18 +827,6 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				$childs[] = substr_replace($cat,'',0,4);
 			}
 		}
-		#$res = $this->getDataInit($catUID);
-		#$c = $this->getDataCount($res);
-		#if ($c > 0)	{
-		/*	$childCats = array();
-			while ($row = $this->getDataNext($res,$subCSSclass)) {
-				$childCats[] = $row;
-			}
-			return $childCats;
-		}
-		else {
-			return false;
-		}*/
 		return $childs;
 	}
 	
@@ -848,15 +836,34 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 	 * @param	[array]		$treeArray $
 	 * @return	[array]		array with the tree $key = catID $value = parrentID
 	 */	
-	function get_treeStructure ($treeArray) {
+	function get_treeStructure () {
 		$treeStructure = array();
-		foreach ($treeArray as $treeElement) {
-			#t3lib_div::debug();
-			#$treeStructure = array($treeElement['row']['uid'] => $treeElement['row']['parent_id']);
-			$treeStructure = array_merge($treeStructure, array('cat_'.$treeElement['row']['uid'] => $treeElement['row']['parent_id'])) ;
+		foreach($this->MOUNTS as $idx => $uid)	{
+			if ($uid=='') $uid = 0;
+			$treeStructure['cat_'.$uid]= 0;
+			$treeStructure = array_merge($treeStructure, $this->get_treeStructureElements($uid)) ;
+			#t3lib_div::debug($treeStructure);
 		}
+		return $treeStructure ;
+	}
+	
+	
+	/**
+	 * returns a flat array with the tree structure
+	 *
+	 * @param	[array]		$treeArray $
+	 * @return	[array]		array with the tree $key = catID $value = parrentID
+	 */	
+	function get_treeStructureElements ($uid) {
+		$treeStructure = array();
+			$res = $this->getDataInit($uid,$subCSSclass);	
+			while ( $row = $this->getDataNext($res,$subCSSclass))	{
+				$treeStructure['cat_'.$row['uid']]= $uid;
+				$treeStructure = array_merge($treeStructure,$this->get_treeStructureElements($row['uid'])) ;
+			}
 		return $treeStructure;
 	}
+	
 	
 	/**
 	 * returns the selection status for a given category

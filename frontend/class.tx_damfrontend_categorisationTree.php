@@ -344,7 +344,7 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 	function getTitleStr($row, $titleLen = 30)	{
 		$conf['sys_language_uid'] = $GLOBALS['TSFE']->sys_language_uid;
 		$row['pid']=$this->mediaFolder;
-		$row = tx_dam_db::getRecordOverlay($this->table, $row, $conf);
+		if ($this->conf['categorisationTree.']['useLanguageOverlay']==1) $row = tx_dam_db::getRecordOverlay($this->table, $row, $conf);
 		$title = trim($row['title']);
 		if (empty($title)) $title = '<em>['.$this->plugin->pi_getLL('no_title').']</em>';
 		return $title;

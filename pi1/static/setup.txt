@@ -15,6 +15,7 @@ plugin.tx_damfrontend_pi1 {
 		
 		preSelectChildCategories = 0
 		
+		useLanguageOverlay = 1
 		wrap = |
 		# plus control to select categories
 		plusIcon = IMAGE
@@ -82,7 +83,7 @@ plugin.tx_damfrontend_pi1 {
 	
 	categoryTreeAdvanced {
 		templateFile = EXT:dam_frontend/pi1/template_tree.html
-		
+		useLanguageOverlay = 1
 		# if = 1 then a second subpart (TREE_ELEMENT_2) is used to render the even rows
 		category.useAlternatingSubpart = 1
 		#option split, if you want to use different markers for each row of a tree
@@ -113,7 +114,7 @@ plugin.tx_damfrontend_pi1 {
 			selectionStatus.tree_selectedAllCats=checkbox_green	
 			selectionStatus.tree_selectedPartlyCats=checkbox_grey		
 			selectionStatus.tree_selectedNoCats=checkbox			
-			selectionStatus.no_access=no_access			
+			selectionStatus.tree_no_access=no_access			
 		}
 		
 		category_tree_selector.wrap = |&nbsp;
@@ -122,7 +123,6 @@ plugin.tx_damfrontend_pi1 {
 			parameter.data = TSFE:id
 			wrap = |&nbsp;/&nbsp;
 		}
-		.wrap = |&nbsp;
 		category_tree_selector_none = TYPOLINK
 		category_tree_selector_none {
 			parameter.data = TSFE:id
