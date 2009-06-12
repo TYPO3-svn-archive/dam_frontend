@@ -1,0 +1,859 @@
+a:2:{s:4:"meta";a:3:{s:5:"title";s:12:"DAM Frontend";s:5:"descr";s:50:"Using the category tree ot the dam in the frontend";s:7:"options";a:2:{s:10:"usageCount";N;s:19:"includeCodeAbstract";N;}}s:5:"files";a:11:{s:14:"MD5_c02975ddc6";a:4:{s:8:"filename";s:19:"tx_dam_flexFunc.php";s:8:"filesize";i:905;s:6:"header";N;s:3:"DAT";a:2:{i:1;a:4:{s:6:"header";s:45:"class tx_dam_flexFunc extends tx_dam_tceFunc{";s:5:"class";i:1;s:11:"parentClass";s:15:"tx_dam_flexFunc";s:6:"atLine";i:5;}i:3;a:6:{s:6:"header";s:50:"function  getSingleField_selectTree($PA, &$fObj) {";s:11:"parentClass";s:15:"tx_dam_flexFunc";s:7:"content";s:0:"";s:12:"content_size";i:721;s:13:"content_lines";i:18;s:6:"atLine";i:7;}}}s:14:"MD5_7bed6dfaa2";a:4:{s:8:"filename";s:43:"DAL/class.tx_damfrontend_DAL_categories.php";s:8:"filesize";i:13942;s:6:"header";a:5:{s:4:"text";s:237:"
+
+
+class.tx_damfrontend_DAL_categories.php
+
+This class is doing all database actions for categories
+FUNCTIONS WHITH DIRECT DATABASE ACCESS
+getCategory
+getSubCategories
+getCategories
+
+
+Some scripts that use this class:	--
+Depends on:		---";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:3:{i:0;s:14:"@package typo3";i:1;s:27:"@subpackage tx_dam_frontend";i:2;s:39:"@author Martin Baum <typo3@in2form.com>";}s:11:"other_index";a:3:{s:8:"@package";a:1:{i:0;s:6:"typo3 ";}s:11:"@subpackage";a:1:{i:0;s:16:"tx_dam_frontend ";}s:7:"@author";a:1:{i:0;s:31:"Martin Baum <typo3@in2form.com>";}}}s:3:"DAT";a:13:{i:1;a:8:{s:6:"header";s:37:"class tx_damfrontend_DAL_categories {";s:5:"class";i:1;s:11:"parentClass";s:29:"tx_damfrontend_DAL_categories";s:4:"cDat";a:3:{s:4:"text";s:778:"
+
+[CLASS/FUNCTION INDEX of SCRIPT]
+
+
+
+  67: class tx_damfrontend_DAL_categories
+  81:     function getCategory($catID)
+ 103:     function getCategory_Rootline($catID)
+ 127:     function getAllCategories()
+ 140:     function getSubCategories($catID, $limit=999)
+ 183:     function getParentCategories($catID)
+ 212:     function getCategoryMountpoints($userID, $relID)
+ 231:     function getCategories($userID, $relID)
+ 258:     function getCategories_Rootline($userID, $relID)
+ 270:     function isParentCategory($catID, $parentID)
+ 282:     function isSubCategory($catID, $subID)
+ 297:     function findUidinList($list, $id)
+ 318:     function checkCategoryAccess($userID, $catID)
+
+TOTAL FUNCTIONS: 12
+(This index is automatically created/updated by the extension "extdeveval")
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:534;s:13:"content_lines";i:16;s:6:"atLine";i:65;}i:3;a:7:{s:6:"header";s:30:"function getCategory($catID) {";s:11:"parentClass";s:29:"tx_damfrontend_DAL_categories";s:4:"cDat";a:5:{s:4:"text";s:39:"
+
+	returns th detail datea of a caegory";s:5:"param";a:1:{i:0;a:2:{i:0;s:3:"int";i:1;s:50:"$catID id of the category which should be returned";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:14:"@author martin";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:7:"martin ";}}}s:7:"content";s:0:"";s:12:"content_size";i:482;s:13:"content_lines";i:14;s:6:"atLine";i:89;}i:5;a:7:{s:6:"header";s:39:"function getCategory_Rootline($catID) {";s:11:"parentClass";s:29:"tx_damfrontend_DAL_categories";s:4:"cDat";a:3:{s:4:"text";s:107:"
+
+generates a uniqe list of all categories from the
+specified category up to the root of the category tree
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:3:"int";i:1;s:37:"$catID: ID of the category to get the";}}s:6:"return";a:2:{i:0;s:5:"array";i:1;s:57:"uniqe list of all categories assosiated with the given ID";}}s:7:"content";s:0:"";s:12:"content_size";i:423;s:13:"content_lines";i:15;s:6:"atLine";i:111;}i:7;a:7:{s:6:"header";s:29:"function getAllCategories() {";s:11:"parentClass";s:29:"tx_damfrontend_DAL_categories";s:4:"cDat";a:5:{s:4:"text";s:139:"
+
+creates a list of all ate, which are currently availible.
+This is dtermined by the current frontend user and his membership
+of fe_groups
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:5:"array";i:1;s:35:"all availible documents as an array";}s:5:"other";a:1:{i:0;s:51:"@todo getAllCategories: this function is not ready!";}s:11:"other_index";a:1:{s:5:"@todo";a:1:{i:0;s:45:"getAllCategories: this function is not ready!";}}}s:7:"content";s:0:"";s:12:"content_size";i:9;s:13:"content_lines";i:5;s:6:"atLine";i:135;}i:9;a:7:{s:6:"header";s:47:"function getSubCategories($catID, $limit=999) {";s:11:"parentClass";s:29:"tx_damfrontend_DAL_categories";s:4:"cDat";a:3:{s:4:"text";s:50:"
+
+get all subcategories of the specified category
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:3:"int";i:1;s:55:"$catID: name of the category to fiond all subcategories";}i:1;a:2:{i:0;s:3:"int";i:1;s:35:"$limit: how deep shall the call run";}}s:6:"return";a:2:{i:0;s:5:"array";i:1;s:39:"list of all subcategory of an extension";}}s:7:"content";s:0:"";s:12:"content_size";i:1099;s:13:"content_lines";i:36;s:6:"atLine";i:148;}i:11;a:7:{s:6:"header";s:38:"function getParentCategories($catID) {";s:11:"parentClass";s:29:"tx_damfrontend_DAL_categories";s:4:"cDat";a:3:{s:4:"text";s:53:"
+
+gets all parent categories of an existing category
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:3:"int";i:1;s:24:"$catID category to check";}}s:6:"return";a:2:{i:0;s:5:"array";i:1;s:36:"$recArray with all parent categories";}}s:7:"content";s:0:"";s:12:"content_size";i:763;s:13:"content_lines";i:21;s:6:"atLine";i:191;}i:13;a:7:{s:6:"header";s:50:"function getCategoryMountpoints($userID, $relID) {";s:11:"parentClass";s:29:"tx_damfrontend_DAL_categories";s:4:"cDat";a:3:{s:4:"text";s:57:"
+
+creates a list, of all category - subIDs of an article
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:3:"int";i:1;s:41:"$userID: uid of the current frontend user";}i:1;a:2:{i:0;s:3:"int";i:1;s:58:"$relID: id of the name of the relation in $this->realtions";}}s:6:"return";a:2:{i:0;s:5:"array";i:1;s:71:"a uniqe list of all mountpoints. Can be used to create a array of trees";}}s:7:"content";s:0:"";s:12:"content_size";i:387;s:13:"content_lines";i:11;s:6:"atLine";i:220;}i:15;a:7:{s:6:"header";s:43:"function getCategories($groupArr, $relID) {";s:11:"parentClass";s:29:"tx_damfrontend_DAL_categories";s:4:"cDat";a:3:{s:4:"text";s:57:"
+
+returns all categories, the current user has access to
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:3:"int";i:1;s:62:"$groupArr: id of the user, who has the right to use the system";}i:1;a:2:{i:0;s:3:"int";i:1;s:53:"$relID: id to specify read / download / upload access";}}s:6:"return";a:2:{i:0;s:5:"array";i:1;s:29:"array of all category records";}}s:7:"content";s:0:"";s:12:"content_size";i:795;s:13:"content_lines";i:18;s:6:"atLine";i:239;}i:17;a:7:{s:6:"header";s:46:"function isParentCategory($catID, $parentID) {";s:11:"parentClass";s:29:"tx_damfrontend_DAL_categories";s:4:"cDat";a:3:{s:4:"text";s:66:"
+
+checks if the $subID Category is really a subcategory of $catID
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:3:"int";i:1;s:32:"$catID: suggested child Category";}i:1;a:2:{i:0;s:3:"int";i:1;s:36:"$parentID: suggested Parent Category";}}s:6:"return";a:2:{i:0;s:7:"boolean";i:1;s:46:"returns true, if parentID is parentID of catID";}}s:7:"content";s:0:"";s:12:"content_size";i:119;s:13:"content_lines";i:4;s:6:"atLine";i:265;}i:19;a:7:{s:6:"header";s:40:"function isSubCategory($catID, $subID) {";s:11:"parentClass";s:29:"tx_damfrontend_DAL_categories";s:4:"cDat";a:3:{s:4:"text";s:65:"
+
+checks if the $subID Category is really a subcategoy of $catID
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:3:"int";i:1;s:33:"$catID: suggested Parent Category";}i:1;a:2:{i:0;s:3:"int";i:1;s:32:"$subID: suggested child Category";}}s:6:"return";a:2:{i:0;s:7:"boolean";i:1;s:46:"returns true, if subID is subcategory of catID";}}s:7:"content";s:0:"";s:12:"content_size";i:117;s:13:"content_lines";i:6;s:6:"atLine";i:277;}i:21;a:7:{s:6:"header";s:38:"function findUidinList($list, $id)
+		{";s:11:"parentClass";s:29:"tx_damfrontend_DAL_categories";s:4:"cDat";a:3:{s:4:"text";s:124:"
+
+searches for an uid in an given array and returns the found row. If multiple
+records with the same uid exists in the list
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:5:"array";i:1;s:28:"$list: various kind of array";}i:1;a:2:{i:0;s:3:"int";i:1;s:30:"$id: uid to search in the list";}}s:6:"return";a:2:{i:0;s:5:"array";i:1;s:33:"returns the resultrow as an array";}}s:7:"content";s:0:"";s:12:"content_size";i:207;s:13:"content_lines";i:12;s:6:"atLine";i:292;}i:23;a:4:{s:6:"header";s:53:"function checkCategoryUploadAccess($userID, $catID) {";s:11:"parentClass";s:29:"tx_damfrontend_DAL_categories";s:4:"cDat";a:3:{s:4:"text";s:124:"
+
+searches for an uid in an given array and returns the found row. If multiple
+records with the same uid exists in the list
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:5:"array";i:1;s:28:"$list: various kind of array";}i:1;a:2:{i:0;s:3:"int";i:1;s:30:"$id: uid to search in the list";}}s:6:"return";a:2:{i:0;s:5:"array";i:1;s:33:"returns the resultrow as an array";}}s:6:"atLine";i:314;}i:25;a:7:{s:6:"header";s:55:"function checkCategoryAccess($userID, $catID, $relID) {";s:11:"parentClass";s:29:"tx_damfrontend_DAL_categories";s:4:"cDat";a:3:{s:4:"text";s:124:"
+
+searches for an uid in an given array and returns the found row. If multiple
+records with the same uid exists in the list
+";s:5:"param";a:3:{i:0;a:2:{i:0;s:5:"array";i:1;s:28:"$list: various kind of array";}i:1;a:2:{i:0;s:3:"int";i:1;s:30:"$id: uid to search in the list";}i:2;a:2:{i:0;s:3:"int";i:1;s:68:"$relID sets the relationship (which kind of Acess should be checked)";}}s:6:"return";a:2:{i:0;s:5:"array";i:1;s:33:"returns the resultrow as an array";}}s:7:"content";s:0:"";s:12:"content_size";i:1879;s:13:"content_lines";i:60;s:6:"atLine";i:358;}}}s:14:"MD5_cc2565802b";a:4:{s:8:"filename";s:42:"DAL/class.tx_damfrontend_DAL_documents.php";s:8:"filesize";i:40929;s:6:"header";a:5:{s:4:"text";s:115:"
+
+
+class.tx_damfrontend_DAL_documents.php
+
+What does it do?
+
+
+Some scripts that use this class:	---
+Depends on:		--";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:3:{i:0;s:14:"@package typo3";i:1;s:27:"@subpackage tx_dam_frontend";i:2;s:39:"@author Martin Baum <typo3@in2form.com>";}s:11:"other_index";a:3:{s:8:"@package";a:1:{i:0;s:6:"typo3 ";}s:11:"@subpackage";a:1:{i:0;s:16:"tx_dam_frontend ";}s:7:"@author";a:1:{i:0;s:31:"Martin Baum <typo3@in2form.com>";}}}s:3:"DAT";a:27:{i:1;a:8:{s:6:"header";s:36:"class tx_damfrontend_DAL_documents {";s:5:"class";i:1;s:11:"parentClass";s:28:"tx_damfrontend_DAL_documents";s:4:"cDat";a:3:{s:4:"text";s:888:"
+
+[CLASS/FUNCTION INDEX of SCRIPT]
+
+
+
+  69: class tx_damfrontend_DAL_documents
+ 100:     function tx_damfrontend_DAL_documents()
+ 111:     function getCategoriesbyDoc($docID)
+ 136:     function checkAccess_fileRef($filePath)
+ 158:     function checkAccess($docID, $relID)
+ 183:     function getResultCount()
+ 207:     function createCatString()
+ 221:     function getDocumentFEGroups($docID, $relID)
+ 261:     function getDocument($docID)
+ 280:     function getDocumentList()
+ 365:     function getCategoriesByDoc_Rootline($docID)
+ 411:     function setFilter($filterArray)
+ 454:     function getSearchwordWhereString($searchword)
+ 466:     function evalDateError($day, $month, $year)
+ 484:     function addDocument($path, $docData='')
+ 535:     function categoriseDocument($uid, $catArray)
+
+TOTAL FUNCTIONS: 15
+(This index is automatically created/updated by the extension "extdeveval")
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:1180;s:13:"content_lines";i:32;s:6:"atLine";i:67;}i:3;a:7:{s:6:"header";s:46:"function setFullTextSearchFields($fieldlist) {";s:11:"parentClass";s:28:"tx_damfrontend_DAL_documents";s:4:"cDat";a:3:{s:4:"text";s:80:"
+
+Sets fullTextSearchFields - in which fields should be searched
+
+description')
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"string";i:1;s:54:"$fieldlist kommaseparated list of fields (f.e. 'title,";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:7:"content";s:0:"";s:12:"content_size";i:52;s:13:"content_lines";i:4;s:6:"atLine";i:108;}i:5;a:7:{s:6:"header";s:41:"function tx_damfrontend_DAL_documents() {";s:11:"parentClass";s:28:"tx_damfrontend_DAL_documents";s:4:"cDat";a:3:{s:4:"text";s:18:"
+
+inits the class
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:5:"array";i:1;s:22:"list of all categories";}}s:7:"content";s:0:"";s:12:"content_size";i:131;s:13:"content_lines";i:4;s:6:"atLine";i:118;}i:7;a:7:{s:6:"header";s:51:"function getCategoriesbyDoc($docID,$simple=false) {";s:11:"parentClass";s:28:"tx_damfrontend_DAL_documents";s:4:"cDat";a:3:{s:4:"text";s:137:"
+
+gets all categories for the specified document and returns them as an array
+includes also parent categories of the assigned categories
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:3:"int";i:1;s:13:"$fileUid: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:12:"$simple: ...";}}s:6:"return";a:2:{i:0;s:5:"array";i:1;s:22:"list of all categories";}}s:7:"content";s:0:"";s:12:"content_size";i:474;s:13:"content_lines";i:14;s:6:"atLine";i:131;}i:9;a:6:{s:6:"header";s:41:"function checkAccess_fileRef($filePath) {";s:11:"parentClass";s:28:"tx_damfrontend_DAL_documents";s:7:"content";s:0:"";s:12:"content_size";i:541;s:13:"content_lines";i:13;s:6:"atLine";i:163;}i:11;a:7:{s:6:"header";s:38:"function checkAccess($docID, $relID) {";s:11:"parentClass";s:28:"tx_damfrontend_DAL_documents";s:4:"cDat";a:3:{s:4:"text";s:124:"
+
+checks, if the current user has access to an specific document
+if the document has no category, the access is not limited
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:3:"int";i:1;s:79:"$docID: uid of the the document, which delimites, if the user has access or not";}i:1;a:2:{i:0;s:3:"int";i:1;s:128:"$relID: ID in the array $this->realtions. Determines, which database relation is used (1: Readaccess; 2: Download / Edit Access)";}}s:6:"return";a:2:{i:0;s:7:"boolean";i:1;s:48:"returns true if the user has access to this file";}}s:7:"content";s:0:"";s:12:"content_size";i:905;s:13:"content_lines";i:18;s:6:"atLine";i:185;}i:13;a:7:{s:6:"header";s:27:"function getResultCount() {";s:11:"parentClass";s:28:"tx_damfrontend_DAL_documents";s:4:"cDat";a:5:{s:4:"text";s:52:"
+
+Returns the number of rows for the result browser
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:3:"int";i:1;s:14:"Number of rows";}s:5:"other";a:1:{i:0;s:41:"@todo: return number of rows by sql query";}s:11:"other_index";a:1:{s:6:"@todo:";a:1:{i:0;s:34:"return number of rows by sql query";}}}s:7:"content";s:0:"";s:12:"content_size";i:907;s:13:"content_lines";i:18;s:6:"atLine";i:210;}i:15;a:7:{s:6:"header";s:48:"function checkOwnerRights($docID,$fe_user_uid) {";s:11:"parentClass";s:28:"tx_damfrontend_DAL_documents";s:4:"cDat";a:5:{s:4:"text";s:57:"
+
+checks if a user has the right for edits and deletions
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:3:"int";i:1;s:19:"$fe_user_uid UserID";}i:1;a:2:{i:0;s:3:"int";i:1;s:25:"$docID id of the document";}}s:6:"return";a:2:{i:0;s:4:"true";i:1;s:31:"if user is allowed to edit		...";}s:5:"other";a:2:{i:0;s:23:"@author Stefan Busemann";i:1;s:34:"@todo extend support for fe_groups";}s:11:"other_index";a:2:{s:7:"@author";a:1:{i:0;s:15:"Stefan Busemann";}s:5:"@todo";a:1:{i:0;s:28:"extend support for fe_groups";}}}s:7:"content";s:0:"";s:12:"content_size";i:162;s:13:"content_lines";i:11;s:6:"atLine";i:238;}i:17;a:7:{s:6:"header";s:46:"function getDocumentFEGroups($docID, $relID) {";s:11:"parentClass";s:28:"tx_damfrontend_DAL_documents";s:4:"cDat";a:3:{s:4:"text";s:122:"
+
+creates a list of all groups, which are assosiated with an FE Group
+also parent categories of the document are included
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:3:"int";i:1;s:27:"$docID: uid of the document";}i:1;a:2:{i:0;s:3:"int";i:1;s:128:"$relID: ID in the array $this->realtions. Determines, which database relation is used (1: Readaccess; 2: Download / Edit Access)";}}s:6:"return";a:2:{i:0;s:5:"array";i:1;s:60:"Array which contains all usergroups associated with the file";}}s:7:"content";s:0:"";s:12:"content_size";i:1415;s:13:"content_lines";i:35;s:6:"atLine";i:258;}i:19;a:7:{s:6:"header";s:30:"function getDocument($docID) {";s:11:"parentClass";s:28:"tx_damfrontend_DAL_documents";s:4:"cDat";a:3:{s:4:"text";s:53:"
+
+Returns the resultlist of a requestet DAM Document
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:5:"[int]";i:1;s:29:"$docID: the UID of a document";}}s:6:"return";a:2:{i:0;s:5:"[SQL]";i:1;s:6:"Result";}}s:7:"content";s:0:"";s:12:"content_size";i:213;s:13:"content_lines";i:11;s:6:"atLine";i:300;}i:21;a:7:{s:6:"header";s:38:"function getDocumentList($userUID=0) {";s:11:"parentClass";s:28:"tx_damfrontend_DAL_documents";s:4:"cDat";a:3:{s:4:"text";s:206:"
+
+generates a list of all availible documents. Used by the frontend. The
+selection is filterd by the given list of categories and the
+access restrictions  -> relation "READ ACCESS" defined for the document
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:13:"$userUID: ...";}}s:6:"return";a:2:{i:0;s:7:"[array]";i:1;s:52:"returns an array which contains all selected records";}}s:7:"content";s:0:"";s:12:"content_size";i:5692;s:13:"content_lines";i:147;s:6:"atLine";i:320;}i:23;a:7:{s:6:"header";s:48:"function getCategoriesByDoc_Rootline($docID)
+		{";s:11:"parentClass";s:28:"tx_damfrontend_DAL_documents";s:4:"cDat";a:3:{s:4:"text";s:124:"
+
+creates a list of all categories, a document is associated
+Interited groups from parent folders are included in this list
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:3:"int";i:1;s:46:"$docID: id of the table, to get the pages from";}}s:6:"return";a:2:{i:0;s:5:"array";i:1;s:18:"list of categories";}}s:7:"content";s:0:"";s:12:"content_size";i:1315;s:13:"content_lines";i:37;s:6:"atLine";i:475;}i:25;a:7:{s:6:"header";s:34:"function setFilter($filterArray) {";s:11:"parentClass";s:28:"tx_damfrontend_DAL_documents";s:4:"cDat";a:3:{s:4:"text";s:119:"
+
+this function creates the WHERE - String with all availible filters
+input filter requests are mapped to SQL - querys
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:5:"array";i:1;s:78:"$filterArray: array of all get - Vars which are relatet with the filter system";}}s:6:"return";a:2:{i:0;s:5:"array";i:1;s:68:"returns an array with error codes - filled while cration of the form";}}s:7:"content";s:0:"";s:12:"content_size";i:2871;s:13:"content_lines";i:50;s:6:"atLine";i:521;}i:27;a:7:{s:6:"header";s:48:"function getSearchwordWhereString($searchword) {";s:11:"parentClass";s:28:"tx_damfrontend_DAL_documents";s:4:"cDat";a:3:{s:4:"text";s:41:"
+
+returns a searchword transfered to int
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"string";i:1;s:35:"$searchword: blank separated string";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:55:"where clause, ready for adding it to the document array";}}s:7:"content";s:0:"";s:12:"content_size";i:395;s:13:"content_lines";i:9;s:6:"atLine";i:578;}i:29;a:7:{s:6:"header";s:45:"function evalDateError($day, $month, $year) {";s:11:"parentClass";s:28:"tx_damfrontend_DAL_documents";s:4:"cDat";a:3:{s:4:"text";s:101:"
+
+evaluates the given Date and returns true if the date is in correct form to covert it to timestamp
+";s:5:"param";a:3:{i:0;a:2:{i:0;s:3:"int";i:1;s:18:"$day: day of month";}i:1;a:2:{i:0;s:3:"int";i:1;s:21:"$month: month of year";}i:2;a:2:{i:0;s:3:"int";i:1;s:14:"$year: year in";}}s:6:"return";a:2:{i:0;s:4:"bool";i:1;s:92:"if the given date is correct - return  true, if something is wrong or missing - return false";}}s:7:"content";s:0:"";s:12:"content_size";i:185;s:13:"content_lines";i:8;s:6:"atLine";i:596;}i:31;a:6:{s:6:"header";s:41:"function saveMetaData($docID, $docData) {";s:11:"parentClass";s:28:"tx_damfrontend_DAL_documents";s:7:"content";s:0:"";s:12:"content_size";i:225;s:13:"content_lines";i:10;s:6:"atLine";i:612;}i:33;a:7:{s:6:"header";s:42:"function addDocument($path, $docData='') {";s:11:"parentClass";s:28:"tx_damfrontend_DAL_documents";s:4:"cDat";a:5:{s:4:"text";s:34:"
+
+adding an document to the index
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:8:"[string]";i:1;s:32:"$path: path where file is stored";}i:1;a:2:{i:0;s:7:"[array]";i:1;s:36:"$docData: array of the document data";}}s:6:"return";a:2:{i:0;s:5:"[int]";i:1;s:33:"$newID: new UID of the dam_record";}s:5:"other";a:1:{i:0;s:48:"@todo get the pid for the indexer = media folder";}s:11:"other_index";a:1:{s:5:"@todo";a:1:{i:0;s:42:"get the pid for the indexer = media folder";}}}s:7:"content";s:0:"";s:12:"content_size";i:1585;s:13:"content_lines";i:43;s:6:"atLine";i:631;}i:35;a:7:{s:6:"header";s:46:"function categoriseDocument($uid, $catArray) {";s:11:"parentClass";s:28:"tx_damfrontend_DAL_documents";s:4:"cDat";a:3:{s:4:"text";s:59:"
+
+Insert the category selection in the mm table of the dam
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:5:"[int]";i:1;s:9:"$uid: ...";}i:1;a:2:{i:0;s:7:"[array]";i:1;s:14:"$catArray: ...";}}s:6:"return";a:2:{i:0;s:6:"[void]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:544;s:13:"content_lines";i:16;s:6:"atLine";i:682;}i:37;a:7:{s:6:"header";s:65:"function delete_document ($uid,$deleteFile=false, $userUID = 0) {";s:11:"parentClass";s:28:"tx_damfrontend_DAL_documents";s:4:"cDat";a:5:{s:4:"text";s:2:"
+
+";s:5:"param";a:3:{i:0;a:2:{i:0;s:3:"int";i:1;s:50:"$uid UID of the dam entry, which should be created";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:16:"$deleteFile: ...";}i:2;a:2:{i:0;s:6:"[type]";i:1;s:13:"$userUID: ...";}}s:6:"return";a:2:{i:0;s:7:"boolean";i:1;s:35:"true, if the deletion was sucessful";}s:5:"other";a:1:{i:0;s:14:"@author stefan";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:7:"stefan ";}}}s:7:"content";s:0:"";s:12:"content_size";i:468;s:13:"content_lines";i:18;s:6:"atLine";i:706;}i:39;a:6:{s:6:"header";s:34:"function get_FEUserName ($uid=0) {";s:11:"parentClass";s:28:"tx_damfrontend_DAL_documents";s:7:"content";s:0:"";s:12:"content_size";i:398;s:13:"content_lines";i:19;s:6:"atLine";i:731;}i:41;a:7:{s:6:"header";s:52:"function versioningCreateNewVersionPrepare($docID) {";s:11:"parentClass";s:28:"tx_damfrontend_DAL_documents";s:4:"cDat";a:5:{s:4:"text";s:70:"
+
+	 if a file is added twice to the system, a new version is genreated";s:5:"param";a:1:{i:0;a:2:{i:0;s:3:"int";i:1;s:49:"$docID ID of the file which should be versionized";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:14:"@author stefan";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:7:"stefan ";}}}s:7:"content";s:0:"";s:12:"content_size";i:1525;s:13:"content_lines";i:40;s:6:"atLine";i:758;}i:43;a:7:{s:6:"header";s:52:"function versioningCreateNewVersionExecute($docID) {";s:11:"parentClass";s:28:"tx_damfrontend_DAL_documents";s:4:"cDat";a:5:{s:4:"text";s:69:"
+
+	if a file is added twice to the system, a new version is genreated";s:5:"param";a:1:{i:0;a:2:{i:0;s:3:"int";i:1;s:49:"$docID ID of the file which should be versionized";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:14:"@author stefan";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:7:"stefan ";}}}s:7:"content";s:0:"";s:12:"content_size";i:4785;s:13:"content_lines";i:131;s:6:"atLine";i:806;}i:45;a:7:{s:6:"header";s:44:"function versioningOverridePrepare($docID) {";s:11:"parentClass";s:28:"tx_damfrontend_DAL_documents";s:4:"cDat";a:5:{s:4:"text";s:61:"
+
+returns the UID of the record which should be overwritten
+
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:11:"$docID: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:14:"@author stefan";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:7:"stefan ";}}}s:7:"content";s:0:"";s:12:"content_size";i:1228;s:13:"content_lines";i:36;s:6:"atLine";i:945;}i:47;a:6:{s:6:"header";s:44:"function versioningOverrideExecute($docID) {";s:11:"parentClass";s:28:"tx_damfrontend_DAL_documents";s:7:"content";s:0:"";s:12:"content_size";i:1665;s:13:"content_lines";i:37;s:6:"atLine";i:988;}i:49;a:7:{s:6:"header";s:41:"function delete_category ($uid, $catID) {";s:11:"parentClass";s:28:"tx_damfrontend_DAL_documents";s:4:"cDat";a:5:{s:4:"text";s:2:"
+
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:3:"int";i:1;s:27:"$uid: uid of the dam record";}i:1;a:2:{i:0;s:3:"int";i:1;s:39:"$catID category which should be deleted";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:14:"@author stefan";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:7:"stefan ";}}}s:7:"content";s:0:"";s:12:"content_size";i:312;s:13:"content_lines";i:6;s:6:"atLine";i:1032;}i:51;a:4:{s:6:"header";s:44:"function checkDocumentAccess($docFEGroups) {";s:11:"parentClass";s:28:"tx_damfrontend_DAL_documents";s:4:"cDat";a:5:{s:4:"text";s:50:"
+
+Checks if the FE_User has Access to the Document";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"string";i:1;s:53:"$docFEGroup -> fe_group the document is restricted to";}}s:6:"return";a:2:{i:0;s:4:"bool";i:1;s:40:"true if fe_user has access, false if not";}s:5:"other";a:1:{i:0;s:23:"@author Stefan Busemann";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:15:"Stefan Busemann";}}}s:6:"atLine";i:1046;}i:53;a:7:{s:6:"header";s:32:"function storeDocument($docID) {";s:11:"parentClass";s:28:"tx_damfrontend_DAL_documents";s:4:"cDat";a:5:{s:4:"text";s:73:"
+
+	saves an uploaded document in the datastore and cares for versioning
+
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:11:"$docID: ...";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}s:5:"other";a:1:{i:0;s:14:"@author stefan";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:7:"stefan ";}}}s:7:"content";s:0:"";s:12:"content_size";i:1669;s:13:"content_lines";i:45;s:6:"atLine";i:1083;}}}s:14:"MD5_7c3fa3dc87";a:4:{s:8:"filename";s:44:"DAL/class.tx_damfrontend_baseSessionData.php";s:8:"filesize";i:2862;s:6:"header";a:5:{s:4:"text";s:245:"
+
+
+class.tx_dam_frontend_baseSessionData.php
+
+This class is a Baseclass for Providers, which store Data in the Session
+in PHP 5, this methods would be protected
+
+
+Some scripts that use this class:	class.tx_damfrontend_catList.php
+Depends on:		--";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:3:{i:0;s:14:"@package typo3";i:1;s:27:"@subpackage tx_dam_frontend";i:2;s:39:"@author Martin Baum <typo3@in2form.com>";}s:11:"other_index";a:3:{s:8:"@package";a:1:{i:0;s:6:"typo3 ";}s:11:"@subpackage";a:1:{i:0;s:16:"tx_dam_frontend ";}s:7:"@author";a:1:{i:0;s:31:"Martin Baum <typo3@in2form.com>";}}}s:3:"DAT";a:5:{i:1;a:8:{s:6:"header";s:38:"class tx_damfrontend_baseSessionData {";s:5:"class";i:1;s:11:"parentClass";s:30:"tx_damfrontend_baseSessionData";s:4:"cDat";a:3:{s:4:"text";s:309:"
+
+[CLASS/FUNCTION INDEX of SCRIPT]
+
+
+
+  55: class tx_damfrontend_baseSessionData
+  59:     function tx_damfrontend_baseSessionData()
+  68:     function getArrayFromUser()
+  79:     function setArrayToUser($array)
+
+TOTAL FUNCTIONS: 3
+(This index is automatically created/updated by the extension "extdeveval")
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:124;s:13:"content_lines";i:2;s:6:"atLine";i:53;}i:3;a:6:{s:6:"header";s:43:"function tx_damfrontend_baseSessionData() {";s:11:"parentClass";s:30:"tx_damfrontend_baseSessionData";s:7:"content";s:0:"";s:12:"content_size";i:49;s:13:"content_lines";i:3;s:6:"atLine";i:57;}i:5;a:7:{s:6:"header";s:29:"function getArrayFromUser() {";s:11:"parentClass";s:30:"tx_damfrontend_baseSessionData";s:4:"cDat";a:3:{s:4:"text";s:51:"
+
+returns the data that hos been stored by the key
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:7:"content";s:0:"";s:12:"content_size";i:111;s:13:"content_lines";i:4;s:6:"atLine";i:66;}i:7;a:4:{s:6:"header";s:33:"function setArrayToUser($array) {";s:11:"parentClass";s:30:"tx_damfrontend_baseSessionData";s:4:"cDat";a:3:{s:4:"text";s:33:"
+
+sets an array by the given var
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:5:"array";i:1;s:50:"$array: array whith values in any form you want to";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:6:"atLine";i:77;}i:9;a:6:{s:6:"header";s:35:"function unSetArrayToUser($array) {";s:11:"parentClass";s:30:"tx_damfrontend_baseSessionData";s:7:"content";s:0:"";s:12:"content_size";i:298;s:13:"content_lines";i:7;s:6:"atLine";i:87;}}}s:14:"MD5_10930c1059";a:4:{s:8:"filename";s:36:"DAL/class.tx_damfrontend_catList.php";s:8:"filesize";i:7808;s:6:"header";a:5:{s:4:"text";s:190:"
+
+
+class.tx_damfrontend_catList.php
+
+This class is dealing the category list. If a FE_USER (deI selects a category this class is used.
+
+
+Some scripts that use this class:	--
+Depends on:		---";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:3:{i:0;s:14:"@package typo3";i:1;s:27:"@subpackage tx_dam_frontend";i:2;s:39:"@author Martin Baum <typo3@in2form.com>";}s:11:"other_index";a:3:{s:8:"@package";a:1:{i:0;s:6:"typo3 ";}s:11:"@subpackage";a:1:{i:0;s:16:"tx_dam_frontend ";}s:7:"@author";a:1:{i:0;s:31:"Martin Baum <typo3@in2form.com>";}}}s:3:"DAT";a:8:{i:1;a:7:{s:6:"header";s:69:"class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {";s:5:"class";i:1;s:11:"parentClass";s:22:"tx_damfrontend_catList";s:7:"content";s:0:"";s:12:"content_size";i:2;s:13:"content_lines";i:2;s:6:"atLine";i:61;}i:3;a:7:{s:6:"header";s:35:"function tx_damfrontend_catList() {";s:11:"parentClass";s:22:"tx_damfrontend_catList";s:4:"cDat";a:3:{s:4:"text";s:36:"
+
+initialization of the the session
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:7:"content";s:0:"";s:12:"content_size";i:97;s:13:"content_lines";i:4;s:6:"atLine";i:69;}i:5;a:7:{s:6:"header";s:35:"function op_Plus($catID, $treeID) {";s:11:"parentClass";s:22:"tx_damfrontend_catList";s:4:"cDat";a:3:{s:4:"text";s:59:"
+
+Operation for adding a category to the current selection
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:3:"int";i:1;s:50:"$catID: id of the category to add to the selection";}i:1;a:2:{i:0;s:3:"int";i:1;s:47:"$treeID: id of the tree to add to the selection";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:7:"content";s:0:"";s:12:"content_size";i:1029;s:13:"content_lines";i:26;s:6:"atLine";i:81;}i:7;a:7:{s:6:"header";s:36:"function op_Minus($catID, $treeID) {";s:11:"parentClass";s:22:"tx_damfrontend_catList";s:4:"cDat";a:3:{s:4:"text";s:72:"
+
+Operation for removing a given ID from the current category selection
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:3:"int";i:1;s:65:"$catID: category ID to remove from the current category selection";}i:1;a:2:{i:0;s:3:"int";i:1;s:49:"$treeID: tree id of the used category mount point";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:7:"content";s:0:"";s:12:"content_size";i:780;s:13:"content_lines";i:24;s:6:"atLine";i:115;}i:9;a:7:{s:6:"header";s:31:"function unsetAllCategories() {";s:11:"parentClass";s:22:"tx_damfrontend_catList";s:4:"cDat";a:3:{s:4:"text";s:53:"
+
+Operation for removing all categories from session
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:7:"content";s:0:"";s:12:"content_size";i:37;s:13:"content_lines";i:3;s:6:"atLine";i:145;}i:11;a:7:{s:6:"header";s:37:"function op_Equals($catID, $treeID) {";s:11:"parentClass";s:22:"tx_damfrontend_catList";s:4:"cDat";a:3:{s:4:"text";s:84:"
+
+Deletes the current selection an makes the given catID the only selected category
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:3:"int";i:1;s:41:"$catID: catID to be the current selection";}i:1;a:2:{i:0;s:3:"int";i:1;s:44:"$treeID: ID of the used cat Tree Mount Point";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:7:"content";s:0:"";s:12:"content_size";i:521;s:13:"content_lines";i:12;s:6:"atLine";i:156;}i:13;a:4:{s:6:"header";s:49:"function getCatSelection($treeID = 0,$pageID=0) {";s:11:"parentClass";s:22:"tx_damfrontend_catList";s:4:"cDat";a:3:{s:4:"text";s:132:"
+
+returns a list of either the selected categories of a tree ($treeID must be set) or the categories of a page (pageID must be set)
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:3:"int";i:1;s:98:"$treeID: ID of used category tree (optional: if set only the categories of this tree are returned)";}i:1;a:2:{i:0;s:3:"int";i:1;s:129:"$pageID: ID of the page where the tree should be used (optional: if all categories which are selected are returned for this page)";}}s:6:"return";a:2:{i:0;s:5:"array";i:1;s:31:"list of all selected categories";}}s:6:"atLine";i:176;}i:15;a:7:{s:6:"header";s:37:"function clearCatSelection($treeID) {";s:11:"parentClass";s:22:"tx_damfrontend_catList";s:4:"cDat";a:3:{s:4:"text";s:41:"
+
+clears the selected category of a user
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:3:"int";i:1;s:33:"$treeID: ID of used category tree";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:7:"nothing";}}s:7:"content";s:0:"";s:12:"content_size";i:339;s:13:"content_lines";i:10;s:6:"atLine";i:222;}}}s:14:"MD5_f931826b1f";a:4:{s:8:"filename";s:40:"DAL/class.tx_damfrontend_filterState.php";s:8:"filesize";i:5725;s:6:"header";a:5:{s:4:"text";s:167:"
+
+
+class.tx_damfrontend_filterState.php
+
+class is responsible for storing the state of the filter in the session
+
+
+Some scripts that use this class:	--
+Depends on:		--";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:4:{i:0;s:14:"@package typo3";i:1;s:27:"@subpackage tx_dam_frontend";i:2;s:39:"@author Martin Baum <typo3@in2form.com>";i:3;s:22:"@todo finish the class";}s:11:"other_index";a:4:{s:8:"@package";a:1:{i:0;s:6:"typo3 ";}s:11:"@subpackage";a:1:{i:0;s:16:"tx_dam_frontend ";}s:7:"@author";a:1:{i:0;s:31:"Martin Baum <typo3@in2form.com>";}s:5:"@todo";a:1:{i:0;s:16:"finish the class";}}}s:3:"DAT";a:10:{i:1;a:8:{s:6:"header";s:72:"class tx_damfrontend_filterState extends tx_damfrontend_baseSessionData{";s:5:"class";i:1;s:11:"parentClass";s:26:"tx_damfrontend_filterState";s:4:"cDat";a:3:{s:4:"text";s:623:"
+
+[CLASS/FUNCTION INDEX of SCRIPT]
+
+
+
+  63: class tx_damfrontend_filterState extends tx_damfrontend_baseSessionData
+  74:     function tx_damfrontend_filterState()
+  86:     function setFilter($filterArray)
+  98:     function syncFilterValues(&$internalFilter)
+ 117:     function resetFilter()
+ 128:     function getFilterFromSession()
+ 140:     function persistFilterState($name, $description, $uid)
+ 154:     function getFilterList($userID)
+ 174:     function loadFilter($filterID)
+ 185:     function deleteFilter($filterID)
+
+TOTAL FUNCTIONS: 9
+(This index is automatically created/updated by the extension "extdeveval")
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:59;s:13:"content_lines";i:5;s:6:"atLine";i:61;}i:3;a:7:{s:6:"header";s:39:"function tx_damfrontend_filterState() {";s:11:"parentClass";s:26:"tx_damfrontend_filterState";s:4:"cDat";a:3:{s:4:"text";s:39:"
+
+sets the filter to the current array
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:144;s:13:"content_lines";i:5;s:6:"atLine";i:72;}i:5;a:7:{s:6:"header";s:34:"function setFilter($filterArray) {";s:11:"parentClass";s:26:"tx_damfrontend_filterState";s:4:"cDat";a:3:{s:4:"text";s:39:"
+
+sets the filter to the current array
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:14:"[$filterArray]";i:1;s:17:"$filterArray: ...";}}s:6:"return";a:2:{i:0;s:6:"[void]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:44;s:13:"content_lines";i:3;s:6:"atLine";i:84;}i:7;a:7:{s:6:"header";s:45:"function syncFilterValues(&$internalFilter) {";s:11:"parentClass";s:26:"tx_damfrontend_filterState";s:4:"cDat";a:3:{s:4:"text";s:163:"
+
+if a value in the parameter array doesn't exist, the value is taken from the
+session data
+if the value in the given array exists, its overwritten in the session
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:5:"array";i:1;s:66:"$internalFilter: array to sync. Mostly the internal['filter'] vars";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:7:"content";s:0:"";s:12:"content_size";i:445;s:13:"content_lines";i:13;s:6:"atLine";i:96;}i:9;a:7:{s:6:"header";s:24:"function resetFilter() {";s:11:"parentClass";s:26:"tx_damfrontend_filterState";s:4:"cDat";a:3:{s:4:"text";s:31:"
+
+[Resets the filter settings]
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[void]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:122;s:13:"content_lines";i:5;s:6:"atLine";i:115;}i:11;a:7:{s:6:"header";s:33:"function getFilterFromSession() {";s:11:"parentClass";s:26:"tx_damfrontend_filterState";s:4:"cDat";a:3:{s:4:"text";s:40:"
+
+Loads the settings out of the session
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:41;s:13:"content_lines";i:3;s:6:"atLine";i:126;}i:13;a:7:{s:6:"header";s:56:"function persistFilterState($name, $description, $uid) {";s:11:"parentClass";s:26:"tx_damfrontend_filterState";s:4:"cDat";a:3:{s:4:"text";s:49:"
+
+saves the status of the filter to the database
+";s:5:"param";a:3:{i:0;a:2:{i:0;s:8:"[string]";i:1;s:10:"$name: ...";}i:1;a:2:{i:0;s:8:"[string]";i:1;s:17:"$description: ...";}i:2;a:2:{i:0;s:5:"[int]";i:1;s:9:"$uid: ...";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:7:"content";s:0:"";s:12:"content_size";i:186;s:13:"content_lines";i:7;s:6:"atLine";i:138;}i:15;a:7:{s:6:"header";s:33:"function getFilterList($userID) {";s:11:"parentClass";s:26:"tx_damfrontend_filterState";s:4:"cDat";a:3:{s:4:"text";s:37:"
+
+loads the filter from the database
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:5:"[int]";i:1;s:12:"$userID: ...";}}s:6:"return";a:2:{i:0;s:6:"[void]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:436;s:13:"content_lines";i:12;s:6:"atLine";i:152;}i:17;a:4:{s:6:"header";s:32:"function loadFilter($filterID) {";s:11:"parentClass";s:26:"tx_damfrontend_filterState";s:4:"cDat";a:5:{s:4:"text";s:81:"
+
+function loads the filter with the given ID from the database into the session
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:3:"int";i:1;s:53:"$filterID: uid of the filter to load into the session";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}s:5:"other";a:1:{i:0;s:45:"@todo function loadFilter is not finished yet";}s:11:"other_index";a:1:{s:5:"@todo";a:1:{i:0;s:39:"function loadFilter is not finished yet";}}}s:6:"atLine";i:172;}i:19;a:7:{s:6:"header";s:34:"function deleteFilter($filterID) {";s:11:"parentClass";s:26:"tx_damfrontend_filterState";s:4:"cDat";a:5:{s:4:"text";s:54:"
+
+deletes a filter with the given uid from the server
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:3:"int";i:1;s:59:"$filterID: deletes the given uid from the filterState table";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}s:5:"other";a:1:{i:0;s:47:"@todo function deleteFilter is not finished yet";}s:11:"other_index";a:1:{s:5:"@todo";a:1:{i:0;s:41:"function deleteFilter is not finished yet";}}}s:7:"content";s:0:"";s:12:"content_size";i:259;s:13:"content_lines";i:7;s:6:"atLine";i:183;}}}s:14:"MD5_c18bb6acf1";a:4:{s:8:"filename";s:38:"DAL/class.tx_damfrontend_listState.php";s:8:"filesize";i:3747;s:6:"header";a:5:{s:4:"text";s:168:"
+
+
+class.tx_damfrontend_listState.php
+
+class is responsible for storing the state of the list view in the session
+
+
+Some scripts that use this class:	--
+Depends on:		--";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:3:{i:0;s:14:"@package typo3";i:1;s:27:"@subpackage tx_dam_frontend";i:2;s:39:"@author Martin Baum <typo3@in2form.com>";}s:11:"other_index";a:3:{s:8:"@package";a:1:{i:0;s:6:"typo3 ";}s:11:"@subpackage";a:1:{i:0;s:16:"tx_dam_frontend ";}s:7:"@author";a:1:{i:0;s:31:"Martin Baum <typo3@in2form.com>";}}}s:3:"DAT";a:6:{i:1;a:8:{s:6:"header";s:70:"class tx_damfrontend_listState extends tx_damfrontend_baseSessionData{";s:5:"class";i:1;s:11:"parentClass";s:24:"tx_damfrontend_listState";s:4:"cDat";a:3:{s:4:"text";s:416:"
+
+[CLASS/FUNCTION INDEX of SCRIPT]
+
+
+
+  57: class tx_damfrontend_listState extends tx_damfrontend_baseSessionData
+  64:     function tx_damfrontend_listState()
+  75:     function resetListState()
+  89:     function setListState($listArray)
+  98:     function getListState()
+ 108:     function syncListState(&$listState)
+
+TOTAL FUNCTIONS: 5
+(This index is automatically created/updated by the extension "extdeveval")
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:2;s:13:"content_lines";i:1;s:6:"atLine";i:55;}i:3;a:7:{s:6:"header";s:37:"function tx_damfrontend_listState() {";s:11:"parentClass";s:24:"tx_damfrontend_listState";s:4:"cDat";a:3:{s:4:"text";s:62:"
+
+inits this class by loading the session data of the fe_user
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[void]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:142;s:13:"content_lines";i:5;s:6:"atLine";i:62;}i:5;a:7:{s:6:"header";s:27:"function resetListState() {";s:11:"parentClass";s:24:"tx_damfrontend_listState";s:4:"cDat";a:3:{s:4:"text";s:63:"
+
+clears the list status by deleting the relevant session data
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[void]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:126;s:13:"content_lines";i:7;s:6:"atLine";i:73;}i:7;a:7:{s:6:"header";s:35:"function setListState($listArray) {";s:11:"parentClass";s:24:"tx_damfrontend_listState";s:4:"cDat";a:3:{s:4:"text";s:52:"
+
+sets the list state by prossing a given listarray
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:7:"[array]";i:1;s:15:"$listArray: ...";}}s:6:"return";a:2:{i:0;s:6:"[void]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:42;s:13:"content_lines";i:3;s:6:"atLine";i:87;}i:9;a:4:{s:6:"header";s:25:"function getListState() {";s:11:"parentClass";s:24:"tx_damfrontend_listState";s:4:"cDat";a:3:{s:4:"text";s:22:"
+
+loads the listarray
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:7:"[array]";i:1;s:3:"...";}}s:6:"atLine";i:96;}i:11;a:7:{s:6:"header";s:37:"function syncListState(&$listState) {";s:11:"parentClass";s:24:"tx_damfrontend_listState";s:4:"cDat";a:3:{s:4:"text";s:77:"
+
+Synchronzises the liststate in the usersession with the internal liststate
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:7:"[array]";i:1;s:15:"$listState: ...";}}s:6:"return";a:2:{i:0;s:6:"[void]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:661;s:13:"content_lines";i:17;s:6:"atLine";i:106;}}}s:14:"MD5_7dd633b1ee";a:4:{s:8:"filename";s:45:"frontend/class.tx_damfrontend_catTreeView.php";s:8:"filesize";i:20336;s:6:"header";a:5:{s:4:"text";s:112:"
+
+
+class.tx_damfrontend_catTreeView.php
+
+What does it do?
+
+
+Some scripts that use this class:	--
+Depends on:		--";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:3:{i:0;s:14:"@package typo3";i:1;s:27:"@subpackage tx_dam_frontend";i:2;s:39:"@author Martin Baum <typo3@in2form.com>";}s:11:"other_index";a:3:{s:8:"@package";a:1:{i:0;s:6:"typo3 ";}s:11:"@subpackage";a:1:{i:0;s:16:"tx_dam_frontend ";}s:7:"@author";a:1:{i:0;s:31:"Martin Baum <typo3@in2form.com>";}}}s:3:"DAT";a:17:{i:1;a:8:{s:6:"header";s:67:"class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {";s:5:"class";i:1;s:11:"parentClass";s:26:"tx_damfrontend_catTreeView";s:4:"cDat";a:3:{s:4:"text";s:711:"
+
+[CLASS/FUNCTION INDEX of SCRIPT]
+
+
+
+  63: class tx_damfrontend_catTreeView extends tx_dam_selectionCategory
+  77:     function tx_damfrontend_catTreeView()
+ 116:     function init($treeID = '', $plugin = null)
+ 132:     function expandNext($id)
+ 144:     function initializePositionSaving()
+ 167:     function savePosition()
+ 181:     function wrapTitle($title,$row,$bank=0)
+ 216:     function PM_ATagWrap($icon,$cmd,$bMark='treeroot')
+ 235:     function getControl($title,$row)
+ 296:     function printTree($treeArr='')
+ 359:     function getTitleStr($row, $titleLen = 30)
+ 373:     function getBrowsableTree()
+
+TOTAL FUNCTIONS: 11
+(This index is automatically created/updated by the extension "extdeveval")
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:765;s:13:"content_lines";i:12;s:6:"atLine";i:63;}i:3;a:7:{s:6:"header";s:39:"function tx_damfrontend_catTreeView() {";s:11:"parentClass";s:26:"tx_damfrontend_catTreeView";s:4:"cDat";a:3:{s:4:"text";s:83:"
+
+prepares the category tree
+
+some small changes from the original category Tree */";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:7:"content";s:0:"";s:12:"content_size";i:880;s:13:"content_lines";i:26;s:6:"atLine";i:83;}i:5;a:7:{s:6:"header";s:45:"function init($treeID = '', $plugin = null) {";s:11:"parentClass";s:26:"tx_damfrontend_catTreeView";s:4:"cDat";a:3:{s:4:"text";s:79:"
+
+inits the class and user
+a frontend user is used to store the treestate data
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:12:"$treeID: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:12:"$plugin: ...";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:7:"content";s:0:"";s:12:"content_size";i:433;s:13:"content_lines";i:12;s:6:"atLine";i:118;}i:7;a:7:{s:6:"header";s:28:"function expandNext($id)
+ 	{";s:11:"parentClass";s:26:"tx_damfrontend_catTreeView";s:4:"cDat";a:5:{s:4:"text";s:28:"
+
+expands the category tree
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:5:"[int]";i:1;s:8:"$id: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:37:"@todo check if this function is used?";}s:11:"other_index";a:1:{s:5:"@todo";a:1:{i:0;s:31:"check if this function is used?";}}}s:7:"content";s:0:"";s:12:"content_size";i:78;s:13:"content_lines";i:3;s:6:"atLine";i:138;}i:9;a:7:{s:6:"header";s:37:"function initializePositionSaving() {";s:11:"parentClass";s:26:"tx_damfrontend_catTreeView";s:4:"cDat";a:3:{s:4:"text";s:167:"
+
+initialises the handling of the current treestate. Instead of storing
+the serialised data inside the backend user ->uc Array, the frontend user
+session data is used
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:7:"content";s:0:"";s:12:"content_size";i:535;s:13:"content_lines";i:17;s:6:"atLine";i:150;}i:11;a:7:{s:6:"header";s:42:"function expandTreeLevel($levelDeepth=0) {";s:11:"parentClass";s:26:"tx_damfrontend_catTreeView";s:4:"cDat";a:3:{s:4:"text";s:37:"
+
+expand the tree for the first view
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:3:"int";i:1;s:50:"$levelDeepth defines how deep the tree is expanded";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:7:"content";s:0:"";s:12:"content_size";i:379;s:13:"content_lines";i:11;s:6:"atLine";i:174;}i:13;a:7:{s:6:"header";s:27:"function savePosition()
+ 	{";s:11:"parentClass";s:26:"tx_damfrontend_catTreeView";s:4:"cDat";a:3:{s:4:"text";s:53:"
+
+saves treestate inside of the fe_user Session Data
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[void]";i:1;s:0:"";}}s:7:"content";s:0:"";s:12:"content_size";i:82;s:13:"content_lines";i:4;s:6:"atLine";i:191;}i:15;a:7:{s:6:"header";s:41:"function wrapTitle($title,$row,$bank=0) {";s:11:"parentClass";s:26:"tx_damfrontend_catTreeView";s:4:"cDat";a:3:{s:4:"text";s:26:"
+
+wraps a Title in a link
+";s:5:"param";a:3:{i:0;a:2:{i:0;s:6:"string";i:1;s:11:"$title: ...";}i:1;a:2:{i:0;s:9:"resultset";i:1;s:9:"$row: ...";}i:2;a:2:{i:0;s:3:"int";i:1;s:10:"$bank: ...";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:8:"html ...";}}s:7:"content";s:0:"";s:12:"content_size";i:799;s:13:"content_lines";i:18;s:6:"atLine";i:205;}i:17;a:7:{s:6:"header";s:52:"function PM_ATagWrap($icon,$cmd,$bMark='treeroot')	{";s:11:"parentClass";s:26:"tx_damfrontend_catTreeView";s:4:"cDat";a:3:{s:4:"text";s:46:"
+
+PM_ATagWrap
+
+renders the plus or minus sign
+";s:5:"param";a:3:{i:0;a:2:{i:0;s:6:"string";i:1;s:21:"$icon: html (img Tag)";}i:1;a:2:{i:0;s:6:"string";i:1;s:9:"$cmd: ...";}i:2;a:2:{i:0;s:6:"string";i:1;s:11:"$bMark: ...";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:331;s:13:"content_lines";i:8;s:6:"atLine";i:234;}i:19;a:7:{s:6:"header";s:45:"function PMicon($row,$a,$c,$nextCount,$exp)	{";s:11:"parentClass";s:26:"tx_damfrontend_catTreeView";s:4:"cDat";a:6:{s:4:"text";s:55:"
+
+Generate the plus/minus icon for the browsable tree.
+";s:5:"param";a:5:{i:0;a:2:{i:0;s:5:"array";i:1;s:20:"record for the entry";}i:1;a:2:{i:0;s:7:"integer";i:1;s:24:"The current entry number";}i:2;a:2:{i:0;s:7:"integer";i:1;s:76:"The total number of entries. If equal to $a, a "bottom" element is returned.";}i:3;a:2:{i:0;s:7:"integer";i:1;s:50:"The number of sub-elements to the current element.";}i:4;a:2:{i:0;s:7:"boolean";i:1;s:67:"The element was expanded to render subelements if this flag is set.";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:35:"Image tag with the plus/minus icon.";}s:6:"access";s:7:"private";s:5:"other";a:1:{i:0;s:29:"@see t3lib_pageTree::PMicon()";}s:11:"other_index";a:1:{s:4:"@see";a:1:{i:0;s:25:"t3lib_pageTree::PMicon() ";}}}s:7:"content";s:0:"";s:12:"content_size";i:416;s:13:"content_lines";i:15;s:6:"atLine";i:255;}i:21;a:7:{s:6:"header";s:34:"function getControl($title,$row) {";s:11:"parentClass";s:26:"tx_damfrontend_catTreeView";s:4:"cDat";a:3:{s:4:"text";s:54:"
+
+Renders the +-= buttons with corresponding commands
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"string";i:1;s:11:"$title: ...";}i:1;a:2:{i:0;s:11:"resultslist";i:1;s:9:"$row: ...";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:11:"HTML Output";}}s:7:"content";s:0:"";s:12:"content_size";i:322;s:13:"content_lines";i:8;s:6:"atLine";i:278;}i:23;a:6:{s:6:"header";s:33:"function printTree($treeArr='')	{";s:11:"parentClass";s:26:"tx_damfrontend_catTreeView";s:7:"content";s:0:"";s:12:"content_size";i:2029;s:13:"content_lines";i:54;s:6:"atLine";i:312;}i:25;a:7:{s:6:"header";s:44:"function getTitleStr($row, $titleLen = 30)	{";s:11:"parentClass";s:26:"tx_damfrontend_catTreeView";s:4:"cDat";a:3:{s:4:"text";s:269:"
+
+Returns the title for the input record. If blank, a "no title" label (localized) will be returned.
+Do NOT htmlspecialchar the string from this function - has already been done.
+
+This is an overload of the parent's method which uses BE objects not available in the FE
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:5:"array";i:1;s:65:"The input row array (where the key "title" is used for the title)";}i:1;a:2:{i:0;s:7:"integer";i:1;s:17:"Title length (30)";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:10:"The title.";}}s:7:"content";s:0:"";s:12:"content_size";i:363;s:13:"content_lines";i:8;s:6:"atLine";i:377;}i:27;a:7:{s:6:"header";s:29:"function getBrowsableTree() {";s:11:"parentClass";s:26:"tx_damfrontend_catTreeView";s:4:"cDat";a:3:{s:4:"text";s:35:"
+
+builds the tree for the treeview
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:5:"[arr]";i:1;s:25:"Array of the treeelements";}}s:7:"content";s:0:"";s:12:"content_size";i:1946;s:13:"content_lines";i:70;s:6:"atLine";i:391;}i:29;a:8:{s:6:"header";s:85:"function getTree($uid, $depth=999, $depthData='',$blankLineCode='',$subCSSclass='')	{";s:11:"parentClass";s:26:"tx_damfrontend_catTreeView";s:11:"sectionText";a:1:{i:0;s:18:"tree data buidling";}s:4:"cDat";a:3:{s:4:"text";s:32:"
+
+Fetches the data for the tree
+";s:5:"param";a:5:{i:0;a:2:{i:0;s:7:"integer";i:1;s:48:"item id for which to select subitems (parent id)";}i:1;a:2:{i:0;s:7:"integer";i:1;s:29:"Max depth (recursivity limit)";}i:2;a:2:{i:0;s:6:"string";i:1;s:37:"HTML-code prefix for recursive calls.";}i:3;a:2:{i:0;s:6:"string";i:1;s:12:"? (internal)";}i:4;a:2:{i:0;s:6:"string";i:1;s:38:"CSS class to use for <td> sub-elements";}}s:6:"return";a:2:{i:0;s:7:"integer";i:1;s:31:"The count of items on the level";}}s:7:"content";s:0:"";s:12:"content_size";i:2580;s:13:"content_lines";i:77;s:6:"atLine";i:472;}i:31;a:4:{s:6:"header";s:28:"function getRootIcon($rec) {";s:11:"parentClass";s:26:"tx_damfrontend_catTreeView";s:4:"cDat";a:3:{s:4:"text";s:70:"
+
+Returns the root icon for a tree/mountpoint (defaults to the globe)
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:5:"array";i:1;s:16:"Record for root.";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:15:"Icon image tag.";}}s:6:"atLine";i:556;}i:33;a:7:{s:6:"header";s:24:"function getIcon($row) {";s:11:"parentClass";s:26:"tx_damfrontend_catTreeView";s:4:"cDat";a:3:{s:4:"text";s:110:"
+
+Get icon for the row.
+If $this->iconPath and $this->iconName is set, try to get icon based on those values.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:5:"array";i:1;s:9:"Item row.";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:10:"Image tag.";}}s:7:"content";s:0:"";s:12:"content_size";i:404;s:13:"content_lines";i:12;s:6:"atLine";i:568;}}}s:14:"MD5_6ac1a8a809";a:4:{s:8:"filename";s:43:"frontend/class.tx_damfrontend_rendering.php";s:8:"filesize";i:54987;s:6:"header";a:5:{s:4:"text";s:115:"
+
+
+class.tx_damfrontend_rendering.php
+
+ Division between the frontend script pi1
+and the rendering of the content.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:3:{i:0;s:14:"@package typo3";i:1;s:27:"@subpackage tx_dam_frontend";i:2;s:57:"@author Stefan Busemann / Martin Baum <typo3@in2form.com>";}s:11:"other_index";a:3:{s:8:"@package";a:1:{i:0;s:6:"typo3 ";}s:11:"@subpackage";a:1:{i:0;s:16:"tx_dam_frontend ";}s:7:"@author";a:1:{i:0;s:49:"Stefan Busemann / Martin Baum <typo3@in2form.com>";}}}s:3:"DAT";a:30:{i:1;a:8:{s:6:"header";s:52:"class tx_damfrontend_rendering extends tslib_pibase{";s:5:"class";i:1;s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:1091:"
+
+[CLASS/FUNCTION INDEX of SCRIPT]
+
+
+
+  73: class tx_damfrontend_rendering extends tslib_pibase
+  90:     function init()
+ 102:     function setFileRef($filePath)
+ 117:     function renderFileList($list, $resultcount, $pointer, $listLength)
+ 186:     function renderBrowseResults($resultcount, $pointer, $listLength)
+ 212:     function renderSortLink($key)
+ 230:     function renderCatSelection($list)
+ 258:     function renderSingleView($record)
+ 284:     function renderError($errormsg = 'deflaut')
+ 317:     function recordToMarkerArray($record)
+ 341:     function renderFilterView($filterArray, $errorArray = '')
+ 383:     function renderFileTypeList($filetype)
+ 427:     function renderFilterError($errorCode)
+ 438:     function renderUploadForm()
+ 450:     function renderFilterList($filterList)
+ 471:     function renderFilterCreationForm()
+ 484:     function renderFilterCreationLink()
+ 496:     function getFileIconHref($mimeType, $mimeSubType)
+ 523:     function getIconBaseAddress()
+
+TOTAL FUNCTIONS: 18
+(This index is automatically created/updated by the extension "extdeveval")
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:499;s:13:"content_lines";i:13;s:6:"atLine";i:70;}i:3;a:7:{s:6:"header";s:17:"function init() {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:48:"
+
+inits this class (loading the locallang file)
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[void]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:575;s:13:"content_lines";i:15;s:6:"atLine";i:89;}i:5;a:7:{s:6:"header";s:32:"function setFileRef($filePath) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:37:"
+
+sets the paths for file references
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:8:"[string]";i:1;s:14:"$filePath: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:100;s:13:"content_lines";i:5;s:6:"atLine";i:111;}i:7;a:7:{s:6:"header";s:86:"function renderFileList($list, $resultcount, $pointer, $listLength, $useRequestForm) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:61:"
+
+function renderes a list of all files, which are availible
+";s:5:"param";a:5:{i:0;a:2:{i:0;s:5:"array";i:1;s:10:"$list: ...";}i:1;a:2:{i:0;s:8:"rowcount";i:1;s:17:"$resultcount: ...";}i:2;a:2:{i:0;s:6:"[type]";i:1;s:13:"$pointer: ...";}i:3;a:2:{i:0;s:6:"[type]";i:1;s:16:"$listLength: ...";}i:4;a:2:{i:0;s:9:"[boolean]";i:1;s:97:"$useRequestForm: if true, a request form will be rendered, where a FE User has to fill out a form";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:8612;s:13:"content_lines";i:155;s:6:"atLine";i:127;}i:9;a:7:{s:6:"header";s:67:"function renderBrowseResults($resultcount, $pointer, $listLength) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:100:"
+
+renders a listbrowser which divides the resultlist of the selected files in better viewable parts
+";s:5:"param";a:3:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:39:"$resultcount: number of items in a list";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:53:"$pointer: which page of the resultset should be shown";}i:2;a:2:{i:0;s:6:"[type]";i:1;s:58:"$listLength: how many elements of the list should be shown";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:2706;s:13:"content_lines";i:55;s:6:"atLine";i:291;}i:11;a:7:{s:6:"header";s:31:"function renderSortLink($key) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:24:"
+
+Renders the sortlinks
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:3:"int";i:1;s:9:"$key: ...";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:8:"Html	...";}}s:7:"content";s:0:"";s:12:"content_size";i:807;s:13:"content_lines";i:15;s:6:"atLine";i:353;}i:13;a:7:{s:6:"header";s:63:"function renderCatSelection($list, $treeID='', $catEditUID=0) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:63:"
+
+transforms the list of selected categories to an html output
+";s:5:"param";a:3:{i:0;a:2:{i:0;s:5:"array";i:1;s:48:"$list: list of selected elements - whole dataset";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:12:"$treeID: ...";}i:2;a:2:{i:0;s:6:"[type]";i:1;s:16:"$catEditUID: ...";}}s:6:"return";a:2:{i:0;s:4:"html";i:1;s:43:"rendered category selection content element";}}s:7:"content";s:0:"";s:12:"content_size";i:1458;s:13:"content_lines";i:34;s:6:"atLine";i:377;}i:15;a:7:{s:6:"header";s:36:"function renderSingleView($record) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:26:"
+
+Renders the single View
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:5:"array";i:1;s:75:"$record: data of the single record, that shall be rendered by this function";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:7:"content";s:0:"";s:12:"content_size";i:2376;s:13:"content_lines";i:31;s:6:"atLine";i:418;}i:17;a:7:{s:6:"header";s:84:"function renderError($errormsg = 'default', $customMessage="",$customMessage2="" ) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:27:"
+
+Renders an error message
+";s:5:"param";a:3:{i:0;a:2:{i:0;s:6:"string";i:1;s:14:"$errormsg: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:19:"$customMessage: ...";}i:2;a:2:{i:0;s:6:"[type]";i:1;s:20:"$customMessage2: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:1373;s:13:"content_lines";i:39;s:6:"atLine";i:458;}i:19;a:7:{s:6:"header";s:78:"function recordToMarkerArray($record, $scope = 'default', $table = 'tx_dam') {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:100:"
+
+converts an associative array to an Marker Array in the form ### $KEY ### => value
+
+should be used";s:5:"param";a:3:{i:0;a:2:{i:0;s:5:"array";i:1;s:38:"$record: array that shall be converted";}i:1;a:2:{i:0;s:6:"string";i:1;s:50:"$scope: defines which TypoScript sub-configuration";}i:2;a:2:{i:0;s:6:"[type]";i:1;s:11:"$table: ...";}}s:6:"return";a:2:{i:0;s:5:"array";i:1;s:34:"Markerarray ready for substitution";}}s:7:"content";s:0:"";s:12:"content_size";i:961;s:13:"content_lines";i:21;s:6:"atLine";i:508;}i:21;a:7:{s:6:"header";s:59:"function renderFilterView($filterArray, $errorArray = '') {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:27:"
+
+Renders the filter view:
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:7:"[array]";i:1;s:123:"$filterArray: contains the filters that are set, can also contain a list of fe-users for the selector box ($listOfCreators)";}i:1;a:2:{i:0;s:7:"[array]";i:1;s:16:"$errorArray: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:2836;s:13:"content_lines";i:51;s:6:"atLine";i:537;}i:23;a:7:{s:6:"header";s:40:"function renderFileTypeList($filetype) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:28:"
+
+Renders the filetype list
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:8:"[string]";i:1;s:14:"$filetype: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:1088;s:13:"content_lines";i:43;s:6:"atLine";i:595;}i:25;a:7:{s:6:"header";s:40:"function renderFilterError($errorCode) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:5:{s:4:"text";s:25:"
+
+Renders a Filter Error
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:15:"$errorCode: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:28:"@todo 	Function not finished";}s:11:"other_index";a:1:{s:5:"@todo";a:1:{i:0;s:21:"Function not finished";}}}s:7:"content";s:0:"";s:12:"content_size";i:8;s:13:"content_lines";i:4;s:6:"atLine";i:646;}i:27;a:7:{s:6:"header";s:29:"function renderUploadForm() {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:19:"
+
+renderUploadForm
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:5:"array";i:1;s:65:"userInput If an error happend and the form must be rendered again";}}s:6:"return";a:2:{i:0;s:8:"[string]";i:1;s:17:"the html code	...";}}s:7:"content";s:0:"";s:12:"content_size";i:981;s:13:"content_lines";i:16;s:6:"atLine";i:657;}i:29;a:7:{s:6:"header";s:40:"function renderFilterList($filterList) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:5:{s:4:"text";s:66:"
+
+renderFilterList: Allow a fe user to store a selection of files
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:16:"$filterList: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:42:"@todo renderFilterList is not finished yet";}s:11:"other_index";a:1:{s:5:"@todo";a:1:{i:0;s:36:"renderFilterList is not finished yet";}}}s:7:"content";s:0:"";s:12:"content_size";i:657;s:13:"content_lines";i:16;s:6:"atLine";i:681;}i:31;a:7:{s:6:"header";s:37:"function renderFilterCreationForm() {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:5:{s:4:"text";s:35:"
+
+Renders the Filter Creation form
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:28:"@todo complete this function";}s:11:"other_index";a:1:{s:5:"@todo";a:1:{i:0;s:22:"complete this function";}}}s:7:"content";s:0:"";s:12:"content_size";i:849;s:13:"content_lines";i:22;s:6:"atLine";i:704;}i:33;a:7:{s:6:"header";s:37:"function renderFilterCreationLink() {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:42:"
+
+Renders a filter creation creation link
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:486;s:13:"content_lines";i:11;s:6:"atLine";i:732;}i:35;a:7:{s:6:"header";s:51:"function getFileIconHref($mimeType, $mimeSubType) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:74:"
+
+Returns the reference to the image file associated to given mime types.
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:8:"[string]";i:1;s:21:"$mimeType: mime type.";}i:1;a:2:{i:0;s:8:"[string]";i:1;s:28:"$mimeSubType: mime sub type.";}}s:6:"return";a:2:{i:0;s:8:"[string]";i:1;s:48:"href attribute value, pointing to an image file.";}}s:7:"content";s:0:"";s:12:"content_size";i:504;s:13:"content_lines";i:21;s:6:"atLine";i:751;}i:37;a:7:{s:6:"header";s:31:"function getIconBaseAddress() {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:28:"
+
+Returns the path to Icons
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:168;s:13:"content_lines";i:8;s:6:"atLine";i:778;}i:39;a:7:{s:6:"header";s:89:"function renderCategorisationForm($docData,$selectedCats='',$uploadCats,$versioning='') {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:5:{s:4:"text";s:3258:"
+
+//  	 *
+//  	 * rendert das Formular zur Eingabe der Anforderung f�r eine SI
+//  	 *
+//  	 *
+//  	 */
+//	function renderRequest($formData, $docArray, $errorArray=''){
+//		$docArray = array_merge($formData, $docArray);
+//		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###ANFORDERUNG###');
+//		$markerArray  = $this->recordToMarkerArray($docArray);
+//		$markerArray['###FORM_TARGET###'] = $this->pi_getPageLink($this->cObj->data['pid'],null, array('sendRequestform' => 1));
+//
+//		// Es traten fehler bei den Formulareingaben auf
+//		foreach ($formData as $name => $data) {
+//			$markerArray['###ERROR_'.strtoupper($name).'###'] = '';
+//		}
+//		if (is_array($errorArray)) {
+//			if ($errorArray['error_email']) {
+//				$markerArray['###ERROR_EMAIL###'] = 'Die Email Adresse wurde nich korrekt angegeben';
+//			}
+//			if ($errorArray['error_plz']) {
+//				$markerArray['###ERROR_PLZ###'] = 'Die Postleitzahl fehlt noch';
+//			}
+//			if ($errorArray['error_ort']) {
+//				$markerArray['###ERROR_ORT###'] = 'Der Ort fehlt noch';
+//			}
+//			if ($errorArray['error_vorname']) {
+//				$markerArray['###ERROR_VORNAME###'] = 'Der Vorname fehlt noch';
+//			}
+//			if ($errorArray['error_nachname']) {
+//				$markerArray['###ERROR_NACHNAME###'] = 'Der Nachname fehlt noch';
+//			}
+//			if ($errorArray['error_anschrift']) {
+//				$markerArray['###ERROR_ANSCHRIFT###'] = 'Die Anschrift fehlt noch';
+//			}
+//		}
+//
+//		// F�ge die bisher eingegebenen Daten ein
+//		foreach($formData as $name => $data) {
+//
+//			$markerArray['###'.strtoupper($name).'###'] = $data;
+//		}
+//		$markerArray['###BACK_URL###'] = $this->pi_GetPageLink($this->cObj->data['pid']);
+//
+//		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
+//		return $formCode;
+//	}
+//
+//	/*
+//	 *
+//	 */
+//	function renderMailMessage($formData, $docData)
+//	{
+//		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###MAIL_ANFORDER###');
+//		$wholeData = array_merge($formData, $docData);
+//		$markerArray = $this->recordToMarkerArray($wholeData);
+//		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
+//		return $formCode;
+//	}
+//
+//	/*
+//	 *
+//	 */
+//	function renderRequestUser($docArray) {
+//		$formCode = tslib_CObj::getSubpart($this->fileContent, '###ANFORDERUNG_USER###');
+//		$markerArray = $this->recordToMarkerArray($docArray);
+//		$markerArray['###FORM_URL###'] = $this->pi_getPageLink($this->cObj->data['pid'],null, array('sendRequestform' => 1, 'docID' => $docArray['uid']));
+//		$markerArray['###BACK_URL###'] = $this->pi_GetPageLink($this->cObj->data['pid']);
+//		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
+//		return $formCode;
+//	}
+//
+//	/*
+//	 */
+//	function renderAnforderMailUser($userData, $docData) {
+//
+//		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###MAIL_ANFORDER_USER###');
+//		$wholeData = array_merge($userData, $docData);
+//		$markerArray = $this->recordToMarkerArray($wholeData);
+//		if (t3lib_extMgm::isLoaded('sr_feuser_register')) {
+//			$markerArray['###NAME###'] = $wholeData['first_name'] + $wholeData['last_name'];
+//		}
+//		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
+//		return $formCode;
+//	}
+
+	/*
+Renders the categorisation form
+
+";s:5:"param";a:4:{i:0;a:2:{i:0;s:7:"[array]";i:1;s:68:"$docdata: 		meta data of the doc, that should be imported to the dam";}i:1;a:2:{i:0;s:7:"[array]";i:1;s:68:"$docdata: 		meta data of the doc, that should be imported to the dam";}i:2;a:2:{i:0;s:7:"[array]";i:1;s:35:"$selectedCats: 	selected categories";}i:3;a:2:{i:0;s:6:"[type]";i:1;s:16:"$versioning: ...";}}s:6:"return";a:2:{i:0;s:8:"[string]";i:1;s:26:"$return:		html of the form";}s:5:"other";a:1:{i:0;s:20:"@author  martin baum";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:11:"martin baum";}}}s:7:"content";s:0:"";s:12:"content_size";i:3596;s:13:"content_lines";i:75;s:6:"atLine";i:883;}i:41;a:7:{s:6:"header";s:32:"function renderUploadSuccess() {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:5:{s:4:"text";s:21:"
+
+renderUploadSuccess";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:8:"[string]";i:1;s:26:"$return:		html of the form";}s:5:"other";a:1:{i:0;s:14:"@author stefan";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:7:"stefan ";}}}s:7:"content";s:0:"";s:12:"content_size";i:576;s:13:"content_lines";i:10;s:6:"atLine";i:965;}i:43;a:7:{s:6:"header";s:38:"function renderFileDeletion($record) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:5:{s:4:"text";s:43:"
+
+message to confirm the deletion of a file";s:5:"param";a:1:{i:0;a:2:{i:0;s:5:"array";i:1;s:55:"$record Array of the dam record which should be deletec";}}s:6:"return";a:2:{i:0;s:8:"[string]";i:1;s:26:"$return:		html of the form";}s:5:"other";a:1:{i:0;s:14:"@author stefan";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:7:"stefan ";}}}s:7:"content";s:0:"";s:12:"content_size";i:2627;s:13:"content_lines";i:30;s:6:"atLine";i:983;}i:45;a:7:{s:6:"header";s:38:"function renderFileDeletionSuccess() {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:5:{s:4:"text";s:40:"
+
+Message if the deletion was successful";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:8:"[string]";i:1;s:26:"$return:		html of the form";}s:5:"other";a:1:{i:0;s:14:"@author stefan";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:7:"stefan ";}}}s:7:"content";s:0:"";s:12:"content_size";i:804;s:13:"content_lines";i:11;s:6:"atLine";i:1020;}i:47;a:7:{s:6:"header";s:44:"function substituteLangMarkers($templCode) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:3:{s:4:"text";s:63:"
+
+finds markers (###LLL:[markername]###) in given template Code";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"string";i:1;s:73:"$templCode		the template code in which the markers should be searched for";}}s:6:"return";a:2:{i:0;s:5:"array";i:1;s:48:"the found language markers with translation text";}}s:7:"content";s:0:"";s:12:"content_size";i:699;s:13:"content_lines";i:20;s:6:"atLine";i:1038;}i:49;a:7:{s:6:"header";s:56:"function renderLanguageSelector ($currentLanguage ='') {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:5:{s:4:"text";s:129:"
+
+
+Renders a Language Selector (optional filtered via TYPOSCRIPT)
+TS Example: plugin.tx_damfrontend_pi1.allowedLanguages = EN,DE
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:21:"$currentLanguage: ...";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:23:"HTML of the Selektorbox";}s:5:"other";a:1:{i:0;s:14:"@author stefan";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:7:"stefan ";}}}s:7:"content";s:0:"";s:12:"content_size";i:665;s:13:"content_lines";i:18;s:6:"atLine";i:1067;}i:51;a:7:{s:6:"header";s:46:"function renderOwnerSelector ($listOfOwners) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:5:{s:4:"text";s:2:"
+
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:5:"array";i:1;s:103:"$listOfCreators holds a List of creators (sorted alphabetically, in column 2 there is a value selected)";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:24:"html of the selector box";}s:5:"other";a:1:{i:0;s:14:"@author stefan";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:7:"stefan ";}}}s:7:"content";s:0:"";s:12:"content_size";i:758;s:13:"content_lines";i:31;s:6:"atLine";i:1091;}i:53;a:6:{s:6:"header";s:33:"function renderVersioningForm() {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:7:"content";s:0:"";s:12:"content_size";i:545;s:13:"content_lines";i:13;s:6:"atLine";i:1128;}i:55;a:7:{s:6:"header";s:33:"function renderFileEdit($record){";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:5:{s:4:"text";s:71:"
+
+Renders the edition form. A fe_user can edit the metadata of a file
+
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:5:"array";i:1;s:31:"$record array of the dam record";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:21:"html of the edit form";}s:5:"other";a:2:{i:0;s:14:"@author stefan";i:1;s:10:"@version 1";}s:11:"other_index";a:2:{s:7:"@author";a:1:{i:0;s:7:"stefan ";}s:8:"@version";a:1:{i:0;s:2:"1 ";}}}s:7:"content";s:0:"";s:12:"content_size";i:1661;s:13:"content_lines";i:26;s:6:"atLine";i:1150;}i:57;a:4:{s:6:"header";s:85:"function renderCategoryTreeCategory($sel_class,$dataArray,$title,$control,$subpart) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:5:{s:4:"text";s:31:"
+
+renderCategoryTreeCategory
+
+
+";s:5:"param";a:5:{i:0;a:2:{i:0;s:6:"string";i:1;s:81:"$sel_class 	(tree_selectedCats / tree_unselectedCats / ﻿tree_selectedNoCats ..)";}i:1;a:2:{i:0;s:5:"array";i:1;s:32:"$dataArray	controls for the tree";}i:2;a:2:{i:0;s:6:"string";i:1;s:47:"$title		title of the category wrapped in a link";}i:3;a:2:{i:0;s:6:"string";i:1;s:18:"$control	+-= signs";}i:4;a:2:{i:0;s:7:"boolean";i:1;s:61:"$alternateSubpart if true the alternative subpart is rendered";}}s:6:"return";a:2:{i:0;s:8:"[string]";i:1;s:20:"html of the category";}s:5:"other";a:1:{i:0;s:14:"@author	stefan";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:7:"stefan ";}}}s:6:"atLine";i:1188;}i:59;a:7:{s:6:"header";s:54:"function renderCategoryTree($markerArray, $treeID=0) {";s:11:"parentClass";s:24:"tx_damfrontend_rendering";s:4:"cDat";a:5:{s:4:"text";s:29:"
+
+renderCategoryTreeCategory
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:17:"$markerArray: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:12:"$treeID: ...";}}s:6:"return";a:2:{i:0;s:8:"[string]";i:1;s:20:"html of the category";}s:5:"other";a:1:{i:0;s:14:"@author	stefan";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:7:"stefan ";}}}s:7:"content";s:0:"";s:12:"content_size";i:2340;s:13:"content_lines";i:42;s:6:"atLine";i:1214;}}}s:14:"MD5_765a6a221e";a:4:{s:8:"filename";s:32:"pi1/class.tx_damfrontend_pi1.php";s:8:"filesize";i:60917;s:6:"header";a:5:{s:4:"text";s:143:"
+
+
+class.tx_damfrontend_pi1.php
+
+Plugin 'DAM Frontend' for the 'dam_frontend' extension.
+
+
+Some scripts that use this class:	--
+Depends on:		--";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:4:{i:0;s:14:"@package typo3";i:1;s:27:"@subpackage tx_dam_frontend";i:2;s:70:"@author Martin Baum, Stefan Busemann, Martin Holtz <typo3@in2form.com>";i:3;s:27:"@todo add stdWrap functions";}s:11:"other_index";a:4:{s:8:"@package";a:1:{i:0;s:6:"typo3 ";}s:11:"@subpackage";a:1:{i:0;s:16:"tx_dam_frontend ";}s:7:"@author";a:1:{i:0;s:62:"Martin Baum, Stefan Busemann, Martin Holtz <typo3@in2form.com>";}s:5:"@todo";a:1:{i:0;s:21:"add stdWrap functions";}}}s:3:"DAT";a:38:{i:1;a:8:{s:6:"header";s:47:"class tx_damfrontend_pi1 extends tslib_pibase {";s:5:"class";i:1;s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:3:{s:4:"text";s:1567:"
+
+[CLASS/FUNCTION INDEX of SCRIPT]
+
+
+
+ 101: class tx_damfrontend_pi1 extends tslib_pibase
+ 136:     function init()
+ 164:     function initFilter()
+ 230:     function initList()
+ 273:     function initUpload()
+ 282:     function convertPiVars()
+ 354:     function loadFlexForm()
+ 380:     function main($content,$conf)
+ 493:     function getInputTree()
+ 545:     function catTree()
+ 566:     function fileList($useRequestForm)
+ 681:     function filterView()
+ 697:     function catSelection()
+ 726:     function singleView()
+ 754:     function filterList()
+
+             SECTION: FILE UPLOAD AND CATEGORISATION
+ 793:     function uploadForm()
+ 885:     function dropDown()
+ 920:     function isSubNodeOf($arr,$node,$subnode)
+ 943:     function getSubNodesCount($arr,$parent)
+ 959:     function getSubNodes($arr,$parent)
+ 980:     function getSubNodesOptions($arr,$parent,$selVal=-1)
+ 998:     function versioningForm()
+1012:     function handleUpload()
+1078:     function loadFileUploadTS()
+1094:     function getIncomingDocData()
+1127:     function categoriseForm($docData='')
+1166:     function saveCategories($docID)
+1181:     function get_FEUserList ($fe_group=0,$currentUser ='')
+1221:     function myFiles ()
+1314:     function handleVersioning($code)
+1336:     function editForm ($uid=0)
+1367:     function overRide2()
+1383:     function overRide()
+1412:     function getTreeMap()
+1473:     function getTree($mount= '')
+1487:     function saveMetaData ($saveUID)
+
+TOTAL FUNCTIONS: 35
+(This index is automatically created/updated by the extension "extdeveval")
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:1462;s:13:"content_lines";i:29;s:6:"atLine";i:100;}i:3;a:7:{s:6:"header";s:17:"function init() {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:3:{s:4:"text";s:59:"
+
+Inits this class and instanceates all nescessary classes
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[void]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:1040;s:13:"content_lines";i:22;s:6:"atLine";i:135;}i:5;a:7:{s:6:"header";s:23:"function initFilter() {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:3:{s:4:"text";s:67:"
+
+Receiving filter information from the pluging view "filter_list"
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[void]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:2440;s:13:"content_lines";i:62;s:6:"atLine";i:163;}i:7;a:7:{s:6:"header";s:21:"function initList() {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:3:{s:4:"text";s:42:"
+
+this function is preparing the listview
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[void]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:2457;s:13:"content_lines";i:69;s:6:"atLine";i:231;}i:9;a:7:{s:6:"header";s:23:"function initUpload() {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:5:{s:4:"text";s:55:"
+
+this function is providing the fileupload to the ter
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[void]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:31:"@todo finish this functionality";}s:11:"other_index";a:1:{s:5:"@todo";a:1:{i:0;s:25:"finish this functionality";}}}s:7:"content";s:0:"";s:12:"content_size";i:46;s:13:"content_lines";i:3;s:6:"atLine";i:307;}i:11;a:7:{s:6:"header";s:26:"function convertPiVars() {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:3:{s:4:"text";s:83:"
+
+reads the incoming piVars from the request and copies them to the internal array
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:7:"content";s:0:"";s:12:"content_size";i:3160;s:13:"content_lines";i:85;s:6:"atLine";i:316;}i:13;a:7:{s:6:"header";s:25:"function loadFlexForm() {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:3:{s:4:"text";s:59:"
+
+loads the data from the flexform into the internal array
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:7:"content";s:0:"";s:12:"content_size";i:1312;s:13:"content_lines";i:20;s:6:"atLine";i:407;}i:15;a:7:{s:6:"header";s:31:"function main($content,$conf)	{";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:3:{s:4:"text";s:32:"
+
+The main method of the PlugIn
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"string";i:1;s:28:"$content: The PlugIn content";}i:1;a:2:{i:0;s:5:"array";i:1;s:31:"$conf: The PlugIn configuration";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:49:"The html content that is displayed on the website";}}s:7:"content";s:0:"";s:12:"content_size";i:1589;s:13:"content_lines";i:68;s:6:"atLine";i:435;}i:17;a:7:{s:6:"header";s:25:"function getInputTree() {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:3:{s:4:"text";s:78:"
+
+handles the incoming data from the treeview (plus, minus, equals) operation
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:2276;s:13:"content_lines";i:75;s:6:"atLine";i:509;}i:19;a:7:{s:6:"header";s:20:"function catTree() {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:3:{s:4:"text";s:28:"
+
+renderes an category tree
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:4:"html";i:1;s:33:"category tree - ready for display";}}s:7:"content";s:0:"";s:12:"content_size";i:1653;s:13:"content_lines";i:47;s:6:"atLine";i:590;}i:21;a:7:{s:6:"header";s:39:"function fileListBasicFuncionality () {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:5:{s:4:"text";s:2:"
+
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:14:"@author stefan";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:7:"stefan ";}}}s:7:"content";s:0:"";s:12:"content_size";i:5001;s:13:"content_lines";i:115;s:6:"atLine";i:642;}i:23;a:7:{s:6:"header";s:36:"function fileList($useRequestForm) {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:3:{s:4:"text";s:295:"
+
+fist this function gets the list of selected categories from the session vars
+after that it retrievs a list of all documents from the doclogic
+all documents are contained, which nat filtered and the user has
+After that, the list is converted to an html view, rendered by the renderer instance
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:20:"$useRequestForm: ...";}}s:6:"return";a:2:{i:0;s:4:"html";i:1;s:37:"HTML - list of all selected documents";}}s:7:"content";s:0:"";s:12:"content_size";i:2043;s:13:"content_lines";i:65;s:6:"atLine";i:767;}i:25;a:7:{s:6:"header";s:23:"function filterView() {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:3:{s:4:"text";s:25:"
+
+Renders the search box
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:8:"[string]";i:1;s:28:"$content html auf filterview";}}s:7:"content";s:0:"";s:12:"content_size";i:290;s:13:"content_lines";i:8;s:6:"atLine";i:838;}i:27;a:7:{s:6:"header";s:25:"function catSelection() {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:3:{s:4:"text";s:207:"
+
+retrieves all selected catID's from the session and creates a list of category - records
+by this list. After that, this list is given to the frontend - renderer to render a list of all
+selected categories
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:4:"html";i:1;s:56:"rendered list, ready for display, of selected categories";}}s:7:"content";s:0:"";s:12:"content_size";i:523;s:13:"content_lines";i:23;s:6:"atLine";i:854;}i:29;a:7:{s:6:"header";s:23:"function singleView() {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:3:{s:4:"text";s:93:"
+
+controller function dor the rendering of the single view
+the internal singleID must be set
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:4:"html";i:1;s:16:"rendered content";}}s:7:"content";s:0:"";s:12:"content_size";i:622;s:13:"content_lines";i:23;s:6:"atLine";i:884;}i:31;a:7:{s:6:"header";s:23:"function filterList() {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:3:{s:4:"text";s:77:"
+
+function is responsible for rendering of a list with all availible filters
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:34:"html list of all availible filters";}}s:7:"content";s:0:"";s:12:"content_size";i:762;s:13:"content_lines";i:33;s:6:"atLine";i:913;}i:33;a:8:{s:6:"header";s:23:"function uploadForm() {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:11:"sectionText";a:1:{i:0;s:30:"FILE UPLOAD AND CATEGORISATION";}s:4:"cDat";a:3:{s:4:"text";s:24:"
+
+Shows the upload form
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:8:"[string]";i:1;s:34:"$content the html code of the form";}}s:7:"content";s:0:"";s:12:"content_size";i:3928;s:13:"content_lines";i:133;s:6:"atLine";i:952;}i:35;a:7:{s:6:"header";s:21:"function dropDown() {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:5:{s:4:"text";s:55:"
+
+undocumented function
+// TODO: write documentation
+*/";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}s:5:"other";a:1:{i:0;s:19:"@author Martin Baum";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:11:"Martin Baum";}}}s:7:"content";s:0:"";s:12:"content_size";i:1225;s:13:"content_lines";i:23;s:6:"atLine";i:1094;}i:37;a:7:{s:6:"header";s:43:"function isSubNodeOf($arr,$node,$subnode) {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:5:{s:4:"text";s:27:"
+
+undocumented function
+
+*/";s:5:"param";a:3:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:9:"$arr: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:10:"$node: ...";}i:2;a:2:{i:0;s:6:"[type]";i:1;s:13:"$subnode: ...";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}s:5:"other";a:1:{i:0;s:19:"@author Martin Baum";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:11:"Martin Baum";}}}s:7:"content";s:0:"";s:12:"content_size";i:234;s:13:"content_lines";i:12;s:6:"atLine";i:1129;}i:39;a:7:{s:6:"header";s:41:"function getSubNodesCount($arr,$parent) {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:5:{s:4:"text";s:27:"
+
+undocumented function
+
+*/";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:9:"$arr: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:12:"$parent: ...";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}s:5:"other";a:1:{i:0;s:19:"@author Martin Baum";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:11:"Martin Baum";}}}s:7:"content";s:0:"";s:12:"content_size";i:57;s:13:"content_lines";i:5;s:6:"atLine";i:1152;}i:41;a:7:{s:6:"header";s:36:"function getSubNodes($arr,$parent) {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:5:{s:4:"text";s:27:"
+
+undocumented function
+
+*/";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:9:"$arr: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:12:"$parent: ...";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}s:5:"other";a:1:{i:0;s:19:"@author Martin Baum";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:11:"Martin Baum";}}}s:7:"content";s:0:"";s:12:"content_size";i:127;s:13:"content_lines";i:9;s:6:"atLine";i:1168;}i:43;a:7:{s:6:"header";s:54:"function getSubNodesOptions($arr,$parent,$selVal=-1) {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:5:{s:4:"text";s:27:"
+
+undocumented function
+
+*/";s:5:"param";a:3:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:9:"$arr: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:12:"$parent: ...";}i:2;a:2:{i:0;s:6:"[type]";i:1;s:12:"$selVal: ...";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}s:5:"other";a:1:{i:0;s:19:"@author Martin Baum";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:11:"Martin Baum";}}}s:7:"content";s:0:"";s:12:"content_size";i:307;s:13:"content_lines";i:12;s:6:"atLine";i:1189;}i:45;a:7:{s:6:"header";s:27:"function versioningForm() {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:3:{s:4:"text";s:45:"
+
+
+renders a form for versioning of a file
+
+
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:59;s:13:"content_lines";i:7;s:6:"atLine";i:1207;}i:47;a:7:{s:6:"header";s:25:"function handleUpload() {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:3:{s:4:"text";s:102:"
+
+******************
+calls the handle Upload Extension and outputs the error messages to the frontend
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:3:"int";i:1;s:93:"the ID of uploaded file in the dam table, if there is an error, the error message is returned";}}s:7:"content";s:0:"";s:12:"content_size";i:6502;s:13:"content_lines";i:169;s:6:"atLine";i:1221;}i:49;a:7:{s:6:"header";s:29:"function loadFileUploadTS() {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:3:{s:4:"text";s:56:"
+
+[load the default typoscript of the upload extension]
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:375;s:13:"content_lines";i:10;s:6:"atLine";i:1396;}i:51;a:7:{s:6:"header";s:31:"function getIncomingDocData() {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:3:{s:4:"text";s:52:"
+
+get the data of the upload form and validate them
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:8:"[string]";i:1;s:41:"errormessage / TRUE if there was no error";}}s:7:"content";s:0:"";s:12:"content_size";i:1284;s:13:"content_lines";i:31;s:6:"atLine";i:1412;}i:53;a:7:{s:6:"header";s:38:"function categoriseForm($docData='') {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:3:{s:4:"text";s:26:"
+
+	Show the categoriseform";s:5:"param";a:1:{i:0;a:2:{i:0;s:5:"array";i:1;s:56:"$docData if set: an existing document is categorized new";}}s:6:"return";a:2:{i:0;s:6:"[html]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:1835;s:13:"content_lines";i:52;s:6:"atLine";i:1450;}i:55;a:7:{s:6:"header";s:46:"function saveCategories($docID,$upload=true) {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:5:{s:4:"text";s:41:"
+
+Save the categories of a uploaded file
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:3:"int";i:1;s:62:"$docID id of the dam record that should be categorized / saved";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:12:"$upload: ...";}}s:6:"return";a:2:{i:0;s:9:"[boolean]";i:1;s:28:"true if saving was sucessful";}s:5:"other";a:1:{i:0;s:2:"@p";}s:11:"other_index";a:1:{s:2:"@p";a:1:{i:0;s:1:" ";}}}s:7:"content";s:0:"";s:12:"content_size";i:878;s:13:"content_lines";i:27;s:6:"atLine";i:1511;}i:57;a:7:{s:6:"header";s:56:"function get_FEUserList ($fe_group=0,$currentUser ='') {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:5:{s:4:"text";s:90:"
+
+ returns an array of users, if current user is given the user is selected in this array
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:3:"int";i:1;s:29:"$fe_group uid of the fe_group";}i:1;a:2:{i:0;s:6:"string";i:1;s:41:"$currentUser Username or name of the user";}}s:6:"return";a:2:{i:0;s:5:"array";i:1;s:36:"all fe_users which shoud be selected";}s:5:"other";a:1:{i:0;s:14:"@author stefan";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:7:"stefan ";}}}s:7:"content";s:0:"";s:12:"content_size";i:1180;s:13:"content_lines";i:35;s:6:"atLine";i:1547;}i:59;a:7:{s:6:"header";s:21:"function myFiles () {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:5:{s:4:"text";s:26:"
+
+	Renders the myFile view";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:4:"html";i:1;s:46:"the list of files of a user or an error string";}s:5:"other";a:1:{i:0;s:14:"@author stefan";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:7:"stefan ";}}}s:7:"content";s:0:"";s:12:"content_size";i:1267;s:13:"content_lines";i:38;s:6:"atLine";i:1589;}i:61;a:6:{s:6:"header";s:34:"function handleVersioning($code) {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:7:"content";s:0:"";s:12:"content_size";i:582;s:13:"content_lines";i:16;s:6:"atLine";i:1634;}i:63;a:7:{s:6:"header";s:28:"function editForm ($uid=0) {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:5:{s:4:"text";s:2:"
+
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:3:"int";i:1;s:49:"$uid UID of the DAM record which should be edited";}i:1;a:2:{i:0;s:7:"boolean";i:1;s:53:"$checkAccess if true, access is check with categories";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:24:"html of the editing form";}s:5:"other";a:1:{i:0;s:14:"@author stefan";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:7:"stefan ";}}}s:7:"content";s:0:"";s:12:"content_size";i:937;s:13:"content_lines";i:29;s:6:"atLine";i:1657;}i:65;a:7:{s:6:"header";s:22:"function overRide2() {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:5:{s:4:"text";s:27:"
+
+undocumented function
+
+*/";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}s:5:"other";a:1:{i:0;s:19:"@author Martin Baum";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:11:"Martin Baum";}}}s:7:"content";s:0:"";s:12:"content_size";i:140;s:13:"content_lines";i:7;s:6:"atLine";i:1695;}i:67;a:7:{s:6:"header";s:21:"function overRide() {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:5:{s:4:"text";s:27:"
+
+undocumented function
+
+*/";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}s:5:"other";a:1:{i:0;s:19:"@author Martin Baum";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:11:"Martin Baum";}}}s:7:"content";s:0:"";s:12:"content_size";i:513;s:13:"content_lines";i:20;s:6:"atLine";i:1711;}i:69;a:7:{s:6:"header";s:23:"function getTreeMap() {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:5:{s:4:"text";s:27:"
+
+undocumented function
+
+*/";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}s:5:"other";a:1:{i:0;s:19:"@author Martin Baum";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:11:"Martin Baum";}}}s:7:"content";s:0:"";s:12:"content_size";i:1642;s:13:"content_lines";i:52;s:6:"atLine";i:1740;}i:71;a:7:{s:6:"header";s:30:"function getTree($mount= '') {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:5:{s:4:"text";s:27:"
+
+undocumented function
+
+*/";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:11:"$mount: ...";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}s:5:"other";a:1:{i:0;s:19:"@author Martin Baum";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:11:"Martin Baum";}}}s:7:"content";s:0:"";s:12:"content_size";i:197;s:13:"content_lines";i:7;s:6:"atLine";i:1802;}i:73;a:3:{s:6:"header";s:22:"function testCase () {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:6:"atLine";i:1815;}i:75;a:7:{s:6:"header";s:34:"function saveMetaData ($saveUID) {";s:11:"parentClass";s:18:"tx_damfrontend_pi1";s:4:"cDat";a:5:{s:4:"text";s:2:"
+
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:13:"$saveUID: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:14:"@author stefan";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:7:"stefan ";}}}s:7:"content";s:0:"";s:12:"content_size";i:841;s:13:"content_lines";i:31;s:6:"atLine";i:1825;}}}s:14:"MD5_730c3e71c0";a:4:{s:8:"filename";s:32:"pi2/class.tx_damfrontend_pi2.php";s:8:"filesize";i:12161;s:6:"header";a:5:{s:4:"text";s:140:"
+
+Plugin 'DAM Frontend Filelist' for the 'dam_frontend' extension.
+based on dam_downloadlist by Davide Principi <d.principi@provincia.ps.it
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:3:{i:0;s:42:"@author	Stefan Busemann <typo3in2form.com>";i:1;s:14:"@package	TYPO3";i:2;s:26:"@subpackage	tx_damfrontend";}s:11:"other_index";a:3:{s:7:"@author";a:1:{i:0;s:34:"Stefan Busemann <typo3in2form.com>";}s:8:"@package";a:1:{i:0;s:6:"TYPO3 ";}s:11:"@subpackage";a:1:{i:0;s:15:"tx_damfrontend ";}}}s:3:"DAT";a:12:{i:1;a:8:{s:6:"header";s:47:"class tx_damfrontend_pi2 extends tslib_pibase {";s:5:"class";i:1;s:11:"parentClass";s:18:"tx_damfrontend_pi2";s:4:"cDat";a:5:{s:4:"text";s:140:"
+
+Plugin 'DAM Frontend Filelist' for the 'dam_frontend' extension.
+based on dam_downloadlist by Davide Principi <d.principi@provincia.ps.it
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:3:{i:0;s:42:"@author	Stefan Busemann <typo3in2form.com>";i:1;s:14:"@package	TYPO3";i:2;s:26:"@subpackage	tx_damfrontend";}s:11:"other_index";a:3:{s:7:"@author";a:1:{i:0;s:34:"Stefan Busemann <typo3in2form.com>";}s:8:"@package";a:1:{i:0;s:6:"TYPO3 ";}s:11:"@subpackage";a:1:{i:0;s:15:"tx_damfrontend ";}}}s:7:"content";s:0:"";s:12:"content_size";i:540;s:13:"content_lines";i:18;s:6:"atLine";i:36;}i:3;a:7:{s:6:"header";s:32:"function main($content, $conf) {";s:11:"parentClass";s:18:"tx_damfrontend_pi2";s:4:"cDat";a:3:{s:4:"text";s:21:"
+
+Plugin Entry-Point
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:13:"$content: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:10:"$conf: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:1552;s:13:"content_lines";i:42;s:6:"atLine";i:62;}i:5;a:7:{s:6:"header";s:26:"function renderContent() {";s:11:"parentClass";s:18:"tx_damfrontend_pi2";s:4:"cDat";a:3:{s:4:"text";s:21:"
+
+Generate HTML code
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:8:"[string]";i:1;s:12:"html content";}}s:7:"content";s:0:"";s:12:"content_size";i:368;s:13:"content_lines";i:16;s:6:"atLine";i:110;}i:7;a:7:{s:6:"header";s:44:"function renderGroup($groupKey, &$records) {";s:11:"parentClass";s:18:"tx_damfrontend_pi2";s:4:"cDat";a:3:{s:4:"text";s:43:"
+
+Generates HTML code for a Group of Files
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:29:"$groupKey: 	Grouping criteria";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:45:"$records: 	records for this grouping criteria";}}s:6:"return";a:2:{i:0;s:8:"[string]";i:1;s:12:"html content";}}s:7:"content";s:0:"";s:12:"content_size";i:1216;s:13:"content_lines";i:39;s:6:"atLine";i:134;}i:9;a:7:{s:6:"header";s:29:"function selectDamRecords() {";s:11:"parentClass";s:18:"tx_damfrontend_pi2";s:4:"cDat";a:3:{s:4:"text";s:20:"
+
+Fetch dam records
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:1327;s:13:"content_lines";i:42;s:6:"atLine";i:179;}i:11;a:7:{s:6:"header";s:25:"function groupEnabled() {";s:11:"parentClass";s:18:"tx_damfrontend_pi2";s:4:"cDat";a:3:{s:4:"text";s:25:"
+
+[Describe function...]
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:49;s:13:"content_lines";i:3;s:6:"atLine";i:227;}i:13;a:7:{s:6:"header";s:31:"function getGroupKey($record) {";s:11:"parentClass";s:18:"tx_damfrontend_pi2";s:4:"cDat";a:3:{s:4:"text";s:25:"
+
+[Describe function...]
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:12:"$record: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:141;s:13:"content_lines";i:7;s:6:"atLine";i:237;}i:15;a:7:{s:6:"header";s:36:"function processRecord($damRecord) {";s:11:"parentClass";s:18:"tx_damfrontend_pi2";s:4:"cDat";a:3:{s:4:"text";s:40:"
+
+Building the Details for a DAM record
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:7:"[array]";i:1;s:31:"$damRecord: DAM database record";}}s:6:"return";a:2:{i:0;s:7:"[array]";i:1;s:40:"an array containing processed DAM fields";}}s:7:"content";s:0:"";s:12:"content_size";i:1629;s:13:"content_lines";i:49;s:6:"atLine";i:251;}i:17;a:7:{s:6:"header";s:31:"function getIconBaseAddress() {";s:11:"parentClass";s:18:"tx_damfrontend_pi2";s:4:"cDat";a:3:{s:4:"text";s:25:"
+
+[Describe function...]
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";s:0:"";s:12:"content_size";i:150;s:13:"content_lines";i:7;s:6:"atLine";i:306;}i:19;a:7:{s:6:"header";s:51:"function getFileIconHref($mimeType, $mimeSubType) {";s:11:"parentClass";s:18:"tx_damfrontend_pi2";s:4:"cDat";a:3:{s:4:"text";s:74:"
+
+Returns the reference to the image file associated to given mime types.
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:8:"[string]";i:1;s:21:"$mimeType: mime type.";}i:1;a:2:{i:0;s:8:"[string]";i:1;s:28:"$mimeSubType: mime sub type.";}}s:6:"return";a:2:{i:0;s:8:"[string]";i:1;s:48:"href attribute value, pointing to an image file.";}}s:7:"content";s:0:"";s:12:"content_size";i:478;s:13:"content_lines";i:24;s:6:"atLine";i:321;}i:21;a:4:{s:6:"header";s:20:"function log($msg) {";s:11:"parentClass";s:18:"tx_damfrontend_pi2";s:4:"cDat";a:3:{s:4:"text";s:267:"
+
+Logs some Debug-Messages via TYPO3 DLOG API
+
+Only if debug and TYPO3_DLOG
+is set
+
+To use it, set
+$TYPO3_CONF_VARS['SYS']['enable_DLOG'] = '1';
+via Install-Tool or direct in localconf.php
+
+Then install an devlog Extension. You can watch the logs in the backend
+then
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"string";i:1;s:4:"$msg";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:6:"atLine";i:362;}i:23;a:7:{s:6:"header";s:80:"function renderMessage($msg = 'default', $customMessage="",$customMessage2="") {";s:11:"parentClass";s:18:"tx_damfrontend_pi2";s:4:"cDat";a:5:{s:4:"text";s:9:"
+
+Message";s:5:"param";a:3:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:9:"$msg: ...";}i:1;a:2:{i:0;s:6:"[type]";i:1;s:19:"$customMessage: ...";}i:2;a:2:{i:0;s:6:"[type]";i:1;s:20:"$customMessage2: ...";}}s:6:"return";a:2:{i:0;s:8:"[string]";i:1;s:26:"$return:		html of the form";}s:5:"other";a:1:{i:0;s:14:"@author stefan";}s:11:"other_index";a:1:{s:7:"@author";a:1:{i:0;s:7:"stefan ";}}}s:7:"content";s:0:"";s:12:"content_size";i:1039;s:13:"content_lines";i:27;s:6:"atLine";i:380;}}}}}
