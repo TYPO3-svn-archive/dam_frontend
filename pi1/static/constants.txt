@@ -1,0 +1,31 @@
+# DAM Frontend Constants Begin
+  TSConstantEditor.tx_damfrontend_pi1 {
+    header = DAM Frontend
+    description = configuration for dam_frontend
+  }
+
+# cat=tx_damfrontend_pi1//10; type=text; label= Template File
+plugin.tx_damfrontend_pi1.templateFile = EXT:dam_frontend/pi1/template.html
+
+# cat=tx_damfrontend_pi1//20; type=int; label= single id
+plugin.tx_damfrontend_pi1.singleID = 14
+
+# cat=tx_damfrontend_pi1//30; type=text; label= wrap for errors
+plugin.tx_damfrontend_pi1.filter.errorWrap = <span style="color: red; font-weight: bold">|</span>
+
+# cat=tx_damfrontend_pi1//40; type=text; label= wrap for browsepointer
+plugin.tx_damfrontend_pi1.browsePointerWrap = '<span style="border: 1px solid black">'|</span>
+
+# cat=tx_damfrontend_pi1//50; type=int; label= page-id of the mediafolder
+plugin.tx_damfrontend_pi1.mediafolder =
+
+# cat=tx_damfrontend_pi1//60; type=boolean; label= set to 1 if you do not want to use the pushfile, all links will be set as direct links
+plugin.tx_damfrontend_pi1.doNotUsePushFile = 0
+
+# cat=tx_damfrontend_pi1//70; type=text; label= Path to all (following) IMAGE Objects in renderCategoryTree
+plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath = EXT:dam_frontend/res/ico/tree/
+
+# cat=tx_damfrontend_pi1//80; type=int; label= define how many seconds to mark a file as new since crdate (86400 = 60*60*24 = 1 day)
+plugin.tx_damfrontend_pi1.newUntilSeconds = 86400
+
+# tx_damfrontend_pi1 Constants End
