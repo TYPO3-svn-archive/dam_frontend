@@ -65,9 +65,9 @@ $tempColumns = Array (
 		"label" => "LLL:EXT:dam_frontend/locallang_db.php:tx_dam_cat.downloadaccess",
 		"config" => Array (
 			"items" => Array(
-				Array("alle Gruppen freigeben", -1),
-				Array("keine Gruppe freigeben", -2),
-				Array("-----einzelne Gruppen------", '--div--')
+				Array("LLL:EXT:dam_frontend/locallang_db.php:tx_damtree_fe_groups_all", -1),
+				Array("LLL:EXT:dam_frontend/locallang_db.php:tx_damtree_fe_groups_none", -2),
+				Array("LLL:EXT:dam_frontend/locallang_db.php:tx_damtree_fe_groups", '--div--')
 			),
 			'exclusiveKeys' => '-1,-2',
 			"type" => "select",
@@ -84,9 +84,9 @@ $tempColumns = Array (
 		"label" => "LLL:EXT:dam_frontend/locallang_db.php:tx_dam_cat.uploadaccess",
 		"config" => Array (
 			"items" => Array(
-				Array("alle Gruppen freigeben", -1),
-				Array("keine Gruppe freigeben", -2),
-				Array("-----einzelne Gruppen------", '--div--')
+				Array("LLL:EXT:dam_frontend/locallang_db.php:tx_damtree_fe_groups_all", -1),
+				Array("LLL:EXT:dam_frontend/locallang_db.php:tx_damtree_fe_groups_none", -2),
+				Array("LLL:EXT:dam_frontend/locallang_db.php:tx_damtree_fe_groups", '--div--')
 			),
 			'exclusiveKeys' => '-1,-2',
 			"type" => "select",
@@ -185,6 +185,9 @@ $tempColumns = Array (
 	"tx_damfrontend_feuser_upload" => Array (
 		"exclude" => 0,
 		"label" => "LLL:EXT:dam_frontend/locallang_tca.php:tx_damfrontend_feuser_upload",
+		"items" => Array(
+				Array("LLL:EXT:dam_frontend/locallang_db.php:tx_damtree_fe_groups", '-1')
+		),
 		"config" => Array (
 			"type" => "select",
 			"internal_type" => "db",
