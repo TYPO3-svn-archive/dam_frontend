@@ -371,16 +371,20 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 		*/
 	}
 	/**
-	 * Message 
+	 * Message
+	 *
+	 * @param	[type]		$msg: ...
+	 * @param	[type]		$customMessage: ...
+	 * @param	[type]		$customMessage2: ...
+	 * @return	[string]		$return:		html of the form
 	 * @author stefan
-	 * @return	[string]	$return:		html of the form
 	 */
 	function renderMessage($msg = 'default', $customMessage="",$customMessage2="") {
 		$this->pi_loadLL();
 		$subpart = tslib_CObj::getSubpart($this->fileContent,'###MESSAGE###');
-		
+
 		switch ($msg) {
- 			
+
  			case 'custom':
  				$message = strip_tags($customMessage. '&nbsp;'. $customMessage2);
  				break;
@@ -394,7 +398,7 @@ class tx_damfrontend_pi2 extends tslib_pibase {
  		$content=tslib_cObj::substituteMarkerArray($subpart, $markerArray);
 		return $content;
 	}
-	
+
 
 }
 

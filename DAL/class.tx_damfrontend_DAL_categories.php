@@ -47,18 +47,18 @@
  *
  *
  *   67: class tx_damfrontend_DAL_categories
- *   81:     function getCategory($catID)
- *  103:     function getCategory_Rootline($catID)
- *  127:     function getAllCategories()
- *  140:     function getSubCategories($catID, $limit=999)
- *  183:     function getParentCategories($catID)
- *  212:     function getCategoryMountpoints($userID, $relID)
- *  231:     function getCategories($userID, $relID)
- *  258:     function getCategories_Rootline($userID, $relID)
- *  270:     function isParentCategory($catID, $parentID)
- *  282:     function isSubCategory($catID, $subID)
- *  297:     function findUidinList($list, $id)
- *  318:     function checkCategoryAccess($userID, $catID)
+ *   91:     function getCategory($catID)
+ *  113:     function getCategory_Rootline($catID)
+ *  137:     function getAllCategories()
+ *  150:     function getSubCategories($catID, $limit=999)
+ *  193:     function getParentCategories($catID)
+ *  222:     function getCategoryMountpoints($userID, $relID)
+ *  241:     function getCategories($groupArr, $relID)
+ *  267:     function isParentCategory($catID, $parentID)
+ *  279:     function isSubCategory($catID, $subID)
+ *  294:     function findUidinList($list, $id)
+ *  316:     function checkCategoryUploadAccess($userID, $catID)
+ *  360:     function checkCategoryAccess($userID, $catID, $relID)
  *
  * TOTAL FUNCTIONS: 12
  * (This index is automatically created/updated by the extension "extdeveval")
@@ -80,11 +80,13 @@ class tx_damfrontend_DAL_categories {
 	var $mm_table_readaccess = '';  // mm Table which stores the groups, which have readaccess to a category
 	var $mm_table_downloadaccess = ''; // mm Table which stores the groups
 	var $debug = false;
-	
+
 	/**
-	 * 	returns th detail datea of a caegory
-	 * 	@author martin
-	 *	@param int $catID id of the category which should be returned
+	 * returns th detail datea of a caegory
+	 *
+	 * @param	int		$catID id of the category which should be returned
+	 * @return	[type]		...
+	 * @author martin
 	 */
 	function getCategory($catID) {
 		if (!intval($catID)) {
@@ -234,7 +236,7 @@ class tx_damfrontend_DAL_categories {
 	 *
 	 * @param	int		$groupArr: id of the user, who has the right to use the system
 	 * @param	int		$relID: id to specify read / download / upload access
-	 * @return	array	array of all category records
+	 * @return	array		array of all category records
 	 */
 		function getCategories($groupArr, $relID) {
 			if (!isset($userID) || !isset($relID) || $userID == '' || $relID == '') {
@@ -285,9 +287,9 @@ class tx_damfrontend_DAL_categories {
 	 * searches for an uid in an given array and returns the found row. If multiple
 	 * records with the same uid exists in the list
 	 *
-	 * @param	array	$list: various kind of array
+	 * @param	array		$list: various kind of array
 	 * @param	int		$id: uid to search in the list
-	 * @return	array	returns the resultrow as an array
+	 * @return	array		returns the resultrow as an array
 	 */
 		function findUidinList($list, $id)
 		{
@@ -304,13 +306,13 @@ class tx_damfrontend_DAL_categories {
 		}
 
 		/**
-		 * searches for an uid in an given array and returns the found row. If multiple
-		 * records with the same uid exists in the list
-		 *
-		 * @param	array	$list: various kind of array
-		 * @param	int		$id: uid to search in the list
-		 * @return	array	returns the resultrow as an array
-		 */
+ * searches for an uid in an given array and returns the found row. If multiple
+ * records with the same uid exists in the list
+ *
+ * @param	array		$list: various kind of array
+ * @param	int		$id: uid to search in the list
+ * @return	array		returns the resultrow as an array
+ */
 		function checkCategoryUploadAccess($userID, $catID) {
 
 			$catRow = $this->getCategory($catID);
@@ -332,7 +334,7 @@ class tx_damfrontend_DAL_categories {
 				$where = 'AND '. $foreign_table.'.uid in ('.$usergroups.') AND ' .$local_table .'.uid = '.$catID ;
 				$select = $local_table.'.*';
 				$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query($select,$local_table, $mm_table, $foreign_table, $where);
-	
+
 				while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 					$resultlist[] = $row;
 				}
@@ -347,14 +349,14 @@ class tx_damfrontend_DAL_categories {
 
 
 		/**
-		 * searches for an uid in an given array and returns the found row. If multiple
-		 * records with the same uid exists in the list
-		 *
-		 * @param	array	$list: various kind of array
-		 * @param	int		$id: uid to search in the list
-		 * @param	int		$relID sets the relationship (which kind of Acess should be checked)
-		 * @return	array	returns the resultrow as an array
-		 */
+ * searches for an uid in an given array and returns the found row. If multiple
+ * records with the same uid exists in the list
+ *
+ * @param	array		$list: various kind of array
+ * @param	int		$id: uid to search in the list
+ * @param	int		$relID sets the relationship (which kind of Acess should be checked)
+ * @return	array		returns the resultrow as an array
+ */
 		function checkCategoryAccess($userID, $catID, $relID) {
 			/*var $relations = array(
 				'1' => 'readaccess',
@@ -376,7 +378,7 @@ class tx_damfrontend_DAL_categories {
 			}
 			$catRow = $this->getCategory($catID);
 			// check first, if no usergroup has been assigned to the given category
-			
+
 			if ($catRow[$relCheck] == 0) {
 				if ($this->debug ==1) {
 					t3lib_div::debug('checkCategoryAccess = true (no group selected) catID: '.$catID);
@@ -395,7 +397,7 @@ class tx_damfrontend_DAL_categories {
 					$where = 'AND '. $foreign_table.'.uid in ('.$usergroups.') AND ' .$local_table .'.uid = '.$catID ;
 					$select = $local_table.'.*';
 					$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query($select,$local_table, $mm_table, $foreign_table, $where);
-		
+
 					while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 						$resultlist[] = $row;
 					}

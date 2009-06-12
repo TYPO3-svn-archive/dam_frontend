@@ -1,22 +1,45 @@
-Version 0.4.0
-Important!! Changes in standard ts template: stdWrap in renderCategoryTree move to the corresponding objects 
+Version 0.4.1
+Important!! ﻿Please reinclude static files for dam_frontend (they have been moved) 
+Changes in standard ts template: stdWrap in renderCategoryTree move to the corresponding objects 
 example stdWrapEqualsIcon is now in equalsIcon. SingleView is renamed to singleView
+﻿﻿	•	Bug #2984: cats can be asigned twice
+	•	Bug #3169: Upload throws a php warning, if fe_user home path does not exist
+	•	Bug #3239: Age does not change on new version of file (versioning)
+	•	Bug #3355: Category root is displayed wrong
+	•	Bug #3462: storing an empty language sets language to abrachn....
+	•	Feature #1224: show "new" in Filelist
+	•	Feature #1421: Preview of files / pictures
+	•	Feature #1966: Download Image-Files in different size
+	•	Feature #2787: add the plugin in the create content wizzard
+	•	Feature #2828: Option: Show only files with permission
+	•	Feature #2829: Upload: autoasign FEGroups
+	•	Feature #2886: Render Sortlinks via typoscript
+	•	Feature #2903: Preselect category in cattree
+	•	Feature #2923: more typoscript support
+	•	Feature #2924: Predefinition of sorting of lists
+	•	Feature #2952: category preset for the upload form
+	•	Major Feature #1366: Give support for all dam fields
+	•	Major Feature #2497: Use complete access model for dam entries and categories
 
 Version 0.3.1
-
+Major Feature #1369: Search box (by typohead)
+Major Feature #2491: View "MyFiles"
+Major Feature #2492: Edit of Meta data
+Major Feature #2495: Multi-language Support (Kat Tree and Interface)
+Major Feature #2809: change pushfile to eID feature
 
 Version 0.2.1
 - fixed bug 1885: if multiple Views are used on different pages, category selection sometimes hasn't worked
 - fixed bug 1922: label for "flexform_useStaticCatSelection" were missing in english
 
 Version	0.2.0
-+ feature 1297: Static category selection in pi1 (thanks to Frank N�gler)
++ feature 1297: Static category selection in pi1 (thanks to Frank Nägler)
 + feature 1261: Fileupload and categorisation in pi1 
 + feature 1319: Counter feature in filelist in pi1 (thanks to Tom Ruether)
 + feature 1370: increase max upload files in pi2 (thanks to Joe Berger)
 
 Version	0.1.2: stdWrap for all fields (pi1)
-Thanks to Frank N�gler. Now it is posible to use typoscript for the views "single view" and "file list". Each database field, wich is used in the view can be customized with typoscript.
+Thanks to Frank Nägler. Now it is posible to use typoscript for the views "single view" and "file list". Each database field, wich is used in the view can be customized with typoscript.
 
 Version	0.1.1: Security Bugfix  [Ticket#2008052210000041] 
 - fixed multiple vulnerabilities in extension  dam_frontend. Thanks to the security team and Marcus Krause
@@ -26,22 +49,6 @@ Version	0.1.0 TER Release with manual
 - created manual.sxw
 - created sourcecode documentation
 - integrated default styles
-
-Version	0.0.6
-Bugfixes for saving the state of lists and filters
-
-Version	0.0.5
-Zusammenf�hren der Frontend Plugins der Listendarstellung mit dem DAM - Frontend Plugin
-Alpha Version der mehereren B�ume
-
-Version	0.0.3
-Ersetzen der statischen Texte durch �bersetzbare locallang - Labels durch Eingriffe im
-Frontend rendering.
-
-Version	0.0.2
-Bugfix Release - id wird auch bei den plus/minus Links im querystring mit �bergeben
-Methode  PM_ATagWrap in der Klasse tx_damfrontend_catTreeView wurde neu implementiert
-
 
 
 

@@ -43,13 +43,13 @@
  *
  *
  *   63: class tx_damfrontend_catList extends tx_damfrontend_baseSessionData
- *   70:     function tx_damfrontend_catList()
- *   82:     function op_Plus($catID, $treeID)
- *  107:     function op_Minus($catID, $treeID)
- *  126:     function unsetAllCategories()
- *  137:     function op_Equals($catID, $treeID)
- *  155:     function getCatSelection($treeID = '')
- *  173:     function clearCatSelection($treeID)
+ *   71:     function tx_damfrontend_catList()
+ *   83:     function op_Plus($catID, $treeID)
+ *  117:     function op_Minus($catID, $treeID)
+ *  147:     function unsetAllCategories()
+ *  158:     function op_Equals($catID, $treeID)
+ *  178:     function getCatSelection($treeID = 0,$pageID=0)
+ *  224:     function clearCatSelection($treeID)
  *
  * TOTAL FUNCTIONS: 7
  * (This index is automatically created/updated by the extension "extdeveval")
@@ -90,14 +90,14 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 		}
 		$catarray = $this->getArrayFromUser();
 		if (!is_array($catarray)) $catarray = array();
-		
+
 		#t3lib_div::debug($catarray);
 		$treeArray = is_array($catarray[$treeID]) ? array_unique($catarray[$treeID]) : array();
 		#t3lib_div::debug($treeArray);
 		if ($treeID==-1 ) {
 			$catLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_categories');
 			if (!$catLogic->checkCategoryUploadAccess($GLOBALS['TSFE']->fe_user->user['uid'],$catID)) {
-				return false;				
+				return false;
 			}
 		}
 		if (!array_search($catID, $treeArray)) {
@@ -121,10 +121,10 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 		if (!intval($treeID)){
 			if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function op_Minus: for the treeID only integer values are allowed. Given value was:' .$treeID, 'dam_frontend',3);
 		}
-		
+
 		$catarray = $this->getArrayFromUser();
 
-		if (!empty($catarray) && $catarray[$treeID]) {	
+		if (!empty($catarray) && $catarray[$treeID]) {
 			$treeCats = $catarray[$treeID];
 			foreach ($treeCats as $key=>$cat) {
 				if ($cat ==$catID) {
@@ -133,7 +133,7 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 				}
 			}
 			$test = array_search($catID,$catarray[$treeID]);
-			
+
 		}
 		$this->setArrayToUser($catarray);
 	}
@@ -170,9 +170,9 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 
 	/**
 	 * returns a list of either the selected categories of a tree ($treeID must be set) or the categories of a page (pageID must be set)
-	 * @param	int 		$treeID: ID of used category tree (optional: if set only the categories of this tree are returned)
-	 * @param	int			$pageID: ID of the page where the tree should be used (optional: if all categories which are selected are returned for this page)
-	 * 
+	 *
+	 * @param	int		$treeID: ID of used category tree (optional: if set only the categories of this tree are returned)
+	 * @param	int		$pageID: ID of the page where the tree should be used (optional: if all categories which are selected are returned for this page)
 	 * @return	array		list of all selected categories
 	 */
 	function getCatSelection($treeID = 0,$pageID=0) {
@@ -181,14 +181,14 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 			//returns the selected categories for a specified treeID
 			if ($treeID==-1){
 				return is_array($ar[$treeID]) ? array_unique($ar[$treeID]) : null;
-			} 
-			else { 
+			}
+			else {
 				if (is_array($ar[$treeID])) {
-					$returnArr[$treeID]= array_unique($ar[$treeID]);	
+					$returnArr[$treeID]= array_unique($ar[$treeID]);
 				} else {
 					$returnArr =  null;
-				} 
-				return $returnArr;	
+				}
+				return $returnArr;
 			}
 		}
 		else {
@@ -206,18 +206,18 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 					while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 						if ($row['pid']==$pageID) {
 							$returnArr[$key] = array();
-							$returnArr[$key] = array_unique($ar[$key]);		
-						}		
+							$returnArr[$key] = array_unique($ar[$key]);
+						}
 					}
-				}						
-				return is_array($returnArr) ? $returnArr: null;						
+				}
+				return is_array($returnArr) ? $returnArr: null;
 			}
 		}
 	}
 
 	/**
 	 * clears the selected category of a user
-	 * 	
+	 *
 	 * @param	int		$treeID: ID of used category tree
 	 * @return	void		nothing
 	 */

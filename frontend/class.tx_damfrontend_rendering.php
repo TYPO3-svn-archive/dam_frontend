@@ -45,27 +45,38 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  *
  *
  *
- *   73: class tx_damfrontend_rendering extends tslib_pibase
- *   90:     function init()
- *  102:     function setFileRef($filePath)
- *  117:     function renderFileList($list, $resultcount, $pointer, $listLength)
- *  186:     function renderBrowseResults($resultcount, $pointer, $listLength)
- *  212:     function renderSortLink($key)
- *  230:     function renderCatSelection($list)
- *  258:     function renderSingleView($record)
- *  284:     function renderError($errormsg = 'deflaut')
- *  317:     function recordToMarkerArray($record)
- *  341:     function renderFilterView($filterArray, $errorArray = '')
- *  383:     function renderFileTypeList($filetype)
- *  427:     function renderFilterError($errorCode)
- *  438:     function renderUploadForm()
- *  450:     function renderFilterList($filterList)
- *  471:     function renderFilterCreationForm()
- *  484:     function renderFilterCreationLink()
- *  496:     function getFileIconHref($mimeType, $mimeSubType)
- *  523:     function getIconBaseAddress()
+ *   83: class tx_damfrontend_rendering extends tslib_pibase
+ *  102:     function init()
+ *  124:     function setFileRef($filePath)
+ *  140:     function renderFileList($list, $resultcount, $pointer, $listLength, $useRequestForm)
+ *  304:     function renderBrowseResults($resultcount, $pointer, $listLength)
+ *  366:     function renderSortLink($key)
+ *  390:     function renderCatSelection($list, $treeID='', $catEditUID=0)
+ *  431:     function renderSingleView($record)
+ *  471:     function renderError($errormsg = 'default', $customMessage="",$customMessage2="" )
+ *  521:     function recordToMarkerArray($record, $scope = 'default', $table = 'tx_dam')
+ *  550:     function renderFilterView($filterArray, $errorArray = '')
+ *  608:     function renderFileTypeList($filetype)
+ *  659:     function renderFilterError($errorCode)
+ *  670:     function renderUploadForm()
+ *  694:     function renderFilterList($filterList)
+ *  717:     function renderFilterCreationForm()
+ *  745:     function renderFilterCreationLink()
+ *  764:     function getFileIconHref($mimeType, $mimeSubType)
+ *  791:     function getIconBaseAddress()
+ *  896:     function renderCategorisationForm($docData,$selectedCats='',$uploadCats,$versioning='')
+ *  978:     function renderUploadSuccess()
+ *  996:     function renderFileDeletion($record)
+ * 1033:     function renderFileDeletionSuccess()
+ * 1051:     function substituteLangMarkers($templCode)
+ * 1080:     function renderLanguageSelector ($currentLanguage ='')
+ * 1104:     function renderOwnerSelector ($listOfOwners)
+ * 1141:     function renderVersioningForm()
+ * 1163:     function renderFileEdit($record)
+ * 1201:     function renderCategoryTreeCategory($sel_class,$dataArray,$title,$control,$subpart)
+ * 1227:     function renderCategoryTree($markerArray, $treeID=0)
  *
- * TOTAL FUNCTIONS: 18
+ * TOTAL FUNCTIONS: 29
  * (This index is automatically created/updated by the extension "extdeveval")
  *
  */
@@ -123,12 +134,12 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	 * @param	rowcount		$resultcount: ...
 	 * @param	[type]		$pointer: ...
 	 * @param	[type]		$listLength: ...
-	 * @param	[boolean]	$useRequestForm: if true, a request form will be rendered, where a FE User has to fill out a form
+	 * @param	[boolean]		$useRequestForm: if true, a request form will be rendered, where a FE User has to fill out a form
 	 * @return	[type]		...
 	 */
  	function renderFileList($list, $resultcount, $pointer, $listLength, $useRequestForm) {
- 		
-		
+
+
  		if(!is_array($list)){
  			//no result is given
  			return $this->pi_getLL('noDocInCat');
@@ -150,7 +161,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 			if (!isset($this->conf['filelist.']['marker.']['filelist_record'])) { $this->conf['filelist.']['marker.']['filelist_record'] = '###FILELIST_RECORD###'; }
 			$filelist_record_marker = $GLOBALS['TSFE']->tmpl->splitConfArray(array('cObjNum' => $this->conf['filelist.']['marker.']['filelist_record']), count($list));
 		}
- 		
+
  		$list_Code = tsLib_CObj::getSubpart($this->fileContent,'###FILELIST###');
  		$countElement = 0;
 		$rows = '';
@@ -256,14 +267,14 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 					$this->piVars['sort_'.$key] = 'ASC';
 					$tsWrap = 'ASC';
 				}
-				// check if current header is allready sorted 
+				// check if current header is allready sorted
 				$markerArray['###'.strtoupper($key).'_HEADER###'] = $this->cObj->stdWrap($this->pi_linkTP_keepPiVars($this->cObj->cObjGetSingle($this->conf['filelist.']['sortlinks.'][$key], $this->conf['filelist.']['sortlinks.'][$key.'.'])),$this->conf['filelist.']['sortlinks.'][$key.'.'][$tsWrap.'.']);
 					// todo unset kills the whole piVars need to find a more elegant way to deal with it
 				unset($this->piVars['sort_'.$key]);
 				$this->piVars = $tmpPiVars;
 			}
  		}
- 		
+
  		foreach (array('FILELIST_BATCH_SELECT', 'FILELIST_BATCH_GO', 'FILELIST_BATCH_CREATEZIPFILE', 'FILELIST_BATCH_SENDASMAIL', 'FILELIST_BATCH_SENDZIPPEDFILESASMAIL', 'FILELIST_BATCH_SENDFILELINK', 'FILELIST_BATCH_SENDZIPPEDFILELINK', 'FILENAME_HEADER', 'FILENAME_HEADER', 'FILETYPE_HEADER', 'CR_DATE_HEADER') as $label) {
  			$content = tsLib_CObj::substituteMarker($content, '###'.$label.'###', $this->pi_getLL($label, $label));
  		}
@@ -274,11 +285,11 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  		$staticMarkers['###LABEL_COUNT###'] = $this->pi_getLL('label_Count');
 		$staticMarkers =$staticMarkers + $this->substituteLangMarkers($list_Code);
  		$content = tslib_cObj::substituteMarkerArray($content, $staticMarkers);
- 		
+
 			// substitute Links for Browseresult
 		$browseresults = $this->renderBrowseResults($resultcount, $pointer, $listLength);
 		$content = tsLib_CObj::substituteMarker($content, '###BROWSERESULTS###', $browseresults);
-		
+
  		return $content;
  	}
 
@@ -293,22 +304,27 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	function renderBrowseResults($resultcount, $pointer, $listLength) {
 		$listCode = tslib_CObj::getSubpart($this->fileContent, '###BROWSERESULTLIST###');
 		$listElem = tslib_CObj::getSubpart($listCode, '###BROWSERESULT_ENTRY###');
-		
+
 		if ($listLength==1) {
 				//correction if listLength = 1, then we must subtract one page (even if a listlength of 1 makes no sense)
 			$limiter = 1;
-		} 
+		}
 		else {
-			$limiter = 0;	
+			$limiter = 0;
 		}
 			// get the number of pages of the browseresult
 		$noOfPages = intval($resultcount / $listLength)-$limiter;
-			
+		$piVarsCurrent = $this->piVars;
+			// disable temporaly the piVars to prevent that the view is resetted
+		unset ($this->piVars['catPlus_Rec']);
+		unset ($this->piVars['catPlus']);
+		unset ($this->piVars['catMinus']);
+		unset ($this->piVars['catMinus_Rec']);
+		unset ($this->piVars['catAll']);
+		unset ($this->piVars['catEquals']);
 		if ($resultcount % $listLength==0) $noOfPages = $noOfPages-1+$limiter;
-		
+
 			for ($z = 0; $z <= $noOfPages; $z++) {
-				#$pointerPiVar=array();
-				#$pointerPiVar['tx_damfrontend_pi1[pointer]'] = $z;
 				if ($z == $pointer ) {
 						// this is the current page
 					$listElems .=  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($z+1,$this->conf['filelist.']['browselinkCurrent.']));
@@ -342,6 +358,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		$listCode = tslib_CObj::substituteSubpart($listCode, '###BROWSERESULT_ENTRY###', $listElems);
 		$listCode = $this->cObj->stdWrap ($listCode,$this->conf['filelist.']['browselink.']['resultList.']);
 		unset($this->piVars['pointer']);
+		$this->piVars = $piVarsCurrent;
 		return $listCode;
 	}
 
@@ -359,10 +376,10 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 			if ($this->piVars['sort_'.$key]) $doNotUnset=true;
 			$this->piVars['sort_'.$key] = 'ASC';
 			$content = tsLib_CObj::substituteMarker($content, '###SORTLINK_ASC###', $this->pi_linkTP_keepPiVars($this->cObj->cObjGetSingle($this->conf['filelist.']['sortlinks.']['asc'], $this->conf['filelist.']['sortlinks.']['asc.'])));
-			
+
 			$this->piVars['sort_'.$key] = 'DESC';
-			$content = tsLib_CObj::substituteMarker($content, '###SORTLINK_DESC###', $this->pi_linkTP_keepPiVars($this->cObj->cObjGetSingle($this->conf['filelist.']['sortlinks.']['desc'], $this->conf['filelist.']['sortlinks.']['desc.'])));	
-			
+			$content = tsLib_CObj::substituteMarker($content, '###SORTLINK_DESC###', $this->pi_linkTP_keepPiVars($this->cObj->cObjGetSingle($this->conf['filelist.']['sortlinks.']['desc'], $this->conf['filelist.']['sortlinks.']['desc.'])));
+
 			#if ($doNotUnset==false) unset($this->piVars['sort_'.$key]);
 			return $content;
 	}
@@ -372,6 +389,8 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	 * transforms the list of selected categories to an html output
 	 *
 	 * @param	array		$list: list of selected elements - whole dataset
+	 * @param	[type]		$treeID: ...
+	 * @param	[type]		$catEditUID: ...
 	 * @return	html		rendered category selection content element
 	 */
  	function renderCatSelection($list, $treeID='', $catEditUID=0) {
@@ -394,15 +413,15 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 			$urlVars['tx_damfrontend_pi1[treeID]'] = $treeID != '' ?   $treeID : null;
 				// TODO implement TS Setting  & add stdWrap
 			$url = $this->cObj->getTypoLink_URL($GLOBALS['TSFE']->id,$urlVars);
- 			
+
  			// static markers of the list
  			$listElem = tslib_cObj::substituteMarker($listElem, '###DELETE_URL###', $url);
  			$listElem = tslib_cObj::substituteMarker($listElem, '###TITLE###', $category['title']);
 
  			$markerArray = $this->recordToMarkerArray($category);
-				// adding static user definded markers 
+				// adding static user definded markers
  			$markerArray =$markerArray + $this->substituteLangMarkers($single_Code);
- 			
+
  			$listCode .= tslib_cObj::substituteMarkerArray($listElem, $markerArray);
  		}
  		return $wholeCode = tslib_CObj::substituteSubpart($wholeCode, '###CATLIST###', $listCode);
@@ -419,20 +438,20 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  		$cObj = t3lib_div::makeInstance('tslib_cObj');
  		$cObj->start($record, 'tx_dam');
  		$single_Code = tslib_CObj::getSubpart($this->fileContent,'###SINGLEVIEW###');
- 			
+
  		$this->pi_loadLL();
- 		
+
  			// converting all fields in the record to marker (recordfields and markername must match)
  		$markerArray = $this->recordToMarkerArray($record,'singleView');
  		$markerArray['###CRDATE_AGE###'] =  $cObj->stdWrap($record['crdate'], $this->conf['renderFields.']['crdate_age.']);
  		$markerArray['###LINK_DOWNLOAD###'] = $cObj->cObjGetSingle($this->conf['singleView.']['link_download'], $this->conf['singleView.']['link_download.']);
- 		$markerArray['###BACK_LINK###'] = $this->cObj->typolink($cObj->cObjGetSingle($this->conf['singleView.']['backLink'], $this->conf['singleView.']['backLink.']), array('parameter' => $record['backPid'])); 
-			
-			// adding static user definded markers 
+ 		$markerArray['###BACK_LINK###'] = $this->cObj->typolink($cObj->cObjGetSingle($this->conf['singleView.']['backLink'], $this->conf['singleView.']['backLink.']), array('parameter' => $record['backPid']));
+
+			// adding static user definded markers
  		$markerArray =$markerArray + $this->substituteLangMarkers($single_Code);
  		if (!is_null($this->staticInfoObj)) { $markerArray['###LANGUAGE###'] 	= $this->staticInfoObj->getStaticInfoName('LANGUAGES', $record['language'], '', '', false);}
  		$content=tslib_cObj::substituteMarkerArray($single_Code, $markerArray);
- 		
+
  		$content = tslib_cObj::substituteMarker($content, '###TITLE_SINGLEVIEW###',$markerArray['###TITLE###']);
  		$content = tslib_cObj::substituteMarker($content, '###CR_DATE_HEADER###',$this->pi_getLL('CR_DATE_HEADER'));
  		$content = tslib_cObj::substituteMarker($content, '###FILE_SIZE_HEADER###',$this->pi_getLL('FILE_SIZE_HEADER'));
@@ -451,6 +470,8 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	 * Renders an error message
 	 *
 	 * @param	string		$errormsg: ...
+	 * @param	[type]		$customMessage: ...
+	 * @param	[type]		$customMessage2: ...
 	 * @return	[type]		...
 	 */
  	function renderError($errormsg = 'default', $customMessage="",$customMessage2="" ) {
@@ -496,9 +517,11 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	/**
 	 * converts an associative array to an Marker Array in the form ### $KEY ### => value
 	 *
-	 * @param	array		$record: array that shall be converted
-	 * @param   string		$scope: defines which TypoScript sub-configuration
 	 * should be used
+	 *
+	 * @param	array		$record: array that shall be converted
+	 * @param	string		$scope: defines which TypoScript sub-configuration
+	 * @param	[type]		$table: ...
 	 * @return	array		Markerarray ready for substitution
 	 */
  	function recordToMarkerArray($record, $scope = 'default', $table = 'tx_dam') {
@@ -646,9 +669,9 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 
 	/**
 	 * renderUploadForm
-	 * @param array userInput If an error happend and the form must be rendered again
-	 * @return	[string]	the html code	...
 	 *
+	 * @param	array		userInput If an error happend and the form must be rendered again
+	 * @return	[string]		the html code	...
 	 */
  	function renderUploadForm() {
 		$this->pi_loadLL();
@@ -780,102 +803,101 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
   }
 
 
-//  	/**
-//  	 *
-//  	 * rendert das Formular zur Eingabe der Anforderung f�r eine SI
-//  	 *
-//  	 *
-//  	 */
-//	function renderRequest($formData, $docArray, $errorArray=''){
-//		$docArray = array_merge($formData, $docArray);
-//		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###ANFORDERUNG###');
-//		$markerArray  = $this->recordToMarkerArray($docArray);
-//		$markerArray['###FORM_TARGET###'] = $this->pi_getPageLink($this->cObj->data['pid'],null, array('sendRequestform' => 1));
-//
-//		// Es traten fehler bei den Formulareingaben auf
-//		foreach ($formData as $name => $data) {
-//			$markerArray['###ERROR_'.strtoupper($name).'###'] = '';
-//		}
-//		if (is_array($errorArray)) {
-//			if ($errorArray['error_email']) {
-//				$markerArray['###ERROR_EMAIL###'] = 'Die Email Adresse wurde nich korrekt angegeben';
-//			}
-//			if ($errorArray['error_plz']) {
-//				$markerArray['###ERROR_PLZ###'] = 'Die Postleitzahl fehlt noch';
-//			}
-//			if ($errorArray['error_ort']) {
-//				$markerArray['###ERROR_ORT###'] = 'Der Ort fehlt noch';
-//			}
-//			if ($errorArray['error_vorname']) {
-//				$markerArray['###ERROR_VORNAME###'] = 'Der Vorname fehlt noch';
-//			}
-//			if ($errorArray['error_nachname']) {
-//				$markerArray['###ERROR_NACHNAME###'] = 'Der Nachname fehlt noch';
-//			}
-//			if ($errorArray['error_anschrift']) {
-//				$markerArray['###ERROR_ANSCHRIFT###'] = 'Die Anschrift fehlt noch';
-//			}
-//		}
-//
-//		// F�ge die bisher eingegebenen Daten ein
-//		foreach($formData as $name => $data) {
-//
-//			$markerArray['###'.strtoupper($name).'###'] = $data;
-//		}
-//		$markerArray['###BACK_URL###'] = $this->pi_GetPageLink($this->cObj->data['pid']);
-//
-//		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
-//		return $formCode;
-//	}
-//
-//	/*
-//	 *
-//	 */
-//	function renderMailMessage($formData, $docData)
-//	{
-//		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###MAIL_ANFORDER###');
-//		$wholeData = array_merge($formData, $docData);
-//		$markerArray = $this->recordToMarkerArray($wholeData);
-//		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
-//		return $formCode;
-//	}
-//
-//	/*
-//	 *
-//	 */
-//	function renderRequestUser($docArray) {
-//		$formCode = tslib_CObj::getSubpart($this->fileContent, '###ANFORDERUNG_USER###');
-//		$markerArray = $this->recordToMarkerArray($docArray);
-//		$markerArray['###FORM_URL###'] = $this->pi_getPageLink($this->cObj->data['pid'],null, array('sendRequestform' => 1, 'docID' => $docArray['uid']));
-//		$markerArray['###BACK_URL###'] = $this->pi_GetPageLink($this->cObj->data['pid']);
-//		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
-//		return $formCode;
-//	}
-//
-//	/*
-//	 */
-//	function renderAnforderMailUser($userData, $docData) {
-//
-//		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###MAIL_ANFORDER_USER###');
-//		$wholeData = array_merge($userData, $docData);
-//		$markerArray = $this->recordToMarkerArray($wholeData);
-//		if (t3lib_extMgm::isLoaded('sr_feuser_register')) {
-//			$markerArray['###NAME###'] = $wholeData['first_name'] + $wholeData['last_name'];
-//		}
-//		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
-//		return $formCode;
-//	}
-
-	/*
-	 * Renders the categorisation form
-	 *
- 	 * @param	[array] 	$docdata: 		meta data of the doc, that should be imported to the dam
- 	 * @param	[array] 	$docdata: 		meta data of the doc, that should be imported to the dam
-	 * @param	[array]		$selectedCats: 	selected categories
-	 * @return	[string]	$return:		html of the form
-	 * @author  martin baum
-	 *
-	 */
+	/**
+ * //  	 *
+ * //  	 *
+ * //  	 *
+ * //  	 
+ * //	function renderRequest($formData, $docArray, $errorArray=''){
+ * //		$docArray = array_merge($formData, $docArray);
+ * //		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###ANFORDERUNG###');
+ * //		$markerArray  = $this->recordToMarkerArray($docArray);
+ * //		$markerArray['###FORM_TARGET###'] = $this->pi_getPageLink($this->cObj->data['pid'],null, array('sendRequestform' => 1));
+ * //
+ * //		// Es traten fehler bei den Formulareingaben auf
+ * //		foreach ($formData as $name => $data) {
+ * //			$markerArray['###ERROR_'.strtoupper($name).'###'] = '';
+ * //		}
+ * //		if (is_array($errorArray)) {
+ * //			if ($errorArray['error_email']) {
+ * //				$markerArray['###ERROR_EMAIL###'] = 'Die Email Adresse wurde nich korrekt angegeben';
+ * //			}
+ * //			if ($errorArray['error_plz']) {
+ * //				$markerArray['###ERROR_PLZ###'] = 'Die Postleitzahl fehlt noch';
+ * //			}
+ * //			if ($errorArray['error_ort']) {
+ * //				$markerArray['###ERROR_ORT###'] = 'Der Ort fehlt noch';
+ * //			}
+ * //			if ($errorArray['error_vorname']) {
+ * //				$markerArray['###ERROR_VORNAME###'] = 'Der Vorname fehlt noch';
+ * //			}
+ * //			if ($errorArray['error_nachname']) {
+ * //				$markerArray['###ERROR_NACHNAME###'] = 'Der Nachname fehlt noch';
+ * //			}
+ * //			if ($errorArray['error_anschrift']) {
+ * //				$markerArray['###ERROR_ANSCHRIFT###'] = 'Die Anschrift fehlt noch';
+ * //			}
+ * //		}
+ * //
+ * //		// F�ge die bisher eingegebenen Daten ein
+ * //		foreach($formData as $name => $data) {
+ * //
+ * //			$markerArray['###'.strtoupper($name).'###'] = $data;
+ * //		}
+ * //		$markerArray['###BACK_URL###'] = $this->pi_GetPageLink($this->cObj->data['pid']);
+ * //
+ * //		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
+ * //		return $formCode;
+ * //	}
+ * //
+ * //	/*
+ * //	 *
+ * //	 
+ * //	function renderMailMessage($formData, $docData)
+ * //	{
+ * //		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###MAIL_ANFORDER###');
+ * //		$wholeData = array_merge($formData, $docData);
+ * //		$markerArray = $this->recordToMarkerArray($wholeData);
+ * //		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
+ * //		return $formCode;
+ * //	}
+ * //
+ * //	/*
+ * //	 *
+ * //	 
+ * //	function renderRequestUser($docArray) {
+ * //		$formCode = tslib_CObj::getSubpart($this->fileContent, '###ANFORDERUNG_USER###');
+ * //		$markerArray = $this->recordToMarkerArray($docArray);
+ * //		$markerArray['###FORM_URL###'] = $this->pi_getPageLink($this->cObj->data['pid'],null, array('sendRequestform' => 1, 'docID' => $docArray['uid']));
+ * //		$markerArray['###BACK_URL###'] = $this->pi_GetPageLink($this->cObj->data['pid']);
+ * //		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
+ * //		return $formCode;
+ * //	}
+ * //
+ * //	/*
+ * //	 
+ * //	function renderAnforderMailUser($userData, $docData) {
+ * //
+ * //		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###MAIL_ANFORDER_USER###');
+ * //		$wholeData = array_merge($userData, $docData);
+ * //		$markerArray = $this->recordToMarkerArray($wholeData);
+ * //		if (t3lib_extMgm::isLoaded('sr_feuser_register')) {
+ * //			$markerArray['###NAME###'] = $wholeData['first_name'] + $wholeData['last_name'];
+ * //		}
+ * //		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
+ * //		return $formCode;
+ * //	}
+ *
+ * 
+ * Renders the categorisation form
+ *
+ * @param	[array]		$docdata: 		meta data of the doc, that should be imported to the dam
+ * @param	[array]		$docdata: 		meta data of the doc, that should be imported to the dam
+ * @param	[array]		$selectedCats: 	selected categories
+ * @param	[type]		$versioning: ...
+ * @return	[string]		$return:		html of the form
+ * @author  martin baum
+ */
 	function renderCategorisationForm($docData,$selectedCats='',$uploadCats,$versioning='') {
 		$this->pi_loadLL();
 		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###CATEGORISATION###');
@@ -890,13 +912,13 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 				}
 			}
 			$tree->renderer = $this;
-			$treeType = 'categoryTreeAdvanced.';	
+			$treeType = 'categoryTreeAdvanced.';
 		}
 		else {
 			$tree = t3lib_div::makeInstance('tx_damfrontend_categorisationTree');
-			$treeType = 'categorisationTree.';	
+			$treeType = 'categorisationTree.';
 		}
-		
+
 		$tree->MOUNTS = explode(',',$uploadCats);
 		$tree->init(-1,$this);
 		$tree->expandTreeLevel($this->conf[$treeType]['expandTreeLevel']);
@@ -936,7 +958,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 			$catCode = $this->renderError('noCatSelected');
 			#$markerArray['###CANCEL###'] = '';
 		}
-		
+
 		$markerArray['###HIDDENFIELDS###'] = '';
 		if (isset($versioning))  {
 			if ($versioning=='editCats') {
@@ -954,8 +976,9 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 
 	/**
 	 * renderUploadSuccess
+	 *
+	 * @return	[string]		$return:		html of the form
 	 * @author stefan
-	 * @return	[string]	$return:		html of the form
 	 */
 	function renderUploadSuccess() {
 		$this->pi_loadLL();
@@ -970,9 +993,10 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 
 	/**
 	 * message to confirm the deletion of a file
+	 *
+	 * @param	array		$record Array of the dam record which should be deletec
+	 * @return	[string]		$return:		html of the form
 	 * @author stefan
-	 * @param array $record Array of the dam record which should be deletec
-	 * @return	[string]	$return:		html of the form
 	 */
 	function renderFileDeletion($record) {
 
@@ -1007,8 +1031,9 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 
 	/**
 	 * Message if the deletion was successful
+	 *
+	 * @return	[string]		$return:		html of the form
 	 * @author stefan
-	 * @return	[string]	$return:		html of the form
 	 */
 	function renderFileDeletionSuccess() {
 		$this->pi_loadLL();
@@ -1024,8 +1049,9 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 
 	/**
 	 * finds markers (###LLL:[markername]###) in given template Code
-	 * @param		string		$templCode		the template code in which the markers should be searched for
-	 * @return		array						the found language markers with translation text
+	 *
+	 * @param	string		$templCode		the template code in which the markers should be searched for
+	 * @return	array		the found language markers with translation text
 	 */
 	function substituteLangMarkers($templCode) {
 		global $LANG;
@@ -1049,12 +1075,12 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	}
 
 	/**
-	 *
 	 * Renders a Language Selector (optional filtered via TYPOSCRIPT)
 	 * TS Example: plugin.tx_damfrontend_pi1.allowedLanguages = EN,DE
-	 * @author stefan
 	 *
-	 *	@return string HTML of the Selektorbox
+	 * @param	[type]		$currentLanguage: ...
+	 * @return	string		HTML of the Selektorbox
+	 * @author stefan
 	 */
 	function renderLanguageSelector ($currentLanguage ='') {
 		if (is_null($this->staticInfoObj)) { return ''; }
@@ -1076,10 +1102,9 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	}
 
 	/**
+	 * @param	array		$listOfCreators holds a List of creators (sorted alphabetically, in column 2 there is a value selected)
+	 * @return	string		html of the selector box
 	 * @author stefan
-	 *
-	 *	@param array $listOfCreators holds a List of creators (sorted alphabetically, in column 2 there is a value selected)
-	 *	@return string html of the selector box
 	 */
 	function renderOwnerSelector ($listOfOwners) {
 		if (is_array($listOfOwners)) {
@@ -1113,8 +1138,11 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		return $content;
 	}
 
-
-
+	/**
+	 * [Describe function...]
+	 *
+	 * @return	[type]		...
+	 */
 	function renderVersioningForm() {
 		$this->pi_loadLL();
 		$subpart = tslib_CObj::getSubpart($this->fileContent,'###FORM_VERSIONING###');
@@ -1132,17 +1160,16 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	/**
 	 * Renders the edition form. A fe_user can edit the metadata of a file
 	 *
-	 * 	@author stefan
-	 *	@version 1
-	 *
-	 *	@param array $record array of the dam record
-	 *	@return string html of the edit form
+	 * @param	array		$record array of the dam record
+	 * @return	string		html of the edit form
+	 * @author stefan
+	 * @version 1
 	 */
 	function renderFileEdit($record){
 		$this->pi_loadLL();
 
 		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###EDITFORM###');
-		
+
 		$markerArray['###TITLE_FILEUPLOAD###'] = $this->pi_getLL('TITLE_FILEUPLOAD');
 		$markerArray['###LABEL_FILE###'] =  $this->pi_getLL('LABEL_FILE');
 		$markerArray['###LABEL_TITLE###'] =  $this->pi_getLL('LABEL_TITLE');
@@ -1158,29 +1185,27 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		$hiddenFields = '<input type="hidden" name="saveUID" value="'.$record['uid'].'" />';
  		$markerArray['###HIDDENFIELDS###'] = $hiddenFields;
 		$markerArray =$markerArray + $this->substituteLangMarkers($formCode);
-		
+
 		$markerArray['###BUTTON_CONFIRM###'] =$this->cObj->stdWrap('<input name="editok" type="submit" value="'.$this->pi_getLL('BUTTON_CONFIRM').'"',$this->conf['filelist.']['renderFileEdit.']['button_confirm.']);
 		$markerArray['###CANCEL###']=$this->cObj->stdWrap('<input name="cancelEdit" type="submit" value="'.$this->pi_getLL('CANCEL').'">',$this->conf['filelist.']['renderFileEdit.']['button_cancel.']);
 
 		return tslib_cObj::substituteMarkerArray($formCode, $markerArray);
 	}
-	
+
  	/**
-	 * renderCategoryTreeCategory
-	 * @author	stefan
-	 * 
-	 * @param	string	$sel_class 	(tree_selectedCats / tree_unselectedCats / ﻿tree_selectedNoCats ..)
-	 * @param	array	$dataArray	controls for the tree 
-	 * @param	string	$title		title of the category wrapped in a link
-	 * @param	string	$control	+-= signs 
-	 * @param	boolean	$alternateSubpart if true the alternative subpart is rendered
-	 * 
-	 * @return	[string]	html of the category	
-	 * 
-	 */
+ * renderCategoryTreeCategory
+ *
+ * @param	string		$sel_class 	(tree_selectedCats / tree_unselectedCats / ﻿tree_selectedNoCats ..)
+ * @param	array		$dataArray	controls for the tree
+ * @param	string		$title		title of the category wrapped in a link
+ * @param	string		$control	+-= signs
+ * @param	boolean		$alternateSubpart if true the alternative subpart is rendered
+ * @return	[string]		html of the category
+ * @author	stefan
+ */
 	function renderCategoryTreeCategory($sel_class,$dataArray,$title,$control,$subpart) {
 		$this->pi_loadLL();
-		
+
 		$this->fileContent= tsLib_CObj::fileResource($this->conf['categoryTreeAdvanced.']['templateFile']);
 		$subpart = tslib_CObj::getSubpart($this->fileContent,$subpart);
 		$markerArray = array();
@@ -1195,19 +1220,21 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  		return $this->cObj->stdWrap($content,$this->conf['categoryTreeAdvanced.']['category.']);
 	}
 
-	
+
   	/**
-	 * renderCategoryTreeCategory
-	 * @author	stefan
-	 * @return	[string]	html of the category	
-	 * 
-	 */
+ * renderCategoryTreeCategory
+ *
+ * @param	[type]		$markerArray: ...
+ * @param	[type]		$treeID: ...
+ * @return	[string]		html of the category
+ * @author	stefan
+ */
 	function renderCategoryTree($markerArray, $treeID=0) {
 		$this->pi_loadLL();
 		$this->fileContent= tsLib_CObj::fileResource($this->conf['categoryTreeAdvanced.']['templateFile']);
 		$subpart = tslib_CObj::getSubpart($this->fileContent,'###TREE###');
 		$markerArray['###LABEL_MESSAGE###']=$this->pi_getLL('LABEL_MESSAGE');
-		
+
 		$markerArray['###CATEGORY_TREE_SELECTOR###'] = $this->cObj->stdWrap ($this->pi_getLL('CATEGORY_TREE_SELECTOR'),$this->conf['categoryTreeAdvanced.']['category_tree_selector.']) ;
 		$param_array = array (
 					'tx_damfrontend_pi1[catPlus]' => null,
@@ -1220,7 +1247,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 				);
 		$this->conf['categoryTreeAdvanced.']['category_tree_selector_all.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
 		$markerArray['###CATEGORY_TREE_SELECTOR###'] .= $this->cObj->typoLink ($this->pi_getLL('CATEGORY_TREE_SELECTOR_ALL'),$this->conf['categoryTreeAdvanced.']['category_tree_selector_all.']) ;
-		
+
 		$param_array = array (
 					'tx_damfrontend_pi1[catPlus]' => null,
 					'tx_damfrontend_pi1[catEquals]' => null,

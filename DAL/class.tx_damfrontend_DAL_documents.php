@@ -45,24 +45,35 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
  *
  *
  *
- *   69: class tx_damfrontend_DAL_documents
- *  100:     function tx_damfrontend_DAL_documents()
- *  111:     function getCategoriesbyDoc($docID)
- *  136:     function checkAccess_fileRef($filePath)
- *  158:     function checkAccess($docID, $relID)
- *  183:     function getResultCount()
- *  207:     function createCatString()
- *  221:     function getDocumentFEGroups($docID, $relID)
- *  261:     function getDocument($docID)
- *  280:     function getDocumentList()
- *  365:     function getCategoriesByDoc_Rootline($docID)
- *  411:     function setFilter($filterArray)
- *  454:     function getSearchwordWhereString($searchword)
- *  466:     function evalDateError($day, $month, $year)
- *  484:     function addDocument($path, $docData='')
- *  535:     function categoriseDocument($uid, $catArray)
+ *   80: class tx_damfrontend_DAL_documents
+ *  121:     function setFullTextSearchFields($fieldlist)
+ *  131:     function tx_damfrontend_DAL_documents()
+ *  144:     function getCategoriesbyDoc($docID,$simple=false)
+ *  176:     function checkAccess_fileRef($filePath)
+ *  198:     function checkAccess($docID, $relID)
+ *  223:     function getResultCount()
+ *  251:     function checkOwnerRights($docID,$fe_user_uid)
+ *  271:     function getDocumentFEGroups($docID, $relID)
+ *  313:     function getDocument($docID)
+ *  333:     function getDocumentList($userUID=0)
+ *  488:     function getCategoriesByDoc_Rootline($docID)
+ *  534:     function setFilter($filterArray)
+ *  591:     function getSearchwordWhereString($searchword)
+ *  609:     function evalDateError($day, $month, $year)
+ *  625:     function saveMetaData($docID, $docData)
+ *  644:     function addDocument($path, $docData='')
+ *  695:     function categoriseDocument($uid, $catArray)
+ *  719:     function delete_document ($uid,$deleteFile=false, $userUID = 0)
+ *  744:     function get_FEUserName ($uid=0)
+ *  771:     function versioningCreateNewVersionPrepare($docID)
+ *  819:     function versioningCreateNewVersionExecute($docID)
+ *  958:     function versioningOverridePrepare($docID)
+ * 1001:     function versioningOverrideExecute($docID)
+ * 1045:     function delete_category ($uid, $catID)
+ * 1059:     function checkDocumentAccess($docFEGroups)
+ * 1096:     function storeDocument($docID)
  *
- * TOTAL FUNCTIONS: 15
+ * TOTAL FUNCTIONS: 26
  * (This index is automatically created/updated by the extension "extdeveval")
  *
  */
@@ -75,7 +86,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		var $searchwords;				// array of searchwords, the user might have searched for
 
 		var $conf =array();				// Configuration Array
-		
+
 
 		var $catTable = 'tx_dam_cat';
 		var $docTable = 'tx_dam';
@@ -100,13 +111,13 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		var $feuser;			// pointing to the fe user object instance - please use this instead of GLOBALS['TSFE]
 
 		/**
-		 * Sets fullTextSearchFields - in which fields should be searched
-		 *
-		 * @param string $fieldlist kommaseparated list of fields (f.e. 'title,
-		 * description')
-		 *
-		 * @return void
-		 */
+ * Sets fullTextSearchFields - in which fields should be searched
+ *
+ * description')
+ *
+ * @param	string		$fieldlist kommaseparated list of fields (f.e. 'title,
+ * @return	void
+ */
 		function setFullTextSearchFields($fieldlist) {
 			$this->fullTextSearchFields = $fieldlist;
 		}
@@ -127,6 +138,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 * includes also parent categories of the assigned categories
 	 *
 	 * @param	int		$fileUid: ...
+	 * @param	[type]		$simple: ...
 	 * @return	array		list of all categories
 	 */
 		function getCategoriesbyDoc($docID,$simple=false) {
@@ -230,9 +242,9 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	/**
 	 * checks if a user has the right for edits and deletions
 	 *
-	 * @return	true if user is allowed to edit		...
-	 * @param int $fe_user_uid UserID
-	 * @param int	$docID id of the document
+	 * @param	int		$fe_user_uid UserID
+	 * @param	int		$docID id of the document
+	 * @return	true		if user is allowed to edit		...
 	 * @author Stefan Busemann
 	 * @todo extend support for fe_groups
 	 */
@@ -240,7 +252,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$doc = $this->getDocument($docID);
 			if ($doc['tx_damfrontend_feuser_upload']==$fe_user_uid) {
 				return true;
-			} 
+			}
 			else {
 				return false;
 			}
@@ -277,7 +289,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 					$where = 'AND '.$local_table.'.uid = '.$category['uid'];
 					$select = $foreign_table.'.*';
 					$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query($select,$local_table, $mm_table, $foreign_table, $where);
-	
+
 					// adding groups from the database to the GroupArray - check if group is already in list
 					while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))
 					{
@@ -285,7 +297,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 						{
 							$grouparray[] = $row;
 						}
-	
+
 					}
 				}
 			}
@@ -315,6 +327,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 * selection is filterd by the given list of categories and the
 	 * access restrictions  -> relation "READ ACCESS" defined for the document
 	 *
+	 * @param	[type]		$userUID: ...
 	 * @return	[array]		returns an array which contains all selected records
 	 */
 		function getDocumentList($userUID=0) {
@@ -325,25 +338,25 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$filter = ' AND '.$this->docTable.'.deleted = 0  AND '.$this->docTable.'.hidden = 0';
 			$filter .= ' AND ('.$this->docTable.'.starttime > '.time().' OR '.$this->docTable.'.starttime = 0)';
 			$filter .= ' AND ('.$this->docTable.'.endtime < '.time().' OR '.$this->docTable.'.endtime = 0)';
-			
+
 			if ($this->conf['useLatestList']==true) {
 					// query without using categories and restricting via latest date.
-					
+
 					// get the date of the last record, that the list can be limited via a where condition, then is the list later sortable from the fe_user
 					// otherwise, if the fe_user would sort by date asc not the last x files would be shown, but the oldest one
-				
+
 				/**$select= $this->conf['latestField'];
 				$from=$this->docTable;
-				$where.= ' 1=1  '.$filter;				
-			
+				$where.= ' 1=1  '.$filter;
+
 				$select=$this->conf['latestField'];
 				$filter .= $this->additionalFilter;
-		
+
 				$from=$this->docTable;
-				$where.= ' 1=1  '.$filter;**/				
+				$where.= ' 1=1  '.$filter;**/
 			}
 			else {
-				
+
 				if (count($this->categories)) {
 
 					/*
@@ -373,14 +386,14 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				 *
 				 */
 				foreach($this->categories as $number => $catList) {
-							
+
 						if ($this->searchAllCats === true) {
 							$catString = "1=1";
 						}
 						else {
 							$catString = '( '.$this->catTable.'.uid='.implode(' OR '.$this->catTable.'.uid=',$catList).')';
 						}
-						
+
 						if  ($this->conf['useTreeAndSelection'] == 1) {
 							if ($z != count($this->categories)-1) {
 								if (!count($queryText)) {
@@ -398,7 +411,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 								}
 									// list is having more then one "AND" criteria
 								else {
-										// filter is added in case there is only one cat selected 
+										// filter is added in case there is only one cat selected
 									$where = $catString.$filter;
 								}
 								$select = ' DISTINCT '.$this->docTable.'.*';
@@ -415,7 +428,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 					if  ($this->conf['useTreeAndSelection'] == 0) {
 						$where .= $filter;
 					}
-				} 
+				}
 				else {
 					// query without using categories
 					$filter .= $this->additionalFilter;
@@ -424,9 +437,9 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 					$where.= ' 1=1 '.$filter;
 				}
 			}
-			
-			
-			// TODO: is there a reason not to define SELECT here? 
+
+
+			// TODO: is there a reason not to define SELECT here?
 			// TODO: do not use '*' but whitlist defined via TypoScript
 			$select = ' DISTINCT '.$this->docTable.'.*';
 
@@ -602,8 +615,13 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				}
 		}
 
-
-
+	/**
+	 * [Describe function...]
+	 *
+	 * @param	[type]		$docID: ...
+	 * @param	[type]		$docData: ...
+	 * @return	[type]		...
+	 */
 		function saveMetaData($docID, $docData) {
 			foreach( $docData as $key => $value ) {
 				$DATA[$key] = $value;
@@ -616,13 +634,13 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 
 
 		/**
-		 * adding an document to the index
-		 *
-		 * @param	[string]	$path: path where file is stored
-		 * @param	[array]		$docData: array of the document data
-		 * @return	[int]		$newID: new UID of the dam_record
-		 * @todo get the pid for the indexer = media folder
-		 */
+ * adding an document to the index
+ *
+ * @param	[string]		$path: path where file is stored
+ * @param	[array]		$docData: array of the document data
+ * @return	[int]		$newID: new UID of the dam_record
+ * @todo get the pid for the indexer = media folder
+ */
 		function addDocument($path, $docData='') {
 
 			// the indexer gets the metadata from the document
@@ -662,7 +680,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			// executing the insert operation for the database
 			$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_dam', $newrecord);
 			// FIXME check if all fields exist, because a user can enter his own fields (mapping of fe_user data to dam records)
-			// FIXME insert error handling, if $newID is empty or 0 
+			// FIXME insert error handling, if $newID is empty or 0
 			$newID = $GLOBALS['TYPO3_DB']->sql_insert_id();
 			return $newID;
 		}
@@ -678,7 +696,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			if (!intval($uid) || !is_array($catArray)) die('Parametererror in categoriseDocument: Check DatabaseID:' . $uid);
 			// clear all cats
 			$GLOBALS['TYPO3_DB']->exec_DELETEquery($this->mm_Table, 'uid_local ='.$uid);
-			
+
 			foreach($catArray as $catID) {
 				if (!intval($catID)) die('one categoryID was not delivered as Integer');
 				$newrow = array(
@@ -692,11 +710,12 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		}
 
 		/**
-		 *
-		 * @author stefan
-		 * @param int $uid UID of the dam entry, which should be created
-		 * @return boolean true, if the deletion was sucessful
-		 */
+ * @param	int		$uid UID of the dam entry, which should be created
+ * @param	[type]		$deleteFile: ...
+ * @param	[type]		$userUID: ...
+ * @return	boolean		true, if the deletion was sucessful
+ * @author stefan
+ */
 		function delete_document ($uid,$deleteFile=false, $userUID = 0) {
 			$doc = $this->getDocument($uid)	;
 			if ($doc['tx_damfrontend_feuser_upload']==$userUID) {
@@ -709,13 +728,19 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				$fields_values=array('deleted'=>'1');
 				$res = $GLOBALS['TYPO3_DB']->exec_UPDATEquery($table,$where,$fields_values,$no_quote_fields=FALSE);
 				return $res ;
-			} 
+			}
 			else {
 				return false;
 			}
 
 	}
 
+	/**
+	 * [Describe function...]
+	 *
+	 * @param	[type]		$uid: ...
+	 * @return	[type]		...
+	 */
 		function get_FEUserName ($uid=0) {
 
 			if ($uid >0) {
@@ -737,17 +762,19 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 
 
 		/**
-		 *	 if a file is added twice to the system, a new version is genreated
-		 * 	@author stefan
-		 *	@param int $docID ID of the file which should be versionized
-		 */
+ * if a file is added twice to the system, a new version is genreated
+ *
+ * @param	int		$docID ID of the file which should be versionized
+ * @return	[type]		...
+ * @author stefan
+ */
 		function versioningCreateNewVersionPrepare($docID) {
-			
+
 				// ---- getting the new record
 			$newDoc = $this->getDocument($docID);
 			$filename = $GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
 			$filetype = $newDoc['file_type'];
-			
+
 				// ---- get the latest version id of an existing old file
 			$FIELDS = 'MAX(tx_damfrontend_version),uid, tx_damfrontend_version';
 			$TABLE = 'tx_dam';
@@ -761,7 +788,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			if ($oldversion == '') $oldversion = 0;
 				// store the ID of the old record, so that if can be overwritten in the last step
 			$GLOBALS['TSFE']->fe_user->setKey('ses','versioningNewVersionID',$oldID);
-			
+
 				// ---- getting rest of the old record
 			$oldDoc = $this->getDocument($oldID);
 			$newVersion = $oldversion +1;
@@ -783,13 +810,15 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		}
 
 		/**
-		 * 	if a file is added twice to the system, a new version is genreated
-		 * 	@author stefan
-		 *	@param int $docID ID of the file which should be versionized
-		 */
+ * if a file is added twice to the system, a new version is genreated
+ *
+ * @param	int		$docID ID of the file which should be versionized
+ * @return	[type]		...
+ * @author stefan
+ */
 		function versioningCreateNewVersionExecute($docID) {
 			$newDoc = $this->getDocument($docID);
-						
+
 			$filename = $GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
 			$filetype = $newDoc['file_type'];
 			$filepath = $newDoc['file_path'];
@@ -802,12 +831,12 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			copy(PATH_site.$newDoc['file_path'].$newDoc['file_name'],$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$new_filename);
 				// delete the temp file
 			unlink($newDoc['file_path'].$newDoc['file_name']);
-			
+
 				//copying the old data to the new id
 				// record with the old file
 			$oldDoc = $this->getDocument($GLOBALS['TSFE']->fe_user->getKey('ses','versioningNewVersionID'));
 
-			// set the record of the old version to new ID 
+			// set the record of the old version to new ID
 			$oldID = $oldDoc['uid'];
 			$oldDoc['uid']=$docID;
 			$TABLE = 'tx_dam';
@@ -823,11 +852,11 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$newDoc['tx_damfrontend_version']= $newversion;
 			$newDoc['date_mod']=time();
 			$newDoc['crdate']=time();
-			
+
 			$TABLE = 'tx_dam';
 			$WHERE = 'uid = '.$oldID;
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$newDoc);
-			
+
 			// change the categories UID
 			$newDoc = array();
 			$newDoc[uid_local]='-'.$GLOBALS['TSFE']->fe_user->user['uid'];
@@ -841,25 +870,25 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$TABLE = 'tx_dam_mm_cat';
 			$WHERE = 'uid_local = '.$docID;
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$newDoc);
-			
+
 			// change the categories UID
 			$newDoc = array();
 			$newDoc[uid_local]=$docID;
 			$TABLE = 'tx_dam_mm_cat';
 			$WHERE = 'uid_local = -'.$GLOBALS['TSFE']->fe_user->user['uid'];
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$newDoc);
-			
+
 			$GLOBALS['TSFE']->fe_user->setKey('ses','versioningNewVersionID','');
 			$GLOBALS['TSFE']->fe_user->setKey('ses','versioning','');
 			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFilePath','');
-			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFileName','');	
-			
+			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFileName','');
+
 			return $oldID;
 
 		}
-		
+
 		/**
-		 * 	not finished 
+		 * 	not finished
 		 * 	restores the last version of a versionized file
 		 * 	@author stefan
 		 *	@param int $docID ID of the doc which should be rollbacked
@@ -867,16 +896,16 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 //		function rollbackVersion($docID) {
 //				// ---- getting the current record
 //			$currentDoc = $this->getDocument($docID);
-//			
+//
 //				// save the file information of the newly uploaded file
 //			$filename = $currentDoc['file_name'];
 //			$filetype = $currentDoc['file_type'];
 //			$filepath = $currentDoc['file_path'];
-//			
+//
 //			if ($currentDoc['tx_damfrontend_version']==0) {
 //				return false; // record is not versionized
 //			}
-//			
+//
 //			// ---- get the version id of the old file
 //			$FIELDS = 'MAX(tx_damfrontend_version),uid, tx_damfrontend_version';
 //			$TABLE = 'tx_dam';
@@ -889,17 +918,17 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 //			}
 //			if ($oldversion == '') {
 //				return false; //no versionzid record is found
-//			} 
+//			}
 //			else {
 //					// ---- getting rest of the old record
 //				$oldDoc = $this->getDocument($oldID);
 //					// restore all old values
-//	
+//
 //					// rename the old filename to the current file to delete filename
 //				rename(PATH_site.$filepath.$filename,PATH_site.$filepath.$filename.'_delete');
-//				
+//
 //				rename(PATH_site.$oldDoc['file_path'].$oldDoc['file_name'],PATH_site.$filepath.$filename);
-//				
+//
 //					//copying the old data to the new id
 //					// record with the old file
 //				$oldDoc['uid']=$docID;
@@ -909,27 +938,28 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 //				$TABLE = 'tx_dam';
 //				$WHERE = 'uid = '.$oldID;
 //				$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$oldDoc);
-//	
+//
 //				$currentDoc['uid'] = $oldID;
-//				$currentDoc['file_name']=$filename.'_delete';				
+//				$currentDoc['file_name']=$filename.'_delete';
 //				$WHERE = 'uid = '.$docID;
 //				$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$currentDoc);
-//									
+//
 //				return true;
 //			}
 //		}
-		
+
 		/**
-		 * returns the UID of the record which should be overwritten
-		 * 
-		 * @author stefan
-		 *
-		 */
+ * returns the UID of the record which should be overwritten
+ *
+ * @param	[type]		$docID: ...
+ * @return	[type]		...
+ * @author stefan
+ */
 		function versioningOverridePrepare($docID) {
-			
+
 				// getting the new record
 			$newDoc = $this->getDocument($docID);
-			
+
 			$filename = $GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
 				// getting the old dataset id
 			$FIELDS = '*';
@@ -940,16 +970,16 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				$oldDoc = $row;
 			}
-				
+
 				// store the ID of the old record, so that if can be overwritten in the last step
 			$GLOBALS['TSFE']->fe_user->setKey('ses','versioningOverrideID',$oldDoc['uid']);
-						
+
 			$oldDoc['tstamp']=time();
 			$oldDoc['file_name']=$newDoc['file_name'];
 			$oldDoc['file_path']=$newDoc['file_path'];
 			$oldDoc['date_cr']=$newDoc['date_cr'];
 			$oldDoc['date_mod']=$newDoc['date_mod'];
-			
+
 				// set deleted to 1, that the new record (not yet saved thru the user) is not shown in the FE
 			$oldDoc['deleted']=1;
 			$oldDoc['uid']=$docID;
@@ -958,29 +988,35 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$WHERE = 'uid = '.$docID;
 				// TODO insert error handling
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$oldDoc);
-						
+
 			return $docID;
 		}
-		
+
+	/**
+	 * [Describe function...]
+	 *
+	 * @param	[type]		$docID: ...
+	 * @return	[type]		...
+	 */
 		function versioningOverrideExecute($docID) {
-			
+
 			$newDoc = $this->getDocument($docID);
-			
+
 			unlink($GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName'));
 				// FIXME insert error handling
-				
+
 				// copy the new file from temp dir to destionation dir
 			copy(PATH_site.$newDoc['file_path'].$newDoc['file_name'],$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName'));
 				// delete the temp file
 			unlink($newDoc['file_path'].$newDoc['file_name']);
-			
+
 				// update the new file
 			$newDoc['file_name']=$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
 			$newDoc['file_path']=$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath');
 				// set deleted to 1, that the new record (not yet saved thru the user) is not shown in the FE
 			$newDoc['deleted']=0;
 			$newDoc['uid']=$GLOBALS['TSFE']->fe_user->getKey('ses','versioningOverrideID');
-			
+
 			$TABLE = 'tx_dam';
 			$WHERE = 'uid = '.$GLOBALS['TSFE']->fe_user->getKey('ses','versioningOverrideID');
 				// FIXME insert error handling
@@ -991,21 +1027,21 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$WHERE = 'uid = '.$docID;
 				// FIXME insert error handling
 			$GLOBALS['TYPO3_DB']->exec_DELETEquery($TABLE,$WHERE);
-			
+
 			$GLOBALS['TSFE']->fe_user->setKey('ses','versioningNewVersionID','');
 			$GLOBALS['TSFE']->fe_user->setKey('ses','versioning','');
 			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFilePath','');
-			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFileName','');	
-			
+			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFileName','');
+
 			return 1;
 		}
-		
+
 		/**
-		 * 	@author stefan
-		 *	@param int $uid: uid of the dam record
-		 *	@param int $catID category which should be deleted
-		 *
-		 */
+ * @param	int		$uid: uid of the dam record
+ * @param	int		$catID category which should be deleted
+ * @return	[type]		...
+ * @author stefan
+ */
 		 function delete_category ($uid, $catID) {
 			if (!intval($uid)) die('Parametererror in delete_category: Check DatabaseID:' . $uid);
 			if (!intval($catID)) die('one categoryID was not delivered as Integer');
@@ -1014,50 +1050,51 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		}
 
 	 /**
-	 * Checks if the FE_User has Access to the Document
-	 * @author Stefan Busemann
-	 * @param	string		$docFEGroup -> fe_group the document is restricted to
-	 * @return	bool	true if fe_user has access, false if not
-	 */
+ * Checks if the FE_User has Access to the Document
+ *
+ * @param	string		$docFEGroup -> fe_group the document is restricted to
+ * @return	bool		true if fe_user has access, false if not
+ * @author Stefan Busemann
+ */
 		function checkDocumentAccess($docFEGroups) {
-			
+
 			// if no fe group is asigned, access is given
 			if (!$docFEGroups) {
 				return true;
-				//FIXME must check if option showOnlyFilesWithPermission = 1 is set, then here must be returned False 
+				//FIXME must check if option showOnlyFilesWithPermission = 1 is set, then here must be returned False
 		}
-			
+
 			$access = false;
-			
+
 			// get all usergroups of the fe_user
 			$feuserGroups=$GLOBALS['TSFE']->fe_user->groupData['uid'];
-			
+
 			// if fe_user is not assigned to group return false, because a fe_user has to be at least member of one group
 			if (!is_array($feuserGroups)) return false;
-			
+
 			$docFEGroups = explode(',',$docFEGroups);
 			// check if at least one fe_group has access to file
 			foreach ($feuserGroups as $group ){
-				
+
 				if (array_search($group,$docFEGroups, true)===false) {
 					//if the array search founds no value - nothing is to do
-					// TODO is there a more elegantly way for this construction? - stefan 
+					// TODO is there a more elegantly way for this construction? - stefan
 				} else {
 					$access = true;
 				}
-			}  
+			}
 			return $access;
 		}
-	
+
 		/**
-		*	saves an uploaded document in the datastore and cares for versioning
-		* 
-		* 	@return void
-		*	@author stefan
-		*
-		*/
+ * saves an uploaded document in the datastore and cares for versioning
+ *
+ * @param	[type]		$docID: ...
+ * @return	void
+ * @author stefan
+ */
 		function storeDocument($docID) {
-		
+
 			// handle versioning
 			switch ($GLOBALS['TSFE']->fe_user->getKey('ses','versioning')){
 				case 'override':
@@ -1067,19 +1104,19 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 					$this->versioningCreateNewVersionExecute($docID);
 					break;
 				default:
-						
+
 						// correct filename & filepath
 					$newDoc = $this->getDocument($docID);
-					
+
 						// copy file to the final destination
 					$uploadFile = $GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
-					
+
 						// FIXME insert error handling
 					copy(PATH_site.$newDoc['file_path'].$newDoc['file_name'],$uploadFile);
 						// delete the temp file
 					unlink($newDoc['file_path'].$newDoc['file_name']);
-		
-						// set the dam record info the the final state	
+
+						// set the dam record info the the final state
 					$newDoc['deleted']=0;
 					$newDoc['file_name']=$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
 					$newDoc['file_path']=$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath');
@@ -1087,12 +1124,12 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 					$GLOBALS['TSFE']->fe_user->setKey('ses','versioningNewVersionID','');
 					$GLOBALS['TSFE']->fe_user->setKey('ses','versioning','');
 					$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFilePath','');
-					$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFileName','');	
-										
+					$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFileName','');
+
 					$TABLE = 'tx_dam';
 					$WHERE = 'uid = '.$docID;
 					$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$newDoc);
-					break;	
+					break;
 			}
 		}
 	}

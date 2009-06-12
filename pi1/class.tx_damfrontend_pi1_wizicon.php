@@ -35,11 +35,11 @@
 class tx_damfrontend_pi1_wizicon {
 
 					/**
-					 * Processing the wizard items array
-					 *
-					 * @param	array		$wizardItems: The wizard items
-					 * @return	Modified array with wizard items
-					 */
+ * Processing the wizard items array
+ *
+ * @param	array		$wizardItems: The wizard items
+ * @return	Modified		array with wizard items
+ */
 					function proc($wizardItems)	{
 						global $LANG;
 
@@ -56,14 +56,14 @@ class tx_damfrontend_pi1_wizicon {
 					}
 
 					/**
-					 * Reads the [extDir]/locallang.xml and returns the $LOCAL_LANG array found in that file.
-					 *
-					 * @return	The array with language labels
-					 */
+ * Reads the [extDir]/locallang.xml and returns the $LOCAL_LANG array found in that file.
+ *
+ * @return	The		array with language labels
+ */
 					function includeLocalLang()	{
 						$llFile = t3lib_extMgm::extPath('dam_frontend').'locallang_tca.xml';
 						$LOCAL_LANG = t3lib_div::readLLXMLfile($llFile, $GLOBALS['LANG']->lang);
-						
+
 						return $LOCAL_LANG;
 					}
 				}

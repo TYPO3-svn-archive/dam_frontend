@@ -42,19 +42,26 @@
  *
  *
  *
- *   62: class tx_damfrontend_catTreeView extends tx_dam_selectionCategory
- *   75:     function tx_damfrontend_catTreeView()
- *  112:     function init($treeID='')
- *  127:     function expandNext($id)
- *  139:     function initializePositionSaving()
- *  160:     function savePosition()
- *  174:     function wrapTitle($title,$row,$bank=0)
- *  207:     function PM_ATagWrap($icon,$cmd,$bMark='treeroot')
- *  226:     function getControl($title,$row)
- *  287:     function printTree($treeArr='')
- *  346:     function getBrowsableTree()
+ *   74: class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory
+ *   91:     function tx_damfrontend_categorisationTree()
+ *  127:     function init($treeID='', $plugin=null)
+ *  145:     function expandNext($id)
+ *  157:     function initializePositionSaving()
+ *  179:     function expandTreeLevel($levelDeepth=0)
+ *  197:     function savePosition()
+ *  212:     function wrapTitle($title,$row,$bank=0)
+ *  244:     function PM_ATagWrap($icon,$cmd,$bMark='treeroot')
+ *  267:     function PMicon($row,$a,$c,$nextCount,$exp)
+ *  290:     function printTree($treeArr='')
+ *  352:     function getTitleStr($row, $titleLen = 30)
+ *  366:     function getBrowsableTree()
  *
- * TOTAL FUNCTIONS: 10
+ *              SECTION: tree data buidling
+ *  447:     function getTree($uid, $depth=999, $depthData='',$blankLineCode='',$subCSSclass='')
+ *  533:     function getRootIcon($rec)
+ *  545:     function getIcon($row)
+ *
+ * TOTAL FUNCTIONS: 15
  * (This index is automatically created/updated by the extension "extdeveval")
  *
  */
@@ -75,7 +82,7 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 	var $cObj;                       						// for RealURL
 	var $conf;												// configuration array
 	var $mediaFolder;										// ID of the Folder, which contains the dam records
-		
+
 	/**
 	 * prepares the category tree
 	 *
@@ -114,6 +121,7 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 	 * a frontend user is used to store the treestate data
 	 *
 	 * @param	[type]		$treeID: ...
+	 * @param	[type]		$plugin: ...
 	 * @return	void
 	 */
  	function init($treeID='', $plugin=null) {
@@ -165,8 +173,8 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 	/**
 	 * expand the tree for the first view
 	 *
-	 *	@param int $levelDeepth defines how deep the tree is expanded
-	 * 	@return	void
+	 * @param	int		$levelDeepth defines how deep the tree is expanded
+	 * @return	void
 	 */
  	function expandTreeLevel($levelDeepth=0) {
 			// expand only if tree was not expanded yet and level > 0
@@ -175,12 +183,12 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 				$this->stored[$mount][$ID]=1;
 				$this->savePosition();
 				// TODO support more than one level
-				$this->user->setKey("ses",$this->treeID.'expandTreeLevel', 1);			
-			}	
+				$this->user->setKey("ses",$this->treeID.'expandTreeLevel', 1);
+			}
 		}
  	}
- 	
- 	
+
+
 	/**
 	 * saves treestate inside of the fe_user Session Data
 	 *
@@ -257,18 +265,18 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 	 * @see t3lib_pageTree::PMicon()
 	 */
 	function PMicon($row,$a,$c,$nextCount,$exp)	{
-		
+
 		$renderElement = $nextCount ? ($exp?'treeMinusIcon':'treePlusIcon') : 'treeJoinIcon';
-		
-		$BTM = ($a==$c)?'Bottom':'';		
+
+		$BTM = ($a==$c)?'Bottom':'';
 		$icon=$this->cObj->IMAGE($this->conf['categorisationTree.'][$renderElement.$BTM.'.']);
-				
+
 		if ($nextCount)	{
 			$cmd=$this->bank.'_'.($exp?'0_':'1_').$row['uid'].'_'.$this->treeName;
 			$bMark=($this->bank.'_'.$row['uid']);
 			$icon = $this->PM_ATagWrap($icon,$cmd,$bMark);
 		}
-		
+
 		return $icon;
 	}
 
@@ -356,14 +364,14 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 	 * @return	[arr]		Array of the treeelements
 	 */
 	function getBrowsableTree() {
-		
+
 			// Get stored tree structure AND updating it if needed according to incoming PM GET var.
 		$this->initializePositionSaving();
 
 			// Init done:
 		$titleLen=intval($this->BE_USER->uc['titleLen']);
 		$treeArr=array();
-	
+
 			// Traverse mounts:
 		foreach($this->MOUNTS as $idx => $uid)	{
 
@@ -378,14 +386,14 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 
 				// Set PM icon for root of mount:
 			$cmd=$this->bank.'_'.($isOpen?"0_":"1_").$uid.'_'.$this->treeName;
-			
+
 			if ($isOpen) {
 				$icon=$this->cObj->IMAGE($this->conf['categorisationTree.']['treeMinusIcon.']);
 			}
 			else {
 				$icon=$this->cObj->IMAGE($this->conf['categorisationTree.']['treePlusIcon.']);
 			}
-			
+
 			$firstHtml= $this->PM_ATagWrap($icon,$cmd);
 
 				// Preparing rootRec for the mount
@@ -476,7 +484,7 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 			$this->ids_hierarchy[$depth][] = $row['uid'];
 			$this->orig_ids_hierarchy[$depth][] = $row['_ORIG_uid'] ? $row['_ORIG_uid'] : $row['uid'];
 
-			
+
 				// Make a recursive call to the next level
 			$HTML_depthData = $depthData.$this->cObj->IMAGE($this->conf['categorisationTree.']['treeNavIcons.'][$LN.'.']);
 			if ($depth>1 && $this->expandNext($newID) && !$row['php_tree_stop'])	{
@@ -526,14 +534,14 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 		$this->rootIconIsSet=true;
 		return $this->wrapIcon($this->cObj->IMAGE($this->conf['categorisationTree.']['treeRootIcon.']),$rec);
 	}
-	
+
 		/**
-	 * Get icon for the row.
-	 * If $this->iconPath and $this->iconName is set, try to get icon based on those values.
-	 *
-	 * @param	array		Item row.
-	 * @return	string		Image tag.
-	 */
+ * Get icon for the row.
+ * If $this->iconPath and $this->iconName is set, try to get icon based on those values.
+ *
+ * @param	array		Item row.
+ * @return	string		Image tag.
+ */
 	function getIcon($row) {
 			$icon = $this->cObj->IMAGE($this->conf['categorisationTree.']['treeCatIcon.']);
 			$icon = $this->wrapIcon($icon,$row);
