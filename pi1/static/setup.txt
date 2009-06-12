@@ -8,7 +8,7 @@ plugin.tx_damfrontend_pi1 {
 	filter {
 		errorWrap = {$plugin.tx_damfrontend_pi1.filter.errorWrap}
 	}
-	useAdvancedCategoryTree = 0
+	
 		#if more than one tree element at a page is use, then a AND selection is used between the trees
 	useTreeAndSelection = 1 
 	categoryTree {
@@ -80,57 +80,7 @@ plugin.tx_damfrontend_pi1 {
 		categoryTitleNoAccess.wrap = <span style="color: #aaa">|</span>
 	}
 	
-	
-	categoryTreeAdvanced {
-		templateFile = EXT:dam_frontend/pi1/template_tree.html
-		useLanguageOverlay = 1
-		# if = 1 then a second subpart (TREE_ELEMENT_2) is used to render the even rows
-		category.useAlternatingSubpart = 1
-		#option split, if you want to use different markers for each row of a tree
-		category.marker =  ###TREE_ELEMENT### |*| ###TREE_ELEMENT_2### || ###TREE_ELEMENT### |*|		
-		#marker if you want don't want to use alternating rows for the tree 
-		category.marker_single =  ###TREE_ELEMENT###
-		
-		# 1 to show the root category (tree name) 
-		showRootCategory=0
-		
-		# mark categories which a user has no download right (set visual stylse via selectionStatus.no_access)
-		markNotAllowedCategories = 1 
-		categoryTitle.treePlus.wrap =  <span class="tree_open">|</span>
-		categoryTitle.treeMinus.wrap =  <span class="tree_close">|</span>
-		categoryTitle.treeNoControl.wrap =  <span class="tree_noControl">|</span>
-		categoryTitle.no_cat_access.wrap =  <span class="tree_noControl">|</span>
-		categoryTitle.length = 30
-		categoryTitle.wrap = |
-		
-		
-		categorySelection {
-			selected.wrap = |
-			unselected.wrap = |
-			partlySelected.wrap = |
-			link = TYPOLINK
-			selectionStatus.tree_selectedCats=checkbox_green
-			selectionStatus.tree_unselectedCats=checkbox	
-			selectionStatus.tree_selectedAllCats=checkbox_green	
-			selectionStatus.tree_selectedPartlyCats=checkbox_grey		
-			selectionStatus.tree_selectedNoCats=checkbox			
-			selectionStatus.tree_no_access=no_access			
-		}
-		
-		category_tree_selector.wrap = |&nbsp;
-		category_tree_selector_all = TYPOLINK
-		category_tree_selector_all {
-			parameter.data = TSFE:id
-			wrap = |&nbsp;/&nbsp;
-		}
-		category_tree_selector_none = TYPOLINK
-		category_tree_selector_none {
-			parameter.data = TSFE:id
-			wrap = |&nbsp;
-		}
-		treeLevelCSS.paddingLeft = 16
-		wrap = |
-	}
+
 	
 	# renderCategoryTree is depreceated. Please use in future categoryTree
 	renderCategoryTree < .categoryTree
@@ -724,57 +674,7 @@ plugin.tx_damfrontend_pi1 {
 			padding-right: 10px;
 		}
 		
-		/******************************** Advanced category tree */
-		.cattree {
-			width:300px;
-		}
 		
-		.treeBgWhite {
-		
-		}
-		
-		.treeBgGrey {
-			background:lightgrey;
-		}
-				
-		.checkbox_green a {
-			display:block;
-			float:left;
-			padding-left:20px;
-			background:url(typo3conf/ext/dam_frontend/res/images/checkbox_green.gif) no-repeat left top;
-		}
-		
-		.checkbox a{
-			display:block;
-			float:left;
-			padding-left:20px;
-			background:url(typo3conf/ext/dam_frontend/res/images/checkbox.gif) no-repeat left top;
-		}
-
-		.checkbox_grey a{
-			display:block;
-			float:left;
-			padding-left:20px;
-			background:url(typo3conf/ext/dam_frontend/res/images/checkbox_grey.gif) no-repeat left top;
-		}
-		
-		.no_access {
-			
-		}
-		
-		.tree_close {
-			padding-left: 17px;
-			background:url(typo3conf/ext/dam_frontend/res/images/tree_close.gif) no-repeat left top;
-		}
-		
-		.tree_open {
-			padding-left: 17px;
-			background:url(typo3conf/ext/dam_frontend/res/images/tree_open.gif) no-repeat left top;
-		}
-		.tree_noControll {
-			padding-left: 17px;
-		}
-
 		
 		
 
