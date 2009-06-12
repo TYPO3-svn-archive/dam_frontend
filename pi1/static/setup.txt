@@ -759,7 +759,7 @@ plugin.tx_damfrontend_pi1 {
 		}
 		
 		.no_access {
-		
+			
 		}
 		
 		.tree_close {

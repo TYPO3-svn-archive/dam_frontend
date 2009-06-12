@@ -14,6 +14,7 @@
 			<label index="tx_damtree_fe_groups_all">all groups have access</label>
 			<label index="tx_damtree_fe_groups_none">no group has access</label>
 			<label index="tx_damtree_fe_groups">----- > single groups --> choose below -----</label>		
+			<label index="tx_damfrontend_feuser_upload">no owner is set</label>		
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tt_content.list_type_pi1">DAM Frontend</label>
@@ -24,6 +25,7 @@
 			<label index="tx_damtree_fe_groups_all">alle Gruppen habe Zugriff</label>
 			<label index="tx_damtree_fe_groups_none">keine Gruppe hat Zugriff</label>
 			<label index="tx_damtree_fe_groups">----- > einzelne Gruppen --> bitte unten wählen -----</label>		
+			<label index="tx_damfrontend_feuser_upload">kein Eigentümer festgelegt</label>		
 		</languageKey>
 	</data>
 </T3locallang>

@@ -185,10 +185,10 @@ $tempColumns = Array (
 	"tx_damfrontend_feuser_upload" => Array (
 		"exclude" => 0,
 		"label" => "LLL:EXT:dam_frontend/locallang_tca.php:tx_damfrontend_feuser_upload",
-		"items" => Array(
-				Array("LLL:EXT:dam_frontend/locallang_db.php:tx_damtree_fe_groups", '-1')
-		),
 		"config" => Array (
+			"items" => Array(
+					Array("LLL:EXT:dam_frontend/locallang_db.php:tx_damfrontend_feuser_upload", null)
+			),
 			"type" => "select",
 			"internal_type" => "db",
 			"foreign_table" => "fe_users",
