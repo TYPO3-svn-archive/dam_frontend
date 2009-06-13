@@ -131,7 +131,7 @@
 			<label index="desc">Absteigend</label>
 			<label index="submit_button_label">Abesenden!</label>
 			<label index="noSingleID">Sie haben noch keine Dokument zur Detailansicht ausgewählt</label>
-			<label index="noDocInCat">Keine Dokumente fÃ¼r die derzeitige Auswahl gefunden</label>
+			<label index="noDocInCat">Keine Dokumente für die derzeitige Auswahl gefunden</label>
 			<label index="noCatSelected">keine Kategorien ausgewählt</label>
 			<label index="noUserLoggedIn">derzeit ist kein User eingeloggt!</label>
 			<label index="noFilterStates">es existieren keine gespeicherten Filtervorlagen</label>
@@ -169,7 +169,7 @@
 			<label index="LINK_HEADER">Link</label>
 			<label index="no_title">Kein Titel</label>
 			<label index="REQUEST_FORM_LEGEND">Requestform</label>
-			<label index="REQUEST_FORM_TEXT">Bitte bestaetigen Sie uns Ihre Anforderung der Spezialinformation:</label>
+			<label index="REQUEST_FORM_TEXT">Bitte bestaetigen Sie uns Ihre Anforderung:</label>
 			<label index="REQUEST_FORM_ADRESS_HEADER">Bitte geben Sie Ihre E-Mail Adresse und Versandanschrift an: </label>
 			<label index="REQUEST_FORM_FIRST_NAME_DESCRIPTION">First Name: </label>
 			<label index="REQUEST_FORM_FIRST_NAME">First Name: </label>
@@ -178,13 +178,13 @@
 			<label index="CATEGORISATION_TEXT_DESCRIPTION">Beschreibung</label>
 			<label index="CATEGORISATION_TEXT_SEND">Auswahl bestaetigen</label>
 			<label index="CATEGORISATION_TREE_NAME">Kategorisierung</label>
-			<label index="CATEGORY_TREE_SELECTOR">auwählen</label>
+			<label index="CATEGORY_TREE_SELECTOR">auswählen</label>
 			<label index="CATEGORY_TREE_SELECTOR_ALL">alle</label>
 			<label index="CATEGORY_TREE_SELECTOR_NONE">keine</label>
 			<label index="MAIL_REQUES_TEXT1">Der Portal Benutzer</label>
 			<label index="MAIL_REQUES_TEXT2">hat folgendes angefordert:</label>
 			<label index="MAIL_REQUES_TEXT3">the user's data</label>
-			<label index="TITLE_FILEUPLOAD">Dateiinformationen ergÃ¤nzen</label>
+			<label index="TITLE_FILEUPLOAD">Dateiinformationen ergänzen</label>
 			<label index="LABEL_TITLE">Titel</label>
 			<label index="LABEL_COPYRIGHT">Copyright</label>
 			<label index="LABEL_AUTHOR">Autor</label>

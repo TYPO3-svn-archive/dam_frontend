@@ -1,3 +1,4 @@
+DEVELOPMENT VERSION for trunk (currently 0.5)
 
 DAM Frontend is providing a powerful possibilty to select files out of the dam.
 
@@ -18,10 +19,9 @@ You have to unset it for every field you do not want htmlSpecialChars used. Be a
 XSS-Issues without htmlSpecialChars = 1!
 
 Roadmap:
-* support for all access fields (categories, dam entries)
 * language overlay for dam entries
 
 Development Plattform:
 http://forge.typo3.org/projects/show/extension-dam_frontend
 
-release 0.3.0 / .2008
+release 0.4.2 / 13.6.2009

@@ -322,6 +322,9 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		unset ($this->piVars['catMinus_Rec']);
 		unset ($this->piVars['catAll']);
 		unset ($this->piVars['catEquals']);
+		unset ($this->piVars['confirmDeleteUID']);
+		unset ($this->piVars['editUID']);
+		unset ($this->piVars['catEditUID']);
 		if ($resultcount % $listLength==0) $noOfPages = $noOfPages-1+$limiter;
 
 			for ($z = 0; $z <= $noOfPages; $z++) {

@@ -136,7 +136,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 *
 	 * @return	[void]		...
 	 */
-	function init() {
+	function init($conf) {
 		// instanciate the references to the DAL
 		$this->docLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_documents');
 		$this->docLogic->setFullTextSearchFields($this->conf['filterView.']['searchwordFields']);
@@ -157,6 +157,82 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->pid = $this->cObj->data['pid'];
 		$this->versioning = strip_tags(t3lib_div::_GP('version_method'));
 		$this->docLogic->setFullTextSearchFields($this->conf['filterView.']['searchwordFields']);
+		
+		#﻿$this->conf = $conf; // Store configuration
+	    $this->pi_initPIflexForm(); // Init FlexForm configuration for plugin
+	
+	    	// Read extension configuration
+	    $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
+	
+	    if (is_array($extConf)) {
+	       $conf = t3lib_div::array_merge($extConf, $conf);
+	    }
+	
+	    	// Read TYPO3_CONF_VARS configuration
+	    $varsConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey];
+	
+	    if (is_array($varsConf)) {
+	       $conf = t3lib_div::array_merge($varsConf, $conf);
+	    }
+	
+	    	// Read FlexForm configuration
+	    if ($this->cObj->data['pi_flexform']['data']) {
+	
+	        foreach ($this->cObj->data['pi_flexform']['data'] as $sheetName => $sheet) {
+	
+	         	foreach ($sheet as $langName => $lang) {
+	
+	         		foreach(array_keys($lang) as $key) {
+	                  $flexFormConf[$key] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], $key, $sheetName, $langName);
+	                  if (!$flexFormConf[$key]) {
+	                     unset($flexFormConf[$key]);
+	                  }
+	               }
+	            }
+	         }
+	      }
+	
+	    if (is_array($flexFormConf)) {
+	
+	       $conf = t3lib_div::array_merge($conf, $flexFormConf);
+	    }
+	
+	  $this->conf = $conf;
+
+	  	// getting values from flexform ==> it's possible to overwrite flexform values with ts setttings 
+      $flexform = $this->cObj->data['pi_flexform'];
+		// set the internal values
+      $this->internal['viewID'] = $this->conf['viewID'];
+	  if (!$this->conf['catMounts']) {
+			// load the flexform value, if there is no ts setting
+	  	$catMounts = $this->pi_getFFvalue($flexform, 'catMounts', 'sSelection');
+	    $this->internal['catMounts']= array();
+	    $this->internal['catMounts'] = explode(',',$this->pi_getFFvalue($flexform, 'catMounts', 'sSelection'));
+      }
+      else {
+	      $this->internal['catMounts'] = explode(',', $this->cObj->stdWrap($this->conf['catMounts'],$this->conf['catMounts.']));
+      }
+
+      $this->internal['treeName'] = strip_tags($this->conf['treeName']);
+      
+      $this->internal['treeID'] = $this->cObj->data['uid'];
+
+      $this->internal['useStaticCatSelection'] = $this->conf['useStaticCatSelection'];
+		
+      $uploadMounts = strip_tags($this->pi_getFFvalue($flexform, 'uploadMounts', 'sUploadSettings'));
+      if (!$this->conf['uploadMounts']) {
+		$this->internal['uploadCatSelection'] =strip_tags($this->pi_getFFvalue($flexform, 'uploadMounts', 'sUploadSettings'));
+      }
+      else {
+	      $this->internal['uploadCatSelection'] =  explode(',', $this->cObj->stdWrap($this->conf['uploadMounts'],$this->conf['uploadMounts.']));
+      }
+      if (!$this->conf['catPreSelection']) {
+		$this->internal['catPreSelection'] =strip_tags( $this->pi_getFFvalue($flexform, 'catPreSelection', 'sPreSelectSettings'));
+      }
+      else {
+      	$this->internal['catPreSelection'] =  explode(',',$this->cObj->stdWrap($this->conf['catPreSelection'],$this->conf['catPreSelection.']));
+      }
+      t3lib_div::debug($this->internal['catPreSelection'] );
 	}
 
 	/**
@@ -404,32 +480,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
  	}
 
 	/**
-	 * loads the data from the flexform into the internal array
-	 *
-	 * @return	void
-	 */
-	function loadFlexForm() {
-		// getting values from flexform
-		$this->pi_initPIflexForm();
-		$flexform = $this->cObj->data['pi_flexform'];
-
-		$this->internal['viewID'] = intval($this->pi_getFFvalue($flexform, 'viewID'));
-		$this->internal['catMounts']= array();
-		$this->internal['catMounts'] = explode(',',$this->pi_getFFvalue($flexform, 'catMounts', 'sSelection'));
-
-		$this->internal['treeName'] = strip_tags($this->pi_getFFvalue($flexform, 'treeName', 'sSelection'));
-		$this->internal['treeID'] = $this->cObj->data['uid'];
-		$this->internal['useStaticCatSelection'] = strip_tags($this->pi_getFFvalue($flexform, 'useStaticCatSelection', 'sOptions'));
-		$this->conf['enableDeletions'] = strip_tags($this->pi_getFFvalue($flexform, 'enableDeletions', 'sOptions'));
-		$this->conf['enableEdits'] = strip_tags($this->pi_getFFvalue($flexform, 'enableEdits', 'sOptions'));
-		$this->conf['FilterUserGroup'] = strip_tags($this->pi_getFFvalue($flexform, 'FilterUserGroup', 'sOptions'));
-		$this->internal['uploadCatSelection'] =strip_tags($this->pi_getFFvalue($flexform, 'uploadMounts', 'sUploadSettings'));
-		$this->internal['catPreSelection'] =explode(',',$this->pi_getFFvalue($flexform, 'catPreSelection', 'sPreSelectSettings'));
-		$this->conf['useLatestList'] = strip_tags($this->pi_getFFvalue($flexform, 'useLatestList', 'sOptions'));
-	}
-
-
-	/**
 	 * The main method of the PlugIn
 	 *
 	 * @param	string		$content: The PlugIn content
@@ -443,8 +493,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 			// initialilisation and convertion of input paramters
 			// reading parameters from different sources
-		$this->loadFlexForm();
-		$this->init();
+		$this->init($conf);
 		$this->convertPiVars();
 
 		$this->filterState->filterTable = 'tx_damfrontend_filterStates';
@@ -526,7 +575,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		else {
 			if ($this->internal['catClear']) {
 				$this->catList->clearCatSelection($this->internal['incomingtreeID']);
-				return true;
 			}
 
 			if ($this->internal['catAll']) {
@@ -543,6 +591,36 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					}
 				}
 				return true;
+			}
+			
+			if ($this->internal['catPreSelection']) {
+				t3lib_div::debug('true');
+				$currentCats = $this->catList->getCatSelection($this->internal['treeID']);
+				t3lib_div::debug($currentCats);
+				
+				if (empty($currentCats[$this->internal['treeID']])){
+					// if a preselection is activated and no cat is selected yet, the preselected cats will be loaded
+	
+					t3lib_div::debug('empty');
+					if (is_array($this->internal['catPreSelection'])) {
+						t3lib_div::debug('array');
+						foreach ($this->internal['catPreSelection'] as $catMount) {
+							t3lib_div::debug($catMount);
+							if (strlen($catMount)) {
+								if ($this->conf['categoryTree']['preSelectChildCategories']==-1) {
+									$subs = $this->catLogic->getSubCategories($catMount);
+									$this->catList->op_Plus($catMount, $this->internal['incomingtreeID']);
+									foreach ($subs as $sub) {
+										$this->catList->op_Plus($sub['uid'], $this->internal['incomingtreeID']);
+									}
+								}
+								else {
+									$this->catList->op_Plus($catMount, $this->internal['incomingtreeID']);
+								}
+							}
+						}
+					}
+				}
 			}
 			if ($this->internal['catPlus']) {
 				$this->catList->op_Plus($this->internal['catPlus'], $this->internal['incomingtreeID']);
@@ -565,6 +643,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					$this->catList->op_Plus($sub['uid'], $this->internal['incomingtreeID']);
 				}
 			}
+			t3lib_div::debug($currentCats);
 		}
 
 
@@ -592,31 +671,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @return	html		category tree - ready for display
 	 */
 	function catTree() {
-		if ($this->internal['catPreSelection']) {
 
-			$currentCats = $this->catList->getCatSelection($this->internal['treeID']);
-
-			if (empty($currentCats[$this->internal['treeID']])){
-				// if a preselection is activated and no cat is selected yet, the preselected cats will be loaded
-
-				if (is_array($this->internal['catPreSelection'])) {
-					foreach ($this->internal['catPreSelection'] as $catMount) {
-
-						if (strlen($catMount)) {
-							if ($this->conf['categoryTree']['preSelectChildCategories']==1) {
-								$subs = $this->catLogic->getSubCategories($catMount);
-								foreach ($subs as $sub) {
-									$this->catList->op_Plus($sub['uid'], $this->internal['treeID']);
-								}
-							}
-							else {
-								$this->catList->op_Plus($catMount, $this->internal['treeID']);
-							}
-						}
-					}
-				}
-			}
-		}
 		##### Adding a treeview to the output
 
 		if ($this->conf['useAdvancedCategoryTree']==1) {
