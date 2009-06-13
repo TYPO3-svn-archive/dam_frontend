@@ -24,4 +24,4 @@ Development Plattform:
 http://forge.typo3.org/projects/show/extension-dam_frontend
 - branch: 0.4.x
 
-release 0.4.2 / 13.6.2009
+release 0.4.3 / 13.6.2009
