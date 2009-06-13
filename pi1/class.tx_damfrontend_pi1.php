@@ -137,28 +137,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @return	[void]		...
 	 */
 	function init($conf) {
-		// instanciate the references to the DAL
-		$this->docLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_documents');
-		$this->docLogic->setFullTextSearchFields($this->conf['filterView.']['searchwordFields']);
-		$this->docLogic->conf = $this->conf;
-		$this->catLogic= t3lib_div::makeInstance('tx_damfrontend_DAL_categories');
-		$this->catList = t3lib_div::makeInstance('tx_damfrontend_catList');
-		$this->renderer = t3lib_div::makeInstance('tx_damfrontend_rendering');
-		$this->renderer->setFileRef($this->conf['templateFile']);
-		$this->renderer->piVars = $this->piVars;
-		$this->renderer->conf = $this->conf;
-		$this->renderer->cObj = $this->cObj;
-		$this->renderer->init();
-
-		$this->filterState = t3lib_div::makeInstance('tx_damfrontend_filterState');
-
-		$this->listState = t3lib_div::makeInstance('tx_damfrontend_listState');
-
-		$this->pid = $this->cObj->data['pid'];
-		$this->versioning = strip_tags(t3lib_div::_GP('version_method'));
-		$this->docLogic->setFullTextSearchFields($this->conf['filterView.']['searchwordFields']);
-		
-		#﻿$this->conf = $conf; // Store configuration
 	    $this->pi_initPIflexForm(); // Init FlexForm configuration for plugin
 	
 	    	// Read extension configuration
@@ -224,7 +202,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->internal['uploadCatSelection'] =strip_tags($this->pi_getFFvalue($flexform, 'uploadMounts', 'sUploadSettings'));
       }
       else {
-	      $this->internal['uploadCatSelection'] =  explode(',', $this->cObj->stdWrap($this->conf['uploadMounts'],$this->conf['uploadMounts.']));
+	      $this->internal['uploadCatSelection'] = $this->cObj->stdWrap($this->conf['uploadMounts'],$this->conf['uploadMounts.']);
       }
       if (!$this->conf['catPreSelection']) {
 		$this->internal['catPreSelection'] =strip_tags( $this->pi_getFFvalue($flexform, 'catPreSelection', 'sPreSelectSettings'));
@@ -232,7 +210,28 @@ class tx_damfrontend_pi1 extends tslib_pibase {
       else {
       	$this->internal['catPreSelection'] =  explode(',',$this->cObj->stdWrap($this->conf['catPreSelection'],$this->conf['catPreSelection.']));
       }
-      t3lib_div::debug($this->internal['catPreSelection'] );
+      
+		// instanciate the references to the DAL
+		$this->docLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_documents');
+		$this->docLogic->setFullTextSearchFields($this->conf['filterView.']['searchwordFields']);
+		$this->docLogic->conf = $this->conf;
+		$this->catLogic= t3lib_div::makeInstance('tx_damfrontend_DAL_categories');
+		$this->catList = t3lib_div::makeInstance('tx_damfrontend_catList');
+		$this->renderer = t3lib_div::makeInstance('tx_damfrontend_rendering');
+		$this->renderer->setFileRef($this->conf['templateFile']);
+		$this->renderer->piVars = $this->piVars;
+		$this->renderer->conf = $this->conf;
+		$this->renderer->cObj = $this->cObj;
+		$this->renderer->init();
+
+		$this->filterState = t3lib_div::makeInstance('tx_damfrontend_filterState');
+
+		$this->listState = t3lib_div::makeInstance('tx_damfrontend_listState');
+
+		$this->pid = $this->cObj->data['pid'];
+		$this->versioning = strip_tags(t3lib_div::_GP('version_method'));
+		$this->docLogic->setFullTextSearchFields($this->conf['filterView.']['searchwordFields']);
+		
 	}
 
 	/**
@@ -699,7 +698,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @author stefan
 	 */
 	function fileListBasicFuncionality () {
-
 		$hasCats = false; // true if any category has been selected yet
 		if ($this->conf['enableDeletions']==1) {
 			if ($this->userLoggedIn == true) {
@@ -1048,13 +1046,18 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 			if ($this->upload) {
 				$returnCode = $this->handleUpload();
-
 				if (intval($returnCode) != 0) {
 						// -- UPLOAD SUCCESSFUL CATEGORISATION OR VERSIONING --
 
 						// upload was successful - proceeding with categorisation
 					$newID = $returnCode;
 
+					if ($this->conf['upload.']['useOneStepUpload']==1) {
+							// load the default categories
+						$this->saveCategories($returnCode,true);
+						$GLOBALS['TSFE']->fe_user->setKey('ses','uploadID', $newID);
+						$this->saveMetaData=1;
+					}
 						// File exists - show versioning options
 					if ($this->versionate) {
 						return $this->versioningForm();
@@ -1546,7 +1549,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		#get all allowed categories
 		$uploadCats = $this->internal['uploadCatSelection'];
-		#t3lib_div::debug($cats);
+		t3lib_div::debug($uploadCats);
 		if (is_array($cats)) {
 			foreach($cats as $cat) {
 				$catData[] = $this->catLogic->getCategory($cat);
@@ -1562,9 +1565,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * Save the categories of a uploaded file
 	 *
-	 * @param	int		$docID id of the dam record that should be categorized / saved
-	 * @param	[type]		$upload: ...
-	 * @return	[boolean]		true if saving was sucessful
+	 * @param	int			$docID id of the dam record that should be categorized / saved
+	 * @param	[type]		$upload: if true the function is called while the upload process, then some keys are deleted to set end for the upload process
+	 * @return	[boolean]	true if saving was sucessful
 	 * @p
 	 */
 	function saveCategories($docID,$upload=true) {
