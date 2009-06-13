@@ -9,7 +9,6 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/DAL/class.tx_damfrontend_ca
 require_once(t3lib_extMgm::extPath('dam_frontend').'/DAL/class.tx_damfrontend_filterState.php');
 require_once(t3lib_extMgm::extPath('dam_frontend').'/DAL/class.tx_damfrontend_listState.php');
 require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfrontend_catTreeView.php');
-require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfrontend_catTreeViewAdvanced.php');
 require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfrontend_rendering.php');
 
 /***************************************************************
@@ -619,14 +618,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 		##### Adding a treeview to the output
 
-		if ($this->conf['useAdvancedCategoryTree']==1) {
-			$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeViewAdvanced');
-			$tree->renderer = $this->renderer;
-			$tree->catLogic = $this->catLogic;
-		}
-		else {
-			$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeView');
-		}
+
+		$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeView');
 
 		$tree->init($this->internal['treeID'], $this);
 		$tree->title = $this->internal['treeName'];

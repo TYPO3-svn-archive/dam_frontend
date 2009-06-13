@@ -902,23 +902,10 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		$this->pi_loadLL();
 		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###CATEGORISATION###');
 
-		// initalisation of the treeview
-		if ($this->conf['useAdvancedCategoryTree']==1) {
-			$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeViewAdvanced');
-			$tree->categorizationMode=true;
-			if (is_array($selectedCats)) {
-				foreach ($selectedCats as $cat) {
-					$tree->selectedCats[] = $cat['uid'];
-				}
-			}
-			$tree->renderer = $this;
-			$treeType = 'categoryTreeAdvanced.';
-		}
-		else {
-			$tree = t3lib_div::makeInstance('tx_damfrontend_categorisationTree');
-			$treeType = 'categorisationTree.';
-		}
-
+		
+		$tree = t3lib_div::makeInstance('tx_damfrontend_categorisationTree');
+		$treeType = 'categorisationTree.';
+		
 		$tree->MOUNTS = explode(',',$uploadCats);
 		$tree->init(-1,$this);
 		$tree->expandTreeLevel($this->conf[$treeType]['expandTreeLevel']);
@@ -1190,81 +1177,6 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		$markerArray['###CANCEL###']=$this->cObj->stdWrap('<input name="cancelEdit" type="submit" value="'.$this->pi_getLL('CANCEL').'">',$this->conf['filelist.']['renderFileEdit.']['button_cancel.']);
 
 		return tslib_cObj::substituteMarkerArray($formCode, $markerArray);
-	}
-
- 	/**
- * renderCategoryTreeCategory
- *
- * @param	string		$sel_class 	(tree_selectedCats / tree_unselectedCats / ﻿tree_selectedNoCats ..)
- * @param	array		$dataArray	controls for the tree
- * @param	string		$title		title of the category wrapped in a link
- * @param	string		$control	+-= signs
- * @param	boolean		$alternateSubpart if true the alternative subpart is rendered
- * @return	[string]		html of the category
- * @author	stefan
- */
-	function renderCategoryTreeCategory($sel_class,$dataArray,$title,$control,$subpart) {
-		$this->pi_loadLL();
-
-		$this->fileContent= tsLib_CObj::fileResource($this->conf['categoryTreeAdvanced.']['templateFile']);
-		$subpart = tslib_CObj::getSubpart($this->fileContent,$subpart);
-		$markerArray = array();
-		$markerArray['###CATEGORY_TITLE###'] = $dataArray['HTML'];
-		$markerArray['###SELECT_CAT###'] = $dataArray['select_cat'];
-		$markerArray['###SELECTIONSTATUS###'] = $this->conf['categoryTreeAdvanced.']['categorySelection.']['selectionStatus.'][$sel_class];
-		$markerArray['###TREELEVELCSS###'] = $dataArray['treeLevelCSS'];
-		#t3lib_div::debug($markerArray);
- 		$content=tslib_cObj::substituteMarkerArray($subpart, $markerArray);
- 		#t3lib_div::debug($content);
- 		// todo support for static markers
- 		return $this->cObj->stdWrap($content,$this->conf['categoryTreeAdvanced.']['category.']);
-	}
-
-
-  	/**
- * renderCategoryTreeCategory
- *
- * @param	[type]		$markerArray: ...
- * @param	[type]		$treeID: ...
- * @return	[string]		html of the category
- * @author	stefan
- */
-	function renderCategoryTree($markerArray, $treeID=0) {
-		$this->pi_loadLL();
-		$this->fileContent= tsLib_CObj::fileResource($this->conf['categoryTreeAdvanced.']['templateFile']);
-		$subpart = tslib_CObj::getSubpart($this->fileContent,'###TREE###');
-		$markerArray['###LABEL_MESSAGE###']=$this->pi_getLL('LABEL_MESSAGE');
-
-		$markerArray['###CATEGORY_TREE_SELECTOR###'] = $this->cObj->stdWrap ($this->pi_getLL('CATEGORY_TREE_SELECTOR'),$this->conf['categoryTreeAdvanced.']['category_tree_selector.']) ;
-		$param_array = array (
-					'tx_damfrontend_pi1[catPlus]' => null,
-					'tx_damfrontend_pi1[catEquals]' => null,
-					'tx_damfrontend_pi1[catMinus]' => null,
-					'tx_damfrontend_pi1[catPlus_Rec]' => null,
-					'tx_damfrontend_pi1[catMinus_Rec]' => null,
-					'tx_damfrontend_pi1[catAll]' => 1,
-					'tx_damfrontend_pi1[treeID]' => $treeID
-				);
-		$this->conf['categoryTreeAdvanced.']['category_tree_selector_all.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
-		$markerArray['###CATEGORY_TREE_SELECTOR###'] .= $this->cObj->typoLink ($this->pi_getLL('CATEGORY_TREE_SELECTOR_ALL'),$this->conf['categoryTreeAdvanced.']['category_tree_selector_all.']) ;
-
-		$param_array = array (
-					'tx_damfrontend_pi1[catPlus]' => null,
-					'tx_damfrontend_pi1[catEquals]' => null,
-					'tx_damfrontend_pi1[catMinus]' => null,
-					'tx_damfrontend_pi1[catPlus_Rec]' => null,
-					'tx_damfrontend_pi1[catMinus_Rec]' => null,
-					'tx_damfrontend_pi1[catClear]' => 1,
-					'tx_damfrontend_pi1[treeID]' => $treeID
-				);
-		$this->conf['categoryTreeAdvanced.']['category_tree_selector_none.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
-		$markerArray['###CATEGORY_TREE_SELECTOR###'] .= $this->cObj->typoLink ($this->pi_getLL('CATEGORY_TREE_SELECTOR_NONE'),$this->conf['categoryTreeAdvanced.']['category_tree_selector_none.']) ;
-		#t3lib_div::debug($markerArray);
-		#t3lib_div::debug($treeID);
-		// todo support for static markers
- 		$content=tslib_cObj::substituteMarkerArray($subpart, $markerArray);
- 		$this->cObj->stdWrap($content,$this->conf['categoryTreeAdvanced.']);
-		return $content;
 	}
 }
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_rendering.php'])	{
