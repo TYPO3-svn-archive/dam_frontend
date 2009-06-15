@@ -181,17 +181,14 @@ class tx_damfrontend_pi1 extends tslib_pibase {
       $flexform = $this->cObj->data['pi_flexform'];
 		// set the internal values
       $this->internal['viewID'] = $this->conf['viewID'];
-	  if (!$this->conf['catMounts']) {
+      if (!$this->conf['catMounts']) {
 			// load the flexform value, if there is no ts setting
-	  	$catMounts = $this->pi_getFFvalue($flexform, 'catMounts', 'sSelection');
-	    $this->internal['catMounts']= array();
 	    $this->internal['catMounts'] = explode(',',$this->pi_getFFvalue($flexform, 'catMounts', 'sSelection'));
       }
       else {
 	      $this->internal['catMounts'] = explode(',', $this->cObj->stdWrap($this->conf['catMounts'],$this->conf['catMounts.']));
       }
-
-      $this->internal['treeName'] = strip_tags($this->conf['treeName']);
+	  $this->internal['treeName'] = strip_tags($this->conf['treeName']);
       
       $this->internal['treeID'] = $this->cObj->data['uid'];
 
@@ -687,6 +684,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$selCats  = $this->catList->getCatSelection($this->internal['treeID']);
 
 		$tree->selectedCats = $selCats[$this->internal['treeID']];
+		t3lib_div::debug('cat Mounts');
+		t3lib_div::debug($this->internal['catMounts']);
 		if (is_array($this->internal['catMounts'])) $tree->MOUNTS = $this->internal['catMounts'];
 		$tree->expandTreeLevel($this->conf['categoryTree.']['expandTreeLevel']);
 		return  $this->cObj->stdWrap($tree->getBrowsableTree(), $this->conf['categoryTree.']['stdWrap.']);
@@ -1052,17 +1051,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 						// upload was successful - proceeding with categorisation
 					$newID = $returnCode;
 
-					if ($this->conf['upload.']['useOneStepUpload']==1) {
-							// load the default categories
-						$this->saveCategories($returnCode,true);
-						$GLOBALS['TSFE']->fe_user->setKey('ses','uploadID', $newID);
-						$this->saveMetaData=1;
-					}
 						// File exists - show versioning options
 					if ($this->versionate) {
 						return $this->versioningForm();
 					}
 					else {
+						$this->handleOneStepUpload();
 						$this->getIncomingDocData();
 						$step = 2;
 					}
@@ -1472,6 +1466,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @return	[string]		errormessage / TRUE if there was no error
 	 */
 	function getIncomingDocData() {
+		
+		
 		// conversion of incoming data from the creation of an new document
 		$this->documentData['title'] = strip_tags(t3lib_div::_POST('title'));
 		$this->documentData['creator'] = strip_tags(t3lib_div::_POST('creator')); #45
@@ -1498,6 +1494,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		if(strlen($this->documentData['copyright'])>128) {
 			return $this->renderer->renderError('uploadFormFieldError','copyright','45');
 		}
+
 		return true;
 	}
 
@@ -1707,6 +1704,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$GLOBALS['TSFE']->fe_user->setKey('ses','versioning','new_version');
 				return $this->docLogic->versioningCreateNewVersionPrepare($docID);
 				break;
+			case 'new_record':
+				$GLOBALS['TSFE']->fe_user->setKey('ses','versioning','new_record');
+				// todo add third option here
+				#return $this->docLogic->versioningCreateNewVersionPrepare($docID);
+				break;
 		}
 	}
 
@@ -1722,6 +1724,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			if ($this->versioning != '') {
 				if ($this->docLogic->checkOwnerRights($uid,$this->userUID)==true){
 					$uid = $this->handleVersioning($this->versioning);
+					$this->handleOneStepUpload;
 					$GLOBALS['TSFE']->fe_user->setKey('ses','saveID', $uid);
 					$GLOBALS['TSFE']->fe_user->setKey('ses','uploadID',$uid);
 				}
@@ -1907,6 +1910,15 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 		else {
 			return $this->renderer->renderError('noUser');
+		}
+	}
+	
+	function handleOneStepUpload () {
+		if ($this->conf['upload.']['useOneStepUpload']==1) {
+				// load the default categories
+			$this->saveCategories($returnCode,true);
+			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadID', $newID);
+			$this->saveMetaData=1;
 		}
 	}
 }

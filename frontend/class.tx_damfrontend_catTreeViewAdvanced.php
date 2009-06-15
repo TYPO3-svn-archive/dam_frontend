@@ -336,13 +336,17 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 	 *
 	 * @param	string		$icon: html (img Tag)
 	 * @param	string		$cmd: ...
-	 * @param	string		$bMark: ...
+	 * @param	string		$bMark: ..
+	 * @param	array		$row: current record for category.
 	 * @return	string		...
 	 */
-	function PM_ATagWrap($icon,$cmd,$bMark='treeroot')	{
+	function PM_ATagWrap($icon,$cmd,$bMark='treeroot', $row)	{
 		$linkConf = array();
 		$linkConf['parameter.']['data'] = 'TSFE:id';
-		$linkConf['additionalParams'] = '&tx_damfrontend_pi1[treeID]='.$this->treeID.'&PM='.htmlspecialchars($cmd);
+		if ($this->renderer->piVars['catEditUID']) {
+			$additionalParams = '&tx_damfrontend_pi1[catEditUID]=' .$row['uid'];
+		}
+		$linkConf['additionalParams'] = $additionalParams.'&tx_damfrontend_pi1[treeID]='.$this->treeID.'&PM='.htmlspecialchars($cmd);
 		$linkConf['section'] = $bMark;
 		if ($bMark) $linkConf['ATagParams'] = ' name="'.$bMark.'" ';
 		return $this->cObj->typoLink($icon, $linkConf);
@@ -370,7 +374,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		if ($nextCount)	{
 			$cmd=$this->bank.'_'.($exp?'0_':'1_').$row['uid'].'_'.$this->treeName;
 			$bMark=($this->bank.'_'.$row['uid']);
-			$icon = $this->PM_ATagWrap($icon,$cmd,$bMark);
+			$icon = $this->PM_ATagWrap($icon,$cmd,$bMark, $row);
 		}
 
 		return $icon;
@@ -399,7 +403,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			$cmd=$this->bank.'_'.($exp?'0_':'1_').$row['uid'].'_'.$this->treeName;
 
 			$bMark=($this->bank.'_'.$row['uid']);
-			$wrapItem = $this->PM_ATagWrap($wrapItem,$cmd,$bMark);
+			$wrapItem = $this->PM_ATagWrap($wrapItem,$cmd,$bMark,$row);
 			if ($exp) {
 				$wrapItem = $this->cObj->stdWrap($wrapItem,$this->conf['categoryTreeAdvanced.']['categoryTitle.']['treeMinus.']);
 			}
@@ -552,7 +556,6 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 						}
 					}
 				}
-				#t3lib_div::debug($sel_class);
 				$title = $this->cObj->stdWrap ($this->getTitleStr($v['row'], $titleLen),$this->conf['categoryTreeAdvanced.']['catTitle.']);
 				$control = $this->getControl($title, $v['row'], $v['bank']);
 				$v['select_cat'] = $this->wrapCatSelection('&nbsp;',$v['row'],$sel_class);
@@ -604,10 +607,15 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			// Init done:
 		$titleLen=intval($this->BE_USER->uc['titleLen']);
 		$treeArr=array();
-
+		t3lib_div::debug('mounts');
+		t3lib_div::debug($this->MOUNTS);
+			// fix null value
+		if (empty ($this->MOUNTS[0])) $this->MOUNTS[0] =0;
 			// Traverse mounts:
 		foreach($this->MOUNTS as $idx => $uid)	{
-
+			t3lib_div::debug($idx);
+			t3lib_div::debug($uid);
+			
 				// Set first:
 			$this->bank=$idx;
 			$isOpen = $this->stored[$idx][$uid] || $this->expandFirst;
@@ -633,7 +641,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 					// Artificial record for the tree root, id=0
 					$rootRec = $this->getRootRecord($uid);
 			}
-			$firstHtml = $this->PM_ATagWrap($rootRec['title'],$cmd);
+			$firstHtml = $this->PM_ATagWrap($rootRec['title'],$cmd,'',$rootRec);
 			if ($isOpen) {
 				$firstHtml = $this->cObj->stdWrap($firstHtml,$this->conf['categoryTreeAdvanced.']['categoryTitle.']['treeMinus.']);
 			}
