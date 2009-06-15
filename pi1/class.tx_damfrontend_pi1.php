@@ -138,29 +138,21 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 */
 	function init($conf) {
 	    $this->pi_initPIflexForm(); // Init FlexForm configuration for plugin
-	
-	    	// Read extension configuration
+	          // Read extension configuration
 	    $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
-	
-	    if (is_array($extConf)) {
+	      if (is_array($extConf)) {
 	       $conf = t3lib_div::array_merge($extConf, $conf);
 	    }
-	
-	    	// Read TYPO3_CONF_VARS configuration
+	          // Read TYPO3_CONF_VARS configuration
 	    $varsConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey];
-	
-	    if (is_array($varsConf)) {
+	      if (is_array($varsConf)) {
 	       $conf = t3lib_div::array_merge($varsConf, $conf);
 	    }
-	
-	    	// Read FlexForm configuration
+	          // Read FlexForm configuration
 	    if ($this->cObj->data['pi_flexform']['data']) {
-	
-	        foreach ($this->cObj->data['pi_flexform']['data'] as $sheetName => $sheet) {
-	
-	         	foreach ($sheet as $langName => $lang) {
-	
-	         		foreach(array_keys($lang) as $key) {
+	          foreach ($this->cObj->data['pi_flexform']['data'] as $sheetName => $sheet) {
+	               foreach ($sheet as $langName => $lang) {
+	                   foreach(array_keys($lang) as $key) {
 	                  $flexFormConf[$key] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], $key, $sheetName, $langName);
 	                  if (!$flexFormConf[$key]) {
 	                     unset($flexFormConf[$key]);
@@ -169,67 +161,73 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	            }
 	         }
 	      }
-	
-	    if (is_array($flexFormConf)) {
-	
-	       $conf = t3lib_div::array_merge($conf, $flexFormConf);
+	      if (is_array($flexFormConf)) {
+	         $conf = t3lib_div::array_merge($conf, $flexFormConf);
 	    }
+	    foreach ($conf as $key=>$data ) {
+	        if (substr($key,-1)=='.') {
+	            $this->conf[substr($key,0,-1)] = $this->cObj->stdWrap($conf[substr($key,0,-1)],$conf[$key]);
+	        }
+	        elseif (!isset($conf[$key.'.'])) {
+	                $this->conf[$key] = $conf[$key];
+	        }
+	  }
 	
-	  $this->conf = $conf;
-
-	  	// getting values from flexform ==> it's possible to overwrite flexform values with ts setttings 
-      $flexform = $this->cObj->data['pi_flexform'];
-		// set the internal values
-      $this->internal['viewID'] = $this->conf['viewID'];
-      if (!$this->conf['catMounts']) {
-			// load the flexform value, if there is no ts setting
+	  //$this->conf = $conf;
+	
+	      // getting values from flexform ==> it's possible to overwrite flexform values with ts setttings
+	  $flexform = $this->cObj->data['pi_flexform'];
+	    // set the internal values
+	  $this->internal['viewID'] = $this->conf['viewID'];
+	  if (!$this->conf['catMounts']) {
+	        // load the flexform value, if there is no ts setting
+	    t3lib_div::debug($this->conf['catMounts.']);
+	      $catMounts = $this->pi_getFFvalue($flexform, 'catMounts', 'sSelection');
+	    $this->internal['catMounts']= array();
 	    $this->internal['catMounts'] = explode(',',$this->pi_getFFvalue($flexform, 'catMounts', 'sSelection'));
-      }
-      else {
-	      $this->internal['catMounts'] = explode(',', $this->cObj->stdWrap($this->conf['catMounts'],$this->conf['catMounts.']));
-      }
+	  }
+	  else {
+	      $this->internal['catMounts'] = explode(',',$this->conf['catMounts']);
+	  }
+	
 	  $this->internal['treeName'] = strip_tags($this->conf['treeName']);
-      
-      $this->internal['treeID'] = $this->cObj->data['uid'];
-
-      $this->internal['useStaticCatSelection'] = $this->conf['useStaticCatSelection'];
-		
-      $uploadMounts = strip_tags($this->pi_getFFvalue($flexform, 'uploadMounts', 'sUploadSettings'));
-      if (!$this->conf['uploadMounts']) {
-		$this->internal['uploadCatSelection'] =strip_tags($this->pi_getFFvalue($flexform, 'uploadMounts', 'sUploadSettings'));
+	      $this->internal['treeID'] = $this->cObj->data['uid'];
+	
+	  $this->internal['useStaticCatSelection'] = $this->conf['useStaticCatSelection'];
+	        $uploadMounts = strip_tags($this->pi_getFFvalue($flexform, 'uploadMounts', 'sUploadSettings'));
+	  if (!$this->conf['uploadMounts']) {
+	    $this->internal['uploadCatSelection'] =strip_tags($this->pi_getFFvalue($flexform, 'uploadMounts', 'sUploadSettings'));
+	  }
+	  else {
+	      $this->internal['uploadCatSelection'] = $this->conf['uploadMounts'];
+	  }
+	      if (!$this->conf['catPreSelection']) {
+	    $this->internal['catPreSelection'] = strip_tags( $this->pi_getFFvalue($flexform, 'catPreSelection', 'sPreSelectSettings'));
+	  }
+	  else {
+	      $this->internal['catPreSelection'] =  explode(',',$this->conf['catPreSelection']);
+	  }
+	        // instanciate the references to the DAL
+	    $this->docLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_documents');
+	    $this->docLogic->setFullTextSearchFields($this->conf['filterView.']['searchwordFields']);
+	    $this->docLogic->conf = $this->conf;
+	    $this->catLogic= t3lib_div::makeInstance('tx_damfrontend_DAL_categories');
+	    $this->catList = t3lib_div::makeInstance('tx_damfrontend_catList');
+	    $this->renderer = t3lib_div::makeInstance('tx_damfrontend_rendering');
+	    $this->renderer->setFileRef($this->conf['templateFile']);
+	    $this->renderer->piVars = $this->piVars;
+	    $this->renderer->conf = $this->conf;
+	    $this->renderer->cObj = $this->cObj;
+	    $this->renderer->init();
+	
+	    $this->filterState = t3lib_div::makeInstance('tx_damfrontend_filterState');
+	
+	    $this->listState = t3lib_div::makeInstance('tx_damfrontend_listState');
+	
+	    $this->pid = $this->cObj->data['pid'];
+	    $this->versioning = strip_tags(t3lib_div::_GP('version_method'));
+	    $this->docLogic->setFullTextSearchFields($this->conf['filterView.']['searchwordFields']);
       }
-      else {
-	      $this->internal['uploadCatSelection'] = $this->cObj->stdWrap($this->conf['uploadMounts'],$this->conf['uploadMounts.']);
-      }
-      if (!$this->conf['catPreSelection']) {
-		$this->internal['catPreSelection'] =strip_tags( $this->pi_getFFvalue($flexform, 'catPreSelection', 'sPreSelectSettings'));
-      }
-      else {
-      	$this->internal['catPreSelection'] =  explode(',',$this->cObj->stdWrap($this->conf['catPreSelection'],$this->conf['catPreSelection.']));
-      }
-      
-		// instanciate the references to the DAL
-		$this->docLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_documents');
-		$this->docLogic->setFullTextSearchFields($this->conf['filterView.']['searchwordFields']);
-		$this->docLogic->conf = $this->conf;
-		$this->catLogic= t3lib_div::makeInstance('tx_damfrontend_DAL_categories');
-		$this->catList = t3lib_div::makeInstance('tx_damfrontend_catList');
-		$this->renderer = t3lib_div::makeInstance('tx_damfrontend_rendering');
-		$this->renderer->setFileRef($this->conf['templateFile']);
-		$this->renderer->piVars = $this->piVars;
-		$this->renderer->conf = $this->conf;
-		$this->renderer->cObj = $this->cObj;
-		$this->renderer->init();
-
-		$this->filterState = t3lib_div::makeInstance('tx_damfrontend_filterState');
-
-		$this->listState = t3lib_div::makeInstance('tx_damfrontend_listState');
-
-		$this->pid = $this->cObj->data['pid'];
-		$this->versioning = strip_tags(t3lib_div::_GP('version_method'));
-		$this->docLogic->setFullTextSearchFields($this->conf['filterView.']['searchwordFields']);
-		
-	}
 
 	/**
 	 * Receiving filter information from the pluging view "filter_list"

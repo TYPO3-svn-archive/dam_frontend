@@ -450,7 +450,22 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  		$markerArray['###LINK_DOWNLOAD###'] = $cObj->cObjGetSingle($this->conf['singleView.']['link_download'], $this->conf['singleView.']['link_download.']);
  		$markerArray['###BACK_LINK###'] = $this->cObj->typolink($cObj->cObjGetSingle($this->conf['singleView.']['backLink'], $this->conf['singleView.']['backLink.']), array('parameter' => $record['backPid']));
 
-			// adding static user definded markers
+ 				//render deletion button
+		if ($elem['allowDeletion']==1 AND $this->conf['enableDeletions']==1) {
+			$markerArray['###BUTTON_DELETE###'] = $cObj->cObjGetSingle($this->conf['filelist.']['button_delete'], $this->conf['filelist.']['button_delete.']);
+		} else {
+			$markerArray['###BUTTON_DELETE###'] ='';
+		}
+			//render edit button
+		if ($elem['allowEdit']==1 AND $this->conf['enableEdits']==1) {
+			$markerArray['###BUTTON_EDIT###'] = $cObj->cObjGetSingle($this->conf['filelist.']['button_edit'], $this->conf['filelist.']['button_edit.']);
+			$markerArray['###BUTTON_CATEDIT###'] = $cObj->cObjGetSingle($this->conf['filelist.']['button_catedit'], $this->conf['filelist.']['button_catedit.']);
+		} else {
+			$markerArray['###BUTTON_EDIT###'] ='';
+			$markerArray['###BUTTON_CATEDIT###'] ='';
+		}
+
+		// adding static user definded markers
  		$markerArray =$markerArray + $this->substituteLangMarkers($single_Code);
  		if (!is_null($this->staticInfoObj)) { $markerArray['###LANGUAGE###'] 	= $this->staticInfoObj->getStaticInfoName('LANGUAGES', $record['language'], '', '', false);}
  		$content=tslib_cObj::substituteMarkerArray($single_Code, $markerArray);
