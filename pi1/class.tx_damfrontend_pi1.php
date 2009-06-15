@@ -588,18 +588,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 			
 			if ($this->internal['catPreSelection']) {
-				t3lib_div::debug('true');
 				$currentCats = $this->catList->getCatSelection($this->internal['treeID']);
-				t3lib_div::debug($currentCats);
 				
 				if (empty($currentCats[$this->internal['treeID']])){
 					// if a preselection is activated and no cat is selected yet, the preselected cats will be loaded
 	
-					t3lib_div::debug('empty');
 					if (is_array($this->internal['catPreSelection'])) {
-						t3lib_div::debug('array');
 						foreach ($this->internal['catPreSelection'] as $catMount) {
-							t3lib_div::debug($catMount);
 							if (strlen($catMount)) {
 								if ($this->conf['categoryTree']['preSelectChildCategories']==-1) {
 									$subs = $this->catLogic->getSubCategories($catMount);
@@ -637,7 +632,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					$this->catList->op_Plus($sub['uid'], $this->internal['incomingtreeID']);
 				}
 			}
-			t3lib_div::debug($currentCats);
 		}
 
 
@@ -1054,7 +1048,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 						return $this->versioningForm();
 					}
 					else {
-						$this->handleOneStepUpload();
+						$this->handleOneStepUpload($newID);
 						$this->getIncomingDocData();
 						$step = 2;
 					}
@@ -1259,6 +1253,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @return	[type]		...
 	 */
 	function versioningForm() {
+		$allowedVersioningMethods = array();
+		if ($this->conf['upload.']['allowedVersioningMethods.']['enableVersioning']==1) $allowedVersioningMethods['']
 		return $this->renderer->renderVersioningForm();
 	}
 
@@ -1544,7 +1540,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		#get all allowed categories
 		$uploadCats = $this->internal['uploadCatSelection'];
-		t3lib_div::debug($uploadCats);
 		if (is_array($cats)) {
 			foreach($cats as $cat) {
 				$catData[] = $this->catLogic->getCategory($cat);
@@ -1722,7 +1717,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			if ($this->versioning != '') {
 				if ($this->docLogic->checkOwnerRights($uid,$this->userUID)==true){
 					$uid = $this->handleVersioning($this->versioning);
-					$this->handleOneStepUpload;
+					t3lib_div::debug('versioning!');
+					$this->handleOneStepUpload($uid);
 					$GLOBALS['TSFE']->fe_user->setKey('ses','saveID', $uid);
 					$GLOBALS['TSFE']->fe_user->setKey('ses','uploadID',$uid);
 				}
@@ -1911,13 +1907,19 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 	}
 	
-	function handleOneStepUpload () {
+	/**
+	 * @param	[int]		$newID: ID of the new dam_record
+	 * @return	
+	 * @author stefan
+	 */	
+	function handleOneStepUpload ($newID) {
 		if ($this->conf['upload.']['useOneStepUpload']==1) {
 				// load the default categories
-			$this->saveCategories($returnCode,true);
+			$this->saveCategories($newID,true);
 			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadID', $newID);
 			$this->saveMetaData=1;
 		}
+		return true;
 	}
 }
 

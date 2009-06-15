@@ -1169,7 +1169,8 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		$markerArray['###VERSIONING_OVERWRITES###'] =  $this->pi_getLL('VERSIONING_OVERWRITES');
 		$markerArray['###VERSIONING_NEW_VERSION###'] = $this->pi_getLL('VERSIONING_NEW_VERSION');
 		$markerArray['###HIDDENFIELDS###'] = '';
-
+		#<input type="radio" name="version_method" value="override" /><label>###VERSIONING_OVERWRITES###</label><br />
+		#<input type="radio" name="version_method" value="new_version" /><label>###VERSIONING_NEW_VERSION###</label>
  		$content=tslib_cObj::substituteMarkerArray($subpart, $markerArray);
 		return $content;
 	}

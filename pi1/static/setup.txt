@@ -464,7 +464,10 @@ plugin.tx_damfrontend_pi1 {
 		}
   	}
   	upload {
-  		useVersioning = 0
+  		allowedVersioningMethods {
+	  		versioning = 0
+	  		versioning.wrap = 
+  		}
   		useOneStepUpload = 1
   		autoAsignFEGroups = 0
   		autoFillFEUserData {

@@ -607,15 +607,9 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			// Init done:
 		$titleLen=intval($this->BE_USER->uc['titleLen']);
 		$treeArr=array();
-		t3lib_div::debug('mounts');
-		t3lib_div::debug($this->MOUNTS);
 			// fix null value
-		if (empty ($this->MOUNTS[0])) $this->MOUNTS[0] ='0';
-		t3lib_div::debug($this->MOUNTS);
 			// Traverse mounts:
 		foreach($this->MOUNTS as $idx => $uid)	{
-			t3lib_div::debug($idx);
-			t3lib_div::debug($uid);
 			
 				// Set first:
 			$this->bank=$idx;
@@ -640,9 +634,8 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				$rootRec = $this->getRecord($uid);
 			} else {
 					// Artificial record for the tree root, id=0
-					$rootRec = $this->getRootRecord($uid);
+				$rootRec = $this->getRootRecord(0);
 			}
-			t3lib_div::debug($rootRec);
 			$firstHtml = $this->PM_ATagWrap($rootRec['title'],$cmd,'',$rootRec);
 			if ($isOpen) {
 				$firstHtml = $this->cObj->stdWrap($firstHtml,$this->conf['categoryTreeAdvanced.']['categoryTitle.']['treeMinus.']);
@@ -654,11 +647,9 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				// Preparing rootRec for the mount
 			if (is_array($rootRec))	{
 				$uid = $rootRec['uid'];		// In case it was swapped inside getRecord due to workspaces.
-				#if ($this->conf['categoryTreeAdvanced.']['showRootCategory']==1 || ($uid >0 )) {
-				if ($this->conf['categoryTreeAdvanced.']['showRootCategory']==1 || ($uid ==0 )) {
 						// Add the root of the mount to ->tree
 					$this->tree[]=array('HTML'=>$firstHtml, 'row'=>$rootRec, 'bank'=>$this->bank);
-				}
+				#}
 
 				// If the mount is expanded, go down:
 				if ($isOpen)	{
