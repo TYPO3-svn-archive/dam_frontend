@@ -1157,21 +1157,29 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	}
 
 	/**
-	 * [Describe function...]
-	 *
-	 * @return	[type]		...
+	 * 	returns the versioning form
+	 *	@param	array	$allowedVersioningMethods contains the allowed versioning methods
+	 *	@param	array	$document all data of the document
+	 *	@return	[string]	html of the rendered form		...
 	 */
-	function renderVersioningForm() {
+	function renderVersioningForm($allowedVersioningMethods, $document) {
 		$this->pi_loadLL();
 		$subpart = tslib_CObj::getSubpart($this->fileContent,'###FORM_VERSIONING###');
 		$markerArray = array();
+		$markerArray['###HIDDENFIELDS###'] = '';
+		$markerArray['###VERSION_METHODS###'] = '';
+		foreach ($allowedVersioningMethods as $method) {
+			$markerArray['###VERSION_METHODS###'] .= $this->cObj->stdWrap('',$this->conf['upload.']['allowedVersioningMethods.'][$method.'.']) ;
+		}
+ 		$content=tslib_cObj::substituteMarkerArray($subpart, $markerArray);
 		$markerArray['###VERSIONING_FILE_EXISTS###'] =  $this->pi_getLL('VERSIONING_FILE_EXISTS');
 		$markerArray['###VERSIONING_OVERWRITES###'] =  $this->pi_getLL('VERSIONING_OVERWRITES');
 		$markerArray['###VERSIONING_NEW_VERSION###'] = $this->pi_getLL('VERSIONING_NEW_VERSION');
-		$markerArray['###HIDDENFIELDS###'] = '';
-		#<input type="radio" name="version_method" value="override" /><label>###VERSIONING_OVERWRITES###</label><br />
-		#<input type="radio" name="version_method" value="new_version" /><label>###VERSIONING_NEW_VERSION###</label>
- 		$content=tslib_cObj::substituteMarkerArray($subpart, $markerArray);
+		$markerArray['###VERSIONING_NEW_RECORD###'] = $this->pi_getLL('VERSIONING_NEW_RECORD');
+		$markerArray['###CANCEL###'] = $this->pi_getLL('back');
+		$markerArray['###OK###'] = $this->pi_getLL('BUTTON_NEXT');
+		
+ 		$content=tslib_cObj::substituteMarkerArray($content, $markerArray);
 		return $content;
 	}
 

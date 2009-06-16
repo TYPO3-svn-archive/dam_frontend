@@ -74,4 +74,5 @@ $TCA["tx_damfrontend_filterStates"] = Array (
 		"1" => Array("showitem" => "")
 	)
 );
+$TCA['tx_dam']['columns']['category']['config']['autoSizeMax'] = 40;
 ?>

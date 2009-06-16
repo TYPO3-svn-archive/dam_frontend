@@ -465,8 +465,12 @@ plugin.tx_damfrontend_pi1 {
   	}
   	upload {
   		allowedVersioningMethods {
-	  		versioning = 0
-	  		versioning.wrap = 
+	  		versioning = 1
+	  		versioning.wrap = <input type="radio" name="version_method" value="new_version" /><label>###VERSIONING_NEW_VERSION###|</label><br />
+	  		overwrite = 1
+	  		overwrite.wrap = <input type="radio" name="version_method" value="override" /><label>###VERSIONING_OVERWRITES###|</label><br />
+	  		newRecord = 1
+	  		newRecord.wrap = <input type="radio" name="version_method" value="new_record" /><label>###VERSIONING_NEW_RECORD###|</label>
   		}
   		useOneStepUpload = 1
   		autoAsignFEGroups = 0

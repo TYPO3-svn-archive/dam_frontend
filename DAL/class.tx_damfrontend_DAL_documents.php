@@ -1037,11 +1037,22 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		}
 
 		/**
- * @param	int		$uid: uid of the dam record
- * @param	int		$catID category which should be deleted
- * @return	[type]		...
- * @author stefan
- */
+		 * 
+		 * @param	int		$uid: uid of the dam record
+		 * @return	[boolean]	true if successful		...
+		 * @author stefan
+		 */
+		function versioningCreateNewRecordExecute($docID) {
+			// set new filename
+			return true;
+		}
+		
+		/**
+		 * @param	int		$uid: uid of the dam record
+		 * @param	int		$catID category which should be deleted
+		 * @return	[type]		...
+		 * @author stefan
+		 */
 		 function delete_category ($uid, $catID) {
 			if (!intval($uid)) die('Parametererror in delete_category: Check DatabaseID:' . $uid);
 			if (!intval($catID)) die('one categoryID was not delivered as Integer');
@@ -1049,13 +1060,13 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			return $GLOBALS['TYPO3_DB']->exec_DELETEquery($this->mm_Table, $where);
 		}
 
-	 /**
- * Checks if the FE_User has Access to the Document
- *
- * @param	string		$docFEGroup -> fe_group the document is restricted to
- * @return	bool		true if fe_user has access, false if not
- * @author Stefan Busemann
- */
+		 /**
+		 * Checks if the FE_User has Access to the Document
+		 *
+		 * @param	string		$docFEGroup -> fe_group the document is restricted to
+		 * @return	bool		true if fe_user has access, false if not
+		 * @author Stefan Busemann
+		 */
 		function checkDocumentAccess($docFEGroups) {
 
 			// if no fe group is asigned, access is given
@@ -1103,6 +1114,11 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				case 'new_version':
 					$this->versioningCreateNewVersionExecute($docID);
 					break;
+				default:
+				case 'new_record':
+					$this->versioningCreateNewRecordExecute($docID);
+					break;
+				
 				default:
 
 						// correct filename & filepath

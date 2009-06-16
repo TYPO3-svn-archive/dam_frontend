@@ -610,14 +610,11 @@ Template for displaying a single document in a list
 	<fieldset>
 		###VERSIONING_FILE_EXISTS###
 		<br />
-		<input type="radio" name="version_method" value="override" /><label>###VERSIONING_OVERWRITES###</label><br />
-		<input type="radio" name="version_method" value="new_version" /><label>###VERSIONING_NEW_VERSION###</label>
-
+		###VERSION_METHODS###
 		<br />
 		<br />
-		<input type="submit" name="submit_versioning" value="OK" />
-
-		###HIDDENFIELDS###
+		<input type="submit" name="cancel_versioning" value="###CANCEL###" />
+		<input type="submit" name="submit_versioning" value="###OK###" />
 	</fieldset>
 </form>
 

@@ -444,10 +444,15 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$this->initList();
 			$this->initFilter();
 		}
-
-		// iniitalisation of an Upload
-		if (t3lib_div::_POST('upload_file')) {
-			$this->upload = true;
+		if (t3lib_div::_POST('cancel_versioning')) {
+			t3lib_div::debug('cancel versioning');
+			$GLOBALS['TSFE']->fe_user->setKey('ses','saveID','');
+		} 
+		else {
+				// iniitalisation of an Upload
+			if (t3lib_div::_POST('upload_file')) {
+				$this->upload = true;
+			}
 		}
 
 		// cancel category editing
@@ -484,7 +489,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->conf=$conf;
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
-
 			// initialilisation and convertion of input paramters
 			// reading parameters from different sources
 		$this->init($conf);
@@ -1064,12 +1068,17 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				// saving edition of meta data
 			if ($this->internal['saveUID'] > 0){
 				$returnCode = $this->saveMetaData($this->internal['saveUID']);
+				t3lib_div::debug($returnCode);
 				if ($returnCode<>true) {
-					$content=$returnCode;
+					return  $returnCode;
+					t3lib_div::debug('fehler');
 				}
 				else {
+					t3lib_div::debug('kein fehler');
 						#if saving of the metadata was successful, next step for upload form must be prepared
 						#first check, if the saved id is the id of the uploaded file
+						t3lib_div::debug($this->internal['saveUID']);
+						t3lib_div::debug($GLOBALS['TSFE']->fe_user->getKey('ses','saveID'));
 					if ($this->internal['saveUID'] ==$GLOBALS['TSFE']->fe_user->getKey('ses','saveID')) {
 
 							#set categoriseID, that next step of upload form function is processed
@@ -1254,8 +1263,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 */
 	function versioningForm() {
 		$allowedVersioningMethods = array();
-		if ($this->conf['upload.']['allowedVersioningMethods.']['enableVersioning']==1) $allowedVersioningMethods['']
-		return $this->renderer->renderVersioningForm();
+		// get the ID of the overwrite document
+		#$document = $this->docLogic->getDocument()
+		if ($this->conf['upload.']['allowedVersioningMethods.']['versioning']==1) 	$allowedVersioningMethods[]='versioning';
+		if ($this->conf['upload.']['allowedVersioningMethods.']['overwrite']==1) 	$allowedVersioningMethods[]='overwrite';
+		if ($this->conf['upload.']['allowedVersioningMethods.']['newRecord']==1) 	$allowedVersioningMethods[]='newRecord';
+		return $this->renderer->renderVersioningForm($allowedVersioningMethods, $document);
 	}
 
 
@@ -1346,6 +1359,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 					// check if the current file is already present  - preparing for versioning
 				if (is_file($uploadfile)) {
+						// TODO retrieve id of the existing files
+					
+					t3lib_div::debug('versionate');
 					$this->versionate = true;
 				}
 
@@ -1424,6 +1440,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					}
 					$GLOBALS['TSFE']->fe_user->setKey('ses','uploadID',$newID);
 					$GLOBALS['TSFE']->fe_user->setKey('ses','saveID',$newID);
+					t3lib_div::debug($GLOBALS['TSFE']->fe_user->getKey('ses','saveID'));
 					return $newID;
 				}
 				else {
@@ -1699,8 +1716,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				break;
 			case 'new_record':
 				$GLOBALS['TSFE']->fe_user->setKey('ses','versioning','new_record');
-				// todo add third option here
-				#return $this->docLogic->versioningCreateNewVersionPrepare($docID);
+					// nothing to do here
 				break;
 		}
 	}
@@ -1917,6 +1933,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				// load the default categories
 			$this->saveCategories($newID,true);
 			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadID', $newID);
+			$GLOBALS['TSFE']->fe_user->setKey('ses','saveID', $newID);
 			$this->saveMetaData=1;
 		}
 		return true;
