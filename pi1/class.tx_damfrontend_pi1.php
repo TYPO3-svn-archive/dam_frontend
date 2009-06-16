@@ -1586,7 +1586,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				if (is_array($cats)) $this->docLogic->categoriseDocument($docID, $cats);
 
 				if ($upload==true) {
-					$this->docLogic->storeDocument($docID);
+					t3lib_div::debug('upload = true');
+					$returnID = $this->docLogic->storeDocument($docID);
 					$GLOBALS['TSFE']->fe_user->setKey('ses','uploadID','');
 					$GLOBALS['TSFE']->fe_user->setKey('ses','saveID', '');
 				}
@@ -1594,7 +1595,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$this->catList->clearCatSelection(-1);
 				$GLOBALS['TSFE']->fe_user->setKey('ses','categoriseID','');
 					// set record to visible
-				return $this->renderer->renderUploadSuccess();
+				return $returnID;
 			}
 			else {
 				return $this->renderer->renderError('no_access');
@@ -1704,9 +1705,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$trigger = t3lib_div::_GP('version_method');
 		$docID = $GLOBALS['TSFE']->fe_user->getKey('ses','uploadID');
 		if (!isset($trigger)) die('call of this function (handleversioning) without url - parameter');
-
+t3lib_div::debug('handleVersioning');
 		switch ($trigger) {
 			case 'override':
+				t3lib_div::debug('override');
 				$GLOBALS['TSFE']->fe_user->setKey('ses','versioning','override');
 				return $this->docLogic->versioningOverridePrepare($docID);
 				break;
@@ -1734,7 +1736,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				if ($this->docLogic->checkOwnerRights($uid,$this->userUID)==true){
 					$uid = $this->handleVersioning($this->versioning);
 					t3lib_div::debug('versioning!');
-					$this->handleOneStepUpload($uid);
+					$uid = $this->handleOneStepUpload($uid);
 					$GLOBALS['TSFE']->fe_user->setKey('ses','saveID', $uid);
 					$GLOBALS['TSFE']->fe_user->setKey('ses','uploadID',$uid);
 				}
@@ -1931,10 +1933,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	function handleOneStepUpload ($newID) {
 		if ($this->conf['upload.']['useOneStepUpload']==1) {
 				// load the default categories
-			$this->saveCategories($newID,true);
+			$newID = $this->saveCategories($newID,true);
 			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadID', $newID);
 			$GLOBALS['TSFE']->fe_user->setKey('ses','saveID', $newID);
+				// disable versioning, because it is allready done
+			$GLOBALS['TSFE']->fe_user->setKey('ses','versioning','');
 			$this->saveMetaData=1;
+			return $newID;
 		}
 		return true;
 	}
