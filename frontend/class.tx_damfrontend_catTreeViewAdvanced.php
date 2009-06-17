@@ -486,7 +486,13 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 					
 					$marker = $this->conf['categoryTreeAdvanced.']['category.']['marker_single'];
 				}
-				$out['###TREE_ELEMENTS###'].= $this->renderer->renderCategoryTreeCategory($sel_class,$v,$title,$control,$marker);
+				t3lib_div::debug($this->conf['categoryTreeAdvanced.']['showRootCategory']);
+				if ($this->conf['categoryTreeAdvanced.']['showRootCategory']==0 && $v['row']['uid']==0) {
+					
+				}
+				else {
+					$out['###TREE_ELEMENTS###'].= $this->renderer->renderCategoryTreeCategory($sel_class,$v,$title,$control,$marker);
+				}
 				$i++;
 			}
 			return $this->renderer->renderCategoryTree($out, $this->treeID);
@@ -532,6 +538,9 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				// Set first:
 			$this->bank=$idx;
 			$isOpen = $this->stored[$idx][$uid] || $this->expandFirst;
+			if ($this->conf['categoryTreeAdvanced.']['showRootCategory']==0 && !$uid) {
+				$isOpen =true;				
+			}
 
 				// Save ids while resetting everything else.
 			$curIds = $this->ids;
