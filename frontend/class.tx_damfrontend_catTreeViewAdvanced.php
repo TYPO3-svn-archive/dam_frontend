@@ -486,7 +486,6 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 					
 					$marker = $this->conf['categoryTreeAdvanced.']['category.']['marker_single'];
 				}
-				t3lib_div::debug($this->conf['categoryTreeAdvanced.']['showRootCategory']);
 				if ($this->conf['categoryTreeAdvanced.']['showRootCategory']==0 && $v['row']['uid']==0) {
 					
 				}

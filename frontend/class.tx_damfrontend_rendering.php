@@ -1279,6 +1279,9 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 					'tx_damfrontend_pi1[catAll]' => 1,
 					'tx_damfrontend_pi1[treeID]' => $treeID
 				);
+		if ($this->piVars['catEditUID']) {
+			$param_array['tx_damfrontend_pi1[catEditUID]'] =$this->piVars['catEditUID'];
+		}
 		$this->conf['categoryTreeAdvanced.']['category_tree_selector_all.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
 		$markerArray['###CATEGORY_TREE_SELECTOR###'] .= $this->cObj->typoLink ($this->pi_getLL('CATEGORY_TREE_SELECTOR_ALL'),$this->conf['categoryTreeAdvanced.']['category_tree_selector_all.']) ;
 
@@ -1291,10 +1294,11 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 					'tx_damfrontend_pi1[catClear]' => 1,
 					'tx_damfrontend_pi1[treeID]' => $treeID
 				);
+		if ($this->piVars['catEditUID']) {
+			$param_array['tx_damfrontend_pi1[catEditUID]'] =$this->piVars['catEditUID'];
+		}
 		$this->conf['categoryTreeAdvanced.']['category_tree_selector_none.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
 		$markerArray['###CATEGORY_TREE_SELECTOR###'] .= $this->cObj->typoLink ($this->pi_getLL('CATEGORY_TREE_SELECTOR_NONE'),$this->conf['categoryTreeAdvanced.']['category_tree_selector_none.']) ;
-		#t3lib_div::debug($markerArray);
-		#t3lib_div::debug($treeID);
 		// todo support for static markers
  		$content=tslib_cObj::substituteMarkerArray($subpart, $markerArray);
  		$this->cObj->stdWrap($content,$this->conf['categoryTreeAdvanced.']);
@@ -1310,7 +1314,6 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	 */
 	function render_header($record, $markerArray) {
 		foreach ($record as $key=>$value) {
-			t3lib_div::debug($key);
 			$markerArray['###'.strtoupper($key).'_HEADER###'] =  $this->pi_getLL(strtoupper($key).'_HEADER');;
 	 	}
 	 	return $markerArray;
