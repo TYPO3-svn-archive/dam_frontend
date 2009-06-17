@@ -555,7 +555,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @return	[type]		...
 	 */
 	function getInputTree() {
-
 		if (is_array($this->piVars['dropdown'])) {
 			$this->internal['incomingtreeID'] = 999;
 			$count = count($this->piVars['dropdown']);
@@ -622,13 +621,17 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$this->catList->op_Equals($this->internal['catEquals'], $this->internal['incomingtreeID']);
 			}
 			else if ($this->internal['catMinus_Rec']) {
-				$subs = $this->catLogic->getSubCategories($this->internal['catMinus_Rec']);
+				$catID = $this->internal['catPlus_Rec'];
+				if ($catID==-1 ) $catID=0; 
+				$subs = $this->catLogic->getSubCategories($catID);
 				foreach ($subs as $sub) {
 					$this->catList->op_Minus($sub['uid'], $this->internal['incomingtreeID']);
 				}
 			}
 			else if ($this->internal['catPlus_Rec']) {
-				$subs = $this->catLogic->getSubCategories($this->internal['catPlus_Rec']);
+				$catID = $this->internal['catPlus_Rec'];
+				if ($catID==-1 ) $catID=0; 
+				$subs = $this->catLogic->getSubCategories($catID);
 				foreach ($subs as $sub) {
 					$this->catList->op_Plus($sub['uid'], $this->internal['incomingtreeID']);
 				}

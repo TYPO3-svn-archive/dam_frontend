@@ -55,7 +55,6 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/DAL/class.tx_damfrontend_DA
  *  224:     function wrapTitle($title,$row,$bank=0)
  *  251:     function wrapCatSelection($wrapItem,$row, $sel_class)
  *  342:     function PM_ATagWrap($icon,$cmd,$bMark='treeroot')
- *  363:     function PMicon($row,$a,$c,$nextCount,$exp)
  *  392:     function PM_wrap($row,$a,$c,$nextCount,$exp,$wrapItem)
  *  423:     function getControl($title,$row)
  *  457:     function printTree($treeArr='')
@@ -91,7 +90,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 	var $categorizationMode; 								// true if the tree should display the categorization mode
 	var $rootIconIsSet = false;								// indicates, if a root icon must be added or not
 	var $mediaFolder;										// ID of the Folder, which contains the dam records
-	var $treeStructure;
+	var $treeStructureArray;
 
 	/**
 	 * prepares the category tree
@@ -249,6 +248,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 	 * @return	string		html ...
 	 */
 	function wrapCatSelection($wrapItem,$row, $sel_class) {
+		if ($row['uid']==0) $row['uid']=-1;
 		$id = (int)t3lib_div::_GET('id');
 		switch ($sel_class) {
 			case 'tree_selectedCats':
@@ -319,6 +319,9 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				);
 				break;
 		}
+		if ($this->renderer->piVars['catEditUID']) {
+			$param_array['tx_damfrontend_pi1[catEditUID]'] =$this->renderer->piVars['catEditUID'];
+		}
 		if ($id > 0) { $param_array['tx_damfrontend_pi1[id]'] = $id; }
 		$this->conf['categoryTreeAdvanced.']['categorySelection.']['link.']['parameter'] = $GLOBALS['TSFE']->id;
 		if (is_array($param_array))	$this->conf['categoryTreeAdvanced.']['categorySelection.']['link.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
@@ -344,7 +347,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		$linkConf = array();
 		$linkConf['parameter.']['data'] = 'TSFE:id';
 		if ($this->renderer->piVars['catEditUID']) {
-			$additionalParams = '&tx_damfrontend_pi1[catEditUID]=' .$row['uid'];
+			$additionalParams = '&tx_damfrontend_pi1[catEditUID]=' .$this->renderer->piVars['catEditUID'];
 		}
 		$linkConf['additionalParams'] = $additionalParams.'&tx_damfrontend_pi1[treeID]='.$this->treeID.'&PM='.htmlspecialchars($cmd);
 		$linkConf['section'] = $bMark;
@@ -352,33 +355,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		return $this->cObj->typoLink($icon, $linkConf);
 	}
 
-	/**
-	 * Generate the plus/minus icon for the browsable tree.
-	 *
-	 * @param	array		record for the entry
-	 * @param	integer		The current entry number
-	 * @param	integer		The total number of entries. If equal to $a, a "bottom" element is returned.
-	 * @param	integer		The number of sub-elements to the current element.
-	 * @param	boolean		The element was expanded to render subelements if this flag is set.
-	 * @return	string		Image tag with the plus/minus icon.
-	 * @access private
-	 * @see t3lib_pageTree::PMicon()
-	 */
-	function PMicon($row,$a,$c,$nextCount,$exp)	{
-
-		$renderElement = $nextCount ? ($exp?'treeMinusIcon':'treePlusIcon') : 'treeJoinIcon';
-
-		$BTM = ($a==$c)?'Bottom':'';
-		$icon=$this->cObj->IMAGE($this->conf['categoryTreeAdvanced.'][$renderElement.$BTM.'.']);
-
-		if ($nextCount)	{
-			$cmd=$this->bank.'_'.($exp?'0_':'1_').$row['uid'].'_'.$this->treeName;
-			$bMark=($this->bank.'_'.$row['uid']);
-			$icon = $this->PM_ATagWrap($icon,$cmd,$bMark, $row);
-		}
-
-		return $icon;
-	}
+	
 
 	/**
 	 * Generate a plus/minus navigation for the browsable tree.
@@ -391,7 +368,6 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 	 * @param	string		wrapItem, item that is wrapped by this function
 	 * @return	string		Image tag with the plus/minus icon.
 	 * @access private
-	 * @see t3lib_pageTree::PMicon()
 	 */
 	function PM_wrap($row,$a,$c,$nextCount,$exp,$wrapItem)	{
 		$renderElement = $nextCount ? ($exp?'treeMinusIcon':'treePlusIcon') : 'treeJoinIcon';
@@ -474,7 +450,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				$sel_class = 'tree_unselectedCats';
 				if (is_array($this->selectedCats) ) {
 
-					$sel_class = $this->get_selectionStatus($v['row']['uid'],$this->treeStructure, $this->selectedCats);
+					$sel_class = $this->get_selectionStatus($v['row']['uid'],$this->treeStructureArray, $this->selectedCats);
 					
 				}
 				if ($this->categorizationMode==true) {
@@ -549,11 +525,10 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			// Init done:
 		$titleLen=intval($this->BE_USER->uc['titleLen']);
 		$treeArr=array();
-		$this->treeStructure = $this->get_treeStructure();
+		$this->treeStructureArray = $this->get_treeStructure();
 			// fix null value
 			// Traverse mounts:
 		foreach($this->MOUNTS as $idx => $uid)	{
-			
 				// Set first:
 			$this->bank=$idx;
 			$isOpen = $this->stored[$idx][$uid] || $this->expandFirst;
@@ -577,12 +552,12 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				$rootRec = $this->getRecord($uid);
 			} else {
 					// Artificial record for the tree root, id=0
-				$rootRec = $this->getRootRecord(0);
+				$rootRec = $this->getRootRecord($uid);
 			}
 			$noChilds = false;
 				// check if this mount has childs, if not, render no tree controls
 			if ($rootRec['uid']>0) {
-				$childs = $this->get_childCats($rootRec['uid'], $this->treeStructure);
+				$childs = $this->get_childCats($rootRec['uid'], $this->treeStructureArray);
 				if (empty($childs)) $noChilds=true;
 			}
 			if ($noChilds == true ) {
@@ -804,7 +779,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		$childs = array();
 		foreach ($treeStructure as $cat => $parent) {
 			if ($parent==$catUID) {
-				$childs[] = substr_replace($cat,'',0,4);
+				if (substr_replace($cat,'',0,4) >0)	$childs[] = substr_replace($cat,'',0,4);
 			}
 		}
 		return $childs;
@@ -863,11 +838,11 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		$catSelected = false;
 		$catNotSelected = false;
 		$childCats = $this->get_childCats($catID,$treeStructure);
-
 		if (is_array($childCats) && !empty($childCats)) {
 
 			// has child: so check if they are selected all / partly / none
 			foreach ($childCats as $cat) {
+				#if ($cat>0) {
 				$childSelection = $this->get_selectionStatus($cat,$treeStructure);
 				switch ($childSelection){
 					case 'tree_selectedCats':
@@ -887,6 +862,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 						$catNotSelected = true;
 						break;
 				}
+				#}
 			}
 			
 			if ($catSelected == false and  $catNotSelected==true) {
