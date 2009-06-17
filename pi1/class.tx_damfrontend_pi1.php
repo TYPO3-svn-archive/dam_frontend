@@ -173,16 +173,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	        }
 	  }
 	
-	  //$this->conf = $conf;
-	
 	      // getting values from flexform ==> it's possible to overwrite flexform values with ts setttings
 	  $flexform = $this->cObj->data['pi_flexform'];
 	    // set the internal values
 	  $this->internal['viewID'] = $this->conf['viewID'];
 	  if (!$this->conf['catMounts']) {
 	        // load the flexform value, if there is no ts setting
-	    t3lib_div::debug($this->conf['catMounts.']);
-	      $catMounts = $this->pi_getFFvalue($flexform, 'catMounts', 'sSelection');
+	    $catMounts = $this->pi_getFFvalue($flexform, 'catMounts', 'sSelection');
 	    $this->internal['catMounts']= array();
 	    $this->internal['catMounts'] = explode(',',$this->pi_getFFvalue($flexform, 'catMounts', 'sSelection'));
 	  }
@@ -445,8 +442,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$this->initFilter();
 		}
 		if (t3lib_div::_POST('cancel_versioning')) {
-			t3lib_div::debug('cancel versioning');
 			$GLOBALS['TSFE']->fe_user->setKey('ses','saveID','');
+			$GLOBALS['TSFE']->fe_user->setKey('ses','overWriteID','');
 		} 
 		else {
 				// iniitalisation of an Upload
@@ -680,8 +677,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$selCats  = $this->catList->getCatSelection($this->internal['treeID']);
 
 		$tree->selectedCats = $selCats[$this->internal['treeID']];
-		t3lib_div::debug('cat Mounts');
-		t3lib_div::debug($this->internal['catMounts']);
+
 		if (is_array($this->internal['catMounts'])) $tree->MOUNTS = $this->internal['catMounts'];
 		$tree->expandTreeLevel($this->conf['categoryTree.']['expandTreeLevel']);
 		return  $this->cObj->stdWrap($tree->getBrowsableTree(), $this->conf['categoryTree.']['stdWrap.']);
@@ -846,7 +842,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			if (is_array($this->internal['filter'])) {
 				$this->internal['filterError'] = $this->docLogic->setFilter($this->internal['filter']);
 			}
-			#t3lib_div::debug($cats);
 			$this->docLogic->orderBy = $this->internal['list']['sorting'];
 			$this->docLogic->limit = $this->internal['list']['limit'];
 			$this->docLogic->categories = $cats;
@@ -1068,17 +1063,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				// saving edition of meta data
 			if ($this->internal['saveUID'] > 0){
 				$returnCode = $this->saveMetaData($this->internal['saveUID']);
-				t3lib_div::debug($returnCode);
 				if ($returnCode<>true) {
 					return  $returnCode;
-					t3lib_div::debug('fehler');
 				}
 				else {
-					t3lib_div::debug('kein fehler');
 						#if saving of the metadata was successful, next step for upload form must be prepared
 						#first check, if the saved id is the id of the uploaded file
-						t3lib_div::debug($this->internal['saveUID']);
-						t3lib_div::debug($GLOBALS['TSFE']->fe_user->getKey('ses','saveID'));
 					if ($this->internal['saveUID'] ==$GLOBALS['TSFE']->fe_user->getKey('ses','saveID')) {
 
 							#set categoriseID, that next step of upload form function is processed
@@ -1106,6 +1096,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			if($this->saveCategorisation==1) {
 				$docID = intval($GLOBALS['TSFE']->fe_user->getKey('ses','categoriseID'));
 				$this->saveCategories($docID);
+				$this->storeDocument($docID);
 				$this->categorise=false;
 				$step = 4;
 			}
@@ -1122,7 +1113,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				return $this->renderer->renderUploadForm();
 				break;
 			case 2:
-				return $this->editForm(intval($GLOBALS['TSFE']->fe_user->getKey('ses','uploadID')));
+				if ($GLOBALS['TSFE']->fe_user->getKey('ses','overWriteID')>0 && $this->versioning == '') {
+					return $this->versioningForm();
+				} 
+				else {
+					return $this->editForm(intval($GLOBALS['TSFE']->fe_user->getKey('ses','uploadID')));
+				}
 				break;
 			case 3:
 				return $this->categoriseForm();
@@ -1264,7 +1260,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	function versioningForm() {
 		$allowedVersioningMethods = array();
 		// get the ID of the overwrite document
-		#$document = $this->docLogic->getDocument()
+		$document = $this->docLogic->getDocument($GLOBALS['TSFE']->fe_user->getKey('ses','overWriteID'));
 		if ($this->conf['upload.']['allowedVersioningMethods.']['versioning']==1) 	$allowedVersioningMethods[]='versioning';
 		if ($this->conf['upload.']['allowedVersioningMethods.']['overwrite']==1) 	$allowedVersioningMethods[]='overwrite';
 		if ($this->conf['upload.']['allowedVersioningMethods.']['newRecord']==1) 	$allowedVersioningMethods[]='newRecord';
@@ -1359,9 +1355,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 					// check if the current file is already present  - preparing for versioning
 				if (is_file($uploadfile)) {
-						// TODO retrieve id of the existing files
-					
-					t3lib_div::debug('versionate');
+					$doc = $this->docLogic->getDocumentByFilename($_FILES[$uploadHandler->prefixId]['name'],$uploaddir.$feuploaddir);
+					$GLOBALS['TSFE']->fe_user->setKey('ses','overWriteID',$doc['uid']);
 					$this->versionate = true;
 				}
 
@@ -1440,7 +1435,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					}
 					$GLOBALS['TSFE']->fe_user->setKey('ses','uploadID',$newID);
 					$GLOBALS['TSFE']->fe_user->setKey('ses','saveID',$newID);
-					t3lib_div::debug($GLOBALS['TSFE']->fe_user->getKey('ses','saveID'));
 					return $newID;
 				}
 				else {
@@ -1585,12 +1579,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					// fixme check upload categories, allow only cats a user has rights to
 				if (is_array($cats)) $this->docLogic->categoriseDocument($docID, $cats);
 
-				if ($upload==true) {
-					t3lib_div::debug('upload = true');
-					$returnID = $this->docLogic->storeDocument($docID);
-					$GLOBALS['TSFE']->fe_user->setKey('ses','uploadID','');
-					$GLOBALS['TSFE']->fe_user->setKey('ses','saveID', '');
-				}
 					// finisch up with cleaning
 				$this->catList->clearCatSelection(-1);
 				$GLOBALS['TSFE']->fe_user->setKey('ses','categoriseID','');
@@ -1705,10 +1693,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$trigger = t3lib_div::_GP('version_method');
 		$docID = $GLOBALS['TSFE']->fe_user->getKey('ses','uploadID');
 		if (!isset($trigger)) die('call of this function (handleversioning) without url - parameter');
-t3lib_div::debug('handleVersioning');
 		switch ($trigger) {
 			case 'override':
-				t3lib_div::debug('override');
 				$GLOBALS['TSFE']->fe_user->setKey('ses','versioning','override');
 				return $this->docLogic->versioningOverridePrepare($docID);
 				break;
@@ -1718,9 +1704,11 @@ t3lib_div::debug('handleVersioning');
 				break;
 			case 'new_record':
 				$GLOBALS['TSFE']->fe_user->setKey('ses','versioning','new_record');
-					// nothing to do here
+				return $docID;
+				// nothing else to do here
 				break;
 		}
+		$GLOBALS['TSFE']->fe_user->setKey('ses','overWriteID','');
 	}
 
 	/**
@@ -1735,7 +1723,6 @@ t3lib_div::debug('handleVersioning');
 			if ($this->versioning != '') {
 				if ($this->docLogic->checkOwnerRights($uid,$this->userUID)==true){
 					$uid = $this->handleVersioning($this->versioning);
-					t3lib_div::debug('versioning!');
 					$uid = $this->handleOneStepUpload($uid);
 					$GLOBALS['TSFE']->fe_user->setKey('ses','saveID', $uid);
 					$GLOBALS['TSFE']->fe_user->setKey('ses','uploadID',$uid);
@@ -1933,15 +1920,22 @@ t3lib_div::debug('handleVersioning');
 	function handleOneStepUpload ($newID) {
 		if ($this->conf['upload.']['useOneStepUpload']==1) {
 				// load the default categories
-			$newID = $this->saveCategories($newID,true);
+			$this->saveCategories($newID,true);
+			$newID = $this->storeDocument($newID);
+				// set the sessions key again, that the edit meta data form is shown
 			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadID', $newID);
 			$GLOBALS['TSFE']->fe_user->setKey('ses','saveID', $newID);
-				// disable versioning, because it is allready done
-			$GLOBALS['TSFE']->fe_user->setKey('ses','versioning','');
 			$this->saveMetaData=1;
 			return $newID;
 		}
 		return true;
+	}
+	
+	function storeDocument ($docID) {
+		$returnID = $this->docLogic->storeDocument($docID);
+		$GLOBALS['TSFE']->fe_user->setKey('ses','uploadID','');
+		$GLOBALS['TSFE']->fe_user->setKey('ses','saveID', '');
+		return $returnID; 
 	}
 }
 

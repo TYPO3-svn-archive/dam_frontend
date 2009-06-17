@@ -1165,7 +1165,9 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	function renderVersioningForm($allowedVersioningMethods, $document) {
 		$this->pi_loadLL();
 		$subpart = tslib_CObj::getSubpart($this->fileContent,'###FORM_VERSIONING###');
-		$markerArray = array();
+		$markerArray = $this->recordToMarkerArray($document,'renderFields');
+ 		$markerArray = $this->render_header($document,$markerArray);
+ 		$markerArray['###VERSIONING_FILE_INFO###']=$this->pi_getLL('VERSIONING_FILE_INFO');
 		$markerArray['###HIDDENFIELDS###'] = '';
 		$markerArray['###VERSION_METHODS###'] = '';
 		foreach ($allowedVersioningMethods as $method) {
@@ -1173,6 +1175,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		}
  		$content=tslib_cObj::substituteMarkerArray($subpart, $markerArray);
 		$markerArray['###VERSIONING_FILE_EXISTS###'] =  $this->pi_getLL('VERSIONING_FILE_EXISTS');
+		$markerArray['###VERSIONING_NEW_RECORD###'] =  $this->pi_getLL('VERSIONING_NEW_RECORD');
 		$markerArray['###VERSIONING_OVERWRITES###'] =  $this->pi_getLL('VERSIONING_OVERWRITES');
 		$markerArray['###VERSIONING_NEW_VERSION###'] = $this->pi_getLL('VERSIONING_NEW_VERSION');
 		$markerArray['###VERSIONING_NEW_RECORD###'] = $this->pi_getLL('VERSIONING_NEW_RECORD');
@@ -1196,9 +1199,13 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		$this->pi_loadLL();
 
 		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###EDITFORM###');
+		
+		$markerArray = $this->recordToMarkerArray($record,'renderFields');
+ 		$markerArray = $this->render_header($record,$markerArray);
+ 		
+		$markerArray['###CRDATE_AGE###'] = $this->cObj->stdWrap($record['crdate'], $this->conf['renderFields.']['crdate_age.']);
 
-		$markerArray['###TITLE_FILEUPLOAD###'] = $this->pi_getLL('TITLE_FILEUPLOAD');
-		$markerArray['###LABEL_FILE###'] =  $this->pi_getLL('LABEL_FILE');
+ 		$markerArray['###LABEL_FILE###'] =  $this->pi_getLL('LABEL_FILE');
 		$markerArray['###LABEL_TITLE###'] =  $this->pi_getLL('LABEL_TITLE');
 		$markerArray['###LABEL_COPYRIGHT###'] = $this->pi_getLL('LABEL_COPYRIGHT');
 		$markerArray['###LABEL_AUTHOR###'] =  $this->pi_getLL('LABEL_AUTHOR');
@@ -1212,7 +1219,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		$hiddenFields = '<input type="hidden" name="saveUID" value="'.$record['uid'].'" />';
  		$markerArray['###HIDDENFIELDS###'] = $hiddenFields;
 		$markerArray =$markerArray + $this->substituteLangMarkers($formCode);
-
+		
 		$markerArray['###BUTTON_CONFIRM###'] =$this->cObj->stdWrap('<input name="editok" type="submit" value="'.$this->pi_getLL('BUTTON_CONFIRM').'"',$this->conf['filelist.']['renderFileEdit.']['button_confirm.']);
 		$markerArray['###CANCEL###']=$this->cObj->stdWrap('<input name="cancelEdit" type="submit" value="'.$this->pi_getLL('CANCEL').'">',$this->conf['filelist.']['renderFileEdit.']['button_cancel.']);
 
@@ -1292,6 +1299,21 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  		$content=tslib_cObj::substituteMarkerArray($subpart, $markerArray);
  		$this->cObj->stdWrap($content,$this->conf['categoryTreeAdvanced.']);
 		return $content;
+	}
+	
+	 /**
+	 * render_header
+	 *
+	 * @param	array	$record contains the row 
+	 * @return	array	
+	 * @author	stefan
+	 */
+	function render_header($record, $markerArray) {
+		foreach ($record as $key=>$value) {
+			t3lib_div::debug($key);
+			$markerArray['###'.strtoupper($key).'_HEADER###'] =  $this->pi_getLL(strtoupper($key).'_HEADER');;
+	 	}
+	 	return $markerArray;
 	}
 }
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_rendering.php'])	{

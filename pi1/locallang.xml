@@ -40,11 +40,16 @@
 			<label index="label_Count">rowcount:</label>
 			<label index="error_renderFileList_template">Rendering of dam_frontend is not possible: Please initialize the templatefile first. Please check, if a valid value for plugin.tx_damfrontend_pi1.templateFile  is set. Please contact your administrator.</label>
 			<label index="FILENAME_HEADER">Filename</label>
+			<label index="FILE_NAME_HEADER">Filename</label>
 			<label index="CR_DATE_HEADER">Creation date</label>
+			<label index="CRDATE_HEADER">Creation date</label>
+			<label index="DATE_CR_HEADER">Creation date</label>
 			<label index="FILETYPE_HEADER">Filetype</label>
 			<label index="TITLE_SINGLEVIEW">Singleview</label>
+			<label index="TITLE_HEADER">Titel</label>
 			<label index="FILE_SIZE_HEADER">Filesize</label>
 			<label index="CR_DESCRIPTION_HEADER">Description</label>
+			<label index="DESCRIPTION_HEADER">Description</label>
 			<label index="CHOOSEN_CAT_HEADER">Choosen categories</label>
 			<label index="TITLE_SINGLEVIEW_HEADER">Title</label>
 			<label index="COPYRIGHT_HEADER">Copyright</label>
@@ -114,9 +119,11 @@
 			<label index="OWNER_HEADER">Owner</label>
 			<label index="NO_OWNERS">No FE_User Group in BE selected</label>
 			<label index="VERSIONING_FILE_EXISTS">This file is allready exisiting. What should be done?</label>
+			<label index="VERSIONING_FILE_INFO">Dateiangaben:</label>
 			<label index="VERSIONING_OVERWRITES">Replace file and update the metadata.</label>
 			<label index="VERSIONING_NEW_VERSION">Create a new version of this file.</label>
 			<label index="VERSIONING_NEW_RECORD">Create a new (additional) file.</label>
+			
 			<label index="LABEL_NO_CAT">Search in all Categories </label>
 			<label index="upload_path_error">Error: Please check setting of your upload path! [DAM Frontend: upload]</label>
 			<label index="BROWSELINK_PREV">previous</label>
@@ -158,13 +165,18 @@
 			<label index="error_renderFilterView_date_to">Incorrect date value (to-date)</label>
 			<label index="error_renderFilterView_date_from">Incorrect date value (from-date)</label>
 			<label index="FILENAME_HEADER">Dateiname</label>
+			<label index="FILE_NAME_HEADER">Dateiname</label>
 			<label index="CR_DATE_HEADER">Erstellungsdatum</label>
+			<label index="CRDATE_HEADER">Erstellungsdatum</label>
+			<label index="DATE_CR_HEADER">Erstellungsdatum</label>
 			<label index="FILETYPE_HEADER">Dateityp</label>
 			<label index="TITLE_SINGLEVIEW">Detailansicht</label>
 			<label index="FILE_SIZE_HEADER">Dateigröße</label>
 			<label index="CR_DESCRIPTION_HEADER">Beschreibung</label>
+			<label index="DESCRIPTION_HEADER">Beschreibung</label>
 			<label index="CHOOSEN_CAT_HEADER">gewählte Kategorien</label>
 			<label index="TITLE_SINGLEVIEW_HEADER">Titel</label>
+			<label index="TITLE_HEADER">Titel</label>
 			<label index="COPYRIGHT_HEADER">Copyright</label>
 			<label index="CATEGORY_HEADER">Kategorie</label>
 			<label index="LINK_HEADER">Link</label>
@@ -219,7 +231,9 @@
 			<label index="CREATOR_HEADER">Autor</label>
 			<label index="OWNER_HEADER">Besitzer</label>
 			<label index="NO_OWNERS">Keine FE_Gruppe ist in den Einstellungen hinterlegt.</label>
-			<label index="VERSIONING_FILE_EXISTS">Die Datei ist bereits im System vorhanden. Wie soll verfahren werden ?</label>
+			<label index="VERSIONING_FILE_EXISTS">Die Datei ist bereits im System vorhanden. Wie soll verfahren werden?</label>
+			<label index="VERSIONING_FILE_INFO">Dateiangaben:</label>
+
 			<label index="VERSIONING_OVERWRITES">Vorhandene Datei überschreiben und Metadaten aktualisieren.</label>
 			<label index="VERSIONING_NEW_VERSION">Neue (zusätzliche) Datei anlegen.</label>
 			<label index="VERSIONING_NEW_RECORD">Create a new (additional) file.</label>
@@ -263,13 +277,18 @@
 			<label index="error_renderFilterView_date_to">Incorrecte waarde voor de datum (tot-datum)</label>
 			<label index="error_renderFilterView_date_from">Incorrecte waarde voor de datum (vanaf-datum)</label>
 			<label index="FILENAME_HEADER">Bestandsnaam</label>
+			<label index="FILE_NAME_HEADER">Bestandsnaam</label>
 			<label index="CR_DATE_HEADER">Aangemaakt op</label>
+			<label index="CRDATE_HEADER">Aangemaakt op</label>
+			<label index="DATE_CR_HEADER">Aangemaakt op</label>
 			<label index="FILETYPE_HEADER">Bestandstype</label>
 			<label index="TITLE_SINGLEVIEW">Detailweergave</label>
 			<label index="FILE_SIZE_HEADER">Bestandsgrootte</label>
 			<label index="CR_DESCRIPTION_HEADER">Beschrijving</label>
+			<label index="DESCRIPTION_HEADER">Beschrijving</label>
 			<label index="CHOOSEN_CAT_HEADER">Geselecteerde categoriën</label>
 			<label index="TITLE_SINGLEVIEW_HEADER">Titel</label>
+			<label index="TITLE_HEADER">Titel</label>
 			<label index="COPYRIGHT_HEADER">Copyright</label>
 			<label index="CATEGORY_HEADER">Categorie</label>
 			<label index="LINK_HEADER">Link</label>
@@ -325,6 +344,7 @@
 			<label index="OWNER_HEADER">Eigenaar</label>
 			<label index="NO_OWNERS">Er is geen Frontend-groep ingesteld.</label>
 			<label index="VERSIONING_FILE_EXISTS">Dit bestand is al in het systeem aanwezig. Wat wilt u hiermee doen?</label>
+			<label index="VERSIONING_FILE_INFO">Bestanddetails:</label>
 			<label index="VERSIONING_OVERWRITES">Het bestaande bestand overschrijven en de bestandsgegevens aktualiseren.</label>
 			<label index="VERSIONING_NEW_VERSION">Nieuw bestand aanmaken.</label>
 			<label index="VERSIONING_NEW_RECORD">Create a new (additional) file.</label>

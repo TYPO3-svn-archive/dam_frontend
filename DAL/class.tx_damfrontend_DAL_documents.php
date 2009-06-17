@@ -319,6 +319,21 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		}
 
 
+	/**
+	 * Returns the resultlist of a requestet DAM Document
+	 *
+	 * @param	[string]	$filename: filename of the requested file
+	 * @param	[string]	$path: path to the requested file
+	 * @return	[array]		dam record
+	 */
+		function getDocumentByFilename($filename, $path) {
+			$select = '*';
+			$where = 'file_name like '. $GLOBALS['TYPO3_DB']->fullQuoteStr($filename,$this->docTable) . ' AND file_path like ' .$GLOBALS['TYPO3_DB']->fullQuoteStr($path,$this->docTable); 
+			#﻿. $GLOBALS['TYPO3_DB']->fullQuoteStr($filename) . ' AND file_path = '. $GLOBALS['TYPO3_DB']->fullQuoteStr($path);
+			$from = $this->docTable;
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where);
+			return $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+		}
 
 
 
@@ -448,7 +463,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				// is defnied as: $this->internal['list']['limit'] = $this->internal['list']['pointer'].','. ($this->internal['list']['listLength']);
 			list($pointer, $listLength) = explode (',',$this->limit);
 			$startRecord = $pointer * $listLength;
-			#t3lib_div::debug($where);
 				// limit = "pointer,counter"
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where,'',$this->orderBy);
 			$result = array();
@@ -878,11 +892,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$WHERE = 'uid_local = -'.$GLOBALS['TSFE']->fe_user->user['uid'];
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$newDoc);
 
-			$GLOBALS['TSFE']->fe_user->setKey('ses','versioningNewVersionID','');
-			$GLOBALS['TSFE']->fe_user->setKey('ses','versioning','');
-			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFilePath','');
-			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFileName','');
-			
 			return $oldID;
 
 		}
@@ -999,39 +1008,44 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 * @return	[type]		...
 	 */
 		function versioningOverrideExecute($docID) {
-
+			if (!$docID >0 ) {
+				return false;
+			}
+			
+			if (!$GLOBALS['TSFE']->fe_user->getKey('ses','versioningOverrideID')>0) {
+				return false;
+			}
 			$newDoc = $this->getDocument($docID);
-t3lib_div::debug($GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName'));
-			unlink($GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName'));
-				// FIXME insert error handling
+			if (is_file($GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName'))) {
+				unlink($GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName'));
+			}
 
 				// copy the new file from temp dir to destionation dir
 			copy(PATH_site.$newDoc['file_path'].$newDoc['file_name'],$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName'));
-				// delete the temp file
+				
+			// delete the temp file
 			unlink($newDoc['file_path'].$newDoc['file_name']);
 
 				// update the new file
 			$newDoc['file_name']=$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
 			$newDoc['file_path']=$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath');
+			
 				// set deleted to 1, that the new record (not yet saved thru the user) is not shown in the FE
 			$newDoc['deleted']=0;
 			$newDoc['uid']=$GLOBALS['TSFE']->fe_user->getKey('ses','versioningOverrideID');
 			$oldID = $GLOBALS['TSFE']->fe_user->getKey('ses','versioningOverrideID');
 			$TABLE = 'tx_dam';
 			$WHERE = 'uid = '.$GLOBALS['TSFE']->fe_user->getKey('ses','versioningOverrideID');
-				// FIXME insert error handling
+
+				// TODO insert error handling
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$newDoc);
 
 				// delete the temp dam record (in case of overwrite action, the record is not needed anymore)
 			$TABLE = 'tx_dam';
 			$WHERE = 'uid = '.$docID;
-				// FIXME insert error handling
+			
+				// TODO insert error handling
 			$GLOBALS['TYPO3_DB']->exec_DELETEquery($TABLE,$WHERE);
-
-			$GLOBALS['TSFE']->fe_user->setKey('ses','versioningNewVersionID','');
-			$GLOBALS['TSFE']->fe_user->setKey('ses','versioning','');
-			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFilePath','');
-			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFileName','');
 
 			return $oldID;
 		}
@@ -1051,10 +1065,10 @@ t3lib_div::debug($GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOB
 			copy(PATH_site.$newDoc['file_path'].$newDoc['file_name'],$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$newFilename);
 				// delete the temp file
 			unlink($newDoc['file_path'].$newDoc['file_name']);
-
+			unset ($newDoc);
 				// update the new file
 			$newDoc['file_name']=$newFilename;
-			$newDoc['﻿file_dl_name']=$newFilename;
+			$newDoc['file_dl_name']=$newFilename;
 			$newDoc['file_path']=$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath');
 				// set deleted to 1, that the new record (not yet saved thru the user) is not shown in the FE
 			$newDoc['deleted']=0;
@@ -1063,10 +1077,6 @@ t3lib_div::debug($GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOB
 			$WHERE = 'uid = '.$docID;
 				// FIXME insert error handling
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$newDoc);
-
-			$GLOBALS['TSFE']->fe_user->setKey('ses','versioning','');
-			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFilePath','');
-			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFileName','');
 
 			return $docID;
 		}
@@ -1128,52 +1138,50 @@ t3lib_div::debug($GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOB
  * @return	void
  * @author stefan
  */
-		function storeDocument($docID) {
-			t3lib_div::debug('store doc now');
-			// handle versioning
-			switch ($GLOBALS['TSFE']->fe_user->getKey('ses','versioning')){
-				case 'override':
-					t3lib_div::debug('override');
-					return $this->versioningOverrideExecute($docID);
-					break;
-				case 'new_version':
-					return $this->versioningCreateNewVersionExecute($docID);
-					break;
-				default:
-				case 'new_record':
-					return $this->versioningCreateNewRecordExecute($docID);
-					break;
-				
-				default:
+	function storeDocument($docID) {
+		// handle versioning
+		switch ($GLOBALS['TSFE']->fe_user->getKey('ses','versioning')){
+			case 'override':
+				$returnID = $this->versioningOverrideExecute($docID);
+				break;
+			case 'new_version':
+				$returnID = $this->versioningCreateNewVersionExecute($docID);
+				break;
+			default:
+			case 'new_record':
+				$returnID = $this->versioningCreateNewRecordExecute($docID);
+				break;
+			default:
+					// correct filename & filepath
+				$newDoc = $this->getDocument($docID);
 
-						// correct filename & filepath
-					$newDoc = $this->getDocument($docID);
+					// copy file to the final destination
+				$uploadFile = $GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
+				if ($uploadFile<>'') {
+					// FIXME insert error handling
+					copy(PATH_site.$newDoc['file_path'].$newDoc['file_name'],$uploadFile);
+						// delete the temp file
+					unlink($newDoc['file_path'].$newDoc['file_name']);
 
-						// copy file to the final destination
-					$uploadFile = $GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
-					if ($uploadFile<>'') {
-						// FIXME insert error handling
-						copy(PATH_site.$newDoc['file_path'].$newDoc['file_name'],$uploadFile);
-							// delete the temp file
-						unlink($newDoc['file_path'].$newDoc['file_name']);
-	
-							// set the dam record info the the final state
-						$newDoc['deleted']=0;
-						$newDoc['file_name']=$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
-						$newDoc['file_path']=$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath');
-	
-						$GLOBALS['TSFE']->fe_user->setKey('ses','versioningNewVersionID','');
-						$GLOBALS['TSFE']->fe_user->setKey('ses','versioning','');
-						$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFilePath','');
-						$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFileName','');
-	
-						$TABLE = 'tx_dam';
-						$WHERE = 'uid = '.$docID;
-						$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$newDoc);
-						return $docID;
-					}
-					break;
+						// set the dam record info the the final state
+					$newDoc['deleted']=0;
+					$newDoc['file_name']=$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
+					$newDoc['file_path']=$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath');
+
+					$TABLE = 'tx_dam';
+					$WHERE = 'uid = '.$docID;
+					$GLOBALS['TYPO3_DB']->exec_UPDATEquery($TABLE,$WHERE,$newDoc);
+				}
+				$returnID = $docID;
+				break;
 			}
+
+				// clean up
+			$GLOBALS['TSFE']->fe_user->setKey('ses','versioningNewVersionID','');
+			$GLOBALS['TSFE']->fe_user->setKey('ses','versioning','');
+			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFilePath','');
+			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFileName','');
+			return $returnID;
 		}
 	}
 
