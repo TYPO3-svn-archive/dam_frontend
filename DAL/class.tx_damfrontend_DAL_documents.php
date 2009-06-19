@@ -315,7 +315,9 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$where = 'uid ='.$docID;
 			$from = $this->docTable;
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where);
-			return $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);				
+			$row['tx_damfrontend_feuser_upload']= $this->get_FEUserName($row['tx_damfrontend_feuser_upload']);
+			return $row;
 		}
 
 
