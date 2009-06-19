@@ -142,7 +142,7 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 	 * @return	void
 	 */
 	function unsetAllCategories() {
-		 $this->setArrayToUser(null);
+		$this->setArrayToUser(null);
 	}
 
 	/**
@@ -220,6 +220,7 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 	 */
 	function clearCatSelection($treeID) {
 		$ar = $this->getArrayFromUser();
+		
 		unset($ar[$treeID]);
 		$this->setArrayToUser($ar);
 	}

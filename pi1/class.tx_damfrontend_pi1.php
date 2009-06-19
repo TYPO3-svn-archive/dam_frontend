@@ -455,17 +455,21 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		// cancel category editing
 		if (t3lib_div::_POST('cancelCatEdit')) {
 			$this->internal['catEditUID']=null;
+			unset($this->piVars['catEditUID']);
 			$this->internal['cancelCatEdit']=true;
 		}
-		// cancel category editing
+		// cancel meta data editing
 		if (t3lib_div::_POST('cancelEdit')) {
 			$this->internal['editUID']=null;
+			unset($this->piVars['editUID']);
 			$this->internal['cancelEdit']=true;
 		}
 
 		if (t3lib_div::_POST('CANCEL_DELETION')) {
 			$this->internal['deleteUID']=null;
 			$this->internal['confirmDeleteUID']=null;
+			unset($this->piVars['deleteUID']);
+			unset($this->piVars['confirmDeleteUID']);
 		}
 		// incoming command of saving the current category selection
 		$this->saveCategorisation = strip_tags(t3lib_div::_POST('catOK')) != '' ? true : false;
@@ -473,6 +477,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		// if the session var for categorisation is set, render set the categorise var
 		$this->categorise = $GLOBALS['TSFE']->fe_user->getKey('ses','categoriseID') != '' ? true:false;
 		$this->saveMetaData = $GLOBALS['TSFE']->fe_user->getKey('ses','saveID') != '' ? true:false;
+		$this->renderer->piVars = $this->piVars;
  	}
 
 	/**
@@ -732,8 +737,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		if ($this->conf['enableEdits']==1) {
 			if ($this->userLoggedIn == true) {
 					// only if a user is logged in and the UserUID of the uploaded doc is equal to fe_user, then operations can be done
-
-				if ($this->internal['saveUID'] > 0){
+				if ($this->internal['saveUID'] > 0 && !$this->internal['cancelEdit']){
 					$docData = $this->docLogic->getDocument($this->internal['saveUID']);
 					# ==> check permission (only the owner is allowed to edit)
 					if ($docData['tx_damfrontend_feuser_upload']==$this->userUID) {
@@ -762,20 +766,24 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 						return $this->renderer->renderError('custom','You are not allowed to edit this file!');
 					}
 				}
+				if ($this->internal['cancelCatEdit']) {
+						$this->catList->clearCatSelection(-1);
+						$GLOBALS['TSFE']->fe_user->setKey('ses','categoriseID','');
+				}
+				if ($this->saveCategorisation==1 ) {
+						// check access if fe_user is allowed to edit the cat, if allow
+						$docData = $this->docLogic->getDocument($this->internal['catEditUID']);
 
+							// ==> check permission (only the owner is allowed to edit)
+							// TODO expand support for groups
+						if ($docData['tx_damfrontend_feuser_upload']==$this->userUID) {
 
-				if ($this->saveCategorisation==1) {
-					// check access if fe_user is allowed to edit the cat, if allow
-					$docData = $this->docLogic->getDocument($this->internal['catEditUID']);
-						// ==> check permission (only the owner is allowed to edit)
-						// TODO expand support for groups
-					if ($docData['tx_damfrontend_feuser_upload']==$this->userUID) {
-						$this->saveCategories($this->internal['catEditUID'],false);
-						$this->internal['catEditUID']=null;
-					}
-					else {
-						return $this->renderer->renderError('custom','You are not allowed to edit this file!');
-					}
+							$this->saveCategories($this->internal['catEditUID'],false);
+							$this->internal['catEditUID']=null;
+						}
+						else {
+							return $this->renderer->renderError('custom','You are not allowed to edit this file!');
+						}
 				}
 					// if the pi var catEditUID is set, a document should be categorized =>
 				if ($this->internal['catEditUID']>0){
