@@ -451,7 +451,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  		$markerArray['###CRDATE_AGE###'] =  $cObj->stdWrap($record['crdate'], $this->conf['renderFields.']['crdate_age.']);
  		$markerArray['###LINK_DOWNLOAD###'] = $cObj->cObjGetSingle($this->conf['singleView.']['link_download'], $this->conf['singleView.']['link_download.']);
  		$markerArray['###BACK_LINK###'] = $this->cObj->typolink($cObj->cObjGetSingle($this->conf['singleView.']['backLink'], $this->conf['singleView.']['backLink.']), array('parameter' => $record['backPid']));
-		$markerArray['###TX_DAMFRONTEND_FEUSER_UPLOAD###']= $this->get_FEUserName($elem['tx_damfrontend_feuser_upload']);
+		$markerArray['###TX_DAMFRONTEND_FEUSER_UPLOAD###']= $this->get_FEUserName($record['tx_damfrontend_feuser_upload']);
  				//render deletion button
 		if ($elem['allowDeletion']==1 AND $this->conf['enableDeletions']==1) {
 			$markerArray['###BUTTON_DELETE###'] = $cObj->cObjGetSingle($this->conf['filelist.']['button_delete'], $this->conf['filelist.']['button_delete.']);
