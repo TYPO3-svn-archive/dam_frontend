@@ -172,9 +172,11 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  			$countElement++;
  			$elem['count_id'] =$countElement;
  			if ($pointer>0) $elem['count_id'] = $countElement  + $pointer*$listLength;
+ 			
  			$markerArray = $this->recordToMarkerArray($elem, 'renderFields','tx_dam');
  			$markerArray =$markerArray + $this->substituteLangMarkers($record_Code);
-
+			
+ 			$markerArray['###TX_DAMFRONTEND_FEUSER_UPLOAD###']= $this->get_FEUserName($elem['tx_damfrontend_feuser_upload']);
 			$markerArray['###CRDATE_AGE###'] =  $cObj->stdWrap($elem['crdate'], $this->conf['renderFields.']['crdate_age.']);
 			$markerArray['###DATE_CR_AGE###'] =  $cObj->stdWrap($elem['date_cr'], $this->conf['renderFields.']['date_cr_age.']);
 
@@ -449,7 +451,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  		$markerArray['###CRDATE_AGE###'] =  $cObj->stdWrap($record['crdate'], $this->conf['renderFields.']['crdate_age.']);
  		$markerArray['###LINK_DOWNLOAD###'] = $cObj->cObjGetSingle($this->conf['singleView.']['link_download'], $this->conf['singleView.']['link_download.']);
  		$markerArray['###BACK_LINK###'] = $this->cObj->typolink($cObj->cObjGetSingle($this->conf['singleView.']['backLink'], $this->conf['singleView.']['backLink.']), array('parameter' => $record['backPid']));
-
+		$markerArray['###TX_DAMFRONTEND_FEUSER_UPLOAD###']= $this->get_FEUserName($elem['tx_damfrontend_feuser_upload']);
  				//render deletion button
 		if ($elem['allowDeletion']==1 AND $this->conf['enableDeletions']==1) {
 			$markerArray['###BUTTON_DELETE###'] = $cObj->cObjGetSingle($this->conf['filelist.']['button_delete'], $this->conf['filelist.']['button_delete.']);
@@ -1321,6 +1323,31 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	 	}
 	 	return $markerArray;
 	}
+	
+ 	/**
+	 * returns the username of a fe_user
+	 *
+	 * @param	[int]		$uid: id of the fe_user
+	 * @return	[sting]		Name of the user
+	 */
+		function get_FEUserName ($uid=0) {
+
+			if ($uid >0) {
+				$SELECT = '*';
+				$FROM = 'fe_users';
+				$WHERE = 'uid = ' . intval($uid);
+				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE);
+				while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+					if ($row['name']=='') {
+						$content =$row['username'];
+					}
+					else {
+						$content =$row['name'];
+					}
+				}
+			}
+			return $content;
+		}
 }
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_rendering.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_rendering.php']);

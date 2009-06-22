@@ -316,7 +316,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$from = $this->docTable;
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where);
 			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);				
-			$row['feuser_upload']= $this->get_FEUserName($row['tx_damfrontend_feuser_upload']);
 			return $row;
 		}
 
@@ -475,7 +474,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 						$row['allowDeletion']=1;
 						$row['allowEdit']=1;
 					}
-					$row['tx_damfrontend_feuser_upload']= $this->get_FEUserName($row['tx_damfrontend_feuser_upload']);
 
 						// TODO: we should use SQL-LIMIT instead! Cant we create an SQL-Syntax for $this->checkAccess($row['uid'], 1) && $this->checkDocumentAccess($row['fe_group']) ??
 						// Problem: this code is not performant. one idea is to fetch only a limited number of rows and check in a loop if enough rows are delivered after the permission check. One prob is left, because its difficult (or impossible) to find the right position in combination with the pagelimit / pagebrowser
@@ -750,31 +748,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			}
 
 	}
-
-	/**
-	 * [Describe function...]
-	 *
-	 * @param	[type]		$uid: ...
-	 * @return	[type]		...
-	 */
-		function get_FEUserName ($uid=0) {
-
-			if ($uid >0) {
-				$SELECT = '*';
-				$FROM = 'fe_users';
-				$WHERE = 'uid = ' . intval($uid);
-				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE);
-				while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-					if ($row['name']=='') {
-						$content =$row['username'];
-					}
-					else {
-						$content =$row['name'];
-					}
-				}
-			}
-			return $content;
-		}
 
 
 		/**
