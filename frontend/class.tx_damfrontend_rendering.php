@@ -1179,11 +1179,11 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 			$markerArray['###VERSION_METHODS###'] .= $this->cObj->stdWrap('',$this->conf['upload.']['allowedVersioningMethods.'][$method.'.']) ;
 		}
  		$content=tslib_cObj::substituteMarkerArray($subpart, $markerArray);
-		$markerArray['###VERSIONING_FILE_EXISTS###'] =  $this->pi_getLL('VERSIONING_FILE_EXISTS');
-		$markerArray['###VERSIONING_NEW_RECORD###'] =  $this->pi_getLL('VERSIONING_NEW_RECORD');
-		$markerArray['###VERSIONING_OVERWRITES###'] =  $this->pi_getLL('VERSIONING_OVERWRITES');
-		$markerArray['###VERSIONING_NEW_VERSION###'] = $this->pi_getLL('VERSIONING_NEW_VERSION');
-		$markerArray['###VERSIONING_NEW_RECORD###'] = $this->pi_getLL('VERSIONING_NEW_RECORD');
+		$markerArray['###VERSIONING_FILE_EXISTS###']	= $this->pi_getLL('VERSIONING_FILE_EXISTS');
+		$markerArray['###VERSIONING_NEW_RECORD###']		= $this->pi_getLL('VERSIONING_NEW_RECORD');
+		$markerArray['###VERSIONING_OVERWRITES###'] 	= $this->pi_getLL('VERSIONING_OVERWRITES');
+		$markerArray['###VERSIONING_NEW_VERSION###'] 	= $this->pi_getLL('VERSIONING_NEW_VERSION');
+		
 		$markerArray['###CANCEL###'] = $this->pi_getLL('back');
 		$markerArray['###OK###'] = $this->pi_getLL('BUTTON_NEXT');
 		

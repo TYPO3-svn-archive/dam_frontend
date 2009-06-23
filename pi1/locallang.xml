@@ -346,8 +346,8 @@
 			<label index="VERSIONING_FILE_EXISTS">Dit bestand is al in het systeem aanwezig. Wat wilt u hiermee doen?</label>
 			<label index="VERSIONING_FILE_INFO">Bestanddetails:</label>
 			<label index="VERSIONING_OVERWRITES">Het bestaande bestand overschrijven en de bestandsgegevens aktualiseren.</label>
-			<label index="VERSIONING_NEW_VERSION">Nieuw bestand aanmaken.</label>
-			<label index="VERSIONING_NEW_RECORD">Create a new (additional) file.</label>
+			<label index="VERSIONING_NEW_VERSION">Een nieuwe versie aanmaken, d.m.v. versiebeheer.</label>
+		 	<label index="VERSIONING_NEW_RECORD">Dit is een ander bestand.</label>
 			<label index="LABEL_NO_CAT">In alle categorieën zoeken</label>
 			<label index="upload_path_error">Foutmelding: controleer de instellingen voor uw upload pad! [DAM Frontend: upload]</label>
 			<label index="BROWSELINK_PREV">vorige</label>

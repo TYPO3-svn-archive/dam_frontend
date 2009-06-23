@@ -594,8 +594,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			
 			if ($this->internal['catPreSelection']) {
 				$currentCats = $this->catList->getCatSelection($this->internal['treeID']);
-				
-				if (empty($currentCats[$this->internal['treeID']])){
+				if (empty($currentCats[$this->internal['treeID']]) || is_null($currentCats) ){
 					// if a preselection is activated and no cat is selected yet, the preselected cats will be loaded
 	
 					if (is_array($this->internal['catPreSelection'])) {
@@ -603,13 +602,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 							if (strlen($catMount)) {
 								if ($this->conf['categoryTree']['preSelectChildCategories']==-1) {
 									$subs = $this->catLogic->getSubCategories($catMount);
-									$this->catList->op_Plus($catMount, $this->internal['incomingtreeID']);
+									$this->catList->op_Plus($catMount, $this->internal['treeID']);
 									foreach ($subs as $sub) {
-										$this->catList->op_Plus($sub['uid'], $this->internal['incomingtreeID']);
+										$this->catList->op_Plus($sub['uid'], $this->internal['treeID']);
 									}
 								}
 								else {
-									$this->catList->op_Plus($catMount, $this->internal['incomingtreeID']);
+									$this->catList->op_Plus($catMount, $this->internal['treeID']);
 								}
 							}
 						}
