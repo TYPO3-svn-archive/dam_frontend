@@ -2,7 +2,7 @@ plugin.tx_damfrontend_pi1 = USER_INT
 plugin.tx_damfrontend_pi1 {
 	userFunc = tx_damfrontend_pi1->main
 	templateFile = {$plugin.tx_damfrontend_pi1.templateFile}
-	iconBaseAdress = typo3/gfx/
+	iconBaseAddress = 
 	singleID = {$plugin.tx_damfrontend_pi1.singleID}
 	allowedLanguages = EN,DE
 	filter {
