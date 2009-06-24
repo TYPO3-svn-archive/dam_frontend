@@ -184,6 +184,10 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 
  				// adding Markers for links to download and single View
 			if ($this->piVars['pointer']) $this->conf['filelist.']['link_single.']['stdWrap.']['typolink.']['additionalParams'].= '&tx_damfrontend_pi1[pointer]='.$this->piVars['pointer'];
+			foreach ($this->piVars as $piVar=>$value) {
+				if (substr($piVar,0,5)=="sort_") $this->conf['filelist.']['link_single.']['stdWrap.']['typolink.']['additionalParams'].= '&tx_damfrontend_pi1['.$piVar.']='.$this->piVars[$piVar];
+			}
+			#if ($this->piVars['pointer']) $this->conf['filelist.']['link_single.']['stdWrap.']['typolink.']['additionalParams'].= '&tx_damfrontend_pi1[pointer]='.$this->piVars['pointer'];
 			
 			$markerArray['###LINK_SINGLE###'] = $cObj->cObjGetSingle($this->conf['filelist.']['link_single'], $this->conf['filelist.']['link_single.']);
 
@@ -275,6 +279,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 				$markerArray['###'.strtoupper($key).'_HEADER###'] = $this->cObj->stdWrap($this->pi_linkTP_keepPiVars($this->cObj->cObjGetSingle($this->conf['filelist.']['sortlinks.'][$key], $this->conf['filelist.']['sortlinks.'][$key.'.'])),$this->conf['filelist.']['sortlinks.'][$key.'.'][$tsWrap.'.']);
 					// todo unset kills the whole piVars need to find a more elegant way to deal with it
 				unset($this->piVars['sort_'.$key]);
+				unset ($this->piVars);
 				$this->piVars = $tmpPiVars;
 			}
  		}
@@ -380,13 +385,16 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 			$this->pi_loadLL();
 			$content = tslib_CObj::getSubpart($this->fileContent, '###SORTLINK###');
 			$doNotUnset=false;
-			if ($this->piVars['sort_'.$key]) $doNotUnset=true;
+			$tempPiVars = $this->piVars; 
+			unset ($this->piVars);
 			$this->piVars['sort_'.$key] = 'ASC';
 			$content = tsLib_CObj::substituteMarker($content, '###SORTLINK_ASC###', $this->pi_linkTP_keepPiVars($this->cObj->cObjGetSingle($this->conf['filelist.']['sortlinks.']['asc'], $this->conf['filelist.']['sortlinks.']['asc.'])));
-
+			unset($this->piVars['sort_'.$key]);
 			$this->piVars['sort_'.$key] = 'DESC';
 			$content = tsLib_CObj::substituteMarker($content, '###SORTLINK_DESC###', $this->pi_linkTP_keepPiVars($this->cObj->cObjGetSingle($this->conf['filelist.']['sortlinks.']['desc'], $this->conf['filelist.']['sortlinks.']['desc.'])));
-
+			unset ($this->piVars);
+			$this->piVars =$tempPiVars; 
+			
 			#if ($doNotUnset==false) unset($this->piVars['sort_'.$key]);
 			return $content;
 	}
