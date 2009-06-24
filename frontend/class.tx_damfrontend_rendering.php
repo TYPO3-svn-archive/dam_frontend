@@ -260,16 +260,16 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  				if ($this->piVars['sort_'.$key]) {
 					if ($this->piVars['sort_'.$key]=='DESC') {
 						$this->piVars['sort_'.$key] = 'ASC';
-						$tsWrap = 'ASC';
+						$tsWrap = 'asc';
 					}
 					else {
 						$this->piVars['sort_'.$key] = 'DESC';
-						$tsWrap = 'DESC';
+						$tsWrap = 'desc';
 					}
 				}
 				else {
 					$this->piVars['sort_'.$key] = 'ASC';
-					$tsWrap = 'ASC';
+					$tsWrap = 'no_sort';
 				}
 				// check if current header is allready sorted
 				$markerArray['###'.strtoupper($key).'_HEADER###'] = $this->cObj->stdWrap($this->pi_linkTP_keepPiVars($this->cObj->cObjGetSingle($this->conf['filelist.']['sortlinks.'][$key], $this->conf['filelist.']['sortlinks.'][$key.'.'])),$this->conf['filelist.']['sortlinks.'][$key.'.'][$tsWrap.'.']);
