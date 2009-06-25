@@ -256,10 +256,11 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 
  			// substitute Links for Sorting
  		$record = $list[0];
- 		$tmpPiVars = $this->piVars;
+ 		
  		foreach ($record as $key=>$value) {
 			$content = tsLib_CObj::substituteMarker($content, '###SORTLINK_'.strtoupper($key).'###', $this->renderSortLink($key));
- 			$this->piVars = $tmpPiVars;
+			$tmpPiVars = $this->piVars;
+			unset ($this->piVars);
 			if ($this->conf['filelist.']['sortLinksForTitles']==1) {
  				if ($this->piVars['sort_'.$key]) {
 					if ($this->piVars['sort_'.$key]=='DESC') {
@@ -278,7 +279,6 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 				// check if current header is allready sorted
 				$markerArray['###'.strtoupper($key).'_HEADER###'] = $this->cObj->stdWrap($this->pi_linkTP_keepPiVars($this->cObj->cObjGetSingle($this->conf['filelist.']['sortlinks.'][$key], $this->conf['filelist.']['sortlinks.'][$key.'.'])),$this->conf['filelist.']['sortlinks.'][$key.'.'][$tsWrap.'.']);
 					// todo unset kills the whole piVars need to find a more elegant way to deal with it
-				unset($this->piVars['sort_'.$key]);
 				unset ($this->piVars);
 				$this->piVars = $tmpPiVars;
 			}
