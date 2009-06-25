@@ -1011,6 +1011,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$step = 1;
 
 		if ($this->internal['cancelCatEdit']==1) {
+			t3lib_div::debug('cancel catedit');
 				//user wants to cancel the save of cat data
 				// TODO show warning
 			$GLOBALS['TSFE']->fe_user->setKey('ses','saveID',$GLOBALS['TSFE']->fe_user->getKey('ses','categoriseID') );
@@ -1024,13 +1025,17 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 
 		if ($this->saveMetaData==1 && $this->internal['cancelEdit']==1) {
-				// user wants to cancel the save of meta data
+			t3lib_div::debug('cancel edit');
+			// user wants to cancel the save of meta data
 				// TODO show warning
 			$this->internal['saveUID'] =null;
 			$GLOBALS['TSFE']->fe_user->setKey('ses','saveID','');
 			$GLOBALS['TSFE']->fe_user->setKey('ses','versioningOverrideID','');
 			$GLOBALS['TSFE']->fe_user->setKey('ses','versioning','');
 			$GLOBALS['TSFE']->fe_user->setKey('ses','versioningNewVersionID','');
+			$GLOBALS['TSFE']->fe_user->setKey('ses','overWriteID','');
+			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFileName','');
+			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFilePath','');
 			$this->saveCategorisation=false;
 			$this->saveMetaData=false;
 			$this->categorise=false;
@@ -1173,8 +1178,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$i++;
 		}
 		$formEnd="</form>";
-		return 'Sorry: This function is currently disabled: Please check for newer version.';
-		#return $formSt.implode("",$optString).$formHidden.$formEnd;
+		#return 'Sorry: This function is currently disabled: Please check for newer version.';
+		return $formSt.implode("",$optString).$formHidden.$formEnd;
 	}
 
 
@@ -1945,6 +1950,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$returnID = $this->docLogic->storeDocument($docID);
 		$GLOBALS['TSFE']->fe_user->setKey('ses','uploadID','');
 		$GLOBALS['TSFE']->fe_user->setKey('ses','saveID', '');
+		$GLOBALS['TSFE']->fe_user->setKey('ses','versioningOverrideID','');
+		$GLOBALS['TSFE']->fe_user->setKey('ses','versioning','');
+		$GLOBALS['TSFE']->fe_user->setKey('ses','versioningNewVersionID','');
+		$GLOBALS['TSFE']->fe_user->setKey('ses','overWriteID','');
+		$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFileName','');
+		$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFilePath','');
 		return $returnID; 
 	}
 }

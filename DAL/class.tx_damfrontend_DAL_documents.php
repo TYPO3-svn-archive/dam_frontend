@@ -1035,7 +1035,8 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				// set new filename
 			$newDoc = $this->getDocument($docID);
 				// set a new unique filename
-			$newFilename= strftime('dmY_HM', time()).'_'.$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
+			
+			$newFilename= strftime('%Y%m%d_%H%M', time()).'_'.$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
 				// copy the new file from temp dir to destionation dir
 			copy(PATH_site.$newDoc['file_path'].$newDoc['file_name'],$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$newFilename);
 				// delete the temp file

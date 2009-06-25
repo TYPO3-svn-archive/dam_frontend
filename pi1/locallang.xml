@@ -89,7 +89,7 @@
 			<label index="LABEL_COPYRIGHT">copyright</label>
 			<label index="LABEL_AUTHOR">author</label>
 			<label index="LABEL_DESCRIPTION">description</label>
-			<label index="LABEL_FILE">filname</label>
+			<label index="LABEL_FILE">Filename:</label>
 			<label index="BUTTON_UPLOAD">upload</label>
 			<label index="UPLOAD_SUCCESS">Fileupload was sucessful</label>
 			<label index="uploadFormFieldError">Please take care at the field '</label>
@@ -202,7 +202,7 @@
 			<label index="LABEL_COPYRIGHT">Copyright</label>
 			<label index="LABEL_AUTHOR">Autor</label>
 			<label index="LABEL_DESCRIPTION">Beschreibung</label>
-			<label index="LABEL_FILE">Dateiname</label>
+			<label index="LABEL_FILE">Dateiname:</label>
 			<label index="BUTTON_UPLOAD">Hochladen</label>
 			<label index="UPLOAD_SUCCESS">Die Datei wurde erfolgreich hochgeladen.</label>
 			<label index="uploadFormFieldError">Bitte beachten Sie die Einschränkung für das Feld '</label>
