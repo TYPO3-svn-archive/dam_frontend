@@ -625,7 +625,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$this->catList->op_Equals($this->internal['catEquals'], $this->internal['incomingtreeID']);
 			}
 			else if ($this->internal['catMinus_Rec']) {
-				$catID = $this->internal['catPlus_Rec'];
+				$catID = $this->internal['catMinus_Rec'];
 				if ($catID==-1 ) $catID=0; 
 				$subs = $this->catLogic->getSubCategories($catID);
 				foreach ($subs as $sub) {
