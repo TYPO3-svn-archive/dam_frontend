@@ -262,7 +262,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 			$tmpPiVars = $this->piVars;
 			unset ($this->piVars);
 			if ($this->conf['filelist.']['sortLinksForTitles']==1) {
- 				if ($this->piVars['sort_'.$key]) {
+ 				if ($tmpPiVars['sort_'.$key]) {
 					if ($this->piVars['sort_'.$key]=='DESC') {
 						$this->piVars['sort_'.$key] = 'ASC';
 						$tsWrap = 'asc';
