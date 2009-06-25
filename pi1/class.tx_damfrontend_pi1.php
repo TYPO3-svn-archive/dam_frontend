@@ -1011,7 +1011,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$step = 1;
 
 		if ($this->internal['cancelCatEdit']==1) {
-			t3lib_div::debug('cancel catedit');
 				//user wants to cancel the save of cat data
 				// TODO show warning
 			$GLOBALS['TSFE']->fe_user->setKey('ses','saveID',$GLOBALS['TSFE']->fe_user->getKey('ses','categoriseID') );
@@ -1025,7 +1024,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 
 		if ($this->saveMetaData==1 && $this->internal['cancelEdit']==1) {
-			t3lib_div::debug('cancel edit');
 			// user wants to cancel the save of meta data
 				// TODO show warning
 			$this->internal['saveUID'] =null;
