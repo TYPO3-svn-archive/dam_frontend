@@ -47,9 +47,10 @@
         <languageKey index="pt" type="array">
         </languageKey>
         <languageKey index="ru" type="array">
-            <label index="hidden">скрыто</label>
-            <label index="not_set">НЕТ</label>
-        </languageKey>
+﻿			<label index="hidden">скрыто1234</label>
+			<label index="not_set">недоступно1234</label>
+			<label index="BUTTON_NEXT">Далее</label>
+			<label index="Error_damUidList">Не найдено соответствующих записей!</label>        </languageKey>
         <languageKey index="ro" type="array">
         </languageKey>
         <languageKey index="ch" type="array">

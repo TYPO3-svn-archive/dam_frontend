@@ -27,5 +27,16 @@
 			<label index="tx_damtree_fe_groups">----- > einzelne Gruppen --> bitte unten wählen -----</label>		
 			<label index="tx_damfrontend_feuser_upload">kein Eigentümer festgelegt</label>		
 		</languageKey>
+		﻿<languageKey index="ru" type="array">
+			<label index="tt_content.list_type_pi1">DAM внешнего интерфейса</label>
+			<label index="tt_content.list_type_pi2">Список файлов DAM во внешнем интерфейсе</label>
+			<label index="tx_dam_cat.downloadaccess">доступ на скачивание для:</label>
+			<label index="tx_dam_cat.uploadaccess">доступ на загрузку для:</label>
+			<label index="tx_dam_cat.readaccess">доступ на чтение для:</label>
+			<label index="tx_damtree_fe_groups_all">доступ для всех групп</label>
+			<label index="tx_damtree_fe_groups_none">ни одна группа не имеет доступа</label>
+			<label index="tx_damtree_fe_groups">----- &gt; отдельные группы --&gt; выберете ниже -----</label>
+			<label index="tx_damfrontend_feuser_upload">не установлен владелец</label>
+		</languageKey>
 	</data>
 </T3locallang>

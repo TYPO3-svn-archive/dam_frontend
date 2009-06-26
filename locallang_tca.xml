@@ -69,5 +69,37 @@
 			﻿<label index="pi2_title">DAM Frontend Dateiliste</label>
 			<label index="pi2_plus_wiz_description">Daten zum Download im Backend einzeln auswählen.</label>
 		</languageKey>
+		﻿<languageKey index="ru" type="array">
+			<label index="flexform_display_title">Что показать?</label>
+			<label index="flexform_selection_title">Выбор своих категорий</label>
+			<label index="flexform_catTree">Дерево категорий</label>
+			<label index="flexform_fileList">Список файлов</label>
+			<label index="flexform_catSelection">Выбор категорий</label>
+			<label index="flexform_singleView">Просмотр деталей</label>
+			<label index="flexform_filterView">Блок поиска</label>
+			<label index="flexform_filterList">Список фильтров</label>
+			<label index="flexform_selection_cats">Выбор категорий</label>
+			<label index="flexform_treeName">Название дерева</label>
+			<label index="flexform_treeID">ID дерева</label>
+			<label index="flexform_uploadForm">Форма загрузки</label>
+			<label index="flexform_requstForm">Форма запроса</label>
+			<label index="tx_damfrontend_use_request_form">Использовать форму запроса для этого файла</label>
+			<label index="flexform_useStaticCatSelection">использовать статическую выборку категорий</label>
+			<label index="flexform_option_title">Параметры</label>
+			<label index="flexform_enableDeletions">включить возможность удаления для внешних пользователей</label>
+			<label index="flexform_FilterUserGroup">Показать всех членов данной группы при отображении фильтра, для выбора его &quot;автора&quot;</label>
+			<label index="flexform_myFiles">мои файлы</label>
+			<label index="flexform_enableEdits">включить редактирование дополнительных данных</label>
+			<label index="flexform_dropDown">Выпадающее меню категорий</label>
+			<label index="tx_damfrontend_feuser_upload">принадлежить этому внешнему пользователю</label>
+			<label index="flexform_catPreSelection">предвыбор категорий</label>
+			<label index="flexform_display_form">показать в этом режиме</label>
+			<label index="upload_settings">дозволенные для загружаемого категории</label>
+			<label index="flexform_useLatestList">Показать последний представленный список</label>
+			<label index="pi1_title">DAM внешнего интерфейса</label>
+			<label index="pi1_plus_wiz_description">Показать файлы DAM (список, категории). Загрузка или правка файлов через внешний интерфейс.</label>
+			<label index="pi2_title">Список файлов DAM во внешнем интерфейсе</label>
+			<label index="pi2_plus_wiz_description">Выберете файлы для скачивания</label>
+		</languageKey>
 	</data>
 </T3locallang>
