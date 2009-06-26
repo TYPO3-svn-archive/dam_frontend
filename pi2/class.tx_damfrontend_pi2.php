@@ -184,7 +184,8 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 		// fetch DAM UIDs from tt_content -
 		$this->damUidList = t3lib_div::intExplode(',', $this->cObj->data[$this->fieldDamUidList]);
 
-		$fieldList = array('uid','title', 'ident', 'description', 'file_path', 'file_name', 'file_size', 'file_mime_type', 'file_mime_subtype', 'file_type', 'file_mtime');
+		$fieldList = array('uid','title', 'ident', 'description', 'file_path', 'file_name', 'file_size', 'file_mime_type', 'file_mime_subtype', 'file_type', 'file_mtime','file_dl_name','keywords','description','alt_text','abstract','language','publisher','copyright','date_cr','date_mod','tx_damfrontend_feuser_upload');
+		
 		$damTableName = 'tx_dam';
 		$whereClause = 'uid IN (' . implode(', ', $this->damUidList) . ')' .
 			t3lib_BEfunc::deleteClause($damTableName) . $this->cObj->enableFields($damTableName);
