@@ -404,7 +404,15 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				foreach($this->categories as $number => $catList) {
 
 						if ($this->searchAllCats === true) {
-							$catString = "1=1";
+							if ($this->conf['searchAllCats_allowedCats']) {
+									// limit the search in categories
+								$catString ='('.$this->catTable.'.uid IN ('. $this->conf['searchAllCats_allowedCats'] .'))';
+							} 
+							else {
+	
+									// no limitation for category is set
+								$catString = "1=1";
+							}
 						}
 						else {
 							$catString = '( '.$this->catTable.'.uid='.implode(' OR '.$this->catTable.'.uid=',$catList).')';
@@ -592,6 +600,8 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			if (trim($filterArray['LanguageSelector']) != '' && $filterArray['LanguageSelector'] != 'nosel') $this->additionalFilter .=  ' AND '.$this->docTable.'.language = "'.trim($filterArray['LanguageSelector']).'"';
 
 			if ($filterArray['showOnlyFilesWithPermission'] == 1) $this->additionalFilter .=  ' AND '.$this->docTable.'.fe_group <>"" AND '.$this->docTable.'.fe_group <>"-1" AND '.$this->docTable.'.fe_group <>"-2" AND '.$this->docTable.'.fe_group <>"0"';
+			
+			if ($filterArray['searchAllCats_allowedCats']) $this->conf['searchAllCats_allowedCats'] = implode(',',$filterArray['searchAllCats_allowedCats']); 
 			return $errors;
 		}
 

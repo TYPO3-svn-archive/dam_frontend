@@ -179,7 +179,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	  $this->internal['viewID'] = $this->conf['viewID'];
 	  if (!$this->conf['catMounts']) {
 	        // load the flexform value, if there is no ts setting
-	    $catMounts = $this->pi_getFFvalue($flexform, 'catMounts', 'sSelection');
 	    $this->internal['catMounts']= array();
 	    $this->internal['catMounts'] = explode(',',$this->pi_getFFvalue($flexform, 'catMounts', 'sSelection'));
 	  }
@@ -259,6 +258,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		// if all categories should be searched
 		if (t3lib_div::_GP('dam_fe_allCats')=='true') {
 			$this->internal['filter']['searchAllCats'] = true;
+			$this->internal['filter']['searchAllCats_allowedCats'] = $this->internal['catMounts'];
 		}
 		else {
 			$this->internal['filter']['searchAllCats'] = false;
@@ -429,15 +429,19 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->internal['filter']['searchAllCats'] = 0;
 		// values for searching
 		// Setting new values
+		
  		if ($this->internal['viewID'] == 1  ) {
-			$this->initList();
+				//fileliste		
+ 			$this->initList();
 			$this->initFilter();
  		}
 		if ($this->internal['viewID'] == 5) {
+				// serachbox			
 			$this->initFilter();
 		}
 
 		if ($this->internal['viewID'] == 6) {
+				// myfiles
 			$this->initList();
 			$this->initFilter();
 		}
@@ -852,7 +856,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			if (is_array($this->internal['filter'])) {
 				$this->internal['filterError'] = $this->docLogic->setFilter($this->internal['filter']);
 			}
-			$this->docLogic->orderBy = $this->internal['list']['sorting'];
+			$this->docLogic->orderBy = 'tx_dam.'. $this->internal['list']['sorting'];
 			$this->docLogic->limit = $this->internal['list']['limit'];
 			$this->docLogic->categories = $cats;
 			$this->docLogic->selectionMode = $this->internal['selectionMode'];
