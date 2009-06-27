@@ -126,18 +126,6 @@ class tx_damfrontend_DAL_categories {
 			return $completecats;
 		}
 
-	/**
-	 * creates a list of all ate, which are currently availible.
-	 * This is dtermined by the current frontend user and his membership
-	 * of fe_groups
-	 *
-	 * @return	array		all availible documents as an array
-	 * @todo getAllCategories: this function is not ready!
-	 */
-		function getAllCategories() {
-
-		}
-
 
 
 	/**
