@@ -159,7 +159,7 @@
 				<el>
 					<uploadMounts>
 						<TCEforms>
-							<label>LLL:EXT:dam_frontend/locallang_tca.xml:ipload_settings</label>
+							<label>LLL:EXT:dam_frontend/locallang_tca.xml:upload_settings</label>
 							<config>
 								<type>select</type>							
 								<form_type>user</form_type>
