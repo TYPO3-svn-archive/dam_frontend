@@ -189,7 +189,8 @@ if (is_array($post) && count($post) > 0) {
 		header("Content-type: application/force-download");
 		header("Content-Transfer-Encoding: Binary");
 		header("Content-length: ".$filesize);
-		header("Content-disposition: attachment; filename=\"".rawurlencode($filename)."\"");
+#		header("Content-disposition: attachment; filename=\"".rawurlencode($filename)."\"");
+		header("Content-disposition: attachment; filename=\"".$filename."\"");
 		readfile($file);
 		exit();
 	}
