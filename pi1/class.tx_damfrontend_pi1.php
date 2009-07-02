@@ -261,7 +261,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			if ($this->conf['filterView.']['searchCatsAsMounts']==1) {
 				$catArr = array();
 				foreach( $this->internal['catMounts'] as $mount) {
-					t3lib_div::debug($mount);
 					if ($mount>0){
 						$cats = $this->catLogic->getSubCategories($mount);
 						foreach ($cats as $cat) {
@@ -610,29 +609,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				return true;
 			}
 			
-			if ($this->internal['catPreSelection']) {
-				$currentCats = $this->catList->getCatSelection($this->internal['treeID']);
-				if (empty($currentCats[$this->internal['treeID']]) || is_null($currentCats) ){
-					// if a preselection is activated and no cat is selected yet, the preselected cats will be loaded
-	
-					if (is_array($this->internal['catPreSelection'])) {
-						foreach ($this->internal['catPreSelection'] as $catMount) {
-							if (strlen($catMount)) {
-								if ($this->conf['categoryTree']['preSelectChildCategories']==-1) {
-									$subs = $this->catLogic->getSubCategories($catMount);
-									$this->catList->op_Plus($catMount, $this->internal['treeID']);
-									foreach ($subs as $sub) {
-										$this->catList->op_Plus($sub['uid'], $this->internal['treeID']);
-									}
-								}
-								else {
-									$this->catList->op_Plus($catMount, $this->internal['treeID']);
-								}
-							}
-						}
-					}
-				}
-			}
+			
 			if ($this->internal['catPlus']) {
 				$this->catList->op_Plus($this->internal['catPlus'], $this->internal['incomingtreeID']);
 			}
@@ -658,6 +635,29 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					$this->catList->op_Plus($sub['uid'], $this->internal['incomingtreeID']);
 				}
 			}
+			if ($this->internal['catPreSelection']) {
+				$currentCats = $this->catList->getCatSelection($this->internal['treeID']);
+				if (empty($currentCats[$this->internal['treeID']]) || is_null($currentCats) ){
+					// if a preselection is activated and no cat is selected yet, the preselected cats will be loaded
+	
+					if (is_array($this->internal['catPreSelection'])) {
+						foreach ($this->internal['catPreSelection'] as $catMount) {
+							if (strlen($catMount)) {
+								if ($this->conf['categoryTree']['preSelectChildCategories']==-1) {
+									$subs = $this->catLogic->getSubCategories($catMount);
+									$this->catList->op_Plus($catMount, $this->internal['treeID']);
+									foreach ($subs as $sub) {
+										$this->catList->op_Plus($sub['uid'], $this->internal['treeID']);
+									}
+								}
+								else {
+									$this->catList->op_Plus($catMount, $this->internal['treeID']);
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 
 
@@ -674,6 +674,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					}
 				}
 			}
+		}
+		
+		if ($this->internal['catClear']) {
+			$this->catList->clearCatSelection($this->internal['incomingtreeID']);
+			#unset($this->piVars['catClear']);
+			#unset($this->renderer->piVars['catClear']);
 		}
 	}
 
@@ -958,16 +964,25 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 */
 	function singleView() {
 		$singleID = intval($this->internal['singleID']);
-		if ($this->docLogic->checkAccess($singleID, 1)) {
+		if ($this->docLogic->checkAccess($singleID, 1) ) {
 			if (intval($singleID) && $singleID != 0) {
 				$record = $this->docLogic->getDocument($singleID);
-				$record['backPid']= $this->internal['backPid'];
-				$content = $this->renderer->renderSingleView($record);
-
-				if ($this->docLogic->checkAccess($singleID, 2)) {
-					$_SESSION['fileRef'] = $record['file_path'].$record['file_name'];
+				if ($this->checkDocumentAccess($record['fe_group'])) {
+					$record['backPid']= $this->internal['backPid'];
+					if ($this->userUID == $row['tx_damfrontend_feuser_upload'] AND $this->userUID>0){
+							$record['allowDeletion']=1;
+							$record['allowEdit']=1;
+					}
+					$content = $this->renderer->renderSingleView($record);
+	
+					if ($this->docLogic->checkAccess($singleID, 2)) {
+						$_SESSION['fileRef'] = $record['file_path'].$record['file_name'];
+					}
+					return $content;
 				}
-				return $content;
+				else {
+					return $this->renderer->renderError('noDocAccess');
+				}
 			}
 			else {
 				return $this->renderer->renderError('noSingleID');
