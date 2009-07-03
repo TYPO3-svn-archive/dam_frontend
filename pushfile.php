@@ -86,7 +86,7 @@ if (is_array($post) && count($post) > 0) {
 		$doc = $docLogic->getDocument($docID);
 		$filePath = PATH_site.$doc['file_path'].$doc['file_name'];
 		if ($tmp = createFile($filePath, configuration2Array($configuration['convert']))) {
-			$filesToSend[] = array('file' => $tmp, 'filename' => $doc['file_name']);
+			$filesToSend[] = array('file' => $tmp, 'filename' => $doc['file_name'], 'contenttype' => $doc['file_mime_type'] . '/' . $doc['file_mime_subtype']);
 		} else {
 			die('<h1>Error</h1><p>File not available...</p>');
 		}
@@ -133,7 +133,9 @@ if (is_array($post) && count($post) > 0) {
 			if (1 != count($filesToSend)) {
 				die('<h1>Error</h1><p>There should only one file selected.</p>');
 			}
-			if (!sendFile($filesToSend[0]['file'], $filesToSend[0]['filename'])) {
+			t3lib_div::debug($filesToSend[0]);
+			die('ok');
+			if (!sendFile($filesToSend[0]['file'], $filesToSend[0]['filename'], $filesToSend[0]['contenttype'])) {
 				die ('<h1>Error</h1><p>The requested file was not found! Please contact the adminstrator and tell him that the id: '.$docID .' was not found');
 			}
 		break;
@@ -170,9 +172,9 @@ if (is_array($post) && count($post) > 0) {
 	/**
 	 * @param string $file Filename including absolute path
 	 */
-	function sendFile($file, $filename) {
+	function sendFile($file, $filename, $contenttype) {
 			// hook returns file( path / name), file in an array 
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['pushfile_sendFile']) { 
+		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['pushfile_sendFile']) {
 			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['pushfile_sendFile'] as $_funcRef) { 
   				if ($_funcRef) { 
    					$params['filename']=$filename;
@@ -186,7 +188,8 @@ if (is_array($post) && count($post) > 0) {
 		if (!$filesize) {
 			return false;
 		}
-		header("Content-type: application/force-download");
+		header("Content-type: ".$contenttype);
+		#header("Content-type: application/force-download");
 		header("Content-Transfer-Encoding: Binary");
 		header("Content-length: ".$filesize);
 #		header("Content-disposition: attachment; filename=\"".rawurlencode($filename)."\"");
@@ -256,7 +259,7 @@ if (!$docLogic->checkDocumentAccess($doc['fe_group'])) {
 }
 $filePath = PATH_site.$doc['file_path'].$doc['file_name'];
 
-if (!sendFile($filePath, $doc['file_name'])) {
+if (!sendFile($filePath, $doc['file_name'], $doc['file_mime_type'] . '/' . $doc['file_mime_subtype'])) {
 	die ('<h1>Sorry, file not found!</h1><p>The requested file was not found! Please contact the adminstrator and tell him that the id: '.$docID .' was not found');
 }
 
