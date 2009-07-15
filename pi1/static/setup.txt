@@ -478,7 +478,7 @@ plugin.tx_damfrontend_pi1 {
 	  		newRecord = 1
 	  		newRecord.wrap = <input type="radio" name="version_method" value="new_record" /><label>###VERSIONING_NEW_RECORD###|</label>
   		}
-  		useOneStepUpload = 1
+  		useOneStepUpload = 0
   		autoAsignFEGroups = 0
   		autoFillFEUserData {
   			#left side column of the dam record - right side fe_user column
