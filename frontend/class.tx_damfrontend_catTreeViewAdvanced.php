@@ -135,7 +135,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 	 * @return	void
 	 */
  	function init($treeID = '', $plugin = null) {
-		$langWhere = ' AND sys_language_uid = 0';
+		if ($this->conf['categoryTreeAdvanced.']['useLanguageOverlay']==1) $langWhere = ' AND sys_language_uid = 0';
  		parent::init($langWhere);
  		$this->treeID = $treeID;
  		$this->user =& $GLOBALS['TSFE']->fe_user;
@@ -762,15 +762,13 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			}
 			return $parentId;
 		} else {
-			$additionalClause = $this->clause;
-			if ($this->conf['categoryTreeAdvanced.']['useLanguageOverlay']==0) $additionalClause='';
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						implode(',',$this->fieldArray),
 						$this->table,
 						$this->parentField.'='.$GLOBALS['TYPO3_DB']->fullQuoteStr($parentId, $this->table).
 							t3lib_BEfunc::deleteClause($this->table).
 							t3lib_BEfunc::versioningPlaceholderClause($this->table).
-							$additionalClause,	// whereClauseMightContainGroupOrderBy
+							$this->clause,	// whereClauseMightContainGroupOrderBy
 						'',
 						$this->orderByFields
 					);
