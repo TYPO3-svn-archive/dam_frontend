@@ -266,11 +266,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 						foreach ($cats as $cat) {
 							$catArr[] =$cat['uid'];
 						} 
+						$this->internal['filter']['searchAllCats_allowedCats'] =$catArr;
 					}
 				}
-			}
-			else {
-				$this->internal['filter']['searchAllCats_allowedCats'] = $this->internal['catMounts'];
 			}
 		}
 		else {
