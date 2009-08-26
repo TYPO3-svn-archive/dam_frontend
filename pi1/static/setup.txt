@@ -128,7 +128,12 @@ plugin.tx_damfrontend_pi1 {
 			parameter.data = TSFE:id
 			wrap = |&nbsp;
 		}
-		treeLevelCSS.paddingLeft = 16
+		treeLevelCSS {
+			paddingLeft = 16
+			paddingRight = 0
+			paddingTop = 0
+			paddingBottom = 0
+		}
 		wrap = |
 	}
 	
