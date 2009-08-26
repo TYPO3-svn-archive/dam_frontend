@@ -697,7 +697,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				'invertedDepth'=>$depth,
 				'blankLineCode'=>$blankLineCode,
 				'bank' => $this->bank,
-				'treeLevelCSS' =>'style ="padding:0px 0px 0px '. $paddingLeft .'px;"'
+				'treeLevelCSS' =>'style ="padding:'.$this->conf['categoryTreeAdvanced.']['treeLevelCSS.']['paddingTop'].'px '.$this->conf['categoryTreeAdvanced.']['treeLevelCSS.']['paddingRight'].'px '.$this->conf['categoryTreeAdvanced.']['treeLevelCSS.']['paddingBottom'].'px '. $paddingLeft .'px;"'
 			);
 		}
 
