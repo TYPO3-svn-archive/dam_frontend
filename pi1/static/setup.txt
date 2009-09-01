@@ -184,6 +184,9 @@ plugin.tx_damfrontend_pi1 {
 			addQueryString = 1
 			no_cache  = 1
 		}
+		categoryTitle {
+			wrap = |
+		}
 	}
 	singleView < .renderFields
 	singleView {

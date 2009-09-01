@@ -80,7 +80,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	class tx_damfrontend_DAL_documents {
 		var $fileTypeList;				// Contains a list of filetypes, the selection is restricted to
 		var $uidList;					// Array which contains all selected Files
-		var $catList;
+
 		var $resultCount;				// After any executed query - this var contains the rowcount of the result
 		var $catLogic;					// Pointer to the Category access Layer
 		var $searchwords;				// array of searchwords, the user might have searched for
@@ -355,21 +355,8 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$filter .= ' AND ('.$this->docTable.'.starttime > '.time().' OR '.$this->docTable.'.starttime = 0)';
 			$filter .= ' AND ('.$this->docTable.'.endtime < '.time().' OR '.$this->docTable.'.endtime = 0)';
 
-			if ($this->conf['useLatestList']==true) {
-					// query without using categories and restricting via latest date.
+			if ($this->conf['useLatestist']==true) {
 
-					// get the date of the last record, that the list can be limited via a where condition, then is the list later sortable from the fe_user
-					// otherwise, if the fe_user would sort by date asc not the last x files would be shown, but the oldest one
-
-				/**$select= $this->conf['latestField'];
-				$from=$this->docTable;
-				$where.= ' 1=1  '.$filter;
-
-				$select=$this->conf['latestField'];
-				$filter .= $this->additionalFilter;
-
-				$from=$this->docTable;
-				$where.= ' 1=1  '.$filter;**/
 			}
 			else {
 
@@ -457,15 +444,18 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 					// query without using categories
 					$filter .= $this->additionalFilter;
 					$select='*';
-					$from='tx_dam';
+					$from=$this->docTable;
 					$where.= ' 1=1 '.$filter;
 				}
 			}
-
-
 			// TODO: is there a reason not to define SELECT here?
 			// TODO: do not use '*' but whitlist defined via TypoScript
 			$select = ' DISTINCT '.$this->docTable.'.*';
+			if ($this->conf['useGroupedView']==1) {
+				$select .= ','. $this->catTable.'.title AS categoryTitle'; 
+				$this->orderBy = $this->catTable.'.title';
+			}
+
 
 			$resultCounter=0;
 				// executing the final query and convert the results into an array
@@ -1117,13 +1107,13 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			return $access;
 		}
 
-		/**
- * saves an uploaded document in the datastore and cares for versioning
- *
- * @param	[type]		$docID: ...
- * @return	void
- * @author stefan
- */
+	/**
+	 * saves an uploaded document in the datastore and cares for versioning
+	 *
+	 * @param	[type]		$docID: ...
+	 * @return	void
+	 * @author stefan
+	 */
 	function storeDocument($docID) {
 		// handle versioning
 		switch ($GLOBALS['TSFE']->fe_user->getKey('ses','versioning')){
@@ -1169,6 +1159,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFileName','');
 			return $returnID;
 		}
+		
 	}
 
 

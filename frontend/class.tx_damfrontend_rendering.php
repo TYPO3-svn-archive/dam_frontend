@@ -301,6 +301,186 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 
  		return $content;
  	}
+ 	
+ 	
+	/**
+	 * function renderes a list of all files, which are availible
+	 *
+	 * @param	array		$list: ...
+	 * @param	rowcount	$resultcount: ...
+	 * @param	[type]		$pointer: ...
+	 * @param	[type]		$listLength: ...
+	 * @return	[type]		...
+	 */
+ 	function renderFileGroupedList($list, $resultcount, $pointer, $listLength) {
+
+
+ 		if(!is_array($list)){
+ 			//no result is given
+ 			return $this->pi_getLL('noDocInCat');
+ 		}
+
+ 		if(!intval($resultcount) || $resultcount < 1) {
+			if (TYPO3_DLOG)	t3lib_div::devLog('tx_damfrontend_rendering.renderFileList: Invalid resultcount. Counter is less than 1 or null. Allowed values are integer >0','dam_frontend',2,$list);
+ 			return $this->pi_getLL('noDocInCat');
+		}
+		if(!intval($pointer) || $pointer < 0 ) $pointer = 0;
+		if(!intval($listLength) || $listLength < 1 ) $listLength = $this->cObj->stdWrap($this->conf['filelist.']['defaultLength'],$this->conf['filelist.']['defaultLength.']);
+		if (!isset($this->fileContent)) return $this->pi_getLL('error_renderFileList_template');
+
+			// Optionsplit for ###FILELIST_RECORD###
+		if ($this->conf['filelist.']['useAlternatingRows']==1) {
+			$filelist_record_marker = $GLOBALS['TSFE']->tmpl->splitConfArray(array('cObjNum' => $this->conf['filelist.']['marker.']['filelist_record_alterning']), count($list));
+		}
+		else {
+			if (!isset($this->conf['filelist.']['marker.']['filelist_record'])) { $this->conf['filelist.']['marker.']['filelist_record'] = '###FILELIST_RECORD###'; }
+			$filelist_record_marker = $GLOBALS['TSFE']->tmpl->splitConfArray(array('cObjNum' => $this->conf['filelist.']['marker.']['filelist_record']), count($list));
+		}
+
+ 		$list_Code = tsLib_CObj::getSubpart($this->fileContent,'###FILELIST###');
+ 		$countElement = 0;
+		$rows = '';
+		$cObj = t3lib_div::makeInstance('tslib_cObj');
+ 		foreach ($list as $elem) {
+ 			$record_Code = tsLib_CObj::getSubpart($this->fileContent,$filelist_record_marker[$countElement]['cObjNum']);
+ 			if ($currentCategory <> $elem['categoryTitle']) {
+ 				$currentCategory = $elem['categoryTitle'];
+ 				// render the category header
+ 				$rows .= $this->renderCategoryHeader($currentCategory);
+ 			} 
+ 			$cObj->start($elem, 'tx_dam');
+ 			$countElement++;
+ 			$elem['count_id'] =$countElement;
+ 			if ($pointer>0) $elem['count_id'] = $countElement  + $pointer*$listLength;
+ 			
+ 			$markerArray = $this->recordToMarkerArray($elem, 'renderFields','tx_dam');
+ 			$markerArray =$markerArray + $this->substituteLangMarkers($record_Code);
+			
+ 			$markerArray['###TX_DAMFRONTEND_FEUSER_UPLOAD###']= $this->get_FEUserName($elem['tx_damfrontend_feuser_upload']);
+			$markerArray['###CRDATE_AGE###'] =  $cObj->stdWrap($elem['crdate'], $this->conf['renderFields.']['crdate_age.']);
+			$markerArray['###DATE_CR_AGE###'] =  $cObj->stdWrap($elem['date_cr'], $this->conf['renderFields.']['date_cr_age.']);
+
+			if (!is_null($this->staticInfoObj)) { $markerArray['###LANGUAGE###'] 	= $this->staticInfoObj->getStaticInfoName('LANGUAGES', $elem['language'], '', '', false); }
+
+ 				// adding Markers for links to download and single View
+			if ($this->piVars['pointer']) $this->conf['filelist.']['link_single.']['stdWrap.']['typolink.']['additionalParams'].= '&tx_damfrontend_pi1[pointer]='.$this->piVars['pointer'];
+			foreach ($this->piVars as $piVar=>$value) {
+				if (substr($piVar,0,5)=="sort_") $this->conf['filelist.']['link_single.']['stdWrap.']['typolink.']['additionalParams'].= '&tx_damfrontend_pi1['.$piVar.']='.$this->piVars[$piVar];
+			}
+			#if ($this->piVars['pointer']) $this->conf['filelist.']['link_single.']['stdWrap.']['typolink.']['additionalParams'].= '&tx_damfrontend_pi1[pointer]='.$this->piVars['pointer'];
+			
+			$markerArray['###LINK_SINGLE###'] = $cObj->cObjGetSingle($this->conf['filelist.']['link_single'], $this->conf['filelist.']['link_single.']);
+
+				// this is a field in the database, if true, then the fe user has to fill out a request form
+			if ($useRequestForm==1 && $elem['tx_damfrontend_use_request_form'] == 1) {
+ 				die('this function is not implemented at this time!');
+				$paramRequest = array(
+ 					'docID' => $elem['uid'],
+ 					'showRequestform' => 1
+ 				);
+ 				// TODO implement me with cObj
+ 				$markerArray['###LINK_DOWNLOAD###'] = $this->pi_linkTP('request', $paramRequest);
+
+ 			} else {
+	 			$markerArray['###LINK_DOWNLOAD###'] = $cObj->cObjGetSingle($this->conf['filelist.']['link_download'], $this->conf['filelist.']['link_download.']);
+	 		}
+			$markerArray['###LINK_SELECT_DOWNLOAD###'] = '';
+			if (is_array($this->conf['filelist.']['link_select_download.'])) {
+
+				$markerArray['###LINK_SELECT_DOWNLOAD###'] .= '<select name="'.$this->prefixId.'['.$elem['uid'].'][convert]">';
+				$i = 1;
+				while (is_array($this->conf['filelist.']['link_select_download.'][$i.'.'])) {
+					$markerArray['###LINK_SELECT_DOWNLOAD###'] .= $cObj->TEXT($this->conf['filelist.']['link_select_download.'][$i.'.']);
+					$i++;
+				}
+				$markerArray['###LINK_SELECT_DOWNLOAD###'] .= '</select>';
+				$markerArray['###LINK_SELECT_DOWNLOAD###'] .= '<input type="submit" name="'.$this->prefixId.'['.$elem['uid'].'][submit]" value="ok" />';
+			}
+ 			$markerArray['###FILEICON###'] = $cObj->stdWrap('<img src="'.$this->getFileIconHref($elem['file_mime_type'],$elem['file_mime_subtype'] ).'" title="'.$elem['title'].'"  alt="'.$elem['title'].'"/>',$this->conf['renderFields.']['fileicon.']);
+
+				//render deletion button
+			if ($elem['allowDeletion']==1 AND $this->conf['enableDeletions']==1) {
+				$markerArray['###BUTTON_DELETE###'] = $cObj->cObjGetSingle($this->conf['filelist.']['button_delete'], $this->conf['filelist.']['button_delete.']);
+			} else {
+				$markerArray['###BUTTON_DELETE###'] ='';
+			}
+				//render edit button
+			if ($elem['allowEdit']==1 AND $this->conf['enableEdits']==1) {
+				$markerArray['###BUTTON_EDIT###'] = $cObj->cObjGetSingle($this->conf['filelist.']['button_edit'], $this->conf['filelist.']['button_edit.']);
+				$markerArray['###BUTTON_CATEDIT###'] = $cObj->cObjGetSingle($this->conf['filelist.']['button_catedit'], $this->conf['filelist.']['button_catedit.']);
+			} else {
+				$markerArray['###BUTTON_EDIT###'] ='';
+				$markerArray['###BUTTON_CATEDIT###'] ='';
+			}
+
+ 			$rows .= tslib_cObj::substituteMarkerArray($record_Code, $markerArray);
+ 			$sortlinks = array();
+ 		}
+ 		$content = tslib_cObj::substituteMarker($list_Code, '###FILELIST_RECORDS###', $rows);
+ 		$content = tslib_cObj::substituteMarker($content, '###DOWNLOAD_FORM_URL###', $this->cObj->typolink('', $this->conf['filelist.']['link_select_download.']['typolink.']));
+		$content = tslib_cObj::substituteMarker($content, '###LISTLENGTH###', $listLength);
+		$content = tslib_cObj::substituteMarker($content, '###TOTALCOUNT###', $resultcount);
+
+		if (!isset($this->conf['filelist.']['form_url.']['parameter'])) {
+			$this->conf['filelist.']['form_url.']['parameter'] = $GLOBALS['TSFE']->id;
+		}
+		$this->conf['filelist.']['form_url.']['returnLast'] = 'url';
+		$content = tslib_cObj::substituteMarker($content, '###FORM_URL###', $this->cObj->typolink('', $this->conf['filelist.']['form_url.']));
+		$markerArray = array();
+		$markerArray['###FILENAME_HEADER###'] = $this->pi_getLL('FILENAME_HEADER');
+		$markerArray['###FILETYPE_HEADER###'] = $this->pi_getLL('FILETYPE_HEADER');
+		$markerArray['###CR_DATE_HEADER###']  = $this->pi_getLL('CR_DATE_HEADER');
+		$markerArray['###LANGUAGE_HEADER###'] = $this->pi_getLL('LANGUAGE_HEADER');
+		$markerArray['###OWNER_HEADER###'] = $this->pi_getLL('OWNER_HEADER');
+		$markerArray['###CREATOR_HEADER###'] = $this->pi_getLL('CREATOR_HEADER');
+
+ 			// substitute Links for Sorting
+ 		$record = $list[0];
+ 		
+ 		foreach ($record as $key=>$value) {
+			$content = tsLib_CObj::substituteMarker($content, '###SORTLINK_'.strtoupper($key).'###', $this->renderSortLink($key));
+			$tmpPiVars = $this->piVars;
+			unset ($this->piVars);
+			if ($this->conf['filelist.']['sortLinksForTitles']==1) {
+ 				if ($tmpPiVars['sort_'.$key]) {
+					if ($this->piVars['sort_'.$key]=='DESC') {
+						$this->piVars['sort_'.$key] = 'ASC';
+						$tsWrap = 'asc';
+					}
+					else {
+						$this->piVars['sort_'.$key] = 'DESC';
+						$tsWrap = 'desc';
+					}
+				}
+				else {
+					$this->piVars['sort_'.$key] = 'ASC';
+					$tsWrap = 'no_sort';
+				}
+				// check if current header is allready sorted
+				$markerArray['###'.strtoupper($key).'_HEADER###'] = $this->cObj->stdWrap($this->pi_linkTP_keepPiVars($this->cObj->cObjGetSingle($this->conf['filelist.']['sortlinks.'][$key], $this->conf['filelist.']['sortlinks.'][$key.'.'])),$this->conf['filelist.']['sortlinks.'][$key.'.'][$tsWrap.'.']);
+					// todo unset kills the whole piVars need to find a more elegant way to deal with it
+				unset ($this->piVars);
+				$this->piVars = $tmpPiVars;
+			}
+ 		}
+
+ 		foreach (array('FILELIST_BATCH_SELECT', 'FILELIST_BATCH_GO', 'FILELIST_BATCH_CREATEZIPFILE', 'FILELIST_BATCH_SENDASMAIL', 'FILELIST_BATCH_SENDZIPPEDFILESASMAIL', 'FILELIST_BATCH_SENDFILELINK', 'FILELIST_BATCH_SENDZIPPEDFILELINK', 'FILENAME_HEADER', 'FILENAME_HEADER', 'FILETYPE_HEADER', 'CR_DATE_HEADER') as $label) {
+ 			$content = tsLib_CObj::substituteMarker($content, '###'.$label.'###', $this->pi_getLL($label, $label));
+ 		}
+		$content = tslib_cObj::substituteMarkerArray($content, $markerArray);
+ 			// substitute static user defined markers
+ 		$this->pi_loadLL();
+ 		$staticMarkers['###SETROWSPERVIEW###'] = $this->pi_getLL('setRowsPerView');
+ 		$staticMarkers['###LABEL_COUNT###'] = $this->pi_getLL('label_Count');
+		$staticMarkers =$staticMarkers + $this->substituteLangMarkers($list_Code);
+ 		$content = tslib_cObj::substituteMarkerArray($content, $staticMarkers);
+
+			// substitute Links for Browseresult
+		$browseresults = $this->renderBrowseResults($resultcount, $pointer, $listLength);
+		$content = tsLib_CObj::substituteMarker($content, '###BROWSERESULTS###', $browseresults);
+
+ 		return $content;
+ 	}
 
 	/**
 	 * renders a listbrowser which divides the resultlist of the selected files in better viewable parts
@@ -1357,6 +1537,14 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 				}
 			}
 			return $content;
+		}
+		
+		function renderCategoryHeader($categoryTitle) {
+			
+			$formCode  = tslib_CObj::getSubpart($this->fileContent, '###GROUPED_CATEGORY###');
+			$markerArray['###CATEGORYTITLE###']=$this->cObj->stdWrap($categoryTitle,$this->conf['renderFields.']['categoryTitle.']);
+
+			return tslib_cObj::substituteMarkerArray($formCode, $markerArray);
 		}
 }
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_rendering.php'])	{

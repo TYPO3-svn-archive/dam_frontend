@@ -451,11 +451,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$this->initFilter();
 		}
 
-		if ($this->internal['viewID'] == 6) {
+		if ($this->internal['viewID'] == 6 or $this->internal['viewID'] == 1 or $this->internal['viewID'] == 8) {
 				// myfiles
 			$this->initList();
 			$this->initFilter();
 		}
+
+		
 		if (t3lib_div::_POST('cancel_versioning')) {
 			$GLOBALS['TSFE']->fe_user->setKey('ses','saveID','');
 			$GLOBALS['TSFE']->fe_user->setKey('ses','overWriteID','');
@@ -554,7 +556,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$content .= $this->uploadForm();
 				break;
 			case 8:
-				$content .= $this->fileList(true);
+				$content .= $this->fileList(false);
 				break;
 			case 9:
 				$content .= $this->testCase();
@@ -874,10 +876,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			if (is_array($this->internal['filter'])) {
 				$this->internal['filterError'] = $this->docLogic->setFilter($this->internal['filter']);
 			}
-			$this->docLogic->orderBy = 'tx_dam.'. $this->internal['list']['sorting'];
+			if ($this->internal['list']['sorting']) $this->docLogic->orderBy = 'tx_dam.'. $this->internal['list']['sorting'];
 			$this->docLogic->limit = $this->internal['list']['limit'];
 			$this->docLogic->categories = $cats;
 			$this->docLogic->selectionMode = $this->internal['selectionMode'];
+			if ($this->internal['viewID']==8) {
+					$this->docLogic->conf['useGroupedView']=1;
+			}
 			$files = $this->docLogic->getDocumentList($this->userUID);
 			if (is_array($files)) {
 
@@ -885,6 +890,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					// check if pointer is ok
 				$limiter=0;
 				if ($this->internal['list']['listLength']==1) $limiter = 1;
+				
 				$noOfPages = intval($rescount / $this->internal['list']['listLength'])-$limiter;
 
 				if($this->internal['list']['pointer'] >$noOfPages) {
@@ -893,7 +899,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				}
 
 				 //get the html from the renderer
-				$content = $this->renderer->renderFileList($files, $rescount, $this->internal['list']['pointer'], $this->internal['list']['listLength'],$useRequestForm);
+				if ($this->internal['viewID']==8) {
+					$content = $this->renderer->renderFileGroupedList($files, $rescount, $this->internal['list']['pointer'], $this->internal['list']['listLength']);
+				}
+				else {
+					$content = $this->renderer->renderFileList($files, $rescount, $this->internal['list']['pointer'], $this->internal['list']['listLength'],$useRequestForm);
+				}
 			}
 			else {
 				// render error
