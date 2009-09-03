@@ -257,6 +257,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		// if all categories should be searched
 		if (t3lib_div::_GP('dam_fe_allCats')=='true') {
+			t3lib_div::debug('hallo');
 			$this->internal['filter']['searchAllCats'] = true;
 			if ($this->conf['filterView.']['searchCatsAsMounts']==1) {
 				$catArr = array();
@@ -978,7 +979,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		if ($this->docLogic->checkAccess($singleID, 1) ) {
 			if (intval($singleID) && $singleID != 0) {
 				$record = $this->docLogic->getDocument($singleID);
-				if ($this->checkDocumentAccess($record['fe_group'])) {
+				if ($this->docLogic->checkDocumentAccess($record['fe_group'])) {
 					$record['backPid']= $this->internal['backPid'];
 					if ($this->userUID == $row['tx_damfrontend_feuser_upload'] AND $this->userUID>0){
 							$record['allowDeletion']=1;

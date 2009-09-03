@@ -442,9 +442,14 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				}
 				else {
 					// query without using categories
+					$from=$this->docTable;
+					if ($this->conf['searchAllCats_allowedCats']) {
+						// limit the search in categories
+						 $filter .='AND ('.$this->catTable.'.uid IN ('. $this->conf['searchAllCats_allowedCats'] .'))';
+						 $from = $this->docTable.' INNER JOIN '.$this->mm_Table.' ON '.$this->mm_Table.'.uid_local  = '.$this->docTable.'.uid INNER JOIN '.$this->catTable.' ON '.$this->mm_Table.'.uid_foreign = '.$this->catTable.'.uid';
+					} 
 					$filter .= $this->additionalFilter;
 					$select='*';
-					$from=$this->docTable;
 					$where.= ' 1=1 '.$filter;
 				}
 			}
@@ -456,7 +461,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				$this->orderBy = $this->catTable.'.title';
 			}
 
-
+			#t3lib_div::debug($select. ' ' . $from . ' ' . $where);
 			$resultCounter=0;
 				// executing the final query and convert the results into an array
 				// is defnied as: $this->internal['list']['limit'] = $this->internal['list']['pointer'].','. ($this->internal['list']['listLength']);
