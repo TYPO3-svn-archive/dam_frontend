@@ -662,8 +662,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 
 		if ($this->internal['useStaticCatSelection']==1) {
+			if ($this->internal['incomingtreeID']<>-1 ){
+				$this->catList->unsetAllCategories();
+			}
 			$this->internal['incomingtreeID'] = $this->internal['treeID'];
-			$this->catList->unsetAllCategories();
 			if (is_array($this->internal['catMounts'])) {
 				foreach ($this->internal['catMounts'] as $catMount) {
 					if (strlen($catMount)) {
