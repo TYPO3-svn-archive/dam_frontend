@@ -257,26 +257,25 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		// if all categories should be searched
 		if (t3lib_div::_GP('dam_fe_allCats')=='true') {
-			t3lib_div::debug('hallo');
 			$this->internal['filter']['searchAllCats'] = true;
-			if ($this->conf['filterView.']['searchCatsAsMounts']==1) {
-				$catArr = array();
-				foreach( $this->internal['catMounts'] as $mount) {
-					if ($mount>0){
-						$cats = $this->catLogic->getSubCategories($mount);
-						foreach ($cats as $cat) {
-							$catArr[] =$cat['uid'];
-						} 
-						$this->internal['filter']['searchAllCats_allowedCats'] =$catArr;
-					}
-				}
-			}
+			
 		}
 		else {
 			$this->internal['filter']['searchAllCats'] = false;
 		}
 
-
+		if ($this->conf['filterView.']['searchCatsAsMounts']==1) {
+			$catArr = array();
+			foreach( $this->internal['catMounts'] as $mount) {
+				if ($mount>0){
+					$cats = $this->catLogic->getSubCategories($mount);
+					foreach ($cats as $cat) {
+						$catArr[] =$cat['uid'];
+					} 
+					$this->internal['filter']['searchAllCats_allowedCats'] =$catArr;
+				}
+			}
+		}
 
 		$this->internal['filter']['LanguageSelector'] = strip_tags(t3lib_div::_GP('LanguageSelector'));
 		$this->internal['filter']['creator'] = strip_tags(t3lib_div::_GP('creator'));

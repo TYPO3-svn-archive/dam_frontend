@@ -461,7 +461,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				$this->orderBy = $this->catTable.'.title';
 			}
 
-			#t3lib_div::debug($select. ' ' . $from . ' ' . $where);
+			t3lib_div::debug($select. ' ' . $from . ' ' . $where);
 			$resultCounter=0;
 				// executing the final query and convert the results into an array
 				// is defnied as: $this->internal['list']['limit'] = $this->internal['list']['pointer'].','. ($this->internal['list']['listLength']);
