@@ -128,10 +128,11 @@ plugin.tx_damfrontend_pi2 {
 		background-y-position: 0%;
 	}
 
-div .tx-damfrontend-pi2 a:link, a:visited {
-	color: #373535;
-	text-decoration: none;
-}
+	﻿div.tx-damfrontend-pi2 a:link,
+	div.tx-damfrontend-pi2 a:visited {
+		color: #373535;
+		text-decoration: none;
+	}
 
 
 	)
