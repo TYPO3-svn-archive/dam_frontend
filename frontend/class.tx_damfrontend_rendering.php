@@ -668,9 +668,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  		$content = tslib_cObj::substituteMarker($content, '###CR_DESCRIPTION_HEADER###',$this->pi_getLL('CR_DESCRIPTION_HEADER'));
  		$content = tslib_cObj::substituteMarker($content, '###COPYRIGHT_HEADER###',$this->pi_getLL('COPYRIGHT_HEADER'));
  		$content = tslib_cObj::substituteMarker($content, '###CATEGORY_HEADER###',$this->pi_getLL('CATEGORY_HEADER'));
- 		$cObjCat = t3lib_div::makeInstance('tslib_cObj');
- 		$cObjCat->start($record, 'tx_dam');
- 		$content = tslib_cObj::substituteMarker($content, '###CATEGORY###', $cObjCat->cObjGetSingle($this->conf['singleView.']['category.']['cObject'], $this->conf['singleView.']['category.']['cObject.']));
+ 		$content = tslib_cObj::substituteMarker($content, '###CATEGORY###', $cObj->cObjGetSingle($this->conf['singleView.']['category.']['cObject'], $this->conf['singleView.']['category.']['cObject.']));
  		$content = tslib_cObj::substituteMarker($content, '###FILETYPE_HEADER###',$this->pi_getLL('FILETYPE_HEADER'));
  		$content = tslib_cObj::substituteMarker($content, '###LINK_HEADER###',$this->pi_getLL('LINK_HEADER'));
  		$content = tslib_cObj::substituteMarker($content, '###LANGUAGE_HEADER###',$this->pi_getLL('LANGUAGE_HEADER'));
