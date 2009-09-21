@@ -441,17 +441,17 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		// values for searching
 		// Setting new values
 		
- 		if ($this->internal['viewID'] == 1  ) {
+ 		/**if ($this->internal['viewID'] == 1  ) {
 				//fileliste		
  			$this->initList();
 			$this->initFilter();
- 		}
+ 		}*/
 		if ($this->internal['viewID'] == 5) {
 				// serachbox			
 			$this->initFilter();
 		}
 
-		if ($this->internal['viewID'] == 6 or $this->internal['viewID'] == 1 or $this->internal['viewID'] == 8) {
+		if ($this->internal['viewID'] == 1 or $this->internal['viewID'] == 6 or $this->internal['viewID'] == 8) {
 				// myfiles
 			$this->initList();
 			$this->initFilter();

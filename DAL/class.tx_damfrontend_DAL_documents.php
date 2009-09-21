@@ -5,7 +5,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2006-2008 in2form.com (typo3@in2form.com)
+*  (c) 2006-2009 in2form.com (typo3@in2form.com)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -275,7 +275,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			if ($relID == null || !intval($relID)) {
 				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getDocumentFEGroups: for the relID only integer values are allowed. Given value was:' .$relID, 'dam_frontend',3);
 			}
-			// first find all categoies for the given document
+			// first find all categories for the given document
 			$catlist = $this->getCategoriesByDoc_Rootline($docID);
 			// accumulates all groups
 			$grouparray = array();
@@ -461,7 +461,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				$this->orderBy = $this->catTable.'.title';
 			}
 
-			t3lib_div::debug($select. ' ' . $from . ' ' . $where);
+			#t3lib_div::debug($select. ' ' . $from . ' ' . $where);
 			$resultCounter=0;
 				// executing the final query and convert the results into an array
 				// is defnied as: $this->internal['list']['limit'] = $this->internal['list']['pointer'].','. ($this->internal['list']['listLength']);
@@ -596,7 +596,8 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 
 			if ($filterArray['showOnlyFilesWithPermission'] == 1) $this->additionalFilter .=  ' AND '.$this->docTable.'.fe_group <>"" AND '.$this->docTable.'.fe_group <>"-1" AND '.$this->docTable.'.fe_group <>"-2" AND '.$this->docTable.'.fe_group <>"0"';
 			
-			if ($filterArray['searchAllCats_allowedCats']) $this->conf['searchAllCats_allowedCats'] = implode(',',$filterArray['searchAllCats_allowedCats']); 
+			if (is_array($filterArray['searchAllCats_allowedCats'])) $this->conf['searchAllCats_allowedCats'] = implode(',',$filterArray['searchAllCats_allowedCats']);
+			
 			return $errors;
 		}
 

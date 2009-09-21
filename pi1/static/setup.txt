@@ -172,7 +172,6 @@ plugin.tx_damfrontend_pi1 {
 		title.typolink.parameter.data = TSFE:id
   		title.typolink.additionalParams = &eID=dam_frontend_push&docID={field:uid}
 		title.typolink.additionalParams.insertData = 1
-
 		link_download.typolink.parameter.data = TSFE:id
   		link_download.typolink.additionalParams = &eID=dam_frontend_push&docID={field:uid}
 		link_download.typolink.additionalParams.insertData = 1
