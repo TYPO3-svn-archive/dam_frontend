@@ -280,7 +280,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->internal['filter']['LanguageSelector'] = strip_tags(t3lib_div::_GP('LanguageSelector'));
 		$this->internal['filter']['creator'] = strip_tags(t3lib_div::_GP('creator'));
 		$this->internal['filter']['owner'] = strip_tags(t3lib_div::_GP('owner'));
-
+		$this->internal['filter']['categoryMount'] = strip_tags(t3lib_div::_GP('categoryMount'));
 
 
 		if (!count($this->filterState->getFilterFromSession())) {
@@ -288,7 +288,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			foreach ($emptyArray as $key => $value) $emptyArray[$key] = ' ';
 			$this->filterState->setFilter($emptyArray);
 		}
-		if (t3lib_div::_GP('setFilter')) {
+		if (t3lib_div::_GP('setFilter') || t3lib_div::_GP('easySearchSetFilter')) {
 			$this->filterState->setFilter($this->internal['filter']);
 		}
 		$this->internal['filter'] = $this->filterState->getFilterFromSession();
@@ -366,6 +366,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		 * if a filter criteria is changed, the pagebrowsing is reseted to the beginning value
 		 */
 		if (	t3lib_div::_GP('setFilter') ||
+				t3lib_div::_GP('easySearchSetFilter') ||
 				!empty($this->internal['catPlus']) ||
 				!empty($this->internal['catPlus']) ||
 				!empty($this->internal['catMinus']) ||
@@ -438,20 +439,17 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->internal['backPid'] = intval($this->piVars['backPid']);
 
 		$this->internal['filter']['searchAllCats'] = 0;
-		// values for searching
-		// Setting new values
+
 		
- 		/**if ($this->internal['viewID'] == 1  ) {
-				//fileliste		
- 			$this->initList();
-			$this->initFilter();
- 		}*/
+		// values for searching
+ 		
 		if ($this->internal['viewID'] == 5 OR $this->internal['viewID'] == 10) {
-				// serachbox			
+				// searchbox			
 			$this->initFilter();
 		}
 		if ($this->internal['viewID'] == 9) {
 			$this->initList();
+			#$this->initFilter();
 		}
 
 		if ($this->internal['viewID'] == 1 or $this->internal['viewID'] == 6 or $this->internal['viewID'] == 8) {
@@ -516,7 +514,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->convertPiVars();
 
 		$this->filterState->filterTable = 'tx_damfrontend_filterStates';
-		$this->overRide();
+		#$this->overRide();
 
 			// check if an user is logged in or not
 		$user = $GLOBALS['TSFE']->fe_user;
@@ -565,8 +563,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				
 				break;
 			case 10:
-					$content .= $this->easySearch();
-					break;
+				$content .= $this->easySearch();
+				break;
 			case 99:
 				$content = $this->dropDown();
 				break;
@@ -674,15 +672,28 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 			$this->internal['incomingtreeID'] = $this->internal['treeID'];
 			if (is_array($this->internal['catMounts'])) {
-				foreach ($this->internal['catMounts'] as $catMount) {
-					if (strlen($catMount)) {
-						$subs = $this->catLogic->getSubCategories($catMount);
-						foreach ($subs as $sub) {
-							$this->catList->op_Plus($sub['uid'], $this->internal['treeID']);
-						}
-					}
-				}
+				$this->addAllCategories($this->internal['catMounts'],$this->internal['incomingtreeID']);
 			}
+		}
+		
+			// easySearch
+		if (t3lib_div::_GP('easySearchSetFilter')) {
+			$this->catList->unsetAllCategories();
+			if ($this->internal['filter']['categoryMount']=='noselection' && $this->internal['incomingtreeID'] <> $this->internal['treeID']) {
+				// use all categories of the 
+				$row = t3lib_BEfunc::getRecord('tt_content',$this->internal['incomingtreeID']);
+				  // getting values from flexform ==> it's possible to overwrite flexform values with ts setttings
+				
+				$this->internal['catMounts'] = explode(',',$this->pi_getFFvalue($row['pi_flexform'], 'catMounts', 'sSelection'));
+
+				$this->addAllCategories($this->internal['catMounts'],$this->internal['incomingtreeID'],true);
+			}
+			else {
+				// use the posted category to restrict
+				t3lib_div::debug('equal');
+				$this->catList->op_Equals(intval($this->internal['filter']['categoryMount']),  $this->internal['incomingtreeID']);
+				t3lib_div::debug(t3lib_div::_GP('categoryMount'));
+			}			
 		}
 		
 		if ($this->internal['catClear']) {
@@ -1697,7 +1708,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	
 	
 	/**
-	 * returns an array of users, if current user is given the user is selected in this array
+	 * returns an array of categories
 	 *
 	 * @param	string		$currentCategory ID of the current selected category
 	 * @return	array		all fe_users which shoud be selected
@@ -1707,10 +1718,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		
 		$SELECT = '*';
 		$FROM = 'tx_dam_cat';
-		$WHERE = implode(',',$catMounts);
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE,'');
+		$WHERE = 'uid in ('. implode(',',$catMounts).')';
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE);
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			if ($ro['uid']==$currentCategory) {
+			if ($row['uid']==$currentCategory) {
 				$row['selected']=1;
 			}
 			else {
@@ -1718,7 +1729,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 			$catList[]=$row;
 		}
-		return (catList);
+		return $catList;
 	}
 
 
@@ -2033,7 +2044,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->docLogic->conf['useLatestList'] = true;
 		$this->docLogic->conf['latestField'] = ($this->conf['filelist.']['latestField']) ? $this->conf['filelist.']['latestField'] : 'crdate';
 		$this->docLogic->conf['latestLimit'] = ($this->conf['filelist.']['latestLimit']) ? $this->conf['filelist.']['latestLimit'] : 30;
-		$this->docLogic->conf['latestDays'] = ($this->conf['filelist.']['latestDays']) ? $this->conf['filelist.']['latestDays'] : 30;
+		$this->docLogic->conf['latestDays'] = $this->conf['filelist.']['latestDays'];	
 	
 			// use the filelist to display the result
 		
@@ -2047,18 +2058,30 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @return	[string]		$content html auf filterview
 	 */
 	function easySearch() {
-		
-		$conf['sys_language_uid'] = $GLOBALS['TSFE']->sys_language_uid;
-		$row['pid']=$this->mediaFolder;
-		$res = 
-		if ($this->conf['easySearch.']['useLanguageOverlay']==1) $row = tx_dam_db::getRecordOverlay('tx_dam_cat', $row, $conf);
-		$this->internal['filter']['categories'][]=$row;
-		
+		t3lib_div::debug($this->internal['catMounts']);
+		$this->internal['filter']['categories']=$this->get_CategoryList($this->internal['catMounts'],$this->internal['filter']['categoryMount']);
+		#t3lib_div::debug($this->internal['filter']['categories']);
 		$content = $this->renderer->renderEasySearch($this->internal['filter'], $this->internal['filterError']);
 		return $content;
 	}
 	
+	
+	function addAllCategories($catMounts, $treeID, $addChilds = false) {
+		foreach ($catMounts as $catMount) {
+			if (strlen($catMount)) {
+				 $this->catList->op_Plus($catMount,$treeID);
+				if ($addChilds==true) {
+					$subs = $this->catLogic->getSubCategories($catMount);
+					foreach ($subs as $sub) {
+						$this->catList->op_Plus($sub['uid'],$treeID);
+					}
+				}
+			}
+		}
+	}
 }
+
+
 
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/pi1/class.tx_damfrontend_pi1.php'])	{

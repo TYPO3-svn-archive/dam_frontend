@@ -1569,6 +1569,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  		// inserting static markers
  		$this->pi_loadLL();
  		$markerArray['###SEARCH###'] = $this->pi_getLL('SEARCH');
+ 		$markerArray['###TREEID###'] =  $this->cObj->data['uid'];
  		$markerArray['###RESET_FILTER###'] = $this->pi_getLL('resetFilter');
  		$markerArray['###LABEL_SEARCHWORD###'] = $this->pi_getLL('label_searchword');
  		$markerArray['###LABEL_SEARCHOPS###'] = $this->pi_getLL('label_searchops');
@@ -1586,7 +1587,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		}
 		$this->conf['filterview.']['form_url.']['returnLast'] = 'url';
 		$markerArray['###FORM_URL###'] = $this->cObj->typolink('', $this->conf['filterview.']['form_url.']);
-		t3lib_div::debug($formCode);
+		#t3lib_div::debug($formCode);
  		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
  		return $formCode;
  	}
@@ -1614,7 +1615,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 			}
 			$content = '<option value="noselection"'.$sel.'></option>'.$content;
 			$content .= '</select>';
-			$content = '<select name="categories">'.$content;
+			$content = '<select name="categoryMount">'.$content;
 		}
 		else {
 			$content ='<label>no categories selected for the content element easysearch</label>';

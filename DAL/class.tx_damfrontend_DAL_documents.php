@@ -352,26 +352,28 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			}
 				// TODO: use API: Enablefields
 			$filter = ' AND '.$this->docTable.'.deleted = 0  AND '.$this->docTable.'.hidden = 0';
-			$filter .= ' AND ('.$this->docTable.'.starttime > '.time().' OR '.$this->docTable.'.starttime = 0)';
-			$filter .= ' AND ('.$this->docTable.'.endtime < '.time().' OR '.$this->docTable.'.endtime = 0)';
+			$filter .= ' AND ('.$this->docTable.'.starttime < '.time().' OR '.$this->docTable.'.starttime = 0)';
+			$filter .= ' AND ('.$this->docTable.'.endtime > '.time().' OR '.$this->docTable.'.endtime = 0)';
 			if ($this->conf['useLatestList']==1) {
 				$from = $this->docTable;
 					// if latest days is set the
 					if (intval($this->conf['latestDays'])>0) {
-						$now = mktime();
-						$min = (60*60*24*$this->conf['latestDays'] );
-						$now = $now - 21600000  ;
+						$d = intval($this->conf['latestDays']);
+						$now  = time() - (60*60*24*$d);
 						
-						$where= $this->conf['latestField'] .' > '.'1241377023' . $filter;
+						$where= $this->conf['latestField'] .' > '.$now . $filter;
 						$this->conf['latestLimit']=0;
 					}  
 					else {
+						t3lib_div::debug($this->orderBy);
 						if ($this->orderBy) {
+							
 							$this->orderBy =$this->conf['latestField'] . ' DESC, ' . $this->orderBy;
 						}
 						else {
 							$this->orderBy =$this->conf['latestField'] . ' DESC'; 
 						}
+						$where= '1=1 '. $filter;
 					}
 			}
 			else {
@@ -477,7 +479,8 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				$this->orderBy = $this->catTable.'.title';
 			}
 
-			t3lib_div::debug( $where);
+#			t3lib_div::debug( $where);
+#t3lib_div::debug($select . ' ' . $from . ' '. $where . ' '  .$this->orderBy);
 			$resultCounter=0;
 				// executing the final query and convert the results into an array
 				// is defnied as: $this->internal['list']['limit'] = $this->internal['list']['pointer'].','. ($this->internal['list']['listLength']);
@@ -503,14 +506,14 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 						
 					}
 						// pointer starts at "0" so the first result counter has to be 0 too
-						
 					$resultCounter++;
-					if ($this->conf['latestLimit']>0 && $resultCounter=$this->conf['latestLimit']) {
+					if ($this->conf['latestLimit']>0 && $resultCounter==$this->conf['latestLimit']) {
 						break;
 					}
 				}
 			}
 
+			#			t3lib_div::debug($result);
 			$this->resultCount = $resultCounter;
 			return $result;
 		}
