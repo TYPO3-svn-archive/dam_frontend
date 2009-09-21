@@ -37,6 +37,7 @@
 			﻿<label index="pi2_title">DAM Frontend Filelist</label>
 			<label index="pi2_plus_wiz_description">Select files for downloading </label>
 			<label index="flexform_groupedCategories">Filelist (grouped categories)</label>		
+			<label index="flexform_easySearch">Easysearch</label>		
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="flexform_display_title">Was soll angezeigt werden</label>
@@ -70,6 +71,7 @@
 			﻿<label index="pi2_title">DAM Frontend Dateiliste</label>
 			<label index="pi2_plus_wiz_description">Daten zum Download im Backend einzeln auswählen.</label>
 			<label index="flexform_groupedCategories">Dateiliste (gruppierte Kategorien)</label>	
+			<label index="flexform_easySearch">Einfaches Suchformular</label>
 		</languageKey>
 		﻿<languageKey index="ru" type="array">
 			<label index="flexform_display_title">Что показать?</label>
