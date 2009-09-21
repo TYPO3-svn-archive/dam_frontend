@@ -128,7 +128,8 @@
 			<label index="upload_path_error">Error: Please check setting of your upload path! [DAM Frontend: upload]</label>
 			<label index="BROWSELINK_PREV">previous</label>
 			<label index="BROWSELINK_NEXT">next</label>
-			
+			<label index="SEARCH">Search ...</label>
+			<label index="DROPDOWN_CATEGORIES_HEADER">Limit search to:</label>			
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="list_mode_1">Modus 1</label>
@@ -241,6 +242,9 @@
 			<label index="upload_path_error">Error: Please check setting of your upload path! [DAM Frontend: upload]</label>
 			<label index="BROWSELINK_PREV">vorherige</label>
 			<label index="BROWSELINK_NEXT">nächste</label>
+			<label index="SEARCH">suchen ...</label>
+			<label index="DROPDOWN_CATEGORIES_HEADER">Suche eingrenzen auf:</label>
+
 		</languageKey>
 		<languageKey index="nl" type="array">
 			<label index="list_mode_1">Mode 1</label>

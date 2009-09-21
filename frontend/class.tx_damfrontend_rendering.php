@@ -1544,6 +1544,84 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 
 			return tslib_cObj::substituteMarkerArray($formCode, $markerArray);
 		}
+		
+		
+	 /**
+	 * Renders the EasySerach view:
+	 *
+	 * @param	[array]		$filterArray: contains the filters that are set, can also contain a list of fe-users for the selector box ($listOfCreators)
+	 * @param	[array]		$errorArray: ...
+	 * @return	[type]		... 
+	 */
+ 	function renderEasySearch($filterArray, $errorArray = '') {
+ 		$formCode  = tslib_CObj::getSubpart($this->fileContent, '###EASYSEARCH###');
+
+ 		// filling fields with url - vars
+ 		$markerArray  = $this->recordToMarkerArray($filterArray);
+		$markerArray =$markerArray + $this->substituteLangMarkers($formCode);
+ 		// error handling
+ 		$markerArray['###ERROR_TO_DATE###'] = $errorArray['error_to_date'] ? $this->pi_getLL('error_renderFilterView_date_to') : '';
+ 		$markerArray['###ERROR_FROM_DATE###'] = $errorArray['error_from_date'] ? $this->pi_getLL('error_renderFilterView_date_from') : '';
+
+ 		//generating filetype list
+ 		$markerArray['###FILETYPE_LIST###'] = $this->renderFileTypeList($filterArray['filetype']);
+
+ 		// inserting static markers
+ 		$this->pi_loadLL();
+ 		$markerArray['###SEARCH###'] = $this->pi_getLL('SEARCH');
+ 		$markerArray['###RESET_FILTER###'] = $this->pi_getLL('resetFilter');
+ 		$markerArray['###LABEL_SEARCHWORD###'] = $this->pi_getLL('label_searchword');
+ 		$markerArray['###LABEL_SEARCHOPS###'] = $this->pi_getLL('label_searchops');
+ 		$markerArray['###LABEL_RESETFILTER###'] = $this->pi_getLL('label_resetFilter');
+ 		$markerArray['###DROPDOWN_CATEGORIES_HEADER###'] = $this->pi_getLL('DROPDOWN_CATEGORIES_HEADER');
+		if (is_array($filterArray['categories'])) {
+			$markerArray['###DROPDOWN_CATEGORIES###'] = $this->renderCatgoryList($filterArray['categories']);
+		} else {
+			$markerArray['###DROPDOWN_CATEGORIES###']='error - no categories are defined!';
+		}
+
+		$markerArray['###DROPDOWN_LANGUAGE###'] = $this->renderLanguageSelector($filterArray['LanguageSelector']);
+ 		if (!isset($this->conf['filterview.']['form_url.']['parameter'])) {
+			$this->conf['filterview.']['form_url.']['parameter'] = $GLOBALS['TSFE']->id;
+		}
+		$this->conf['filterview.']['form_url.']['returnLast'] = 'url';
+		$markerArray['###FORM_URL###'] = $this->cObj->typolink('', $this->conf['filterview.']['form_url.']);
+		t3lib_div::debug($formCode);
+ 		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
+ 		return $formCode;
+ 	}
+ 	
+	/**
+		
+	
+	 */
+ 	function renderCatgoryList($categories) {
+ 		if (is_array($categories)) {
+			foreach ($categories as $category) {
+				if ($category['selected'] == 1) {
+					$sel = ' selected="selected"';
+					$selected = true;
+				} else {
+					$sel='';
+				}
+				
+	 			$content .= '<option value="'.$category['uid'].'"'.$sel.'>'.$category['title'].'</option>';
+			}
+			if ($selected==false ){
+				$sel = ' selected="selected"';
+			} else {
+				$sel='';
+			}
+			$content = '<option value="noselection"'.$sel.'></option>'.$content;
+			$content .= '</select>';
+			$content = '<select name="categories">'.$content;
+		}
+		else {
+			$content ='<label>no categories selected for the content element easysearch</label>';
+		}
+		return $content;
+ 	}
+		
 }
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_rendering.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_rendering.php']);

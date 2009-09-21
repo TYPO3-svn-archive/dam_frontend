@@ -309,9 +309,9 @@ Template for displaying a single document in a list
 				<br />
 				<br />
 				<input type="hidden" value="0" name="tx_damfrontend_pi1[pointer]" />
-				<input type="submit" value="###SET_FILTER###" name="setFilter" class="button"></input>
 				<input type="checkbox" name="dam_fe_allCats" value="true" /> ###LABEL_NO_CAT###
 				<input type="submit" value="###RESET_FILTER###" name="resetFilter" class="button"></input> &nbsp; &nbsp; &nbsp;
+				<input type="submit" value="###SET_FILTER###" name="setFilter" class="button"></input>
 
 		</fieldset>
 	</form>
@@ -642,3 +642,33 @@ Template for displaying a single document in a list
 <!-- ###GROUPED_CATEGORY### begin-->
 <tr class="odd"> <td colspan="11"><h3>###CATEGORYTITLE###</h3></td></tr>'
 <!-- ###GROUPED_CATEGORY### end-->
+
+
+
+<!-- *************************************
+
+	Template for displaying the Filter - Area
+
+****************************************** -->
+
+<!-- ###EASYSEARCH### begin-->
+	<form method="post" action="###FORM_URL###">
+		<fieldset>
+			<legend>###LABEL_SEARCHOPS###</legend>
+				<label>###LABEL_SEARCHWORD###</label>
+				<input type="text" name="searchword" size="30" value="###SEARCHWORD###"></input>
+
+				<br />
+
+				<label>###DROPDOWN_CATEGORIES_HEADER###</label>
+				###DROPDOWN_CATEGORIES###
+
+				<br />
+				<br />
+				<input type="hidden" value="0" name="tx_damfrontend_pi1[pointer]" />
+				<input type="submit" value="###RESET_FILTER###" name="resetFilter" class="button"></input> &nbsp; &nbsp; &nbsp;
+				<input type="submit" value="###SEARCH###" name="setFilter" class="button"></input>
+
+		</fieldset>
+	</form>
+<!-- ###EASYSEARCH### end-->

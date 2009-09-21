@@ -354,13 +354,16 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$filter = ' AND '.$this->docTable.'.deleted = 0  AND '.$this->docTable.'.hidden = 0';
 			$filter .= ' AND ('.$this->docTable.'.starttime > '.time().' OR '.$this->docTable.'.starttime = 0)';
 			$filter .= ' AND ('.$this->docTable.'.endtime < '.time().' OR '.$this->docTable.'.endtime = 0)';
-
-			if ($this->conf['useLatestist']==true) {
-					$from = $this->docTable;
+			if ($this->conf['useLatestList']==1) {
+				$from = $this->docTable;
 					// if latest days is set the
 					if (intval($this->conf['latestDays'])>0) {
-						$filter .=$this->conf['latestField'];
+						$now = mktime();
+						$min = (60*60*24*$this->conf['latestDays'] );
+						$now = $now - 21600000  ;
 						
+						$where= $this->conf['latestField'] .' > '.'1241377023' . $filter;
+						$this->conf['latestLimit']=0;
 					}  
 					else {
 						if ($this->orderBy) {
@@ -474,7 +477,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				$this->orderBy = $this->catTable.'.title';
 			}
 
-			#t3lib_div::debug($select. ' ' . $from . ' ' . $where);
+			t3lib_div::debug( $where);
 			$resultCounter=0;
 				// executing the final query and convert the results into an array
 				// is defnied as: $this->internal['list']['limit'] = $this->internal['list']['pointer'].','. ($this->internal['list']['listLength']);
@@ -490,21 +493,21 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 						$row['allowDeletion']=1;
 						$row['allowEdit']=1;
 					}
-
+					
 						// TODO: we should use SQL-LIMIT instead! Cant we create an SQL-Syntax for $this->checkAccess($row['uid'], 1) && $this->checkDocumentAccess($row['fe_group']) ??
 						// Problem: this code is not performant. one idea is to fetch only a limited number of rows and check in a loop if enough rows are delivered after the permission check. One prob is left, because its difficult (or impossible) to find the right position in combination with the pagelimit / pagebrowser
 						// add row only, if the current resultID is between the limit range
 					if ($resultCounter >=$startRecord && $resultCounter<=($startRecord+$listLength-1)){
-						#if ($this->conf['latestLimit']>0 && ) {
-						
-						#}
 						// @TODO limit the latest View 
 						$result[] = $row;
 						
 					}
 						// pointer starts at "0" so the first result counter has to be 0 too
+						
 					$resultCounter++;
-					if ($resultCounter>$startRecord+$listLength-1) break;
+					if ($this->conf['latestLimit']>0 && $resultCounter=$this->conf['latestLimit']) {
+						break;
+					}
 				}
 			}
 

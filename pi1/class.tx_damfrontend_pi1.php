@@ -446,13 +446,15 @@ class tx_damfrontend_pi1 extends tslib_pibase {
  			$this->initList();
 			$this->initFilter();
  		}*/
-		if ($this->internal['viewID'] == 5) {
+		if ($this->internal['viewID'] == 5 OR $this->internal['viewID'] == 10) {
 				// serachbox			
 			$this->initFilter();
 		}
+		if ($this->internal['viewID'] == 9) {
+			$this->initList();
+		}
 
 		if ($this->internal['viewID'] == 1 or $this->internal['viewID'] == 6 or $this->internal['viewID'] == 8) {
-				// myfiles
 			$this->initList();
 			$this->initFilter();
 		}
@@ -560,6 +562,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				break;
 			case 9:
 				$content .= $this->latestView();
+				
+				break;
+			case 10:
+					$content .= $this->easySearch();
+					break;
 			case 99:
 				$content = $this->dropDown();
 				break;
@@ -850,7 +857,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		if ($result<>1) {
 			return  $result;
 		}
-
 		if (is_array($this->piVars['dropdown'])) {
 			$cats = $this->catList->getCatSelection(999,0);
 		}
@@ -863,7 +869,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				if (count($catList)) $hasCats = true;
 			}
 		}
-		if ($hasCats===true || $this->internal['filter']['searchAllCats']===true ) {
+		if ($hasCats===true || $this->internal['filter']['searchAllCats']===true || $this->internal['viewID']==9) {
 
 			/***************************
 			 *
@@ -1687,6 +1693,33 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 		return ($feUserList);
 	}
+	
+	
+	
+	/**
+	 * returns an array of users, if current user is given the user is selected in this array
+	 *
+	 * @param	string		$currentCategory ID of the current selected category
+	 * @return	array		all fe_users which shoud be selected
+	 * @author stefan
+	 */
+	function get_CategoryList ($catMounts,$currentCategory ='') {
+		
+		$SELECT = '*';
+		$FROM = 'tx_dam_cat';
+		$WHERE = implode(',',$catMounts);
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE,'');
+		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+			if ($ro['uid']==$currentCategory) {
+				$row['selected']=1;
+			}
+			else {
+				$row['selected']=0;
+			}
+			$catList[]=$row;
+		}
+		return (catList);
+	}
 
 
 
@@ -1924,15 +1957,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		return $tree;
 	}
 
-	/**
-	 * [Describe function...]
-	 *
-	 * @return	[type]		...
-	 */
-	function testCase () {
-		#$this->catLogic->
-		#return $content;
-	}
+	
 
 	/**
 	 * @param	[type]		$saveUID: ...
@@ -1998,9 +2023,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	}
 	
 	/**
+	 * returns the latest view: display recently changed documents a user has access to
 	 * 
-	 * 
-	 * @return unknown_type
+	 * @return html
 	 */
 	function latestView() {
 		
@@ -2014,6 +2039,25 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		
 		return $this->fileList(false);
 	}
+	
+	
+	/**
+	 * Renders the eay search box
+	 *
+	 * @return	[string]		$content html auf filterview
+	 */
+	function easySearch() {
+		
+		$conf['sys_language_uid'] = $GLOBALS['TSFE']->sys_language_uid;
+		$row['pid']=$this->mediaFolder;
+		$res = 
+		if ($this->conf['easySearch.']['useLanguageOverlay']==1) $row = tx_dam_db::getRecordOverlay('tx_dam_cat', $row, $conf);
+		$this->internal['filter']['categories'][]=$row;
+		
+		$content = $this->renderer->renderEasySearch($this->internal['filter'], $this->internal['filterError']);
+		return $content;
+	}
+	
 }
 
 
