@@ -559,7 +559,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$content .= $this->fileList(false);
 				break;
 			case 9:
-				$content .= $this->testCase();
+				$content .= $this->latestView();
 			case 99:
 				$content = $this->dropDown();
 				break;
@@ -831,11 +831,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 		}
 
-		if ($this->conf['useLatestList']==1) {
-			$this->docLogic->conf['useLatestList'] = true;
-			$this->docLogic->conf['latestField'] = ($this->conf['filelist.']['latestField']) ? $this->conf['filelist.']['latestField'] : 'crdate';
-			$this->docLogic->conf['latestLimit'] = ($this->conf['filelist.']['latestLimit']) ? $this->conf['filelist.']['latestField'] : 30;
-		}
+
 		return true;
 	}
 
@@ -1999,6 +1995,24 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFileName','');
 		$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFilePath','');
 		return $returnID; 
+	}
+	
+	/**
+	 * 
+	 * 
+	 * @return unknown_type
+	 */
+	function latestView() {
+		
+			// prepare the latest mode		
+		$this->docLogic->conf['useLatestList'] = true;
+		$this->docLogic->conf['latestField'] = ($this->conf['filelist.']['latestField']) ? $this->conf['filelist.']['latestField'] : 'crdate';
+		$this->docLogic->conf['latestLimit'] = ($this->conf['filelist.']['latestLimit']) ? $this->conf['filelist.']['latestLimit'] : 30;
+		$this->docLogic->conf['latestDays'] = ($this->conf['filelist.']['latestDays']) ? $this->conf['filelist.']['latestDays'] : 30;
+	
+			// use the filelist to display the result
+		
+		return $this->fileList(false);
 	}
 }
 

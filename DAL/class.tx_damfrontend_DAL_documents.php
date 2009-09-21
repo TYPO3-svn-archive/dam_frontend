@@ -356,7 +356,20 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$filter .= ' AND ('.$this->docTable.'.endtime < '.time().' OR '.$this->docTable.'.endtime = 0)';
 
 			if ($this->conf['useLatestist']==true) {
-
+					$from = $this->docTable;
+					// if latest days is set the
+					if (intval($this->conf['latestDays'])>0) {
+						$filter .=$this->conf['latestField'];
+						
+					}  
+					else {
+						if ($this->orderBy) {
+							$this->orderBy =$this->conf['latestField'] . ' DESC, ' . $this->orderBy;
+						}
+						else {
+							$this->orderBy =$this->conf['latestField'] . ' DESC'; 
+						}
+					}
 			}
 			else {
 
@@ -482,10 +495,16 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 						// Problem: this code is not performant. one idea is to fetch only a limited number of rows and check in a loop if enough rows are delivered after the permission check. One prob is left, because its difficult (or impossible) to find the right position in combination with the pagelimit / pagebrowser
 						// add row only, if the current resultID is between the limit range
 					if ($resultCounter >=$startRecord && $resultCounter<=($startRecord+$listLength-1)){
+						#if ($this->conf['latestLimit']>0 && ) {
+						
+						#}
+						// @TODO limit the latest View 
 						$result[] = $row;
+						
 					}
 						// pointer starts at "0" so the first result counter has to be 0 too
 					$resultCounter++;
+					if ($resultCounter>$startRecord+$listLength-1) break;
 				}
 			}
 

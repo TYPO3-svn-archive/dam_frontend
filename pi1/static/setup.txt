@@ -290,9 +290,11 @@ plugin.tx_damfrontend_pi1 {
 		sortLinksForTitles = 0
 		
 		# shows only the last nr. of items
-		latestLimit = 10
+		latestLimit = 20
 		#latestField must be date field
 		latestField = crdate
+		#shows only the last days
+		latestDays = 25
 
 		# configuration for an list item
 		item {
