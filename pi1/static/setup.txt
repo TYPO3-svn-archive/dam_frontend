@@ -300,6 +300,9 @@ plugin.tx_damfrontend_pi1 {
 		#shows only the last days
 		latestDays = 0
 
+		# if turned on, all childs of a selected category are selected too (cats are selected statically in the BE)
+		staticCatSelection.selectChildCats = 0
+
 		# configuration for an list item
 		item {
 			# stdWrap : Timestamp of file

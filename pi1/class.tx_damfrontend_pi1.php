@@ -685,6 +685,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$this->internal['incomingtreeID'] = $this->internal['treeID'];
 			if (is_array($this->internal['catMounts'])) {
 				$this->addAllCategories($this->internal['catMounts'],$this->internal['incomingtreeID'],false);
+				if ($this->conf['filelist.']['staticCatSelection.']['selectChildCats'] == 0) {
+					$this->addAllCategories($this->internal['catMounts'],$this->internal['incomingtreeID'],true);
+				}
 			}
 		}
 		
