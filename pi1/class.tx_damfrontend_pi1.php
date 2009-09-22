@@ -272,12 +272,22 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				if ($mount>0){
 					$cats = $this->catLogic->getSubCategories($mount);
 					foreach ($cats as $cat) {
-						$catArr[] =$cat['uid'];
+						if(intval($cat['uid'])>0) $catArr[] =$cat['uid'];
 					} 
 					$this->internal['filter']['searchAllCats_allowedCats'] =$catArr;
 				}
 			}
-		}
+		} 
+
+		if ($this->conf['filterView.']['searchCatsAsMounts']==0) {
+			$catArr = array();
+			foreach( $this->internal['catMounts'] as $mount) {
+				if ($mount>0){
+					$catArr[] =$mount;
+				}
+			}
+			$this->internal['filter']['searchAllCats_allowedCats'] =$catArr;
+		} 
 
 		$this->internal['filter']['LanguageSelector'] = strip_tags(t3lib_div::_GP('LanguageSelector'));
 		$this->internal['filter']['creator'] = strip_tags(t3lib_div::_GP('creator'));
@@ -674,7 +684,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 			$this->internal['incomingtreeID'] = $this->internal['treeID'];
 			if (is_array($this->internal['catMounts'])) {
-				$this->addAllCategories($this->internal['catMounts'],$this->internal['incomingtreeID']);
+				$this->addAllCategories($this->internal['catMounts'],$this->internal['incomingtreeID'],false);
 			}
 		}
 		
