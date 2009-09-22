@@ -175,7 +175,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	
 	      // getting values from flexform ==> it's possible to overwrite flexform values with ts setttings
 	  $flexform = $this->cObj->data['pi_flexform'];
-	    // set the internal values
+
+	  // set the internal values
 	  $this->internal['viewID'] = $this->conf['viewID'];
 	  if (!$this->conf['catMounts']) {
 	        // load the flexform value, if there is no ts setting
@@ -233,6 +234,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	function initFilter() {
 		if (t3lib_div::_GP('resetFilter')){
 			$this->filterState->resetFilter();
+			$this->catList->clearCatSelection($this->internal['incomingtreeID']);
 		}
 
 		//variables for setting filters for the current category selection
@@ -682,24 +684,21 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			if ($this->internal['filter']['categoryMount']=='noselection' && $this->internal['incomingtreeID'] <> $this->internal['treeID']) {
 				// use all categories of the 
 				$row = t3lib_BEfunc::getRecord('tt_content',$this->internal['incomingtreeID']);
-				  // getting values from flexform ==> it's possible to overwrite flexform values with ts setttings
-				
-				$this->internal['catMounts'] = explode(',',$this->pi_getFFvalue($row['pi_flexform'], 'catMounts', 'sSelection'));
-
+				$cObj = t3lib_div::makeInstance('tslib_cObj');
+				$cObj->start($row, 'tt_content');
+				$cObj->data['pi_flexform'] = t3lib_div::xml2array($cObj->data['pi_flexform']);
+				// getting values from flexform ==> it's possible to overwrite flexform values with ts setttings
+				$this->internal['catMounts'] = explode(',',$this->pi_getFFvalue($cObj->data['pi_flexform'], 'catMounts', 'sSelection'));
 				$this->addAllCategories($this->internal['catMounts'],$this->internal['incomingtreeID'],true);
 			}
 			else {
 				// use the posted category to restrict
-				t3lib_div::debug('equal');
-				$this->catList->op_Equals(intval($this->internal['filter']['categoryMount']),  $this->internal['incomingtreeID']);
-				t3lib_div::debug(t3lib_div::_GP('categoryMount'));
+				$this->addAllCategories(array($this->internal['filter']['categoryMount']),$this->internal['incomingtreeID'],true);
 			}			
 		}
 		
 		if ($this->internal['catClear']) {
 			$this->catList->clearCatSelection($this->internal['incomingtreeID']);
-			#unset($this->piVars['catClear']);
-			#unset($this->renderer->piVars['catClear']);
 		}
 	}
 
@@ -2058,9 +2057,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @return	[string]		$content html auf filterview
 	 */
 	function easySearch() {
-		t3lib_div::debug($this->internal['catMounts']);
 		$this->internal['filter']['categories']=$this->get_CategoryList($this->internal['catMounts'],$this->internal['filter']['categoryMount']);
-		#t3lib_div::debug($this->internal['filter']['categories']);
 		$content = $this->renderer->renderEasySearch($this->internal['filter'], $this->internal['filterError']);
 		return $content;
 	}
@@ -2070,10 +2067,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		foreach ($catMounts as $catMount) {
 			if (strlen($catMount)) {
 				 $this->catList->op_Plus($catMount,$treeID);
-				if ($addChilds==true) {
+				
+				 if ($addChilds==true) {
 					$subs = $this->catLogic->getSubCategories($catMount);
-					foreach ($subs as $sub) {
-						$this->catList->op_Plus($sub['uid'],$treeID);
+					if (is_array($subs)) {
+						foreach ($subs as $sub) {
+							$this->catList->op_Plus($sub['uid'],$treeID);
+						}
 					}
 				}
 			}
