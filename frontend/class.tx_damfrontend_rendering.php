@@ -179,7 +179,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  			$markerArray['###TX_DAMFRONTEND_FEUSER_UPLOAD###']= $this->get_FEUserName($elem['tx_damfrontend_feuser_upload']);
 			$markerArray['###CRDATE_AGE###'] =  $cObj->stdWrap($elem['crdate'], $this->conf['renderFields.']['crdate_age.']);
 			$markerArray['###DATE_CR_AGE###'] =  $cObj->stdWrap($elem['date_cr'], $this->conf['renderFields.']['date_cr_age.']);
-
+			$markerArray['###CATEGORY###'] = 	$cObj->cObjGetSingle($this->conf['singleView.']['category.']['cObject'], $this->conf['singleView.']['category.']['cObject.']);		
 			if (!is_null($this->staticInfoObj)) { $markerArray['###LANGUAGE###'] 	= $this->staticInfoObj->getStaticInfoName('LANGUAGES', $elem['language'], '', '', false); }
 
  				// adding Markers for links to download and single View
@@ -359,7 +359,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  			$markerArray['###TX_DAMFRONTEND_FEUSER_UPLOAD###']= $this->get_FEUserName($elem['tx_damfrontend_feuser_upload']);
 			$markerArray['###CRDATE_AGE###'] =  $cObj->stdWrap($elem['crdate'], $this->conf['renderFields.']['crdate_age.']);
 			$markerArray['###DATE_CR_AGE###'] =  $cObj->stdWrap($elem['date_cr'], $this->conf['renderFields.']['date_cr_age.']);
-
+			$markerArray['###CATEGORY###'] = 	$cObj->cObjGetSingle($this->conf['singleView.']['category.']['cObject'], $this->conf['singleView.']['category.']['cObject.']);		
 			if (!is_null($this->staticInfoObj)) { $markerArray['###LANGUAGE###'] 	= $this->staticInfoObj->getStaticInfoName('LANGUAGES', $elem['language'], '', '', false); }
 
  				// adding Markers for links to download and single View
@@ -1225,6 +1225,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  		$markerArray['###HIDDENFIELDS###'] = $hiddenFields;
  		$this->pi_loadLL();
  		$content=tslib_cObj::substituteMarkerArray($single_Code, $markerArray);
+ 		$content = tslib_cObj::substituteMarker($content, '###CATEGORY###', $cObj->cObjGetSingle($this->conf['singleView.']['category.']['cObject'], $this->conf['singleView.']['category.']['cObject.']));
  		$content = tslib_cObj::substituteMarker($content, '###TITLE_SINGLEVIEW###',$record['title']);
  		$content = tslib_cObj::substituteMarker($content, '###CR_DATE_HEADER###',$this->pi_getLL('CR_DATE_HEADER'));
  		$content = tslib_cObj::substituteMarker($content, '###FILE_SIZE_HEADER###',$this->pi_getLL('FILE_SIZE_HEADER'));

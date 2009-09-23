@@ -186,6 +186,28 @@ plugin.tx_damfrontend_pi1 {
 		categoryTitle {
 			wrap = |
 		}
+		
+		category.htmlSpecialChars = 0
+		category.cObject = CONTENT
+		category.cObject {
+			table =  tx_dam_cat
+			select {
+				pidInList = {$plugin.tx_damfrontend_pi1.mediafolder}
+				selectFields = *
+				join = tx_dam_mm_cat
+				where = tx_dam_cat.uid = tx_dam_mm_cat.uid_foreign
+				andWhere (
+					 tx_dam_mm_cat.uid_local = {field:uid}
+				)
+				andWhere.insertData = 1
+				languageField = sys_language_uid
+			}
+			renderObj = TEXT
+			renderObj.field = title
+			renderObj.wrap = |<br />
+			stdWrap.override = Please set constant "plugin.tx_damfrontend_pi1.mediafolder".
+			stdWrap.override.if.isFalse = {$plugin.tx_damfrontend_pi1.mediafolder}
+		}
 	}
 	singleView < .renderFields
 	singleView {
@@ -215,27 +237,6 @@ plugin.tx_damfrontend_pi1 {
   				additionalParams = &eID=dam_frontend_push&docID={field:uid}
 				additionalParams.insertData = 1
 			}
-		}
-		category.htmlSpecialChars = 0
-		category.cObject = CONTENT
-		category.cObject {
-			table =  tx_dam_cat
-			select {
-				pidInList = {$plugin.tx_damfrontend_pi1.mediafolder}
-				selectFields = *
-				join = tx_dam_mm_cat
-				where = tx_dam_cat.uid = tx_dam_mm_cat.uid_foreign
-				andWhere (
-					 tx_dam_mm_cat.uid_local = {field:uid}
-				)
-				andWhere.insertData = 1
-				languageField = sys_language_uid
-			}
-			renderObj = TEXT
-			renderObj.field = title
-			renderObj.wrap = |<br />
-			stdWrap.override = Please set constant "plugin.tx_damfrontend_pi1.mediafolder".
-			stdWrap.override.if.isFalse = {$plugin.tx_damfrontend_pi1.mediafolder}
 		}
 
 		backLink = IMAGE
@@ -293,12 +294,13 @@ plugin.tx_damfrontend_pi1 {
 		# make column titles sortable
 		sortLinksForTitles = 0
 		
-		# shows only the last nr. of items
-		latestLimit = 10
+		#shows only the last days
+		latestDays = 30
+		# shows only the last nr. of items, only used if latestDays are set to 0
+		latestLimit = 30
 		#latestField must be date field
 		latestField = crdate
-		#shows only the last days
-		latestDays = 0
+		
 
 		# if turned on, all childs of a selected category are selected too (cats are selected statically in the BE)
 		staticCatSelection.selectChildCats = 0
