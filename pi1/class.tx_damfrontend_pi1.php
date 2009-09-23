@@ -2057,9 +2057,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->docLogic->conf['latestField'] = ($this->conf['filelist.']['latestField']) ? $this->conf['filelist.']['latestField'] : 'crdate';
 		$this->docLogic->conf['latestLimit'] = ($this->conf['filelist.']['latestLimit']) ? $this->conf['filelist.']['latestLimit'] : 30;
 		$this->docLogic->conf['latestDays'] = $this->conf['filelist.']['latestDays'];	
-	
-			// use the filelist to display the result
 		
+		if ($this->internal['catMounts']) $this->addAllCategories($this->internal['catMounts'],$this->internal['treeID'],false);
+
+		// use the filelist to display the result
 		return $this->fileList(false);
 	}
 	
