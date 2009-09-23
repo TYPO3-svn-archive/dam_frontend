@@ -450,23 +450,22 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			// TODO: do not use '*' but whitlist defined via TypoScript
 			$select = ' DISTINCT '.$this->docTable.'.*';
 			if ($this->conf['useLatestList']==1) {
-				$from = $this->docTable;
 					// if latest days is set the
 					if (intval($this->conf['latestDays'])>0) {
 						$d = intval($this->conf['latestDays']);
 						$now  = time() - (60*60*24*$d);
 						
-						$where.= ' AND '.$this->conf['latestField'] .' > '.$now ;
+						$where.= ' AND '.$this->docTable.'.'.$this->conf['latestField'] .' > '.$now ;
 						$this->conf['latestLimit']=0;
 					}  
 					else {
 						#t3lib_div::debug($this->orderBy);
 						if ($this->orderBy) {
 							
-							$this->orderBy =$this->conf['latestField'] . ' DESC, ' . $this->orderBy;
+							$this->orderBy =$this->docTable.'.'.$this->conf['latestField'] . ' DESC, ' . $this->orderBy;
 						}
 						else {
-							$this->orderBy =$this->conf['latestField'] . ' DESC'; 
+							$this->orderBy =$this->docTable.'.'.$this->conf['latestField'] . ' DESC'; 
 						}
 					}
 			}
@@ -478,7 +477,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			}
 
 #			t3lib_div::debug( $where);
-t3lib_div::debug('SELECT ' . $select . ' FROM ' . $from . ' WHERE '. $where . ' ORDER BY '  .$this->orderBy);
+#t3lib_div::debug('SELECT ' . $select . ' FROM ' . $from . ' WHERE '. $where . ' ORDER BY '  .$this->orderBy);
 			$resultCounter=0;
 				// executing the final query and convert the results into an array
 				// is defnied as: $this->internal['list']['limit'] = $this->internal['list']['pointer'].','. ($this->internal['list']['listLength']);
