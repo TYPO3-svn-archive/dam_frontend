@@ -270,6 +270,17 @@ plugin.tx_damfrontend_pi1 {
 		
 		# if searchAllCats are filtered by allowedCats, then you can define, if  the selecect cats used as mounts or as normal cats
 		searchCatsAsMounts = 1
+		
+		# custom Filters allowed filtertype: TEXT, TIMESTAMP, INT (for custom columns in the dam table)
+		customFilters {
+			tx_sh_damext1_literaturetype {
+				type = TEXT
+				field = tx_sh_damext1_literaturetype 
+				# name of the post value 
+				GP_Name = literatureType
+				marker = literatureType
+			}  
+		}
 	}
 
 	easySearch {
@@ -295,7 +306,7 @@ plugin.tx_damfrontend_pi1 {
 		sortLinksForTitles = 0
 		
 		#shows only the last days
-		latestDays = 30
+		latestDays = 300
 		# shows only the last nr. of items, only used if latestDays are set to 0
 		latestLimit = 30
 		#latestField must be date field

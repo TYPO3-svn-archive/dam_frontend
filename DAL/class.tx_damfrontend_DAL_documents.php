@@ -476,7 +476,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				$this->orderBy = $this->catTable.'.title';
 			}
 
-#			t3lib_div::debug( $where);
+#t3lib_div::debug( $where);
 #t3lib_div::debug('SELECT ' . $select . ' FROM ' . $from . ' WHERE '. $where . ' ORDER BY '  .$this->orderBy);
 			$resultCounter=0;
 				// executing the final query and convert the results into an array
@@ -619,7 +619,21 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			if ($filterArray['showOnlyFilesWithPermission'] == 1) $this->additionalFilter .=  ' AND '.$this->docTable.'.fe_group <>"" AND '.$this->docTable.'.fe_group <>"-1" AND '.$this->docTable.'.fe_group <>"-2" AND '.$this->docTable.'.fe_group <>"0"';
 			
 			if (is_array($filterArray['searchAllCats_allowedCats'])) $this->conf['searchAllCats_allowedCats'] = implode(',',$filterArray['searchAllCats_allowedCats']);
-			
+#t3lib_div::debug($filterArray);			
+				// looking for custom filters
+			if (is_array($filterArray['customFilters'])) {
+				foreach ($filterArray['customFilters'] as $filter=>$value) {
+	#t3lib_div::debug('Go:');
+	#t3lib_div::debug($value);
+					switch ($value['type']) {
+						case 'TEXT':
+							#t3lib_div::debug('type');
+							#t3lib_div::debug($filterArray[$filter]);
+							$this->additionalFilter .= $this->getCustomWhereString($value['field'],$filterArray[$filter]);
+							break;
+					}
+				}
+			}
 			return $errors;
 		}
 
@@ -1186,6 +1200,17 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFilePath','');
 			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFileName','');
 			return $returnID;
+		}
+		
+		/**
+	 * returns a searchword transfered to int
+	 *
+	 * @param	string		$column: colum which should be searched
+	 * @param	string		$value: value for which it should be resctricted
+	 * @return	string		where clause, ready for adding it to the document array
+	 */
+		function getCustomWhereString($column, $value) {
+			return ' AND '. $this->docTable.'.'.$column.' LIKE "%'.$GLOBALS['TYPO3_DB']->quoteStr(trim($value), $this->docTable).'%" ';;
 		}
 		
 	}

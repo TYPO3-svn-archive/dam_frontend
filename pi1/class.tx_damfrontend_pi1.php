@@ -245,7 +245,14 @@ class tx_damfrontend_pi1 extends tslib_pibase {
  		$this->internal['filter']['to_day'] = (int)t3lib_div::_GP('bis_tag');
  		$this->internal['filter']['to_month'] = intval(t3lib_div::_GP('bis_monat'));
  		$this->internal['filter']['to_year'] = intval(t3lib_div::_GP('bis_jahr'));
-
+ 		
+ 			// adding custom filters
+ 		foreach ($this->conf['filterView.']['customFilters.'] as $filter=>$value) {
+ 			$this->internal['filter']['customFilters'][$value['marker']]['type']=  $value['type'];
+ 			$this->internal['filter']['customFilters'][$value['marker']]['field']=  $value['field'];
+ 			$this->internal['filter'][$value['marker']]=  strip_tags(t3lib_div::_GP($value['GP_Name']));
+ 		}
+ 		
  		// clear all 0 - values - now they are not shown in the frontend form
  		foreach ($this->internal['filter'] as $key => $value) {
  			if ($value == '0') {
@@ -294,7 +301,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->internal['filter']['owner'] = strip_tags(t3lib_div::_GP('owner'));
 		$this->internal['filter']['categoryMount'] = strip_tags(t3lib_div::_GP('categoryMount'));
 
-
 		if (!count($this->filterState->getFilterFromSession())) {
 			$emptyArray = $this->internal['filter'];
 			foreach ($emptyArray as $key => $value) $emptyArray[$key] = ' ';
@@ -313,7 +319,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		} else {
 			$this->internal['filter']['showOnlyFilesWithPermission']=0;
 		}
-
+#t3lib_div::debug($this->internal['filter']);
 		$this->docLogic->setFilter($this->internal['filter']);
 	}
 
@@ -690,10 +696,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				}
 			}
 		}
-		
 			// easySearch
 		if (t3lib_div::_GP('easySearchSetFilter')) {
-			$this->catList->unsetAllCategories();
+				//unset only if the current content element is the search box
+			if ($this->internal['viewID']==10) $this->catList->unsetAllCategories();
+			
 			if ($this->internal['filter']['categoryMount']=='noselection' && $this->internal['incomingtreeID'] <> $this->internal['treeID']) {
 				// use all categories of the 
 				$row = t3lib_BEfunc::getRecord('tt_content',$this->internal['incomingtreeID']);
