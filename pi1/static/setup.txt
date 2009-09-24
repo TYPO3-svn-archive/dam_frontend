@@ -1,5 +1,8 @@
 plugin.tx_damfrontend_pi1 = USER_INT
 plugin.tx_damfrontend_pi1 {
+	_LOCAL_LANG.default.HELLO1 = Hallo Welt
+	_LOCAL_LANG.default.HELLO2 = Hallo Welt1
+	_LOCAL_LANG.default.HELLO3 = Hallo Welt2
 	userFunc = tx_damfrontend_pi1->main
 	templateFile = {$plugin.tx_damfrontend_pi1.templateFile}
 	iconBaseAddress = 
@@ -279,6 +282,10 @@ plugin.tx_damfrontend_pi1 {
 				# name of the post value 
 				GP_Name = literatureType
 				marker = literatureType
+				renderAs = SELECTOR
+				renderAs.1 = HELLO1
+				renderAs.2 = HELLO2
+				renderAs.3 = HELLO2
 			}  
 		}
 	}

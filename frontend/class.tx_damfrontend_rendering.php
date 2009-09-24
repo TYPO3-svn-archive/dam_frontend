@@ -771,7 +771,10 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  		// filling fields with url - vars
  		$markerArray  = $this->recordToMarkerArray($filterArray);
 		$markerArray =$markerArray + $this->substituteLangMarkers($formCode);
- 		// error handling
+ 		
+		
+		
+		// error handling
  		$markerArray['###ERROR_TO_DATE###'] = $errorArray['error_to_date'] ? $this->pi_getLL('error_renderFilterView_date_to') : '';
  		$markerArray['###ERROR_FROM_DATE###'] = $errorArray['error_from_date'] ? $this->pi_getLL('error_renderFilterView_date_from') : '';
 
@@ -811,7 +814,18 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		}
 		$this->conf['filterview.']['form_url.']['returnLast'] = 'url';
 		$markerArray['###FORM_URL###'] = $this->cObj->typolink('', $this->conf['filterview.']['form_url.']);
-
+		if (is_array($this->conf['filterView.']['customFilters.']) ) {
+			foreach($this->conf['filterView.']['customFilters.'] as $filter=>$value) {
+				#t3lib_div::debug($filter);
+				#t3lib_div::debug($value);
+				if ($value['renderAs']=='SELECTOR') {
+					$markerArray['###'.strtoupper($value['marker']).'###']=$this->renderSelector($value['renderAs.'],$filterArray[$value['GP_Name']],$value['GP_Name']);
+#t3lib_div::debug($this->renderSelector($value['renderAs.'],$filterArray[$value['GP_Name']],$value['GP_Name']));
+					
+				}
+			}
+		}
+#t3lib_div::debug($markerArray);
  		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
  		return $formCode;
  	}
@@ -1422,16 +1436,16 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	}
 
  	/**
- * renderCategoryTreeCategory
- *
- * @param	string		$sel_class 	(tree_selectedCats / tree_unselectedCats / ﻿tree_selectedNoCats ..)
- * @param	array		$dataArray	controls for the tree
- * @param	string		$title		title of the category wrapped in a link
- * @param	string		$control	+-= signs
- * @param	boolean		$alternateSubpart if true the alternative subpart is rendered
- * @return	[string]		html of the category
- * @author	stefan
- */
+	 * renderCategoryTreeCategory
+	 *
+	 * @param	string		$sel_class 	(tree_selectedCats / tree_unselectedCats / ﻿tree_selectedNoCats ..)
+	 * @param	array		$dataArray	controls for the tree
+	 * @param	string		$title		title of the category wrapped in a link
+	 * @param	string		$control	+-= signs
+	 * @param	boolean		$alternateSubpart if true the alternative subpart is rendered
+	 * @return	[string]		html of the category
+	 * @author	stefan
+	 */
 	function renderCategoryTreeCategory($sel_class,$dataArray,$title,$control,$subpart) {
 		$this->pi_loadLL();
 
@@ -1442,22 +1456,20 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		$markerArray['###SELECT_CAT###'] = $dataArray['select_cat'];
 		$markerArray['###SELECTIONSTATUS###'] = $this->conf['categoryTreeAdvanced.']['categorySelection.']['selectionStatus.'][$sel_class];
 		$markerArray['###TREELEVELCSS###'] = $dataArray['treeLevelCSS'];
-		#t3lib_div::debug($markerArray);
  		$content=tslib_cObj::substituteMarkerArray($subpart, $markerArray);
- 		#t3lib_div::debug($content);
  		// todo support for static markers
  		return $this->cObj->stdWrap($content,$this->conf['categoryTreeAdvanced.']['category.']);
 	}
 
 
   	/**
- * renderCategoryTreeCategory
- *
- * @param	[type]		$markerArray: ...
- * @param	[type]		$treeID: ...
- * @return	[string]		html of the category
- * @author	stefan
- */
+	 * renderCategoryTreeCategory
+	 *
+	 * @param	[type]		$markerArray: ...
+	 * @param	[type]		$treeID: ...
+	 * @return	[string]		html of the category
+	 * @author	stefan
+	 */
 	function renderCategoryTree($markerArray, $treeID=0) {
 		$this->pi_loadLL();
 		$this->fileContent= tsLib_CObj::fileResource($this->conf['categoryTreeAdvanced.']['templateFile']);
@@ -1589,7 +1601,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		}
 		$this->conf['filterview.']['form_url.']['returnLast'] = 'url';
 		$markerArray['###FORM_URL###'] = $this->cObj->typolink('', $this->conf['filterview.']['form_url.']);
-		#t3lib_div::debug($formCode);
+#t3lib_div::debug($formCode);
  		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
  		return $formCode;
  	}
@@ -1624,7 +1636,26 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		}
 		return $content;
  	}
-		
+	
+ 	
+ 	function renderSelector($options, $selected,$name){
+ 		foreach($options as $option) {
+ 			$sel ='';
+ 			$label = $this->pi_getLL($option);
+ 			if ($label==$selected) {
+ 				$sel = ' selected="selected"';
+ 				$selected = true;
+ 			}
+ 			$content .=  '<option'.$sel.'>'.$label.'</option>';
+ 		}
+ 		if ($selected==false ){
+				$sel = ' selected="selected"';
+		} else {
+				$sel='';
+		}
+ 		$content =  '<option value="noselection"'.$sel.'></option>'.$content;
+ 		return '<select name="'.$name.'" size="1">'.$content.'</select>';
+ 	}
 }
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_rendering.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_rendering.php']);

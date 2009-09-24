@@ -1210,7 +1210,8 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 * @return	string		where clause, ready for adding it to the document array
 	 */
 		function getCustomWhereString($column, $value) {
-			return ' AND '. $this->docTable.'.'.$column.' LIKE "%'.$GLOBALS['TYPO3_DB']->quoteStr(trim($value), $this->docTable).'%" ';;
+			if (trim($value) <>'') $result =' AND '. $this->docTable.'.'.$column.' LIKE "%'.$GLOBALS['TYPO3_DB']->quoteStr(trim($value), $this->docTable).'%" '; 
+			return $result;
 		}
 		
 	}
