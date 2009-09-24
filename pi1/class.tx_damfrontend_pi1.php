@@ -204,7 +204,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	  else {
 	      $this->internal['catPreSelection'] =  explode(',',$this->conf['catPreSelection']);
 	  }
-	        // instanciate the references to the DAL
+	    $this->pid = $this->cObj->data['pid'];
+
+	    // instanciate the references to the DAL
 	    $this->docLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_documents');
 	    $this->docLogic->setFullTextSearchFields($this->conf['filterView.']['searchwordFields']);
 	    $this->docLogic->conf = $this->conf;
@@ -218,10 +220,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	    $this->renderer->init();
 	
 	    $this->filterState = t3lib_div::makeInstance('tx_damfrontend_filterState');
-	
+		$this->filterState->sessionVar='tx_damfrontend_filterState'. $this->pid;
 	    $this->listState = t3lib_div::makeInstance('tx_damfrontend_listState');
 	
-	    $this->pid = $this->cObj->data['pid'];
 	    $this->versioning = strip_tags(t3lib_div::_GP('version_method'));
 	    $this->docLogic->setFullTextSearchFields($this->conf['filterView.']['searchwordFields']);
       }
