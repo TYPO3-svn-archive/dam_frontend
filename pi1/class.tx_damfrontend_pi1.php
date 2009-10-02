@@ -276,22 +276,26 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		if ($this->conf['filterView.']['searchCatsAsMounts']==1) {
 			$catArr = array();
-			foreach( $this->internal['catMounts'] as $mount) {
-				if ($mount>0){
-					$cats = $this->catLogic->getSubCategories($mount);
-					foreach ($cats as $cat) {
-						if(intval($cat['uid'])>0) $catArr[] =$cat['uid'];
-					} 
-					$this->internal['filter']['searchAllCats_allowedCats'] =$catArr;
+			if (is_array($this->internal['catMounts'])){
+				foreach( $this->internal['catMounts'] as $mount) {
+					if ($mount>0){
+						$cats = $this->catLogic->getSubCategories($mount);
+						foreach ($cats as $cat) {
+							if(intval($cat['uid'])>0) $catArr[] =$cat['uid'];
+						} 
+						$this->internal['filter']['searchAllCats_allowedCats'] =$catArr;
+					}
 				}
 			}
 		} 
 
 		if ($this->conf['filterView.']['searchCatsAsMounts']==0) {
 			$catArr = array();
-			foreach( $this->internal['catMounts'] as $mount) {
-				if ($mount>0){
-					$catArr[] =$mount;
+			if (is_array($this->internal['catMounts'])){
+				foreach( $this->internal['catMounts'] as $mount) {
+					if ($mount>0){
+						$catArr[] =$mount;
+					}
 				}
 			}
 			$this->internal['filter']['searchAllCats_allowedCats'] =$catArr;
@@ -311,10 +315,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$this->filterState->setFilter($this->internal['filter']);
 		}
 		$this->internal['filter'] = $this->filterState->getFilterFromSession();
+			
+
+			//These filter must set regardless the filter is resetet, because this setting is independ of the normal filters or filter view
+		if (is_array($catArr)) $this->internal['filter']['searchAllCats_allowedCats'] =$catArr;
 		$this->internal['filter']['listOfOwners']=$this->get_FEUserList($this->conf['FilterUserGroup'],$this->internal['filter']['owner']);
 
-
-		# This filter must set regardless the filter is resetet, because this setting is independ of the normal filters or filter view
 		if ($this->conf['filelist.']['security_options.']['showOnlyFilesWithPermission']==1) {
 			$this->internal['filter']['showOnlyFilesWithPermission']=1;
 		} else {
@@ -613,10 +619,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$this->catList->op_Equals($lastID,999);
 		}
 		else {
-			if ($this->internal['catClear']) {
-				$this->catList->clearCatSelection($this->internal['incomingtreeID']);
-			}
-
+			
 			if ($this->internal['catAll']) {
 				foreach ($this->internal['catMounts'] as $catMount) {
 
@@ -658,6 +661,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				foreach ($subs as $sub) {
 					$this->catList->op_Plus($sub['uid'], $this->internal['incomingtreeID']);
 				}
+			}
+			
+			if ($this->internal['catClear']) {
+				$this->catList->clearCatSelection($this->internal['incomingtreeID']);
 			}
 			if ($this->internal['catPreSelection']) {
 				$currentCats = $this->catList->getCatSelection($this->internal['treeID']);
@@ -718,9 +725,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}			
 		}
 		
-		if ($this->internal['catClear']) {
-			$this->catList->clearCatSelection($this->internal['incomingtreeID']);
-		}
+		
 	}
 
 
