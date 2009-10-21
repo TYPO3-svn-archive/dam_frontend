@@ -187,6 +187,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	      $this->internal['catMounts'] = explode(',',$this->conf['catMounts']);
 	  }
 	
+	  if($this->conf['catMounts'] == 'USER'){$this->conf['catMounts'] = $this->cObj->USER($this->conf['catMounts.'],'USER');}
+
 	  $this->internal['treeName'] = strip_tags($this->conf['treeName']);
 	      $this->internal['treeID'] = $this->cObj->data['uid'];
 	
@@ -204,8 +206,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	  else {
 	      $this->internal['catPreSelection'] =  explode(',',$this->conf['catPreSelection']);
 	  }
-	    $this->pid = $this->cObj->data['pid'];
 
+	  if($this->conf['catPreSelection'] == 'USER'){$this->conf['catPreSelection'] = $this->cObj->USER($this->conf['catPreSelection.'],'USER');}
+	  
+	  $this->pid = $this->cObj->data['pid'];
+	  
 	    // instanciate the references to the DAL
 	    $this->docLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_documents');
 	    $this->docLogic->setFullTextSearchFields($this->conf['filterView.']['searchwordFields']);
@@ -243,7 +248,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
  		$this->internal['filter']['from_month'] =intval(t3lib_div::_GP('von_monat'));
  		$this->internal['filter']['from_year'] = intval(t3lib_div::_GP('von_jahr'));
 
- 		$this->internal['filter']['to_day'] = (int)t3lib_div::_GP('bis_tag');
+ 		$this->internal['filter']['to_day'] = intval(t3lib_div::_GP('bis_tag'));
  		$this->internal['filter']['to_month'] = intval(t3lib_div::_GP('bis_monat'));
  		$this->internal['filter']['to_year'] = intval(t3lib_div::_GP('bis_jahr'));
  		
