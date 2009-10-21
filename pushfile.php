@@ -246,8 +246,8 @@ if ($docID==0) {
 }
 
 // check if a user has access to the selected categories (a user must have access to all categories that are selected)
-if (!$docLogic->checkAccess($docID, 1)) {
-	die('<h1>Error</h1><p>You have no access to download this file.');
+if (!$docLogic->checkAccess($docID, 2)) {
+	die('<h1>Sorry</h1><p>You do not have the right to download this file.');
 }
 
 // get the data of the selected document
