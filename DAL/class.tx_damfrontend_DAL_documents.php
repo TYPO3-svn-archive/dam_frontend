@@ -189,7 +189,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 // TODO implement a function which combines checkAccess and checkDokumentAcess  - Stefan
 	/**
 	 * checks, if the current user has access to an specific document
-	 * if the document has no category, the access is not limited
+	 * if the document has no g, the access is not limited
 	 *
 	 * @param	int		$docID: uid of the the document, which delimites, if the user has access or not
 	 * @param	int		$relID: ID in the array $this->realtions. Determines, which database relation is used (1: Readaccess; 2: Download / Edit Access)
@@ -203,13 +203,17 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function checkAccess: for the relID only integer values are allowed. Given value was:' .$relID, 'dam_frontend',3);
 			}
 			// all frontend usergroups assigned to the document
+			
 			$docgroups = $this->getDocumentFEGroups($docID, $relID);
-			if (!is_array($docgroups)) return true; // no groups assigned - allow access
+						
+			if (empty($docgroups)) return true; // no groups assigned - allow access
 			// get the ID's of the usergroups, the current user is a member of
 			$usergroups = $this->feuser->groupData['uid'];
-			$valid = true;
+			$valid = false;
 			foreach($docgroups as $docgroup) {
-				$valid = $valid && array_search($docgroup['uid'], $usergroups);
+				if ((array_search($docgroup['uid'], $usergroups))) {
+					$valid=true;
+				} 
 			}
 			return $valid;
 		}
@@ -695,7 +699,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
  * @param	[string]		$path: path where file is stored
  * @param	[array]		$docData: array of the document data
  * @return	[int]		$newID: new UID of the dam_record
- * @todo get the pid for the indexer = media folder
  */
 		function addDocument($path, $docData='') {
 
