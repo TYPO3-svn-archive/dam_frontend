@@ -288,10 +288,10 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			case 'selectThis':
 				$param_array = array (
 					'tx_damfrontend_pi1' => '', // ok, the t3lib_div::linkThisScript cant work with arrays
-					'tx_damfrontend_pi1[catPlus]' => $row['uid'],
+					'tx_damfrontend_pi1[catPlus]' => null,
 					'tx_damfrontend_pi1[catEquals]' => null,
 					'tx_damfrontend_pi1[catMinus]' => null,
-					'tx_damfrontend_pi1[catPlus_Rec]' => null,
+					'tx_damfrontend_pi1[catPlus_Rec]' =>  $row['uid'],
 					'tx_damfrontend_pi1[catMinus_Rec]' => null,
 					'tx_damfrontend_pi1[treeID]' => $this->treeID
 				);
@@ -464,8 +464,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				else {
 
 					if ($this->conf['categoryTreeAdvanced.']['markNotAllowedCategories']==1) {
-						
-						if (!$this->catLogic->checkCategoryAccess ($GLOBALS['TSFE']->fe_user->user['uid'],$v['row']['uid'],3)){
+						if (!$this->catLogic->checkCategoryAccess ($GLOBALS['TSFE']->fe_user->user['uid'],$v['row']['uid'],1)){
 
 							$sel_class ='tree_no_access';
 							$v['HTML'] = $this->cObj->stdWrap ($v['HTML'],$this->conf['categoryTreeAdvanced.']['categoryTitle.']['no_cat_access.']);
