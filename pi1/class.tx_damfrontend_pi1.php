@@ -305,7 +305,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 			$this->internal['filter']['searchAllCats_allowedCats'] =$catArr;
 		} 
-
 		$this->internal['filter']['LanguageSelector'] = strip_tags(t3lib_div::_GP('LanguageSelector'));
 		$this->internal['filter']['creator'] = strip_tags(t3lib_div::_GP('creator'));
 		$this->internal['filter']['owner'] = strip_tags(t3lib_div::_GP('owner'));
@@ -590,7 +589,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				break;
 			case 9:
 				$content .= $this->latestView();
-				
 				break;
 			case 10:
 				$content .= $this->easySearch();
@@ -671,6 +669,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			if ($this->internal['catClear']) {
 				$this->catList->clearCatSelection($this->internal['incomingtreeID']);
 			}
+			
+			
 			if ($this->internal['catPreSelection']) {
 				$currentCats = $this->catList->getCatSelection($this->internal['treeID']);
 				if (empty($currentCats[$this->internal['treeID']]) || is_null($currentCats) ){
@@ -679,7 +679,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					if (is_array($this->internal['catPreSelection'])) {
 						foreach ($this->internal['catPreSelection'] as $catMount) {
 							if (strlen($catMount)) {
-								if ($this->conf['categoryTree']['preSelectChildCategories']==-1) {
+								if ($this->conf['categoryTree']['preSelectChildCategories']==1) {
 									$subs = $this->catLogic->getSubCategories($catMount);
 									$this->catList->op_Plus($catMount, $this->internal['treeID']);
 									foreach ($subs as $sub) {
@@ -704,11 +704,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$this->internal['incomingtreeID'] = $this->internal['treeID'];
 			if (is_array($this->internal['catMounts'])) {
 				$this->addAllCategories($this->internal['catMounts'],$this->internal['incomingtreeID'],false);
-				if ($this->conf['filelist.']['staticCatSelection.']['selectChildCats'] == 0) {
+				if ($this->conf['filelist.']['staticCatSelection.']['selectChildCats'] == 1) {
 					$this->addAllCategories($this->internal['catMounts'],$this->internal['incomingtreeID'],true);
 				}
 			}
 		}
+		
 			// easySearch
 		if (t3lib_div::_GP('easySearchSetFilter')) {
 				//unset only if the current content element is the search box
