@@ -313,9 +313,9 @@ plugin.tx_damfrontend_pi1 {
 		sortLinksForTitles = 0
 		
 		#shows only the last days
-		latestDays = 300
+		latestDays = 30
 		# shows only the last nr. of items, only used if latestDays are set to 0
-		latestLimit = 30
+		latestLimit = 20
 		#latestField must be date field
 		latestField = crdate
 		
@@ -777,7 +777,7 @@ plugin.tx_damfrontend_pi1 {
 		
 		/******************************** Advanced category tree */
 		.cattree {
-			width:300px;
+			width:400px;
 		}
 		
 		.treeBgWhite {
