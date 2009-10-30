@@ -353,10 +353,10 @@ class tx_damfrontend_DAL_categories {
 			);*/
 			switch ($relID ) {
 				case 1:
-					$relCheck ='﻿tx_damtree_fe_groups_readaccess';
+					$relCheck ='tx_damtree_fe_groups_readaccess';
 					break;
 				case 2:
-					$relCheck ='﻿tx_damtree_fe_groups_downloadaccess';
+					$relCheck ='tx_damtree_fe_groups_downloadaccess';
 					break;
 				case 3:
 					$relCheck ='tx_damtree_fe_groups_uploadaccess';
@@ -366,7 +366,6 @@ class tx_damfrontend_DAL_categories {
 			}
 			$catRow = $this->getCategory($catID);
 			// check first, if no usergroup has been assigned to the given category
-
 			if ($catRow[$relCheck] == 0) {
 				if ($this->debug ==1) {
 					t3lib_div::debug('checkCategoryAccess = true (no group selected) catID: '.$catID);
@@ -378,7 +377,7 @@ class tx_damfrontend_DAL_categories {
 				$usergroups = implode(',',$GLOBALS['TSFE']->fe_user->groupData['uid']) ;
 				if ($usergroups) {
 						// TODO add error handling
-					$mm_table = 'tx_dam_cat_'.$this->relations[$relID-1].'_mm';
+					$mm_table = 'tx_dam_cat_'.$this->relations[$relID].'_mm';
 						// executing database search: should return a row with the usergroup(s)
 					$local_table = $this->catTable;
 					$foreign_table = 'fe_groups';
