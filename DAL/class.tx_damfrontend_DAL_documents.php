@@ -205,7 +205,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			// all frontend usergroups assigned to the document
 			
 			$docgroups = $this->getDocumentFEGroups($docID, $relID);
-						
 			if (empty($docgroups)) return true; // no groups assigned - allow access
 			// get the ID's of the usergroups, the current user is a member of
 			$usergroups = $this->feuser->groupData['uid'];
@@ -477,7 +476,14 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			
 			if ($this->conf['useGroupedView']==1) {
 				$select .= ','. $this->catTable.'.title AS categoryTitle'; 
-				$this->orderBy = $this->catTable.'.title';
+				
+				if ($this->orderBy) {
+					$this->orderBy = $this->catTable.'.title, '. $this->orderBy;
+				} 
+				else {
+					$this->orderBy = $this->catTable.'.title';	
+				}
+				
 			}
 
 #t3lib_div::debug( $where);
@@ -491,6 +497,8 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where,'',$this->orderBy);
 			$result = array();
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+#t3lib_div::debug($row);
+#t3lib_div::debug($this->checkAccess($row['uid'], 1));
 				if ($this->checkAccess($row['uid'], 1) && $this->checkDocumentAccess($row['fe_group'])) {
 						//add a delete information
 					if ($userUID == $row['tx_damfrontend_feuser_upload'] AND $userUID>0){
