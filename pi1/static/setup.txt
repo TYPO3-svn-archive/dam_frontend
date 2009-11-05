@@ -1,12 +1,11 @@
 plugin.tx_damfrontend_pi1 = USER_INT
 plugin.tx_damfrontend_pi1 {
-	_LOCAL_LANG.default.HELLO1 = Hallo Welt
-	_LOCAL_LANG.default.HELLO2 = Hallo Welt1
-	_LOCAL_LANG.default.HELLO3 = Hallo Welt2
+	_LOCAL_LANG.default.EXAMPLEMARKER = Hallo Welt2
 	userFunc = tx_damfrontend_pi1->main
 	templateFile = {$plugin.tx_damfrontend_pi1.templateFile}
 	iconBaseAddress = 
 	singleID = {$plugin.tx_damfrontend_pi1.singleID}
+	#TODO move to search box
 	allowedLanguages = EN,DE
 	filter {
 		errorWrap = {$plugin.tx_damfrontend_pi1.filter.errorWrap}
@@ -36,12 +35,11 @@ plugin.tx_damfrontend_pi1 {
 		catTitle.stdWrap.wrap = |
 		catTitle.no_access.wrap = |
 		
-		categoryTitle.length = 30
 		
 		# wrap for the whole category line
 		category.wrap = |
 			
-		expandTreeLevel = 1
+		expandTreeLevel = 0
 		minusIcon < .plusIcon
 		minusIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}catminus.gif
 
@@ -50,11 +48,11 @@ plugin.tx_damfrontend_pi1 {
 
 		stdWrap.wrap = <div class="cattree">|</div>
 		stdWrapControl.wrap = <div class="control" >|</div>
+		
 		# TypoLink for categoryTitle
-		categoryTitle.ATagParams = class="titlewrap"
-		
+		categoryTitle.ATagParams = class="titlewrap"		
 		categoryTitle.wrap = |
-		
+		categoryTitle.length = 30
 		
 		#IMAGE Objects for rendering the cat tree
 		treeRootIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}catfolder.gif
@@ -271,7 +269,7 @@ plugin.tx_damfrontend_pi1 {
 		# display only user of these fe_usergroups in the owner selector (commaseparated)
 		filterUserGroup = 
 		
-		# if searchAllCats are filtered by allowedCats, then you can define, if  the selecect cats used as mounts or as normal cats
+		# if searchAllCats are filtered by allowedCats, then you can define, if the selected cats used as mounts or as normal cats
 		searchCatsAsMounts = 1
 		
 		# custom Filters allowed filtertype: TEXT, TIMESTAMP, INT (for custom columns in the dam table)

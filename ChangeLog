@@ -1,5 +1,34 @@
+Version 0.5.1
+﻿Bug #2871: filter is filtering not only the current page
+Bug #3656: Advanced catselection must check for childs at top categories (tree mounts)
+Bug #3660: advanced catselection must check for piVars (catedit)
+Bug #3750: Typo in static TypoScript pi1 "iconBaseAdress"
+Bug #3817: Error in renderSingleView (rendering class)
+Bug #3818: Spaces in filenames in pushfile downloads come out as %20
+Bug #3821: Pushfile downloads cannot be opened directly in Firefox under Linux (patch included)
+Bug #3840: unnecessary class instance in renderSingleView
+Bug #3901: _CSS_DEFAULT_STYLE of pi2 messes up the color and decoration of all links
+Bug #4440: static category selection prevents saving of cat edits
+Bug #4627: Cat restriction causes a SQL error (only for version 0.5.0 dev)
+Feature #2788: add third option for versioning
+Feature #2840: Show edit functions or single view on separate pages
+Feature #2883: give more options for static selection
+Feature #3655: single step upload
+Feature #3658: edit buttons for single view
+Feature #3680: Overwrite warning: Display meta data of the file
+Feature #3776: add russian translation
+Feature #3778: support more fields for pi2
+Feature #3781: Restrict searchable categories for the filter view
+Feature #3841: Move typoscript for category rendering to renderFields
+Feature #4711: Latest View
+Feature #4712: Easy Search
+Feature #4750: Custom Filters
+Major Feature #3653: New category tree with a better UI
+Task #3461: provide a .t3d file for a common testing environment
+
 Version 0.4.2
 fixed utf8 issues
+
 Version 0.4.1
 Important!! ﻿Please reinclude static files for dam_frontend (they have been moved) 
 Changes in standard ts template: stdWrap in renderCategoryTree move to the corresponding objects 
