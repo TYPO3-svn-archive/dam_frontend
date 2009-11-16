@@ -38,6 +38,7 @@
 			<label index="pi2_plus_wiz_description">Select files for downloading </label>
 			<label index="flexform_groupedCategories">Filelist (grouped categories)</label>		
 			<label index="flexform_easySearch">Easysearch</label>		
+			<label index="tx_damfrontend_fegroup">File edit / delete rights for this groups</label>		
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="flexform_display_title">Was soll angezeigt werden</label>
@@ -72,6 +73,7 @@
 			<label index="pi2_plus_wiz_description">Daten zum Download im Backend einzeln auswählen.</label>
 			<label index="flexform_groupedCategories">Dateiliste (gruppierte Kategorien)</label>	
 			<label index="flexform_easySearch">Einfaches Suchformular</label>
+			<label index="tx_damfrontend_fegroup">Datei editieren / löschen erlaubt für folgende Gruppen</label>		
 		</languageKey>
 		﻿<languageKey index="ru" type="array">
 			<label index="flexform_display_title">Что показать?</label>
@@ -104,6 +106,7 @@
 			<label index="pi1_plus_wiz_description">Показать файлы DAM (список, категории). Загрузка или правка файлов через внешний интерфейс.</label>
 			<label index="pi2_title">Список файлов DAM во внешнем интерфейсе</label>
 			<label index="pi2_plus_wiz_description">Выберете файлы для скачивания</label>
+			<label index="tx_damfrontend_fegroup">File edit / delete rights for this groups</label>		
 		</languageKey>
 	</data>
 </T3locallang>
