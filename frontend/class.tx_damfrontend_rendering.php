@@ -1677,13 +1677,16 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	 */
  	function renderSelector($options, $selected,$name,$size=1,$no_selcetion=true,$multiple=false){
 		$is_selected=false;
- 		foreach($options as $key=>$option) {
+		foreach($options as $key=>$option) {
  			$sel ='';
  			$label = $this->pi_getLL($option);
  			if (!$label)  $label=$option;
- 			t3lib_div::debug($selected);
  			if (is_array($selected)) {
- 				if (array_search($key,$selected))  $sel = ' selected="selected"';
+ 				if (array_search($key,$selected)===FALSE) {
+ 				}
+ 				else {
+ 					$sel = ' selected="selected"';
+ 				}
  			}
  			else {
  				if ($key==$selected)  $sel = ' selected="selected"';

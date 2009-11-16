@@ -258,12 +258,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
  		$this->internal['filter']['to_year'] = intval(t3lib_div::_GP('bis_jahr'));
 
  			// adding custom filters
- 		foreach ($this->conf['filterView.']['customFilters.'] as $filter=>$value) {
- 			$this->internal['filter']['customFilters'][$value['marker']]['type']=  $value['type'];
- 			$this->internal['filter']['customFilters'][$value['marker']]['field']=  $value['field'];
- 			$this->internal['filter'][$value['marker']]=  strip_tags(t3lib_div::_GP($value['GP_Name']));
+ 		if ($this->conf['filterView.']['customFilters.'] ) {
+	 		foreach ($this->conf['filterView.']['customFilters.'] as $filter=>$value) {
+	 			$this->internal['filter']['customFilters'][$value['marker']]['type']=  $value['type'];
+	 			$this->internal['filter']['customFilters'][$value['marker']]['field']=  $value['field'];
+	 			$this->internal['filter'][$value['marker']]=  strip_tags(t3lib_div::_GP($value['GP_Name']));
+	 		}
  		}
-
  		// clear all 0 - values - now they are not shown in the frontend form
  		foreach ($this->internal['filter'] as $key => $value) {
  			if ($value == '0') {
@@ -1431,9 +1432,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->documentData['description'] = strip_tags(t3lib_div::_POST('description')); #65000
 		$this->documentData['copyright'] = strip_tags(t3lib_div::_POST('copyright')); #128
 		$this->documentData['language'] = strip_tags(t3lib_div::_POST('LanguageSelector')); #128
-		t3lib_div::debug(strip_tags(t3lib_div::_POST('FEGROUPS')));
-		die();
-		$this->documentData['tx_damfrontend_fegroup'] = strip_tags(t3lib_div::_POST('FEGROUPS'));
+		$tempArr = array();
+		$tempArr = t3lib_div::_POST('FEGROUPS');
+		foreach($tempArr as $value) {
+			$newArr[]=intval($value);
+		}
+		$this->documentData['tx_damfrontend_fegroup'] = implode(',',$newArr);
+		t3lib_div::debug($this->documentData['tx_damfrontend_fegroup'] );
 		if ($this->documentData['language']=='nosel') $this->documentData['language']='';
 		if(strlen($this->documentData['language'])>3) {
 			return ($this->renderer->renderError('uploadFormFieldError','title','255'));
