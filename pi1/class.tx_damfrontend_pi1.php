@@ -178,6 +178,14 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 	  // set the internal values
 	  $this->internal['viewID'] = $this->conf['viewID'];
+	  
+	  if($this->conf['catMounts']		== 'USER'){$this->conf['catMounts'] = $this->cObj->USER($this->conf['catMounts.'],'');}
+	  if($this->conf['catPreSelection'] == 'USER'){$this->conf['catPreSelection'] = $this->cObj->USER($this->conf['catPreSelection.'],'');}	  
+	  if($this->conf['uploadMounts'] 	== 'USER'){$this->conf['uploadMounts'] = $this->cObj->USER($this->conf['uploadMounts.'],'');}	
+	  if($this->conf['catPreSelection'] == 'USER_INT'){$this->conf['catPreSelection'] = $this->cObj->USER($this->conf['catPreSelection.'],'INT');}	  
+	  if($this->conf['uploadMounts'] 	== 'USER_INT'){$this->conf['uploadMounts'] = $this->cObj->USER($this->conf['uploadMounts.'],'INT');}	
+	  if($this->conf['catMounts'] 		== 'USER'){$this->conf['catMounts'] = $this->cObj->USER($this->conf['catMounts.'],'USER');}
+	  
 	  if (!$this->conf['catMounts']) {
 	        // load the flexform value, if there is no ts setting
 	    $this->internal['catMounts']= array();
@@ -187,7 +195,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	      $this->internal['catMounts'] = explode(',',$this->conf['catMounts']);
 	  }
 
-	  if($this->conf['catMounts'] == 'USER'){$this->conf['catMounts'] = $this->cObj->USER($this->conf['catMounts.'],'USER');}
 
 	  $this->internal['treeName'] = strip_tags($this->conf['treeName']);
 	      $this->internal['treeID'] = $this->cObj->data['uid'];
@@ -200,16 +207,14 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	  else {
 	      $this->internal['uploadCatSelection'] = $this->conf['uploadMounts'];
 	  }
-	      if (!$this->conf['catPreSelection']) {
+	  if (!$this->conf['catPreSelection']) {
 	    $this->internal['catPreSelection'] = strip_tags( $this->pi_getFFvalue($flexform, 'catPreSelection', 'sPreSelectSettings'));
 	  }
 	  else {
 	      $this->internal['catPreSelection'] =  explode(',',$this->conf['catPreSelection']);
 	  }
 
-	  if($this->conf['catPreSelection'] == 'USER'){$this->conf['catPreSelection'] = $this->cObj->USER($this->conf['catPreSelection.'],'USER');}
-
-		$this->pid = $this->cObj->data['pid'];
+	  $this->pid = $this->cObj->data['pid'];
 
 			// instanciate the references to the DAL
 		$this->docLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_documents');
@@ -1426,6 +1431,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->documentData['description'] = strip_tags(t3lib_div::_POST('description')); #65000
 		$this->documentData['copyright'] = strip_tags(t3lib_div::_POST('copyright')); #128
 		$this->documentData['language'] = strip_tags(t3lib_div::_POST('LanguageSelector')); #128
+		t3lib_div::debug(strip_tags(t3lib_div::_POST('FEGROUPS')));
+		die();
+		$this->documentData['tx_damfrontend_fegroup'] = strip_tags(t3lib_div::_POST('FEGROUPS'));
 		if ($this->documentData['language']=='nosel') $this->documentData['language']='';
 		if(strlen($this->documentData['language'])>3) {
 			return ($this->renderer->renderError('uploadFormFieldError','title','255'));

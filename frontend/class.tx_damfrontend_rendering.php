@@ -1432,13 +1432,28 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		$markerArray['###VALUE_AUTHOR###']= $record['creator'];
 		$markerArray['###VALUE_DESCRIPTION###']= $record['description'];
 		$markerArray['###LABEL_LANGUAGE###']= $this->pi_getLL('LANGUAGE_HEADER');
+		$markerArray['###LABEL_FEGROUPS###']= $this->pi_getLL('LABEL_FEGROUPS');
+		// selected kommen aus Datenbank: t3lib_div::debug($record['tx_damfrontend_fegroup']);
+		$selected = explode(',', $record['tx_damfrontend_fegroup']);
+		// Auswahl
+		$SELECT = 'uid, title';
+		$FROM = 'fe_groups';
+		$whereOptions=array();
+		if ($this->conf['fileList.']['fileEdit.']['pid_FEGroups']>0) $whereOptions[] = '(pid = ' .$this->conf['fileList.']['fileEdit.']['pid_FEGroups'].')';
+		if ($this->conf['fileList.']['fileEdit.']['uids_FEGroups']) $whereOptions[] = '(uid in (' .$this->conf['fileList.']['fileEdit.']['uids_FEGroups'].'))';
+		$WHERE = implode(' OR ',$whereOptions);
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE);
+		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+			$groups[$row['uid']]=$row['title'];
+		}
+		$markerArray['###FEGROUPS###']= $this->renderSelector($groups,$selected,'FEGROUPS',3,false,true);
 		$markerArray['###VALUE_LANGUAGE###']=$this->renderLanguageSelector($record['language']);
 		$hiddenFields = '<input type="hidden" name="saveUID" value="'.$record['uid'].'" />';
  		$markerArray['###HIDDENFIELDS###'] = $hiddenFields;
 		$markerArray =$markerArray + $this->substituteLangMarkers($formCode);
 
-		$markerArray['###BUTTON_CONFIRM###'] =$this->cObj->stdWrap('<input name="editok" type="submit" value="'.$this->pi_getLL('BUTTON_CONFIRM').'"',$this->conf['filelist.']['renderFileEdit.']['button_confirm.']);
-		$markerArray['###CANCEL###']=$this->cObj->stdWrap('<input name="cancelEdit" type="submit" value="'.$this->pi_getLL('CANCEL').'">',$this->conf['filelist.']['renderFileEdit.']['button_cancel.']);
+		$markerArray['###BUTTON_CONFIRM###'] =$this->cObj->stdWrap('<input name="editok" type="submit" value="'.$this->pi_getLL('BUTTON_CONFIRM').'"',$this->conf['filelist.']['fileEdit.']['button_confirm.']);
+		$markerArray['###CANCEL###']=$this->cObj->stdWrap('<input name="cancelEdit" type="submit" value="'.$this->pi_getLL('CANCEL').'">',$this->conf['filelist.']['fileEdit.']['button_cancel.']);
 
 		return tslib_cObj::substituteMarkerArray($formCode, $markerArray);
 	}
@@ -1660,23 +1675,35 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	 * @param	[type]		$name: ...
 	 * @return	[type]		...
 	 */
- 	function renderSelector($options, $selected,$name){
- 		foreach($options as $option) {
+ 	function renderSelector($options, $selected,$name,$size=1,$no_selcetion=true,$multiple=false){
+		$is_selected=false;
+ 		foreach($options as $key=>$option) {
  			$sel ='';
  			$label = $this->pi_getLL($option);
- 			if ($label==$selected) {
- 				$sel = ' selected="selected"';
- 				$selected = true;
+ 			if (!$label)  $label=$option;
+ 			t3lib_div::debug($selected);
+ 			if (is_array($selected)) {
+ 				if (array_search($key,$selected))  $sel = ' selected="selected"';
  			}
- 			$content .=  '<option'.$sel.'>'.$label.'</option>';
+ 			else {
+ 				if ($key==$selected)  $sel = ' selected="selected"';
+ 			}
+ 			if ($sel<>'') $is_selected=true;
+ 			$content .=  '<option value="'.$key.'"'.$sel.'>'.$label.'</option>';
  		}
- 		if ($selected==false ){
+ 		if ($is_selected==false ){
 				$sel = ' selected="selected"';
 		} else {
 				$sel='';
 		}
- 		$content =  '<option value="noselection"'.$sel.'></option>'.$content;
- 		return '<select name="'.$name.'" size="1">'.$content.'</select>';
+		if ($no_selcetion==true) $content =  '<option value="noselection"'.$sel.'></option>'.$content;
+		if ($multiple) {
+ 			return '<select name="'.$name.'[]" size="'.$size.'" multiple="multiple">'.$content.'</select>';
+		}
+		else {
+	 		return '<select name="'.$name.'" size="'.$size.'">'.$content.'</select>';
+		}
+		
  	}
 }
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_rendering.php'])	{

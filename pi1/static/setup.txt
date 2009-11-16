@@ -1,6 +1,9 @@
 plugin.tx_damfrontend_pi1 = USER_INT
 plugin.tx_damfrontend_pi1 {
 	_LOCAL_LANG.default.EXAMPLEMARKER = Hallo Welt2
+	_LOCAL_LANG.default.Group1 = Hallo Welt1
+	_LOCAL_LANG.default.Group2 = Hallo Welt2
+	_LOCAL_LANG.default.Group3 = Hallo Welt3
 	userFunc = tx_damfrontend_pi1->main
 	templateFile = {$plugin.tx_damfrontend_pi1.templateFile}
 	iconBaseAddress = 
@@ -281,9 +284,9 @@ plugin.tx_damfrontend_pi1 {
 				GP_Name = literatureType
 				marker = literatureType
 				renderAs = SELECTOR
-				renderAs.1 = HELLO1
-				renderAs.2 = HELLO2
-				renderAs.3 = HELLO2
+				renderAs.HELLO1 = HELLO1
+				renderAs.HELLO2 = HELLO2
+				renderAs.HELLO3 = HELLO2
 			}  
 		}
 	}
@@ -454,10 +457,15 @@ plugin.tx_damfrontend_pi1 {
 			buttonConfirm.wrap = |
 			buttonCancel.wrap = |
 		}
-		renderFileEdit {
+		fileEdit{
+			pid_FEGroups = 0
+			uids_FEGroups = 1,2,3
 			button_confirm.wrap = |
 			button_cancel.wrap = |
 		}
+		
+		# renderFileEdit is depreceated please use fileEdit
+		renderFileEdit < .fileEdit
 	}
 
 	# configuration for subpart ###NEWFILTER_LINK###

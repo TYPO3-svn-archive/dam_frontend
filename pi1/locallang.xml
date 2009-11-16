@@ -90,6 +90,7 @@
 			<label index="LABEL_AUTHOR">author</label>
 			<label index="LABEL_DESCRIPTION">description</label>
 			<label index="LABEL_FILE">Filename:</label>
+			<label index="LABEL_FEGROUPS">Groups:</label>
 			<label index="BUTTON_UPLOAD">upload</label>
 			<label index="UPLOAD_SUCCESS">Fileupload was sucessful</label>
 			<label index="uploadFormFieldError">Please take care at the field '</label>
@@ -204,6 +205,7 @@
 			<label index="LABEL_AUTHOR">Autor</label>
 			<label index="LABEL_DESCRIPTION">Beschreibung</label>
 			<label index="LABEL_FILE">Dateiname:</label>
+			<label index="LABEL_FEGROUPS">Gruppen:</label>
 			<label index="BUTTON_UPLOAD">Hochladen</label>
 			<label index="UPLOAD_SUCCESS">Die Datei wurde erfolgreich hochgeladen.</label>
 			<label index="uploadFormFieldError">Bitte beachten Sie die Einschränkung für das Feld '</label>
@@ -319,6 +321,7 @@
 			<label index="LABEL_AUTHOR">Auteur</label>
 			<label index="LABEL_DESCRIPTION">Beschrijving</label>
 			<label index="LABEL_FILE">Bestandsnaam</label>
+			<label index="LABEL_FEGROUPS">Groups:</label>
 			<label index="BUTTON_UPLOAD">Uploaden</label>
 			<label index="UPLOAD_SUCCESS">Het bestand is geüpload.</label>
 			<label index="uploadFormFieldError">Let u op de beperkingen van het veld '</label>
@@ -431,6 +434,7 @@
 			<label index="LABEL_AUTHOR">автор</label>
 			<label index="LABEL_DESCRIPTION">описание</label>
 			<label index="LABEL_FILE">название файла</label>
+			<label index="LABEL_FEGROUPS">Groups:</label>
 			<label index="BUTTON_UPLOAD">загрузка</label>
 			<label index="UPLOAD_SUCCESS">Файл загружен</label>
 			<label index="uploadFormFieldError">Обратите внимание на поле &quot;</label>

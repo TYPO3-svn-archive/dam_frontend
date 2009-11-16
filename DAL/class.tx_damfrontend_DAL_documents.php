@@ -1241,7 +1241,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		$access = FALSE;	
 			// resolve group 
 		$docFEGroups = explode(',',$document['tx_damfrontend_fegroup']);
-		t3lib_div::debug($docFEGroups);
 			// check if at least one fe_group has access to file
 		foreach ($feuserGroups as $group ){
 			if (array_search($group,$docFEGroups, true)===false) {
