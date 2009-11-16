@@ -14,8 +14,8 @@
 			<label index="desc">Descending</label>
 			<label index="submit_button_label">Click here to submit value!</label>
 			<label index="noSingleID">you have selected no document for the detail view yet</label>
-			<label index="noDocInCat">no Documents in the current selection</label>
-			<label index="noCatSelected">no categories selected</label>
+			<label index="noDocInCat">No documents in the current selection</label>
+			<label index="noCatSelected">No categories are currently selected</label>
 			<label index="noUserLoggedIn">no user is currenty logged in!</label>
 			<label index="noFilterStates">no filter is created yet</label>
 			<label index="noPointerError">Parameter error (pointer). Please click to reset this view. </label>
@@ -141,7 +141,7 @@
 			<label index="submit_button_label">Abesenden!</label>
 			<label index="noSingleID">Sie haben noch keine Dokument zur Detailansicht ausgewählt</label>
 			<label index="noDocInCat">Keine Dokumente für die derzeitige Auswahl gefunden</label>
-			<label index="noCatSelected">keine Kategorien ausgewählt</label>
+			<label index="noCatSelected">Es sind derzeit keine Kategorien ausgewählt.</label>
 			<label index="noUserLoggedIn">derzeit ist kein User eingeloggt!</label>
 			<label index="noFilterStates">es existieren keine gespeicherten Filtervorlagen</label>
 			<label index="setFilter">Filter anwenden</label>

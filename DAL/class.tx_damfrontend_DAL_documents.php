@@ -253,12 +253,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 */
 		function checkOwnerRights($docID,$fe_user_uid) {
 			$doc = $this->getDocument($docID);
-			if ($doc['tx_damfrontend_feuser_upload']==$fe_user_uid) {
-				return true;
-			}
-			else {
-				return false;
-			}
+			return $this->checkEditRights($doc);
 		}
 
 
@@ -501,7 +496,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 #t3lib_div::debug($this->checkAccess($row['uid'], 1));
 				if ($this->checkAccess($row['uid'], 1) && $this->checkDocumentAccess($row['fe_group'])) {
 						//add a delete information
-					if ($userUID == $row['tx_damfrontend_feuser_upload'] AND $userUID>0){
+					if ($this->checkEditRights($row)===TRUE){
 						$row['allowDeletion']=1;
 						$row['allowEdit']=1;
 					}
@@ -1140,14 +1135,14 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 
 			$access = false;
 
-			// get all usergroups of the fe_user
+				// get all usergroups of the fe_user
 			$feuserGroups=$GLOBALS['TSFE']->fe_user->groupData['uid'];
 
-			// if fe_user is not assigned to group return false, because a fe_user has to be at least member of one group
+				// if fe_user is not assigned to group return false, because a fe_user has to be at least member of one group
 			if (!is_array($feuserGroups)) return false;
 
 			$docFEGroups = explode(',',$docFEGroups);
-			// check if at least one fe_group has access to file
+				// check if at least one fe_group has access to file
 			foreach ($feuserGroups as $group ){
 
 				if (array_search($group,$docFEGroups, true)===false) {
@@ -1213,19 +1208,52 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			return $returnID;
 		}
 		
-		/**
+	 /**
 	 * returns a searchword transfered to int
 	 *
 	 * @param	string		$column: colum which should be searched
 	 * @param	string		$value: value for which it should be resctricted
 	 * @return	string		where clause, ready for adding it to the document array
 	 */
-		function getCustomWhereString($column, $value) {
-			if (trim($value) <>'') $result =' AND '. $this->docTable.'.'.$column.' LIKE "%'.$GLOBALS['TYPO3_DB']->quoteStr(trim($value), $this->docTable).'%" '; 
-			return $result;
-		}
-		
+	function getCustomWhereString($column, $value) {
+		if (trim($value) <>'') $result =' AND '. $this->docTable.'.'.$column.' LIKE "%'.$GLOBALS['TYPO3_DB']->quoteStr(trim($value), $this->docTable).'%" '; 
+		return $result;
 	}
+
+	
+	 /**
+	 * checks if a user has edit / delete rights
+	 *
+	 * @param	array		dam record 
+	 * @return	boolean		true if the user has access
+	 */
+	function checkEditRights($document) {
+#t3lib_div::debug('checkEditRights');
+#t3lib_div::debug($document);
+		// if the current user is the owner of the document return true
+		if ($GLOBALS['TSFE']->fe_user->user['uid']==$document['tx_damfrontend_feuser_upload']) return true;
+			
+			// get all usergroups of the fe_user
+		$feuserGroups=$GLOBALS['TSFE']->fe_user->groupData['uid'];
+#t3lib_div::debug($feuserGroups);
+			// if fe_user is not assigned to group return false, because a fe_user has to be at least member of one group
+		if (!is_array($feuserGroups)) return false;
+		$access = FALSE;	
+			// resolve group 
+		$docFEGroups = explode(',',$document['tx_damfrontend_fegroup']);
+		t3lib_div::debug($docFEGroups);
+			// check if at least one fe_group has access to file
+		foreach ($feuserGroups as $group ){
+			if (array_search($group,$docFEGroups, true)===false) {
+			} 
+			else {
+					//if the array search founds a value access is allowed
+					$access = TRUE;
+			}
+		}
+		return $access;
+	}
+}
 
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/DAL/class.tx_damfrontend_DAL_documents.php'])	{
