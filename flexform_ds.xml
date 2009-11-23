@@ -147,14 +147,20 @@
  							</config>
  						</TCEforms>
  					</FilterUserGroup>
- 					<useLatestList>
+ 					<feEditGroups>
  						<TCEforms>
- 							<label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_useLatestList</label>
+ 							<label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_feEditGroups</label>
  							<config>
- 								<type>check</type>
+ 								<type>select</type>
+								<foreign_table>fe_groups</foreign_table>
+								<internal_type>db</internal_type>
+								<size>5</size>	
+								<minitems>0</minitems>
+								<autoSizeMax>3</autoSizeMax>
+								<maxitems>50</maxitems>
  							</config>
  						</TCEforms>
- 					</useLatestList>
+ 					</feEditGroups>
 				</el>
 			</ROOT>
 		</sOptions>

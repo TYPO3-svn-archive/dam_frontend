@@ -1239,8 +1239,15 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			// if fe_user is not assigned to group return false, because a fe_user has to be at least member of one group
 		if (!is_array($feuserGroups)) return false;
 		$access = FALSE;	
-			// resolve group 
+			// resolve groups of the document 
 		$docFEGroups = explode(',',$document['tx_damfrontend_fegroup']);
+		
+			// adding groups of the current content elment (flexform)
+			#t3lib_div::debug($this->conf);
+		
+			// adding groups added via typoscript
+			
+		
 			// check if at least one fe_group has access to file
 		foreach ($feuserGroups as $group ){
 			if (array_search($group,$docFEGroups, true)===false) {

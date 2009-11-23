@@ -31,7 +31,8 @@
 			<label index="flexform_catPreSelection">category preselection</label>
 			<label index="flexform_display_form">display this view</label>
 			<label index="upload_settings">allowed categories for upload</label>
-			<label index="flexform_useLatestList">Display the latest list view</label>
+			<label index="flexform_feEditGroups">These FE Groups are allowed to edit / delete dam records (only listview / latestview)</label>
+			<label index="flexform_useLatestList">recently added / changed files</label>
 			﻿<label index="pi1_title">DAM Frontend</label>
 			<label index="pi1_plus_wiz_description">Display files of the DAM (filelist, categories). Upload or edit files via Frontend</label>
 			﻿<label index="pi2_title">DAM Frontend Filelist</label>
@@ -66,7 +67,8 @@
 			<label index="flexform_catPreSelection">Kategorie Vorauswahl</label>
 			<label index="flexform_display_form">Anzeige von</label>
 			<label index="upload_settings">erlaubte Kategorien für den upload</label>
-			<label index="flexform_useLatestList">Display the latest list view</label>
+			<label index="flexform_feEditGroups">Diese Webseitenbenutzergruppen dürften dam Datensätze bearbeiten / löschen. (nur für Listenansicht / latestview)</label>
+			<label index="flexform_useLatestList">kürzlich hinzugefügte / geänderte Dateien</label>
 			﻿<label index="pi1_title">DAM Frontend</label>
 			<label index="pi1_plus_wiz_description">Zeigt Dateien des DAM an (Dateiliste, Kategorien).Dateien per Frontend hochladen oder editieren</label>
 			﻿<label index="pi2_title">DAM Frontend Dateiliste</label>
@@ -101,7 +103,7 @@
 			<label index="flexform_catPreSelection">предвыбор категорий</label>
 			<label index="flexform_display_form">показать в этом режиме</label>
 			<label index="upload_settings">дозволенные для загружаемого категории</label>
-			<label index="flexform_useLatestList">Показать последний представленный список</label>
+			<label index="flexform_feEditGroups"></label>
 			<label index="pi1_title">DAM внешнего интерфейса</label>
 			<label index="pi1_plus_wiz_description">Показать файлы DAM (список, категории). Загрузка или правка файлов через внешний интерфейс.</label>
 			<label index="pi2_title">Список файлов DAM во внешнем интерфейсе</label>

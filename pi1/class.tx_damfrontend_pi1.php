@@ -175,6 +175,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 	      // getting values from flexform ==> it's possible to overwrite flexform values with ts setttings
 	  $flexform = $this->cObj->data['pi_flexform'];
+t3lib_div::debug($flexform);
 
 	  // set the internal values
 	  $this->internal['viewID'] = $this->conf['viewID'];
@@ -235,6 +236,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		
 		$this->versioning = strip_tags(t3lib_div::_GP('version_method'));
 		$this->docLogic->setFullTextSearchFields($this->conf['filterView.']['searchwordFields']);
+t3lib_div::debug($this->conf);
 	}
 
 	/**

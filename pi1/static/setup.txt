@@ -77,6 +77,7 @@ plugin.tx_damfrontend_pi1 {
 		}
 		#tree root stdWrap
 		treeRoot.wrap = |
+		fileicon.wrap = |
 	}
 	
 	categorisationTree < .categoryTree
@@ -458,7 +459,7 @@ plugin.tx_damfrontend_pi1 {
 			buttonCancel.wrap = |
 		}
 		fileEdit{
-			pid_FEGroups = 0
+			# members of these FE groups are allowed to edit  
 			uids_FEGroups = 1,2,3
 			button_confirm.wrap = |
 			button_cancel.wrap = |
@@ -508,6 +509,7 @@ plugin.tx_damfrontend_pi1 {
 		application {
 		  pdf = application_pdf.png
 		  msexcel = image_default.png
+		  msword = doc.gif
 		  DEFAULT = application_default.png
 		}
   	}
