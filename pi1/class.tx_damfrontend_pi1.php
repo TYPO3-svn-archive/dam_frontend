@@ -175,7 +175,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 	      // getting values from flexform ==> it's possible to overwrite flexform values with ts setttings
 	  $flexform = $this->cObj->data['pi_flexform'];
-t3lib_div::debug($flexform);
+#t3lib_div::debug($flexform);
 
 	  // set the internal values
 	  $this->internal['viewID'] = $this->conf['viewID'];
@@ -236,7 +236,7 @@ t3lib_div::debug($flexform);
 		
 		$this->versioning = strip_tags(t3lib_div::_GP('version_method'));
 		$this->docLogic->setFullTextSearchFields($this->conf['filterView.']['searchwordFields']);
-t3lib_div::debug($this->conf);
+#t3lib_div::debug($this->conf);
 	}
 
 	/**
@@ -1435,12 +1435,15 @@ t3lib_div::debug($this->conf);
 		$this->documentData['copyright'] = strip_tags(t3lib_div::_POST('copyright')); #128
 		$this->documentData['language'] = strip_tags(t3lib_div::_POST('LanguageSelector')); #128
 		$tempArr = array();
+		$newArr = array();
 		$tempArr = t3lib_div::_POST('FEGROUPS');
-		foreach($tempArr as $value) {
-			$newArr[]=intval($value);
+		if (is_array($tempArr)) {
+			foreach($tempArr as $value) {
+				$newArr[]=intval($value);
+			}
 		}
 		$this->documentData['tx_damfrontend_fegroup'] = implode(',',$newArr);
-		t3lib_div::debug($this->documentData['tx_damfrontend_fegroup'] );
+		#t3lib_div::debug($this->documentData['tx_damfrontend_fegroup'] );
 		if ($this->documentData['language']=='nosel') $this->documentData['language']='';
 		if(strlen($this->documentData['language'])>3) {
 			return ($this->renderer->renderError('uploadFormFieldError','title','255'));
@@ -1820,11 +1823,16 @@ t3lib_div::debug($this->conf);
 
 			// prepare the latest mode
 		$this->docLogic->conf['useLatestList'] = true;
-		$this->docLogic->conf['latestField'] = ($this->conf['filelist.']['latestField']) ? $this->conf['filelist.']['latestField'] : 'crdate';
-		$this->docLogic->conf['latestLimit'] = ($this->conf['filelist.']['latestLimit']) ? $this->conf['filelist.']['latestLimit'] : 30;
-		$this->docLogic->conf['latestDays'] = $this->conf['filelist.']['latestDays'];
-
-		if ($this->internal['catMounts']) $this->addAllCategories($this->internal['catMounts'],$this->internal['treeID'],false);
+		$this->docLogic->conf['latestField'] = ($this->conf['filelist.']['latestView.']['field']) ? $this->conf['filelist.']['latestView.']['field'] : 'crdate';
+		$this->docLogic->conf['latestLimit'] = ($this->conf['filelist.']['latestView.']['limit']) ? $this->conf['filelist.']['latestView.']['limit'] : 20;
+		$this->docLogic->conf['latestDays'] = ($this->conf['filelist.']['latestView.']['latestDays'])? $this->conf['filelist.']['latestView.']['latestDays'] : 30;;
+			// TODO add possibility to add childs
+		if ($this->conf['filelist.']['latestView.']['useCatsAsMounts']==1) {
+			if ($this->internal['catMounts']) $this->addAllCategories($this->internal['catMounts'],$this->internal['treeID'],true);		
+		}
+		else {
+			if ($this->internal['catMounts']) $this->addAllCategories($this->internal['catMounts'],$this->internal['treeID'],false);		
+		}
 
 		// use the filelist to display the result
 		return $this->fileList(false);

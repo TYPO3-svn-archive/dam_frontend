@@ -1243,7 +1243,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		$docFEGroups = explode(',',$document['tx_damfrontend_fegroup']);
 		
 			// adding groups of the current content elment (flexform)
-			#t3lib_div::debug($this->conf);
+#t3lib_div::debug($this->conf);
 		
 			// adding groups added via typoscript
 			

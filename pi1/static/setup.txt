@@ -301,9 +301,15 @@ plugin.tx_damfrontend_pi1 {
 		# typolink : formurl action
 		form_url.parameter.data = TSFE:id
 		form_url.addQueryString = 1
-		# stdWrap : how many items should be default in the filelist
+		# how many items should be default in the filelist
 		defaultLength = 10
 		useAlternatingRows = 1
+		marker {
+			filelist_record = ###FILELIST_RECORD###
+			# optionSplit is possible:
+			filelist_record_alterning = ###FILELIST_RECORD_ODD### |*| ###FILELIST_RECORD_EVEN### || ###FILELIST_RECORD_ODD### |*|
+		}
+		
 		# comma separated list of dam columns, which should be searched (use only text columns)
 		searchwordFields = title, description
 
@@ -314,13 +320,34 @@ plugin.tx_damfrontend_pi1 {
 		# make column titles sortable
 		sortLinksForTitles = 0
 		
-		#shows only the last days
-		latestDays = 30
-		# shows only the last nr. of items, only used if latestDays are set to 0
-		latestLimit = 20
-		#latestField must be date field
-		latestField = crdate
+		sortlinks {
+			asc = TEXT
+			asc.data = LLL:EXT:dam_frontend/pi1/locallang.xml:asc
+			desc < .asc
+			desc.data = LLL:EXT:dam_frontend/pi1/locallang.xml:desc
+			title < .asc
+			title.data = LLL:EXT:dam_frontend/pi1/locallang.xml:LABEL_TITLE
+			title.asc.wrap =  <span class="Sort_Desc">|</span>
+			title.desc.wrap =  <span class="Sort_Asc">|</span>
+			title.no_sort.wrap = <span class="Sort_Not">|</span>
+			file_name < .title
+			file_name.data = LLL:EXT:dam_frontend/pi1/locallang.xml:FILE_NAME_HEADER
+			date_cr < .title
+			date_cr.data = LLL:EXT:dam_frontend/pi1/locallang.xml:CR_DATE_HEADER
+			tx_damfrontend_feuser_upload < .title
+			tx_damfrontend_feuser_upload.data = LLL:EXT:dam_frontend/pi1/locallang.xml:OWNER_HEADER
+		}
 		
+		latestView {
+			#shows only the last days
+			latestDays = 30
+			# Categories which are selected in the flexform are used as mounts, if set to 0 they are used as single cats
+			useCatsAsMounts = 1
+			#latestField must be date field
+			field = crdate
+			# shows only the last nr. of items, only used if latestDays are set to 0
+			limit = 20
+		}
 
 		# if turned on, all childs of a selected category are selected too (cats are selected statically in the BE)
 		staticCatSelection.selectChildCats = 0
@@ -333,11 +360,6 @@ plugin.tx_damfrontend_pi1 {
 			crdate.strftime =  %Y / %m  /  %d
 		}
 		 
-		marker {
-			filelist_record = ###FILELIST_RECORD###
-			# optionSplit is possible:
-			filelist_record_alterning = ###FILELIST_RECORD_ODD### |*| ###FILELIST_RECORD_EVEN### || ###FILELIST_RECORD_ODD### |*|
-		}
 		link_select_download {
 			typolink.returnLast = url
 			typolink.parameter.data = TSFE:id
@@ -417,23 +439,6 @@ plugin.tx_damfrontend_pi1 {
 			deleteFilesOfDeletedRecords = 1
 		}
 		
-		sortlinks {
-			asc = TEXT
-			asc.data = LLL:EXT:dam_frontend/pi1/locallang.xml:asc
-			desc < .asc
-			desc.data = LLL:EXT:dam_frontend/pi1/locallang.xml:desc
-			title < .asc
-			title.data = LLL:EXT:dam_frontend/pi1/locallang.xml:LABEL_TITLE
-			title.asc.wrap =  <span class="Sort_Desc">|</span>
-			title.desc.wrap =  <span class="Sort_Asc">|</span>
-			title.no_sort.wrap = <span class="Sort_Not">|</span>
-			file_name < .title
-			file_name.data = LLL:EXT:dam_frontend/pi1/locallang.xml:FILE_NAME_HEADER
-			date_cr < .title
-			date_cr.data = LLL:EXT:dam_frontend/pi1/locallang.xml:CR_DATE_HEADER
-			tx_damfrontend_feuser_upload < .title
-			tx_damfrontend_feuser_upload.data = LLL:EXT:dam_frontend/pi1/locallang.xml:OWNER_HEADER
-		}
 		
 		browselink.browselinkUsePrevNext = 1
 		#wrap around the whole browselinks
