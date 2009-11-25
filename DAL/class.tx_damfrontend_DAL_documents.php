@@ -1228,14 +1228,11 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 * @return	boolean		true if the user has access
 	 */
 	function checkEditRights($document) {
-#t3lib_div::debug('checkEditRights');
-#t3lib_div::debug($document);
 		// if the current user is the owner of the document return true
 		if ($GLOBALS['TSFE']->fe_user->user['uid']==$document['tx_damfrontend_feuser_upload']) return true;
 			
 			// get all usergroups of the fe_user
 		$feuserGroups=$GLOBALS['TSFE']->fe_user->groupData['uid'];
-#t3lib_div::debug($feuserGroups);
 			// if fe_user is not assigned to group return false, because a fe_user has to be at least member of one group
 		if (!is_array($feuserGroups)) return false;
 		$access = FALSE;	
@@ -1243,11 +1240,15 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		$docFEGroups = explode(',',$document['tx_damfrontend_fegroup']);
 		
 			// adding groups of the current content elment (flexform)
-#t3lib_div::debug($this->conf);
-		
+		if ($this->conf['feEditGroups']) {
+			$feEditGroups =  explode(',',$this->conf['feEditGroups']);
+		}
+		if (is_array($feEditGroups)) $docFEGroups=array_merge($docFEGroups,$feEditGroups);
+
 			// adding groups added via typoscript
-			
-		
+		if ($this->conf['filelist.']['fileEdit.']['uids_FEGroups'])	$uids_FEGroups =  explode(',',$this->conf['filelist.']['fileEdit.']['uids_FEGroups']);		
+		if (is_array($uids_FEGroups)) $docFEGroups=array_merge($docFEGroups,$uids_FEGroups);
+		$docFEGroups=array_unique($docFEGroups);
 			// check if at least one fe_group has access to file
 		foreach ($feuserGroups as $group ){
 			if (array_search($group,$docFEGroups, true)===false) {

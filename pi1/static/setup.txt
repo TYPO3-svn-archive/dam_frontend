@@ -351,14 +351,6 @@ plugin.tx_damfrontend_pi1 {
 
 		# if turned on, all childs of a selected category are selected too (cats are selected statically in the BE)
 		staticCatSelection.selectChildCats = 0
-
-		# configuration for an list item
-		item {
-			# stdWrap : Timestamp of file
-			tstamp.strftime =  %Y / %m  /  %d
-			# stdWrap : Creation Timestamp of file
-			crdate.strftime =  %Y / %m  /  %d
-		}
 		 
 		link_select_download {
 			typolink.returnLast = url
@@ -439,12 +431,13 @@ plugin.tx_damfrontend_pi1 {
 			deleteFilesOfDeletedRecords = 1
 		}
 		
-		
-		browselink.browselinkUsePrevNext = 1
-		#wrap around the whole browselinks
-		browselink.resultList.wrap = |
-		#wrap for a single browse link e.g. 1, 2, ...
-		browselink.wrap= |
+		browselink {
+			browselinkUsePrevNext = 1
+			#wrap around the whole browselinks
+			resultList.wrap = |
+			#wrap for a single browse link e.g. 1, 2, ...
+			wrap= |
+		}
 		browselinkCurrent.wrap= <span style="border: 1px solid black">|</span>
 		
 		fileDeleteSuccessMessage {
@@ -465,7 +458,7 @@ plugin.tx_damfrontend_pi1 {
 		}
 		fileEdit{
 			# members of these FE groups are allowed to edit  
-			uids_FEGroups = 1,2,3
+			uids_FEGroups =
 			button_confirm.wrap = |
 			button_cancel.wrap = |
 		}
