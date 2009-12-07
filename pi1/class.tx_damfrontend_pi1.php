@@ -1449,7 +1449,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			// add groups that are defined via typoscript
 		if ($this->conf['upload.']['autoAsignFEGroups']) {
 			$tempArr = array();
-			$tempArr = explode(',',$this->conf['upload.']['autoAsignFEGroups']);
+			if($this->conf['upload.']['autoAsignFEGroups'] 	== 'USER_INT'){$this->conf['autoAsignFEGroups'] = $this->cObj->USER($this->conf['autoAsignFEGroups.'],'INT');}	
+	  		if($this->conf['upload.']['autoAsignFEGroups']		== 'USER'){$this->conf['autoAsignFEGroups'] = $this->cObj->USER($this->conf['autoAsignFEGroups.'],'USER');}
+			$input = $this->conf['upload.']['autoAsignFEGroups'];
+			$tempArr = explode(',',$input);
 			$newArr = array_merge($tempArr,$newArr);
 		}
 			// make groups unique
