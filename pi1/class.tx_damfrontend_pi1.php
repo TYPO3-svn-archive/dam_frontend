@@ -1437,13 +1437,26 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$tempArr = array();
 		$newArr = array();
 		$tempArr = t3lib_div::_POST('FEGROUPS');
+		$newArr = array();
 		if (is_array($tempArr)) {
 			foreach($tempArr as $value) {
 				$newArr[]=intval($value);
 			}
 		}
+		else {
+			if (intval(t3lib_div::_POST('FEGROUPS')>0)) $newArr[]=intval(t3lib_div::_POST('FEGROUPS'));
+		}
+			// add groups that are defined via typoscript
+		if ($this->conf['upload.']['autoAsignFEGroups']) {
+			$tempArr = array();
+			$tempArr = explode(',',$this->conf['upload.']['autoAsignFEGroups']);
+			$newArr = array_merge($tempArr,$newArr);
+		}
+			// make groups unique
+		$newArr = array_unique($newArr);
+		
 		$this->documentData['tx_damfrontend_fegroup'] = implode(',',$newArr);
-		#t3lib_div::debug($this->documentData['tx_damfrontend_fegroup'] );
+
 		if ($this->documentData['language']=='nosel') $this->documentData['language']='';
 		if(strlen($this->documentData['language'])>3) {
 			return ($this->renderer->renderError('uploadFormFieldError','title','255'));
@@ -1464,7 +1477,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		if(strlen($this->documentData['copyright'])>128) {
 			return $this->renderer->renderError('uploadFormFieldError','copyright','45');
 		}
-
+		
 		return true;
 	}
 
@@ -1753,7 +1766,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			if ($this->docLogic->checkOwnerRights($saveUID, $this->userUID)==true){
 				#set edit UID to zero, so the edit form isnot shown anymore
 				$this->internal['editUID']=0;
-
 
 				# get the data from the edit form
 				$returnCode = $this->getIncomingDocData();
