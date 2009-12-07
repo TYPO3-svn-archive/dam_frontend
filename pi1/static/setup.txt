@@ -521,7 +521,9 @@ plugin.tx_damfrontend_pi1 {
 	  		newRecord.wrap = <input type="radio" name="version_method" value="new_record" /><label>###VERSIONING_NEW_RECORD###|</label>
   		}
   		useOneStepUpload = 0
-  		autoAsignFEGroups = 0
+  		#these fe Groups are automatically asigned, always a document is uploaded or saved 
+  		autoAsignFEGroups = 
+  		
   		autoFillFEUserData {
   			#left side column of the dam record - right side fe_user column
   			creator = name
