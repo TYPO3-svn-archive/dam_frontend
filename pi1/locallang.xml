@@ -73,7 +73,7 @@
 			<label index="REQUEST_USER_TEXT">Vielen Dank fuer Ihr Interesse!<br/>Bitte bestaetigen Sie uns die Anforderung der SI: </label>
 			<label index="REQUEST_USER_TEXT2">Ihre Anfrage wird umgehend bearbeitet!</label>
 			<label index="REQUEST_USER_SEND">Send!</label>
-			<label index="CATEGORISATION_TEXT_HEADER">Here you can asign categories for this document.</label>
+			<label index="CATEGORISATION_TEXT_HEADER">Here you can assign categories for this document.</label>
 			<label index="CATEGORISATION_TEXT_TITLE">title</label>
 			<label index="CATEGORISATION_TEXT_DESCRIPTION">description</label>
 			<label index="CATEGORISATION_TEXT_SEND">confirm</label>

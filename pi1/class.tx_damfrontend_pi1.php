@@ -1348,7 +1348,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$this->documentData['deleted']=1;
 
 					// set fe_user group
-				if ($this->conf['upload.']['autoAsignFEGroups']==1){
+				if ($this->conf['upload.']['autoAssignFEGroups']==1){
 					// fetch the usergroups the fe_user is belonging and put them into the access field
 					$userGroups=$GLOBALS['TSFE']->fe_user->groupData['uid'];
 					if (is_array($userGroups)) $this->documentData['fe_group']= implode(',',$userGroups);
@@ -1447,11 +1447,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			if (intval(t3lib_div::_POST('FEGROUPS')>0)) $newArr[]=intval(t3lib_div::_POST('FEGROUPS'));
 		}
 			// add groups that are defined via typoscript
-		if ($this->conf['upload.']['autoAsignFEGroups']) {
+		if ($this->conf['upload.']['autoAssignFEGroups']) {
 			$tempArr = array();
-			if($this->conf['upload.']['autoAsignFEGroups'] 	== 'USER_INT'){$this->conf['autoAsignFEGroups'] = $this->cObj->USER($this->conf['autoAsignFEGroups.'],'INT');}	
-	  		if($this->conf['upload.']['autoAsignFEGroups']		== 'USER'){$this->conf['autoAsignFEGroups'] = $this->cObj->USER($this->conf['autoAsignFEGroups.'],'USER');}
-			$input = $this->conf['upload.']['autoAsignFEGroups'];
+			if($this->conf['upload.']['autoAssignFEGroups'] 	== 'USER_INT')	{$this->conf['upload.']['autoAssignFEGroups'] = $this->cObj->USER($this->conf['upload.']['autoAssignFEGroups.'],'INT');}	
+	  		if($this->conf['upload.']['autoAssignFEGroups']		== 'USER')		{$this->conf['upload.']['autoAssignFEGroups'] = $this->cObj->USER($this->conf['upload.']['autoAssignFEGroups.'],'USER');}
+			$input = $this->conf['upload.']['autoAssignFEGroups'];
 			$tempArr = explode(',',$input);
 			$newArr = array_merge($tempArr,$newArr);
 		}
@@ -1716,7 +1716,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				// nothing else to do here
 				break;
 		}
-		$GLOBALS['TSFE']->fe_user->setKey('ses','overWriteID','');
+		#$GLOBALS['TSFE']->fe_user->setKey('ses','overWriteID','');
 	}
 
 	/**
@@ -1726,7 +1726,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @author stefan
 	 */
 	function editForm ($uid=0) {
-
 		if (intval($uid)>0) {
 			if ($this->versioning != '') {
 				if ($this->docLogic->checkOwnerRights($uid,$this->userUID)==true){
@@ -1805,9 +1804,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadID', $newID);
 			$GLOBALS['TSFE']->fe_user->setKey('ses','saveID', $newID);
 			$this->saveMetaData=1;
-			return $newID;
 		}
-		return true;
+		return $newID;
 	}
 
 	/**
