@@ -264,7 +264,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 		foreach ($this->conf['filterView.']['customFilters.'] as $filter=>$value) {
 	 			$this->internal['filter']['customFilters'][$value['marker']]['type']=  $value['type'];
 	 			$this->internal['filter']['customFilters'][$value['marker']]['field']=  $value['field'];
-	 			$this->internal['filter'][$value['marker']]=  strip_tags(t3lib_div::_GP($value['GP_Name']));
+	 			if (t3lib_div::_GP($value['GP_Name'])<>'noselection') $this->internal['filter'][$value['marker']]=  strip_tags(t3lib_div::_GP($value['GP_Name']));
 	 		}
  		}
  		// clear all 0 - values - now they are not shown in the frontend form

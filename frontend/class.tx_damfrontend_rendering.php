@@ -849,39 +849,19 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 
 		// TODO: use DAM - functions - there are much more file types possible
 		$this->pi_loadLL();
-		$filetypeArray  = array(
-			'pdf' => array (
-				label => $this->pi_getLL('pdffile')
-			),
-			'word' => array (
-				label => $this->pi_getLL('wordfile')
-			),
-			'jpg' => array (
-				label => $this->pi_getLL('jpegfile')
-			),
-			'gif' => array (
-				label => $this->pi_getLL('giffile')
-			),
-			'zip' => array (
-				label => $this->pi_getLL('zipfile')
-			),
-			'eps' => array(
-				label => $this->pi_getLL('epsfile')
-			),
-			'tif' => array(
-				label => $this->pi_getLL('tifffile')
-			),
-			'noselection' => array (
-				label => $this->pi_getLL('noselection')
-			)
-		);
-
-		$filetypeArray[$filetype]['set'] = 1;
+		
+		$filetypeArray  = $this->conf['filterView.']['filetypes.'];
+		$filetypeArray['noselection']='noselection';
+		
+		#$filetypeArray[$filetype]['set'] = 1;
 		$content = '<select name="filetype">';
 		foreach ($filetypeArray as $type => $arr) {
-			$arr['set'] == 1 ? $sel = ' selected="selected"': $sel='';
+			t3lib_div::debug($type);
+			t3lib_div::debug($arr);
+			$filetype == $type ? $sel = ' selected="selected"': $sel='';
+			t3lib_div::debug($sel);
 			if ($type == 'noselection') $type = '';
- 			$content .= '<option value="'.$type.'"'.$sel.'>'.$arr['label'].'</option>';
+ 			$content .= '<option value="'.$type.'"'.$sel.'>'.$this->pi_getLL($arr).'</option>';
 		}
 		$content .= '</select>';
 		return $content;
@@ -1675,7 +1655,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	 * @param	[type]		$name: ...
 	 * @return	[type]		...
 	 */
- 	function renderSelector($options, $selected,$name,$size=1,$no_selcetion=true,$multiple=false){
+ 	function renderSelector($options, $selected,$name,$size=1,$no_selecetion=true,$multiple=false){
 		$is_selected=false;
 		foreach($options as $key=>$option) {
  			$sel ='';
@@ -1699,7 +1679,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		} else {
 				$sel='';
 		}
-		if ($no_selcetion==true) $content =  '<option value="noselection"'.$sel.'></option>'.$content;
+		if ($no_selecetion===true) $content =  '<option value="noselection"'.$sel.'></option>'.$content;
 		if ($multiple) {
  			return '<select name="'.$name.'[]" size="'.$size.'" multiple="multiple">'.$content.'</select>';
 		}
