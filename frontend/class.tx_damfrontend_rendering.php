@@ -856,10 +856,10 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		#$filetypeArray[$filetype]['set'] = 1;
 		$content = '<select name="filetype">';
 		foreach ($filetypeArray as $type => $arr) {
-			t3lib_div::debug($type);
-			t3lib_div::debug($arr);
+			#t3lib_div::debug($type);
+			#t3lib_div::debug($arr);
 			$filetype == $type ? $sel = ' selected="selected"': $sel='';
-			t3lib_div::debug($sel);
+			#t3lib_div::debug($sel);
 			if ($type == 'noselection') $type = '';
  			$content .= '<option value="'.$type.'"'.$sel.'>'.$this->pi_getLL($arr).'</option>';
 		}

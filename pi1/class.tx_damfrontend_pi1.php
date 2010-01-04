@@ -1449,9 +1449,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			// add groups that are defined via typoscript
 		if ($this->conf['upload.']['autoAssignFEGroups']) {
 			$tempArr = array();
-			if($this->conf['upload.']['autoAssignFEGroups'] 	== 'USER_INT')	{$this->conf['upload.']['autoAssignFEGroups'] = $this->cObj->USER($this->conf['upload.']['autoAssignFEGroups.'],'INT');}	
-	  		if($this->conf['upload.']['autoAssignFEGroups']		== 'USER')		{$this->conf['upload.']['autoAssignFEGroups'] = $this->cObj->USER($this->conf['upload.']['autoAssignFEGroups.'],'USER');}
-			$input = $this->conf['upload.']['autoAssignFEGroups'];
+			if($this->conf['upload.']['autoAssignFEGroups']		== 'USER_INT')	{$this->conf['upload.']['autoAsignFEGroups']	= $this->cObj->USER($this->conf['upload.']['autoAssignFEGroups.'],'INT');} 
+			if($this->conf['upload.']['autoAssignFEGroups']		== 'USER')		{$this->conf['upload.']['autoAssignFEGroups'] 	= $this->cObj->USER($this->conf['upload.']['autoAssignFEGroups.'],'USER');}
+	  		$input = $this->conf['upload.']['autoAssignFEGroups'];
 			$tempArr = explode(',',$input);
 			$newArr = array_merge($tempArr,$newArr);
 		}
@@ -1728,7 +1728,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	function editForm ($uid=0) {
 		if (intval($uid)>0) {
 			if ($this->versioning != '') {
-				if ($this->docLogic->checkOwnerRights($uid,$this->userUID)==true){
+				if ($this->docLogic->checkOwnerRights($uid,$this->userUID)===TRUE){
 					$uid = $this->handleVersioning($this->versioning);
 					$uid = $this->handleOneStepUpload($uid);
 					$GLOBALS['TSFE']->fe_user->setKey('ses','saveID', $uid);
