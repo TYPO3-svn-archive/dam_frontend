@@ -1168,6 +1168,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				// -- META Data saved DONE - SHOW CATEGORISATION --
 			if ($this->categorise==1) {
 				$step = 3;
+				if ($this->conf['upload.']['useOneStepUpload']==1) {$this->saveCategorisation=1; } 
 			}
 
 			if($this->saveCategorisation==1) {
