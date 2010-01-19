@@ -137,17 +137,22 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @return	[void]		...
 	 */
 	function init($conf) {
-	    $this->pi_initPIflexForm(); // Init FlexForm configuration for plugin
-	          // Read extension configuration
+	    
+			// Init FlexForm configuration for plugin
+		$this->pi_initPIflexForm(); 
+
+	    	// Read extension configuration
 	    $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
-	      if (is_array($extConf)) {
+	    if (is_array($extConf)) {
 	       $conf = t3lib_div::array_merge($extConf, $conf);
 	    }
-	          // Read TYPO3_CONF_VARS configuration
+
+	    	// Read TYPO3_CONF_VARS configuration
 	    $varsConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey];
 	      if (is_array($varsConf)) {
 	       $conf = t3lib_div::array_merge($varsConf, $conf);
 	    }
+	    
 	          // Read FlexForm configuration
 	    if ($this->cObj->data['pi_flexform']['data']) {
 	          foreach ($this->cObj->data['pi_flexform']['data'] as $sheetName => $sheet) {
@@ -175,9 +180,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 	      // getting values from flexform ==> it's possible to overwrite flexform values with ts setttings
 	  $flexform = $this->cObj->data['pi_flexform'];
-#t3lib_div::debug($flexform);
 
-	  // set the internal values
+	 	 // set the internal values
 	  $this->internal['viewID'] = $this->conf['viewID'];
 	  
 	  if($this->conf['catMounts']		== 'USER'){$this->conf['catMounts'] = $this->cObj->USER($this->conf['catMounts.'],'');}
@@ -568,6 +572,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 			// Mapping the ViewIds - selected in the Flexform to the content
 			// that shall be rendered
+			t3lib_div::debug($this->internal['viewID']);
 		switch ($this->internal['viewID']) {
 			case 1:
 				$content .= $this->fileList(false);
@@ -599,6 +604,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				break;
 			case 10:
 				$content .= $this->easySearch();
+				break;
+			case 11:
+				$content .= $this->drillDown();
 				break;
 			default:
 				$content .= 'no view selected - nothing is displayed';
@@ -721,6 +729,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$this->addAllCategories(array($this->internal['filter']['categoryMount']),$this->internal['incomingtreeID'],true);
 			}
 		}
+		
+			// drilldown
+		
 	}
 
 
@@ -1886,6 +1897,19 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				}
 			}
 		}
+	}
+	
+	
+	/**
+	 * shows the drill down search view
+	 *
+	 * @return	[void]		no return valut 
+	 */
+	function drillDown() {
+		# Einstellung im BE: WŠhle Kategorien
+		
+		return $this->renderer->renderDrillDown();
+		
 	}
 }
 

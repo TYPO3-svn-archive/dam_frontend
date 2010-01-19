@@ -57,6 +57,10 @@
 										<numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_easySearch</numIndex>
 										<numIndex index="1">10</numIndex>
 									</numIndex>
+									<numIndex index="11" type="array">
+										<numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_DrillDown</numIndex>
+										<numIndex index="1">11</numIndex>
+									</numIndex>
 								</items>
 								<maxitems>1</maxitems>
 								<size>1</size>

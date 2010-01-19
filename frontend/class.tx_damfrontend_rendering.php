@@ -1648,11 +1648,14 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  	}
 
 	/**
-	 * [Describe function...]
+	 * renders a selector box
 	 *
-	 * @param	[type]		$options: ...
-	 * @param	[type]		$selected: ...
-	 * @param	[type]		$name: ...
+	 * @param	[array]			$options: all available elements
+	 * @param	[string]		$selected: element, which is currently selected
+	 * @param	[string]		$name: name of the element (also this is the post name)
+	 * @param	[int]			$size: the size of the element
+	 * @param	[boolean]		$no_selecetion: if true, an additional empty entry is rendered
+	 * @param	[boolean]		$multiple: if true, multiple entries a possible, then a selector list is rendered instead of a combobox 
 	 * @return	[type]		...
 	 */
  	function renderSelector($options, $selected,$name,$size=1,$no_selecetion=true,$multiple=false){
@@ -1687,6 +1690,14 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	 		return '<select name="'.$name.'" size="'.$size.'">'.$content.'</select>';
 		}
 		
+ 	}
+	/**
+	 * Renders the drill down view
+	 *
+	 * @return	[string]		...
+	 */
+ 	function renderDrillDown(){
+	 		return '<p>Drilldown</p>';
  	}
 }
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_rendering.php'])	{

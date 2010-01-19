@@ -39,6 +39,7 @@
 			<label index="pi2_plus_wiz_description">Select files for downloading </label>
 			<label index="flexform_groupedCategories">Filelist (grouped categories)</label>		
 			<label index="flexform_easySearch">Easysearch</label>		
+			<label index="flexform_DrillDown">drilldown filter</label>		
 			<label index="tx_damfrontend_fegroup">File edit / delete rights for this groups</label>		
 		</languageKey>
 		<languageKey index="de" type="array">
@@ -75,6 +76,7 @@
 			<label index="pi2_plus_wiz_description">Daten zum Download im Backend einzeln auswählen.</label>
 			<label index="flexform_groupedCategories">Dateiliste (gruppierte Kategorien)</label>	
 			<label index="flexform_easySearch">Einfaches Suchformular</label>
+			<label index="flexform_DrillDown">gestufte Suche über Kategorien</label>		
 			<label index="tx_damfrontend_fegroup">Datei editieren / löschen erlaubt für folgende Gruppen</label>		
 		</languageKey>
 		﻿<languageKey index="ru" type="array">
