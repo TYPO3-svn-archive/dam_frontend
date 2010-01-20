@@ -1693,11 +1693,20 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  	}
 	/**
 	 * Renders the drill down view
-	 *
+	 *	@param	[array] 	$catArray: array which holds arrays of the categories. Each array is a dropbox (cat level), key is the catUID, value the name of the categories
+	 *	@param	[array] 	$selected: array which holds the categories, that are currently selected
 	 * @return	[string]		...
 	 */
- 	function renderDrillDown(){
-	 		return '<p>Drilldown</p>';
+ 	function renderDrillDown($catArray, $selected){
+	 	t3lib_div::debug($catArray);	
+	 	t3lib_div::debug($selected);
+	 	$content ='<p>Drilldown</p><';
+	 	foreach ($catArray as $key => $catLevel) {
+	 		t3lib_div::debug($key);
+	 		$content .= $this->renderSelector($catLevel,$selected,'level'.$key,0	,true,false);
+	 		t3lib_div::debug($catLevel);
+	 	}	
+ 		return $content;
  	}
 }
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_rendering.php'])	{

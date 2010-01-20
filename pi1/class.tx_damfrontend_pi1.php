@@ -1439,7 +1439,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 */
 	function getIncomingDocData() {
 
-
 		// conversion of incoming data from the creation of an new document
 		$this->documentData['title'] = strip_tags(t3lib_div::_POST('title'));
 		$this->documentData['creator'] = strip_tags(t3lib_div::_POST('creator')); #45
@@ -1906,9 +1905,25 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @return	[void]		no return valut 
 	 */
 	function drillDown() {
-		# Einstellung im BE: W�hle Kategorien
+		# Einstellung im BE: Wähle Kategorien
 		
-		return $this->renderer->renderDrillDown();
+		// nimm root level
+		
+		// schau ob ein root level gewählt ist
+		
+			// ja: suche kinder -> suche ob kind gewählt ist
+			
+		
+		$catArray = array();
+		$cats['9']='Kat 9';
+		$cats['1']='Kat 1';
+		$catArray[]=$cats;
+		#$cats['2']='Kat 9';
+		#$cats['5']='Kat 1';
+		#$catArray[]=$cats:
+		$selected = array();
+		$selected[]=9;
+		return $this->renderer->renderDrillDown($catArray, $selected);
 		
 	}
 }
