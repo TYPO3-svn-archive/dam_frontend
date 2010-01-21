@@ -41,6 +41,9 @@
  * Some scripts that use this class:	--
  * Depends on:		---
  */
+
+require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
+
 /**
  * [CLASS/FUNCTION INDEX of SCRIPT]
  *
@@ -91,6 +94,7 @@ class tx_damfrontend_DAL_categories {
 	function getCategory($catID) {
 		if (!intval($catID)) {
 			if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getCategory: for the catID only integer values are allowed. Given value was:' .$catID, 'dam_frontend',3);
+			return false;
 		}
 		else {
 			// retrieve data
@@ -337,14 +341,14 @@ class tx_damfrontend_DAL_categories {
 
 
 		/**
- * searches for an uid in an given array and returns the found row. If multiple
- * records with the same uid exists in the list
- *
- * @param	array		$list: various kind of array
- * @param	int		$id: uid to search in the list
- * @param	int		$relID sets the relationship (which kind of Acess should be checked)
- * @return	array		returns the resultrow as an array
- */
+		 * searches for an uid in an given array and returns the found row. If multiple
+		 * records with the same uid exists in the list
+		 *
+		 * @param	array		$list: various kind of array
+		 * @param	int		$id: uid to search in the list
+		 * @param	int		$relID sets the relationship (which kind of Acess should be checked)
+		 * @return	array		returns the resultrow as an array
+		 */
 		function checkCategoryAccess($userID, $catID, $relID) {
 			/*var $relations = array(
 				'1' => 'readaccess',
@@ -398,6 +402,49 @@ class tx_damfrontend_DAL_categories {
 				else {
 					return false;
 				}
+			}
+		}
+		
+		function getCategoryTitleLocalized($row,$titleLen=30) {
+			
+			$conf['sys_language_uid'] = $GLOBALS['TSFE']->sys_language_uid;
+			
+			$row['pid']=tx_dam_db::getPid(); // @todo add to init of class
+			 
+			$rowLocalized = tx_dam_db::getRecordOverlay('tx_dam_cat', $row, $conf);
+			// @todo edit ts value for titleLen and add a crop
+			$title =  trim($row['title']);
+			if ($rowLocalized===False) {
+				return $row['title'];
+			} 
+			else {
+				return $rowLocalized['title'];
+			}
+		}
+		
+		
+/**
+	 * gets all child categories of an existing category
+	 *
+	 * @param	int		$catID category to check
+	 * @return	array		$recArray with all parent categories
+	 */
+		function getChildCategories($catID) {
+			if (!intval($catID)) {
+				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getChildCategories: for the catID only integer values are allowed. Given value was:' .$catID, 'dam_frontend',3);
+			}
+			else {
+				if ($catID == null || $catID == 0 ) {
+					if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getChildCategories: catID must be greater than 0 and not null! Given value was:' .$catID, 'dam_frontend',2);
+				}
+				$SELECT = '*';
+				$FROM = $this->catTable;
+				$WHERE = 'parent_id = '.$catID . ' AND sys_language_uid=0 ' . t3lib_BEfunc::BEenableFields($this->catTable). ' AND deleted = 0';
+				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE);
+				while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+					$records[]=$row;
+				}
+				return $records;
 			}
 		}
 	}

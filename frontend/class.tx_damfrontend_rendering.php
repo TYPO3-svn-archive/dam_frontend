@@ -823,16 +823,12 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		$markerArray['###FORM_URL###'] = $this->cObj->typolink('', $this->conf['filterview.']['form_url.']);
 		if (is_array($this->conf['filterView.']['customFilters.']) ) {
 			foreach($this->conf['filterView.']['customFilters.'] as $filter=>$value) {
-				#t3lib_div::debug($filter);
-				#t3lib_div::debug($value);
 				if ($value['renderAs']=='SELECTOR') {
 					$markerArray['###'.strtoupper($value['marker']).'###']=$this->renderSelector($value['renderAs.'],$filterArray[$value['GP_Name']],$value['GP_Name']);
-#t3lib_div::debug($this->renderSelector($value['renderAs.'],$filterArray[$value['GP_Name']],$value['GP_Name']));
 
 				}
 			}
 		}
-#t3lib_div::debug($markerArray);
  		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
  		return $formCode;
  	}
@@ -856,10 +852,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		#$filetypeArray[$filetype]['set'] = 1;
 		$content = '<select name="filetype">';
 		foreach ($filetypeArray as $type => $arr) {
-			#t3lib_div::debug($type);
-			#t3lib_div::debug($arr);
 			$filetype == $type ? $sel = ' selected="selected"': $sel='';
-			#t3lib_div::debug($sel);
 			if ($type == 'noselection') $type = '';
  			$content .= '<option value="'.$type.'"'.$sel.'>'.$this->pi_getLL($arr).'</option>';
 		}
@@ -1611,7 +1604,6 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		}
 		$this->conf['filterview.']['form_url.']['returnLast'] = 'url';
 		$markerArray['###FORM_URL###'] = $this->cObj->typolink('', $this->conf['filterview.']['form_url.']);
-#t3lib_div::debug($formCode);
  		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
  		return $formCode;
  	}
@@ -1710,7 +1702,6 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	 	foreach ($catArray as $key => $catLevel) {
 	 		$box = $this->renderSelector($catLevel,$selected,$this->prefixId.'[level'.$key.']',0	,true,false,' onclick="doSubmit()" ');
 	 		$content.= $box;
-	 		#t3lib_div::debug($catLevel);
 	 	}	
 	 	$content.='</form>';
 	 #	var_dump($_POST);

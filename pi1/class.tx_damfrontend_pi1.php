@@ -184,6 +184,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 	 // set the internal values
 	  $this->internal['viewID'] = $this->conf['viewID'];
 	  
+	  	// 
 	  if($this->conf['catMounts']		== 'USER'){$this->conf['catMounts'] = $this->cObj->USER($this->conf['catMounts.'],'');}
 	  if($this->conf['catPreSelection'] == 'USER'){$this->conf['catPreSelection'] = $this->cObj->USER($this->conf['catPreSelection.'],'');}	  
 	  if($this->conf['uploadMounts'] 	== 'USER'){$this->conf['uploadMounts'] = $this->cObj->USER($this->conf['uploadMounts.'],'');}	
@@ -240,7 +241,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		
 		$this->versioning = strip_tags(t3lib_div::_GP('version_method'));
 		$this->docLogic->setFullTextSearchFields($this->conf['filterView.']['searchwordFields']);
-#t3lib_div::debug($this->conf);
 	}
 
 	/**
@@ -460,11 +460,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			// loading post values from the drilldown view
 		if ($this->piVars['level0']){
 			do {
-				$this->internal['drilldown']['level'.$i] = intval($this->piVars['level'.$i]);
+				if (intval($this->piVars['level'.intval($i)])==0) break;
+				$this->internal['drilldown']['level'.intval($i)] = intval($this->piVars['level'.intval($i)]);
 				$i++;
-			} while ($this->piVars['level'.$i]);
+			} while ($this->piVars['level'.intval($i)]);
 		}
-
 		# @TODO check to delete
 			#// check if we are still on the same page. If we are at a different page,
 		#$incommingPID = $GLOBALS['TSFE']->id;
@@ -741,13 +741,32 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		
 			// drilldown
 		if ($this->internal['drilldown']) {
-			t3lib_div::debug('drilldown');
-			end ($this->internal['drilldown']);
+			
+				// check if the rootline is still ok (because if the user changes a cat in a upper level, the first post would not change the selection)
+			$parentID = current($this->internal['drilldown']);
+			$rootID =0;
+			if (next($this->internal['drilldown'])) {
+				do {
+					$row = $this->catLogic->getCategory(current($this->internal['drilldown']));
+					if ($row['parent_id']<> $parentID) {
+						$rootID = $parentID;
+						break;
+					}
+					$parentID = current($this->internal['drilldown']);
+				} while (next($this->internal['drilldown']));
+			}
+			
+			if ($rootID>0) {
+				$catID = $rootID;
+			}
+			else {
+				end ($this->internal['drilldown']);
+				$catID = current($this->internal['drilldown']);
+			}
+			#t3lib_div::debug($catID);
 			//unset only if the current content element is the search box
-			 
 			$this->catList->unsetAllCategories();
-			$catID = current($this->internal['drilldown']);
-			t3lib_div::debug($catID);
+			
 			$subs = $this->catLogic->getSubCategories($catID);
 			$this->catList->op_Plus($catID, $this->internal['incomingtreeID']);
 			foreach ($subs as $sub) {
@@ -916,7 +935,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 		
 		$cats = $this->catList->getCatSelection(0,$this->pid);
-t3lib_div::debug($cats);
 		if (count($cats)) {
 			foreach($cats as $catList) {
 				if (count($catList)) $hasCats = true;
@@ -1929,27 +1947,63 @@ t3lib_div::debug($cats);
 	function drillDown() {
 		# Einstellung im BE: Wähle Kategorien
 		
-		// nimm root level
+		if ($this->internal['drilldown']) {
+			foreach($this->internal['drilldown'] as $key=>$cat) {
+				$selected[]=$cat;
+			}
+		}
 		
-		// schau ob ein root level gewählt ist
-		
-			// ja: suche kinder -> suche ob kind gewählt ist
+		if (!is_array($selected)) {
+			// try to get 
+			#t3lib_div::debug('get store');
+			$selected= $GLOBALS['TSFE']->fe_user->getKey('ses','tx_damfrontend_pi1[drillDown]');
+		}
+		else {
 			
-		
+			#t3lib_div::debug('save store');
+			$GLOBALS['TSFE']->fe_user->setKey('ses','tx_damfrontend_pi1[drillDown]',$selected);
+		}
+		$rootCats = explode(',',$this->conf['catMounts']);
 		$catArray = array();
-		$cats['9']='Kat 9';
-		$cats['2']='Kat 2';
-		$catArray[]=$cats;
-		$cats = array();
-		$cats['6']='Kat 6';
-		$cats['1']='Kat 1';
-		$catArray[]=$cats;
-		$selected = array();
-		$selected[]=9;
-		$selected[]=1;
+		
+		$catArray = $this->drillDown_getCategories($rootCats,$selected);
+				
 		return $this->renderer->renderDrillDown($catArray, $selected);
 		
 	}
+
+	
+	/**
+	 * shows the drill down search view
+	 *
+	 * @return	[array]
+	 */
+	function drillDown_getCategories($cats,$selected) {
+		foreach($cats as $catID) {
+			$returnCats[$catID]=$this->catLogic->getCategoryTitleLocalized($this->catLogic->getCategory($catID));
+		}
+		$catArray[]=$returnCats;
+		if (is_array($selected)) {
+			foreach($cats as $catID) {
+				if (array_search($catID,$selected)===false) {
+				}
+				else {
+					// look for children
+					$childs = $this->catLogic->getChildCategories($catID);
+					if ($childs) {
+						$childCats=array();
+						foreach ($childs as $child) {
+							$childCats[]=$child['uid'];	
+						}
+						$catArray = array_merge($catArray, $this->drillDown_getCategories($childCats,$selected));			
+					}
+				}
+			}
+		}
+		return $catArray;
+	}
+	
+	
 }
 
 

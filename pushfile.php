@@ -133,8 +133,6 @@ if (is_array($post) && count($post) > 0) {
 			if (1 != count($filesToSend)) {
 				die('<h1>Error</h1><p>There should only one file selected.</p>');
 			}
-			t3lib_div::debug($filesToSend[0]);
-			die('ok');
 			if (!sendFile($filesToSend[0]['file'], $filesToSend[0]['filename'], $filesToSend[0]['contenttype'])) {
 				die ('<h1>Error</h1><p>The requested file was not found! Please contact the adminstrator and tell him that the id: '.$docID .' was not found');
 			}

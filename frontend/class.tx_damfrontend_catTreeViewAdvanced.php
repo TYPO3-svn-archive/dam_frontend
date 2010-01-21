@@ -511,6 +511,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		$conf['sys_language_uid'] = $GLOBALS['TSFE']->sys_language_uid;
 		$row['pid']=$this->mediaFolder;
 		if ($this->conf['categoryTreeAdvanced.']['useLanguageOverlay']==1) $row = tx_dam_db::getRecordOverlay($this->table, $row, $conf);
+		// @todo edit ts value for titleLen and add a crop
 		$title =  trim($row['title']);
 		if (empty($title)) $title = '<em>['.$this->plugin->pi_getLL('no_title').']</em>';
 		return $title;

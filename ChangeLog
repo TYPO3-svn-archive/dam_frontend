@@ -1,3 +1,6 @@
+Version 0.6.2
+
+
 Version 0.5.1
 ﻿Bug #2871: filter is filtering not only the current page
 Bug #3656: Advanced catselection must check for childs at top categories (tree mounts)
