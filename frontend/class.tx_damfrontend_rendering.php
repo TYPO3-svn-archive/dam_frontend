@@ -1658,7 +1658,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	 * @param	[boolean]		$multiple: if true, multiple entries a possible, then a selector list is rendered instead of a combobox 
 	 * @return	[type]		...
 	 */
- 	function renderSelector($options, $selected,$name,$size=1,$no_selecetion=true,$multiple=false){
+ 	function renderSelector($options, $selected,$name,$size=1,$no_selecetion=true,$multiple=false, $additionalParams =''){
 		$is_selected=false;
 		foreach($options as $key=>$option) {
  			$sel ='';
@@ -1684,10 +1684,10 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		}
 		if ($no_selecetion===true) $content =  '<option value="noselection"'.$sel.'></option>'.$content;
 		if ($multiple) {
- 			return '<select name="'.$name.'[]" size="'.$size.'" multiple="multiple">'.$content.'</select>';
+ 			return '<select name="'.$name.'[]" size="'.$size.'" multiple="multiple" '.$additionalParams.'>'.$content.'</select>';
 		}
 		else {
-	 		return '<select name="'.$name.'" size="'.$size.'">'.$content.'</select>';
+	 		return '<select name="'.$name.'" size="'.$size.'" '.$additionalParams.'>'.$content.'</select>';
 		}
 		
  	}
@@ -1698,14 +1698,22 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	 * @return	[string]		...
 	 */
  	function renderDrillDown($catArray, $selected){
-	 	t3lib_div::debug($catArray);	
-	 	t3lib_div::debug($selected);
-	 	$content ='<p>Drilldown</p><';
+   		$content = '
+   			<script language="Javascript"> 
+			function doSubmit() {	
+   				document.frm.submit(); 
+   			}
+			</script>
+			<form action="" method="post" name="frm">
+			<input type="hidden" name="tx_damfrontend_pi1[treeID]" value="'.$this->cObj->data['uid'].'">
+			';
 	 	foreach ($catArray as $key => $catLevel) {
-	 		t3lib_div::debug($key);
-	 		$content .= $this->renderSelector($catLevel,$selected,'level'.$key,0	,true,false);
-	 		t3lib_div::debug($catLevel);
+	 		$box = $this->renderSelector($catLevel,$selected,$this->prefixId.'[level'.$key.']',0	,true,false,' onclick="doSubmit()" ');
+	 		$content.= $box;
+	 		#t3lib_div::debug($catLevel);
 	 	}	
+	 	$content.='</form>';
+	 #	var_dump($_POST);
  		return $content;
  	}
 }

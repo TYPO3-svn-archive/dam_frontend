@@ -254,7 +254,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$this->catList->clearCatSelection($this->internal['incomingtreeID']);
 		}
 
-		//variables for setting filters for the current category selection
+			//variables for setting filters for the current category selection
  		$this->internal['filter']['from_day'] = intval(t3lib_div::_GP('von_tag'));
  		$this->internal['filter']['from_month'] =intval(t3lib_div::_GP('von_monat'));
  		$this->internal['filter']['from_year'] = intval(t3lib_div::_GP('von_jahr'));
@@ -271,7 +271,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 			if (t3lib_div::_GP($value['GP_Name'])<>'noselection') $this->internal['filter'][$value['marker']]=  strip_tags(t3lib_div::_GP($value['GP_Name']));
 	 		}
  		}
- 		// clear all 0 - values - now they are not shown in the frontend form
+ 		
+ 			// clear all 0 - values - now they are not shown in the frontend form
  		foreach ($this->internal['filter'] as $key => $value) {
  			if ($value == '0') {
  				$this->internal['filter'][$key] = '';
@@ -447,17 +448,26 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->internal['catAll'] = intval($this->piVars['catAll']);
 		$this->internal['catClear'] = intval($this->piVars['catClear']);
 
-		// Aufruf der Einzelansicht
+			// call for the singleView
 		$this->internal['singleID'] = intval($this->piVars['showUid']);
 
-		// loading var for displaying a form for creation of a new filter state
+			// loading var for displaying a form for creation of a new filter state
 		$this->internal['newFilter'] = strip_tags($this->piVars['newFilter']);
 
-		// getting the incoming treeID
+			// getting the incoming treeID
 		$this->internal['incomingtreeID'] = intval($this->piVars['treeID']);
 
-		// check if we are still on the same page. If we are at a different page,
-		$incommingPID = $GLOBALS['TSFE']->id;
+			// loading post values from the drilldown view
+		if ($this->piVars['level0']){
+			do {
+				$this->internal['drilldown']['level'.$i] = intval($this->piVars['level'.$i]);
+				$i++;
+			} while ($this->piVars['level'.$i]);
+		}
+
+		# @TODO check to delete
+			#// check if we are still on the same page. If we are at a different page,
+		#$incommingPID = $GLOBALS['TSFE']->id;
 
 		// Selection Mode
 		$this->internal['selectionMode'] = intval($this->piVars['selectionMode']);
@@ -572,7 +582,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 			// Mapping the ViewIds - selected in the Flexform to the content
 			// that shall be rendered
-			t3lib_div::debug($this->internal['viewID']);
 		switch ($this->internal['viewID']) {
 			case 1:
 				$content .= $this->fileList(false);
@@ -731,7 +740,20 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 		
 			// drilldown
-		
+		if ($this->internal['drilldown']) {
+			t3lib_div::debug('drilldown');
+			end ($this->internal['drilldown']);
+			//unset only if the current content element is the search box
+			 
+			$this->catList->unsetAllCategories();
+			$catID = current($this->internal['drilldown']);
+			t3lib_div::debug($catID);
+			$subs = $this->catLogic->getSubCategories($catID);
+			$this->catList->op_Plus($catID, $this->internal['incomingtreeID']);
+			foreach ($subs as $sub) {
+				$this->catList->op_Plus($sub['uid'], $this->internal['incomingtreeID']);
+			}
+		}
 	}
 
 
@@ -894,7 +916,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 		
 		$cats = $this->catList->getCatSelection(0,$this->pid);
-
+t3lib_div::debug($cats);
 		if (count($cats)) {
 			foreach($cats as $catList) {
 				if (count($catList)) $hasCats = true;
@@ -1916,13 +1938,15 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		
 		$catArray = array();
 		$cats['9']='Kat 9';
+		$cats['2']='Kat 2';
+		$catArray[]=$cats;
+		$cats = array();
+		$cats['6']='Kat 6';
 		$cats['1']='Kat 1';
 		$catArray[]=$cats;
-		#$cats['2']='Kat 9';
-		#$cats['5']='Kat 1';
-		#$catArray[]=$cats:
 		$selected = array();
 		$selected[]=9;
+		$selected[]=1;
 		return $this->renderer->renderDrillDown($catArray, $selected);
 		
 	}
