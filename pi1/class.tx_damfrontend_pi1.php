@@ -1945,7 +1945,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @return	[void]		no return valut 
 	 */
 	function drillDown() {
-		# Einstellung im BE: Wähle Kategorien
 		
 		if ($this->internal['drilldown']) {
 			foreach($this->internal['drilldown'] as $key=>$cat) {
@@ -1955,17 +1954,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		
 		if (!is_array($selected)) {
 			// try to get 
-			#t3lib_div::debug('get store');
 			$selected= $GLOBALS['TSFE']->fe_user->getKey('ses','tx_damfrontend_pi1[drillDown]');
 		}
 		else {
-			
-			#t3lib_div::debug('save store');
 			$GLOBALS['TSFE']->fe_user->setKey('ses','tx_damfrontend_pi1[drillDown]',$selected);
 		}
 		$rootCats = explode(',',$this->conf['catMounts']);
 		$catArray = array();
-		
 		$catArray = $this->drillDown_getCategories($rootCats,$selected);
 				
 		return $this->renderer->renderDrillDown($catArray, $selected);

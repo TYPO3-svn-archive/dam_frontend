@@ -1691,7 +1691,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	 */
  	function renderDrillDown($catArray, $selected){
    		$content = '
-   			<script language="Javascript"> 
+   			<script type="text/javascript"> 
 			function doSubmit() {	
    				document.frm.submit(); 
    			}
@@ -1704,7 +1704,6 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	 		$content.= $box;
 	 	}	
 	 	$content.='</form>';
-	 #	var_dump($_POST);
  		return $content;
  	}
 }
