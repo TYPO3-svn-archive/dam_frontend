@@ -1650,7 +1650,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	 * @param	[boolean]		$multiple: if true, multiple entries a possible, then a selector list is rendered instead of a combobox 
 	 * @return	[type]		...
 	 */
- 	function renderSelector($options, $selected,$name,$size=1,$no_selecetion=true,$multiple=false, $additionalParams =''){
+ 	function renderSelector($options, $selected,$name,$size=1,$no_selecetion=true,$multiple=false, $additionalParams ='',$stdWrapConf = array()){
 		$is_selected=false;
 		foreach($options as $key=>$option) {
  			$sel ='';
@@ -1667,7 +1667,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  				if ($key==$selected)  $sel = ' selected="selected"';
  			}
  			if ($sel<>'') $is_selected=true;
- 			$content .=  '<option value="'.$key.'"'.$sel.'>'.$label.'</option>';
+ 			$content .=  '<option value="'.$key.'"'.$sel.'>'.$this->cObj->stdWrap($label,$stdWrapConf).'</option>';
  		}
  		if ($is_selected==false ){
 				$sel = ' selected="selected"';
@@ -1691,17 +1691,20 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	 */
  	function renderDrillDown($catArray, $selected){
    		$content = '
+   			
    			<script type="text/javascript"> 
-			function doSubmit() {	
-   				document.frm.submit(); 
-   			}
+   				function doSubmit() {	
+					document.frm.submit(); 
+   				}
 			</script>
 			<form action="" method="post" name="frm">
 			<input type="hidden" name="tx_damfrontend_pi1[treeID]" value="'.$this->cObj->data['uid'].'">
 			';
-	 	foreach ($catArray as $key => $catLevel) {
-	 		$box = $this->renderSelector($catLevel,$selected,$this->prefixId.'[level'.$key.']',0	,true,false,' onclick="doSubmit()" ');
-	 		$content.= $box;
+   		if ($this->conf['drillDown.']['selectorBox.']['css.']['class']) $CSSClass = ' class="'. $this->conf['drillDown.']['selectorBox.']['css.']['class'] .'" ';
+   		foreach ($catArray as $key => $catLevel) {
+	   		if ($this->conf['drillDown.']['selectorBox.']['css.']['id']) $CSSID = ' id="'. $this->conf['drillDown.']['selectorBox.']['css.']['id'] .$key.'"';
+	 		$box = $this->renderSelector($catLevel,$selected,$this->prefixId.'[level'.$key.']',0	,true,false,' onchange="doSubmit()" ' . $CSSClass. ' ' .$CSSID,$this->conf['drillDown.']['selectorBox.']['option.']);
+	 		$content.= $this->cObj->stdWrap($box,$this->conf['drillDown.']['selectorBox.']);
 	 	}	
 	 	$content.='</form>';
  		return $content;

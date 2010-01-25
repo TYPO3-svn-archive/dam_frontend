@@ -522,6 +522,21 @@ plugin.tx_damfrontend_pi1 {
 		  DEFAULT = application_default.png
 		}
   	}
+  	
+
+  	drillDown {
+		selectorBox {
+			stdWrap.wrap = |
+			css {
+				# a integer is added for the depth
+				id = tx_damfrontend_pi_drilldown
+				class = tx_damfrontend_pi_drilldown
+			}
+			option.stdWrap.wrap =  |
+		}
+  	}
+
+
   	upload {
   		allowedVersioningMethods {
 	  		versioning = 0
