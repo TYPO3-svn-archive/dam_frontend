@@ -933,13 +933,14 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		if ($result<>1) {
 			return  $result;
 		}
-		
+		$hasCats=false;
 		$cats = $this->catList->getCatSelection(0,$this->pid);
 		if (count($cats)) {
 			foreach($cats as $catList) {
 				if (count($catList)) $hasCats = true;
 			}
 		}
+		
 		if ($hasCats===true || $this->internal['filter']['searchAllCats']===true || $this->internal['viewID']==9) {
 
 			/***************************

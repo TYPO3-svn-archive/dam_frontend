@@ -345,6 +345,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 * @return	[array]		returns an array which contains all selected records
 	 */
 		function getDocumentList($userUID=0) {
+			#t3lib_div::debug($this->categories);
 			if(!is_array($this->categories)) {
 				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getDcoumentList: for the this->categories is no array. Given value was:' .$this->categories, 'dam_frontend',3);
 			}
@@ -352,7 +353,15 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$filter = ' AND '.$this->docTable.'.deleted = 0  AND '.$this->docTable.'.hidden = 0';
 			$filter .= ' AND ('.$this->docTable.'.starttime < '.time().' OR '.$this->docTable.'.starttime = 0)';
 			$filter .= ' AND ('.$this->docTable.'.endtime > '.time().' OR '.$this->docTable.'.endtime = 0)';
-			if (count($this->categories)) {
+			
+			#t3lib_div::debug(count($this->categories));
+			$hasCategories=false;
+			foreach ($this->categories as $cat) {
+				if (!empty($cat) ) $hasCategories=true;
+			}
+			
+			
+			if ($hasCategories===true) {
 
 				/*
 				 * Building the from clause manually by joining the DAM tables
@@ -428,6 +437,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 					}
 					$z++;
 				}
+#				t3lib_div::debug($filter);
 				if  ($this->conf['useTreeAndSelection'] == 0) {
 					$where .= $filter;
 				}
