@@ -874,14 +874,31 @@ plugin.tx_damfrontend_pi1 {
 	renderFields {
 		title.typolink.parameter = {field:file_path}{field:file_name}
 		title.typolink.parameter.insertData = 1
+		title.typolink.parameter.data > 
+		title.typolink.additionalParams >
+		
 		link_download.typolink.parameter = {field:file_path}{field:file_name}
 		link_download.typolink.parameter.insertData = 1
+		link_download.typolink.parameter.data = >
+		link_download.typolink.additionalParams >
 	}
 	singleView {
 		file_name {
 			typolink.parameter = {field:file_path}{field:file_name}
 			typolink.parameter.insertData = 1
+			typolink.parameter.data  >
+			typolink.parameter.additionalParams >
+			
 		}
+		link_download.typolink.parameter = {field:file_path}{field:file_name}
+		link_download.typolink.parameter.insertData = 1
+		link_download.typolink.parameter.data  >
+		link_download.typolink.additionalParams >
+		
+		title.typolink.parameter = {field:file_path}{field:file_name}
+		title.typolink.parameter.insertData = 1
+		title.typolink.parameter.data > 
+		title.typolink.additionalParams >
 	}
 }
 

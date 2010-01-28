@@ -168,9 +168,12 @@ plugin.tx_damfrontend_pi2 {
 
 [globalVar = LIT:1 = {$plugin.tx_damfrontend_pi2.doNotUsePushFile}]
 # for using advanced download features with resizing we cannot use an direct link
-plugin.tx_damfrontend_pi1 {
+plugin.tx_damfrontend_pi2 {
 	renderFields {
 	  	file_href.parameter = {field:file_path}{field:file_name}
+	  	file_href.parameter.data >
+	  	file_href.additionalParams >
+		file_href.returnLast = url
 	}
 }
 [end]
