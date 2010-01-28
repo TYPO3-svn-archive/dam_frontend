@@ -1,5 +1,14 @@
 Version 0.6.2
-
+Bug #4955: Problem using direct links to files
+Bug #5885: Urgent: Typoscript Setup/Constant Values are not taken into account for DAM frontend filelist view
+Bug #6194: Points are in front of the filelist in the grouped filelist
+Bug #6261: Language Overlay does not work correct for advanced cattree
+Feature #5080: Do not render download links, if no download rights are existing
+Feature #5373: Edit rights for groups
+Feature #5490: TS Setting UseCatsAsMounts for LatestView
+Feature #5830: Filetype configuration via Typoscript
+Major Feature #1371: display Category Selection
+Major Feature #6109: drilldown search
 
 Version 0.5.1
 ﻿Bug #2871: filter is filtering not only the current page
