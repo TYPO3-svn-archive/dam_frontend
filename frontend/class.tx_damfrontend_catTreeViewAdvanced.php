@@ -570,7 +570,6 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			}
 			$titleLen = $this->conf['categoryTreeAdvanced.']['categoryTitle.']['length'] ? $this->conf['categoryTreeAdvanced.']['categoryTitle.']['length']:30;
 			if ($noChilds == true ) {
-				t3lib_div::debug('getTitle');
 				$firstHtml =$this->cObj->stdWrap( $this->getTitleStr($rootRec,$titleLen),$this->conf['categoryTreeAdvanced.']['categoryTitle.']['treeRoot.']);
 			}
 			else {
