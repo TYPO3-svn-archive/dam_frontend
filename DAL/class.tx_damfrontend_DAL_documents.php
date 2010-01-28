@@ -524,7 +524,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 							$row['allowDeletion']=1;
 							$row['allowEdit']=1;
 						} 
-						t3lib_div::debug($row);
 						$result[] = $row;
 						
 					}
