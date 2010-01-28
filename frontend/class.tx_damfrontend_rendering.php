@@ -612,7 +612,12 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 			if ($catEditUID>0) {
 				$urlVars['tx_damfrontend_pi1[catEditUID]'] =$catEditUID;
 			}
-			$urlVars['tx_damfrontend_pi1[treeID]'] = $treeID != '' ?   $treeID : null;
+			if ($treeID>0 OR $treeID==-1) {
+				$urlVars['tx_damfrontend_pi1[treeID]'] = $treeID != '' ?   $treeID : null;
+			}
+			else {
+				$urlVars['tx_damfrontend_pi1[treeID]'] = $category['treeID'];
+			}
 				// TODO implement TS Setting  & add stdWrap
 			$url = $this->cObj->getTypoLink_URL($GLOBALS['TSFE']->id,$urlVars);
 

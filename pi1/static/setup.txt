@@ -307,6 +307,10 @@ plugin.tx_damfrontend_pi1 {
 		useLanguageOverlay =1
 	}
 	
+	categorySelection {
+		useLanguageOverlay =1
+	}
+	
 	# configuration for subpart ###FILELIST###
 	filelist {
 		# typolink : formurl action

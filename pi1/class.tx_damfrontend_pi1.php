@@ -1018,14 +1018,25 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	function catSelection() {
 		// getting the complete category selection
 		$selection = $this->catList->getCatSelection(0,$GLOBALS['TSFE']->id );
-
 		if (is_array($selection)) {
-			foreach($selection as $cat) {
-				$catList[] = $this->catLogic->getCategory($cat[0]);
+			$mediaFolder = tx_dam_db::getPid();
+			$cats = array();
+			foreach($selection as $id =>$tree) {
+				foreach ($tree as $cat) {
+					$row = $this->catLogic->getCategory($cat);
+					if ($this->conf['categorySelection.']['useLanguageOverlay']==1) {
+						$conf['sys_language_uid'] = $GLOBALS['TSFE']->sys_language_uid;
+						$row['pid']=$mediaFolder;
+						$row = tx_dam_db::getRecordOverlay('tx_dam_cat', $row, $conf);
+					}
+					$row['treeID']=$id;
+					$cats[]=$row;
+				}
+				
 			}
-			if (is_array($catList))
+			if (!empty($cats))
 			{
-				$content = $this->renderer->renderCatSelection($catList);
+				$content = $this->renderer->renderCatSelection($cats);
 			}
 			else {
 				$content = $this->renderer->renderError('noCatSelected');
