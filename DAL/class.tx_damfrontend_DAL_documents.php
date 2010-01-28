@@ -505,17 +505,26 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 #t3lib_div::debug($row);
 #t3lib_div::debug($this->checkAccess($row['uid'], 1));
 				if ($this->checkAccess($row['uid'], 1) && $this->checkDocumentAccess($row['fe_group'])) {
-						//add a delete information
-					if ($this->checkEditRights($row)===TRUE){
-						$row['allowDeletion']=1;
-						$row['allowEdit']=1;
-					}
 					
 						// TODO: we should use SQL-LIMIT instead! Cant we create an SQL-Syntax for $this->checkAccess($row['uid'], 1) && $this->checkDocumentAccess($row['fe_group']) ??
 						// Problem: this code is not performant. one idea is to fetch only a limited number of rows and check in a loop if enough rows are delivered after the permission check. One prob is left, because its difficult (or impossible) to find the right position in combination with the pagelimit / pagebrowser
 						// add row only, if the current resultID is between the limit range
 					if ($resultCounter >=$startRecord && $resultCounter<=($startRecord+$listLength-1)){
-						// @TODO limit the latest View 
+						// @TODO limit the latest View
+						
+							// check if user is allowed to download a file
+						if ($this->checkAccess($row['uid'], 2)) {
+							$row['allowDownload']=1;	
+						}
+						else {
+							$row['allowDownload']=0;	
+						}						
+							//add a delete information
+						if ($this->checkEditRights($row)===TRUE){
+							$row['allowDeletion']=1;
+							$row['allowEdit']=1;
+						} 
+						t3lib_div::debug($row);
 						$result[] = $row;
 						
 					}

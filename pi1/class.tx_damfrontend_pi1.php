@@ -1067,6 +1067,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 							$record['allowDeletion']=1;
 							$record['allowEdit']=1;
 					}
+					if ($this->docLogic->checkAccess($record['uid'], 2)) {
+							$record['allowDownload']=1;	
+						}
+						else {
+							$record['allowDownload']=0;	
+						}		
 					$content = $this->renderer->renderSingleView($record);
 
 					if ($this->docLogic->checkAccess($singleID, 2)) {

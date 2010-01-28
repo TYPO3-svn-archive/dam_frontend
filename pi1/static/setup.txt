@@ -175,11 +175,21 @@ plugin.tx_damfrontend_pi1 {
 		crdate_age.stdWrap.age = 1
 		date_cr < .crdate
 		title.typolink.parameter.data = TSFE:id
+		title.typolink.parameter.if.value=1
+		title.typolink.parameter.if.equals.field=allowDownload
   		title.typolink.additionalParams = &eID=dam_frontend_push&docID={field:uid}
 		title.typolink.additionalParams.insertData = 1
+		
 		link_download.typolink.parameter.data = TSFE:id
+		link_download.typolink.parameter.if.value=1
+		link_download.typolink.parameter.if.equals.field=allowDownload
+		
   		link_download.typolink.additionalParams = &eID=dam_frontend_push&docID={field:uid}
 		link_download.typolink.additionalParams.insertData = 1
+		
+		link_download.if.value = 1
+		link_download.if.equals.data=allowDownload
+		
 
 		link_single.typolink {
 			#parameter.data = TSFE:id
@@ -218,6 +228,8 @@ plugin.tx_damfrontend_pi1 {
 	singleView {
 		file_name {
 			typolink.parameter.data = TSFE:id
+			typolink.parameter.if.value=1
+			typolink.parameter.if.equals.field=allowDownload
   			typolink.additionalParams = &eID=dam_frontend_push&docID={field:uid}
 			typolink.additionalParams.insertData = 1
 			typolink.extTarget = _blank
@@ -231,7 +243,7 @@ plugin.tx_damfrontend_pi1 {
 			prepend.stdWrap.wrap = |<br />
 			# Only if the file could be rendered
 			prepend.stdWrap.if.isTrue.data = TSFE:lastImageInfo|0
-
+			
 		}
 		link_download = IMAGE
 		link_download {
@@ -242,6 +254,8 @@ plugin.tx_damfrontend_pi1 {
   				additionalParams = &eID=dam_frontend_push&docID={field:uid}
 				additionalParams.insertData = 1
 			}
+			if.value=1
+			if.equals.field=allowDownload
 		}
 
 		backLink = IMAGE
@@ -400,9 +414,13 @@ plugin.tx_damfrontend_pi1 {
 			#style="border-width: 0px
 			stdWrap.typolink {
 				parameter.data = TSFE:id
+				
+				
   				additionalParams = &eID=dam_frontend_push&docID={field:uid}
 				additionalParams.insertData = 1
 			}
+			if.value=1
+			if.equals.field=allowDownload
 		}
 
 		link_single = IMAGE
