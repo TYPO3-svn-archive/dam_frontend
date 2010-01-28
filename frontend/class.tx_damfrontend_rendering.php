@@ -1549,17 +1549,16 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		}
 
 	/**
-	 * [Describe function...]
+	 * [Renders the subpart for the grouped file list]
 	 *
-	 * @param	[type]		$categoryTitle: ...
-	 * @return	[type]		...
+	 * @param	[string]		$categoryTitle: title of the category, which should be rendered
+	 * @return	[string]		html with substituted markers
 	 */
 		function renderCategoryHeader($categoryTitle) {
-
 			$formCode  = tslib_CObj::getSubpart($this->fileContent, '###GROUPED_CATEGORY###');
 			$markerArray['###CATEGORYTITLE###']=$this->cObj->stdWrap($categoryTitle,$this->conf['renderFields.']['categoryTitle.']);
-
-			return tslib_cObj::substituteMarkerArray($formCode, $markerArray);
+			$content = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
+			return $content;
 		}
 
 
