@@ -118,7 +118,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		if($this->typeField) $this->fieldArray[] = $this->typeField;
 		$this->defaultList = 'uid,pid,tstamp,sorting';
 
-		$this->clause = ' AND deleted=0';
+		$this->clause = ' AND deleted=0 AND sys';
 		$this->orderByFields = 'sorting,title';
 
 		$conf = tx_dam::config_getValue('setup.selections.'.$this->treeName);
@@ -568,13 +568,13 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				$childs = $this->get_childCats($rootRec['uid'], $this->treeStructureArray);
 				if (empty($childs)) $noChilds=true;
 			}
+			$titleLen = $this->conf['categoryTreeAdvanced.']['categoryTitle.']['length'] ? $this->conf['categoryTreeAdvanced.']['categoryTitle.']['length']:30;
 			if ($noChilds == true ) {
-				$titleLen = $this->conf['categoryTreeAdvanced.']['categoryTitle.']['length'] ? $this->conf['categoryTreeAdvanced.']['categoryTitle.']['length']:30;
+				t3lib_div::debug('getTitle');
 				$firstHtml =$this->cObj->stdWrap( $this->getTitleStr($rootRec,$titleLen),$this->conf['categoryTreeAdvanced.']['categoryTitle.']['treeRoot.']);
 			}
 			else {
-				
-				$firstHtml = $this->PM_ATagWrap($rootRec['title'],$cmd,'',$rootRec);
+				$firstHtml = $this->PM_ATagWrap($this->getTitleStr($rootRec,$titleLen),$cmd,'',$rootRec);
 				if ($isOpen) {
 					
 					$firstHtml = $this->cObj->stdWrap($firstHtml,$this->conf['categoryTreeAdvanced.']['categoryTitle.']['treeMinus.']);
@@ -754,6 +754,8 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 	 * @return	[type]		...
 	 */
 	function getDataInit($parentId,$subCSSclass='') {
+			$this->clause =  ' AND sys_language_uid = ' . 0;
+ 		
 		if (is_array($this->data)) {
 			if (!is_array($this->dataLookup[$parentId][$this->subLevelID])) {
 				$parentId = -1;
