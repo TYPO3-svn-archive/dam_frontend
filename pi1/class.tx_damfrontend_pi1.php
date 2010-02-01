@@ -353,10 +353,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 */
 	function initList() {
 
-		// setting internal values for pagebrowsing from the incoming request
-
+			// setting internal values for pagebrowsing from the incoming request
 		$this->internal['list']['pointer'] =  $this->piVars['pointer'] != null ? intval($this->piVars['pointer']) :0;
 
+			// reset filter
+		 if ($this->internal['drilldown']) $this->internal['list']['pointer']=0;
+		
  		if (t3lib_div::_GP('setListLength')) {
 			$this->internal['list']['listLength'] = t3lib_div::_GP('listLength') != null ? intval(t3lib_div::_GP('listLength')) : 10;
 			$listLengthArr = array();
