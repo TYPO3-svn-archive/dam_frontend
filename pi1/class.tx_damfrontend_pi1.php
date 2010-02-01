@@ -763,8 +763,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				end ($this->internal['drilldown']);
 				$catID = current($this->internal['drilldown']);
 			}
-			#t3lib_div::debug($catID);
-			//unset only if the current content element is the search box
+			
+			$this->internal['list']['pointer'] = 0; 
 			$this->catList->unsetAllCategories();
 			
 			$subs = $this->catLogic->getSubCategories($catID);
