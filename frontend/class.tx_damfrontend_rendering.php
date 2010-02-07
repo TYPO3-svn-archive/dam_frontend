@@ -1707,7 +1707,8 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
    		if ($this->conf['drillDown.']['selectorBox.']['css.']['class']) $CSSClass = ' class="'. $this->conf['drillDown.']['selectorBox.']['css.']['class'] .'" ';
    		foreach ($catArray as $key => $catLevel) {
 	   		if ($this->conf['drillDown.']['selectorBox.']['css.']['id']) $CSSID = ' id="'. $this->conf['drillDown.']['selectorBox.']['css.']['id'] .$key.'"';
-	 		$box = $this->renderSelector($catLevel,$selected,$this->prefixId.'[level'.$key.']',0	,true,false,' onchange="doSubmit()" ' . $CSSClass. ' ' .$CSSID,$this->conf['drillDown.']['selectorBox.']['option.']);
+	   		if ($this->conf['drillDown.']['selectorBox.']['displayAnEmptyOption']==1) $displayAnEmptyOption=true ;
+	 		$box = $this->renderSelector($catLevel,$selected,$this->prefixId.'[level'.$key.']',0	,$displayAnEmptyOption,false,' onchange="doSubmit()" ' . $CSSClass. ' ' .$CSSID,$this->conf['drillDown.']['selectorBox.']['option.']);
 	 		$content.= $this->cObj->stdWrap($box,$this->conf['drillDown.']['selectorBox.']);
 	 	}	
 	 	$content.='</form>';
