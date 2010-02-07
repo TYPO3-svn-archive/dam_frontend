@@ -743,7 +743,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		
 			// drilldown
 		if ($this->internal['drilldown']) {
-			
 				// check if the rootline is still ok (because if the user changes a cat in a upper level, the first post would not change the selection)
 			$parentID = current($this->internal['drilldown']);
 			$rootID =0;
@@ -771,6 +770,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			
 			$subs = $this->catLogic->getSubCategories($catID);
 			$this->catList->op_Plus($catID, $this->internal['incomingtreeID']);
+			
 			foreach ($subs as $sub) {
 				$this->catList->op_Plus($sub['uid'], $this->internal['incomingtreeID']);
 			}
@@ -970,7 +970,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				if ($this->internal['list']['listLength']==1) $limiter = 1;
 
 				$noOfPages = intval($rescount / $this->internal['list']['listLength'])-$limiter;
-
+				if ($noOfPages<0)$noOfPages=0;
+				
 				if($this->internal['list']['pointer'] >$noOfPages) {
 					// set pointer to max value
 					return  $this->renderer->renderError('noPointerError');
