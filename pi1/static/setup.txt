@@ -555,6 +555,7 @@ plugin.tx_damfrontend_pi1 {
 				class = tx_damfrontend_pi_drilldown
 			}
 			option.stdWrap.wrap =  |
+			displayAnEmptyOption = 1
 		}
   	}
 
