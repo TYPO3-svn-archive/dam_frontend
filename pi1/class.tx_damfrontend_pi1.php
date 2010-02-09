@@ -1,6 +1,8 @@
 <?php
 
 require_once(PATH_tslib.'class.tslib_pibase.php');
+require_once(PATH_tslib.'class.tslib_content.php');
+
 
 // references to the DAL
 require_once(t3lib_extMgm::extPath('dam_frontend').'/DAL/class.tx_damfrontend_DAL_documents.php');

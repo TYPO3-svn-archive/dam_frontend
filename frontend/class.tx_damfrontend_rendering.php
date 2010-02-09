@@ -1654,7 +1654,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 	 * @param	[boolean]		$multiple: if true, multiple entries a possible, then a selector list is rendered instead of a combobox 
 	 * @return	[type]		...
 	 */
- 	function renderSelector($options, $selected,$name,$size=1,$no_selecetion=true,$multiple=false, $additionalParams ='',$stdWrapConf = array()){
+ 	function renderSelector($options, $selected,$name,$size=1,$no_selecetion=true,$multiple=false, $additionalParams ='',$stdWrapConf = array(),$noSelectionLabel=''){
 		$is_selected=false;
 		foreach($options as $key=>$option) {
  			$sel ='';
@@ -1678,7 +1678,9 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 		} else {
 				$sel='';
 		}
-		if ($no_selecetion===true) $content =  '<option value="noselection"'.$sel.'></option>'.$content;
+		if ($no_selecetion===true){
+			$content =  '<option value="noselection"'.$sel.'>'.$noSelectionLabel.'</option>'.$content;
+		}
 		if ($multiple) {
  			return '<select name="'.$name.'[]" size="'.$size.'" multiple="multiple" '.$additionalParams.'>'.$content.'</select>';
 		}
@@ -1704,11 +1706,18 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 			<form action="" method="post" name="frm">
 			<input type="hidden" name="tx_damfrontend_pi1[treeID]" value="'.$this->cObj->data['uid'].'">
 			';
+   		if($this->conf['drillDown.']['selectorBox.']['displayAnEmptyOption.']['localLangLabel']) {
+	   		$noSelectionLabel=$this->pi_getLL($this->conf['drillDown.']['selectorBox.']['displayAnEmptyOption.']['localLangLabel']);
+   		}
+   		else {
+	   		$noSelectionLabel=$this->conf['drillDown.']['selectorBox.']['displayAnEmptyOption.']['label'];
+   		}
+   		
    		if ($this->conf['drillDown.']['selectorBox.']['css.']['class']) $CSSClass = ' class="'. $this->conf['drillDown.']['selectorBox.']['css.']['class'] .'" ';
    		foreach ($catArray as $key => $catLevel) {
 	   		if ($this->conf['drillDown.']['selectorBox.']['css.']['id']) $CSSID = ' id="'. $this->conf['drillDown.']['selectorBox.']['css.']['id'] .$key.'"';
 	   		if ($this->conf['drillDown.']['selectorBox.']['displayAnEmptyOption']==1) $displayAnEmptyOption=true ;
-	 		$box = $this->renderSelector($catLevel,$selected,$this->prefixId.'[level'.$key.']',0	,$displayAnEmptyOption,false,' onchange="doSubmit()" ' . $CSSClass. ' ' .$CSSID,$this->conf['drillDown.']['selectorBox.']['option.']);
+	 		$box = $this->renderSelector($catLevel,$selected,$this->prefixId.'[level'.$key.']',0	,$displayAnEmptyOption,false,' onchange="doSubmit()" ' . $CSSClass. ' ' .$CSSID,$this->conf['drillDown.']['selectorBox.']['option.'],$noSelectionLabel);
 	 		$content.= $this->cObj->stdWrap($box,$this->conf['drillDown.']['selectorBox.']);
 	 	}	
 	 	$content.='</form>';

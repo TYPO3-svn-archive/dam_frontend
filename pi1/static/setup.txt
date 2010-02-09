@@ -556,6 +556,8 @@ plugin.tx_damfrontend_pi1 {
 			}
 			option.stdWrap.wrap =  |
 			displayAnEmptyOption = 1
+			displayAnEmptyOption.localLangLabel =
+			displayAnEmptyOption.label = 
 		}
   	}
 
