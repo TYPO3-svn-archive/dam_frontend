@@ -3,7 +3,7 @@
  * ************************************************************
  *  Copyright notice
  *
- *  (c) 2006  (martin_baum@gmx.net)
+ *  (c) 2006-2010  (Stefan Busemann / martin_baum@gmx.net)
  *  All rights reserved
  *
  *  This script is part of the Typo3 project. The Typo3 project is
@@ -23,10 +23,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  * **************************************************************/
 
-
-
-
-error_reporting(E_ERROR);
+#error_reporting(E_ERROR);
 
 require_once(t3lib_extMgm::extPath('dam_frontend').'/DAL/class.tx_damfrontend_DAL_documents.php');
 
@@ -50,9 +47,9 @@ if (!$_REQUEST['docID']
 	die ('<h1>Error</h1><p>You have no access to download a file. In this case no DocID was given!</p>');
 }
 
-// Formular versendet?
 
 $post = t3lib_div::_POST($prefixId);
+
 if (is_array($post) && count($post) > 0) {
 	$filesToSend = array();
 
@@ -87,6 +84,7 @@ if (is_array($post) && count($post) > 0) {
 		$filePath = PATH_site.$doc['file_path'].$doc['file_name'];
 		if ($tmp = createFile($filePath, configuration2Array($configuration['convert']))) {
 			$filesToSend[] = array('file' => $tmp, 'filename' => $doc['file_name'], 'contenttype' => $doc['file_mime_type'] . '/' . $doc['file_mime_subtype']);
+			$archive[]= $doc['file_path']. $doc['file_name'] ;
 		} else {
 			die('<h1>Error</h1><p>File not available...</p>');
 		}
@@ -101,26 +99,26 @@ if (is_array($post) && count($post) > 0) {
 			if (count($filesToSend) < 1) {
 				die('<h1>Error</h1><p>There should at least one file selected.</p>');
 			}
-			if (!t3lib_extMgm::isLoaded('nh_archive')) {
-				die('The extension nh_archive is needed for creating zip-files.');
-			}
 
-			require_once(t3lib_extMgm::extPath('nh_archive').'class.tx_nharchive_zipfile.php');
-			$zipfile = t3lib_div::makeInstance('tx_nharchive_zipfile');
-
-			foreach($filesToSend as $params) {
-				$zipfile->addfile(file_get_contents($params['file']),$params['filename']);
-			}
-			$zipfile->addfiles($filesToSend);
-			// TODO: filename should be configurable?
-			$zipfile->filedownload('download'.date('_Ymd_his').'.zip');
+			createZip('download'.date('_Ymd_his').'.zip',$archive,1);
         	exit();
 		break;
 		case 'sendAsMail':
-			die('sorry, not implemented yet');
+            sendMail($post['mail'],$archive);
+			echo '<h1>Mail sent</h1>';
+			echo '<p>Your mail was successfully sent.</p>';
+
+            exit();
 		break;
 		case 'sendZippedAsMail':
-			die('sorry, not implemented yet');
+			$filename='typo3temp/download'.date('_Ymd_his').'.zip'; 
+			createZip($filename,$archive,0);
+			$file = array($filename);
+			sendMail($post['mail'],$file);
+			unlink($filename);
+			echo '<h1>Mail sent</h1>';
+			echo '<p>Your mail was successfully sent.</p>';
+			exit();
 		break;
 		case 'sendFileLink':
 			die('sorry, not implemented yet');
@@ -143,12 +141,48 @@ if (is_array($post) && count($post) > 0) {
 	/**
 	 * @return	[type]		...
 	 */
-	function sendMail() {
-		// TODO: implement me:)
-		// use t3lib_htmlmail
-}
+	function sendMail($maildata, $attachments) {
+	#	t3lib_div::debug($maildata);
+		if (!$maildata['from']) $maildata['from']='norepley@'.t3lib_div::getIndpEnv('HTTP_HOST')	;
+		if (!$maildata['subject']) $maildata['from']='Downloads';
+		if (!$maildata['body']) $maildata['body']='Your download:';
+		if (!$maildata['to']) die('<h1>Please set a recpient</h1><p>I\' sorry, without a recipient i can\'t send your mail</p>' );
+		
+		require_once(PATH_t3lib.'class.t3lib_htmlmail.php');          
+		$html_start='<html><head><title>Downloads</title></head><body>';
+		$oemessage = '<p>'.strip_tags($maildata['body']).'</p>';
+		$html_end='</body></html>';
+		
+		$htmlMail = t3lib_div::makeInstance('t3lib_htmlmail');
+		$htmlMail->start();
+		$htmlMail->recipient =strip_tags($maildata['to']);
+		$htmlMail->subject =strip_tags($maildata['subject']);
+		$htmlMail->from_email =strip_tags($maildata['from']);
+		$htmlMail->addPlain($oemessage);
+		foreach($attachments as $file) {
+			$htmlMail->addAttachment($file);
+		}
+		
+		$htmlMail->setHTML($htmlMail->encodeMsg($html_start.$oemessage.$html_end));
+		
+		$htmlMail->send();
+	}
 
-
+	/**
+	 * @return	[type]		...
+	 */
+	function createZip($filename,$files,$download=1) {
+		#t3lib_div::debug($filename);
+		require_once(t3lib_extMgm::extPath('dam_frontend').'archive.php');
+		
+		$zipfile = new zip_file($filename);
+		$zipfile->set_options(array('inmemory' => $download, 'recurse' => 0, 'storepaths' => 0));
+		$zipfile->add_files($files);
+		$zipfile->create_archive();
+		if ($download) $zipfile->download_file();
+	}
+	
+	
 	/**
 	 * Splits configuration
 	 * and returns array which could be used in sendFile
