@@ -627,7 +627,6 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  			// static markers of the list
  			$listElem = tslib_cObj::substituteMarker($listElem, '###DELETE_URL###', $url);
 			$category['pid']=$mediaFolder;
-			t3lib_div::debug($category);
  			if ($this->conf['categorySelection.']['useLanguageOverlay']==1) $category = tx_dam_db::getRecordOverlay('tx_dam_cat', $category, $LangConf);
  			$listElem = tslib_cObj::substituteMarker($listElem, '###TITLE###', $category['title']);
  			$markerArray = $this->recordToMarkerArray($category);
