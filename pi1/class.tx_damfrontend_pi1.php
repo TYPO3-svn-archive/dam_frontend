@@ -1027,11 +1027,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			foreach($selection as $id =>$tree) {
 				foreach ($tree as $cat) {
 					$row = $this->catLogic->getCategory($cat);
-					if ($this->conf['categorySelection.']['useLanguageOverlay']==1) {
-						$conf['sys_language_uid'] = $GLOBALS['TSFE']->sys_language_uid;
-						$row['pid']=$mediaFolder;
-						$row = tx_dam_db::getRecordOverlay('tx_dam_cat', $row, $conf);
-					}
 					$row['treeID']=$id;
 					$cats[]=$row;
 				}
