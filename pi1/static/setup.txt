@@ -148,7 +148,7 @@ plugin.tx_damfrontend_pi1 {
 	renderCategoryTree.info = this ts conf is depreceated
 	
 	categorySelection {
-		# TODO add settings
+		useLanguageOverlay=1
 	}
 	
 	renderFields {

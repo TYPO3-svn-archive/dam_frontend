@@ -125,7 +125,7 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 	 * @return	void
 	 */
  	function init($treeID='', $plugin=null) {
- 		$langWhere = ' AND sys_language_uid = ' . $GLOBALS['TSFE']->sys_language_uid;
+ 		$langWhere = ' AND sys_language_uid = 0';
 		parent::init($langWhere);
  		$this->piVars= array();
  		$this->treeID = $treeID;

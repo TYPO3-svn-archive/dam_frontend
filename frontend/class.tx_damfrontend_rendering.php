@@ -2,7 +2,7 @@
 require_once(PATH_tslib.'class.tslib_content.php');
 require_once(PATH_tslib.'class.tslib_pibase.php');
 require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfrontend_categorisationTree.php');
-
+require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 
 /***************************************************************
 *  Copyright notice
@@ -600,6 +600,8 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
  		$wholeCode = tslib_CObj::getSubpart($this->fileContent,'###CATSELECTION###');
  		$wholeCode=tslib_cObj::substituteMarker($wholeCode,'###CHOOSEN_CAT_HEADER###',$this->pi_getLL('CHOOSEN_CAT_HEADER'));
  		$listCode = '';
+ 		$LangConf['sys_language_uid'] = $GLOBALS['TSFE']->sys_language_uid;
+		$mediaFolder= tx_dam_db::getPid();
  		foreach ($list as $category) {
  			$listElem = tslib_CObj::getSubpart($this->fileContent,'###CATLIST###');
  			$urlVars = array(
@@ -618,13 +620,15 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/frontend/class.tx_damfronte
 			else {
 				$urlVars['tx_damfrontend_pi1[treeID]'] = $category['treeID'];
 			}
+				
 				// TODO implement TS Setting  & add stdWrap
 			$url = $this->cObj->getTypoLink_URL($GLOBALS['TSFE']->id,$urlVars);
 
  			// static markers of the list
  			$listElem = tslib_cObj::substituteMarker($listElem, '###DELETE_URL###', $url);
+			$category['pid']=$mediaFolder;
+ 			if ($this->conf['categorySelection.']['useLanguageOverlay']==1) $category = tx_dam_db::getRecordOverlay('tx_dam_cat', $category, $LangConf);
  			$listElem = tslib_cObj::substituteMarker($listElem, '###TITLE###', $category['title']);
-
  			$markerArray = $this->recordToMarkerArray($category);
 				// adding static user definded markers
  			$markerArray =$markerArray + $this->substituteLangMarkers($single_Code);
