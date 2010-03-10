@@ -49,7 +49,8 @@ if (!$_REQUEST['docID']
 
 
 $post = t3lib_div::_POST($prefixId);
-
+t3lib_div::debug(t3lib_div::getIndpEnv('TYPO3_SITE_URL'));
+die('hatl');
 if (is_array($post) && count($post) > 0) {
 	$filesToSend = array();
 
@@ -273,6 +274,9 @@ if (is_array($post) && count($post) > 0) {
 		return $filePath[3];
 	}
 
+	function redirect($pid) {
+		header('Location: ' . $url);
+	}
 
 
 // test for access to a file

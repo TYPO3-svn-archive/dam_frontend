@@ -7,7 +7,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2006-2009 in2form.com (typo3@in2form.com)
+*  (c) 2006-2010 in2form.com (typo3@in2form.com)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -294,6 +294,8 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  		foreach (array('FILELIST_BATCH_SELECT', 'FILELIST_BATCH_GO', 'FILELIST_BATCH_CREATEZIPFILE', 'FILELIST_BATCH_SENDASMAIL', 'FILELIST_BATCH_SENDZIPPEDFILESASMAIL', 'FILELIST_BATCH_SENDFILELINK', 'FILELIST_BATCH_SENDZIPPEDFILELINK', 'FILENAME_HEADER', 'FILENAME_HEADER', 'FILETYPE_HEADER', 'CR_DATE_HEADER') as $label) {
  			$content = tsLib_CObj::substituteMarker($content, '###'.$label.'###', $this->pi_getLL($label, $label));
  		}
+ 		
+ 		$markerArray['###FILELIST_BACK_PID###']=$GLOBALS['TSFE']->id;
 		$content = tslib_cObj::substituteMarkerArray($content, $markerArray);
  			// substitute static user defined markers
  		$this->pi_loadLL();
