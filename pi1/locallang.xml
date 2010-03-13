@@ -106,6 +106,17 @@
 			<label index="FILELIST_BATCH_SENDZIPPEDFILELINK">send zipped filelink in mail</label>
 			<label index="FILELIST_BATCH_GO">go</label>
 			<label index="FILELIST_BATCH_SELECT">please select:</label>
+			
+			<label index="FROM">from</label>
+			<label index="TO">to</label>
+			<label index="SUBJECT">subject</label>
+			<label index="SUBJECT_DEFAULT">enter subject here</label>
+			<label index="COMMENT">comment</label>
+			<label index="COMMENT_DEFAULT">enter your comment here</label>
+			<label index="MAIL_SUCCESS">Your email was sent successful.</label>
+			<label index="MAIL_FOOTER">Bye, Bye</label>
+			<label index="MAIL_SALUTATION">Hello,</label>
+			<label index="CLOSE">close</label>
 
 			<label index="LABEL_WARNING">Warning!</label>
 			<label index="MESSAGE_DELETION_WARNING">You want to delete this file (see detail information above). Please confirm the deletion.</label>
@@ -222,6 +233,15 @@
 			<label index="FILELIST_BATCH_SENDZIPPEDFILELINK">Zip-Datei Download Link als Mail versenden</label>
 			<label index="FILELIST_BATCH_GO">durchführen</label>
 			<label index="FILELIST_BATCH_SELECT">bitte wählen</label>
+
+			<label index="FROM">von</label>
+			<label index="TO">an</label>
+			<label index="SUBJECT">Betreff</label>
+			<label index="SUBJECT_DEFAULT">Bitte Betreff hier eingeben</label>
+			<label index="COMMENT">Kommentar</label>
+			<label index="COMMENT_DEFAULT">Bitte Kommentar hier eingeben</label>
+			<label index="MAIL_SUCCESS">Die Mail wurde erfolgreich gesendet.</label>
+			<label index="CLOSE">schließen</label>
 
 			<label index="LABEL_WARNING">Warnung!</label>
 			<label index="MESSAGE_DELETION_WARNING">Sie möchten eine Datei löschen. Bitte überprüfen Sie die Detaildaten unterhalb und bestätigen Sie die Löschung.</label>

@@ -132,6 +132,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	var $versionate; // true if a file is already present and the versioning option shall be shown
 
 	var $pid; //Page ID
+	var $fileListConf; //stores configuration for the filelist view
 	/**
 	 * Inits this class and instanceates all nescessary classes
 	 *
@@ -494,6 +495,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		$this->internal['filter']['searchAllCats'] = 0;
 
+		$this->internal['msg'] = strip_tags($this->piVars['msg']);;
 
 		// values for searching
 
@@ -918,7 +920,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 		}
 
-
+		$this->fileListConf=array();
+		$this->fileListConf['msg']=$this->internal['msg'];
+		$this->fileListConf['MESSAGE_VISIBILTY']=1;
 		return true;
 	}
 
@@ -981,10 +985,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 				 //get the html from the renderer
 				if ($this->internal['viewID']==8) {
-					$content = $this->renderer->renderFileGroupedList($files, $rescount, $this->internal['list']['pointer'], $this->internal['list']['listLength']);
+					$content = $this->renderer->renderFileGroupedList($files, $rescount, $this->internal['list']['pointer'], $this->internal['list']['listLength'],false,$this->fileListConf);
 				}
 				else {
-					$content = $this->renderer->renderFileList($files, $rescount, $this->internal['list']['pointer'], $this->internal['list']['listLength'],$useRequestForm);
+					$content = $this->renderer->renderFileList($files, $rescount, $this->internal['list']['pointer'], $this->internal['list']['listLength'],$useRequestForm,$this->fileListConf);
 				}
 			}
 			else {
@@ -1751,7 +1755,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$rescount = $this->docLogic->resultCount;
 			# if a request form should be rendered
 			$useRequestForm=false;
-			$content = $this->renderer->renderFileList($files, $rescount, $this->internal['list']['pointer'], $this->internal['list']['listLength'],$useRequestForm);
+			$content = $this->renderer->renderFileList($files, $rescount, $this->internal['list']['pointer'], $this->internal['list']['listLength'],$useRequestForm,$this->fileListConf);
 		}
 		else {
 			// render error

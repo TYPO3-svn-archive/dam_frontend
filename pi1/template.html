@@ -9,7 +9,7 @@ Allowed Markers:
 
 <!-- ###FILELIST### begin -->
 
-	<form action="###DOWNLOAD_FORM_URL###" target="_blank" method="post">
+	<form action="###DOWNLOAD_FORM_URL###" method="post">
 	<table class="filelist" border="1">
 		<tr>
 			<th>&nbsp;</th>
@@ -38,16 +38,25 @@ Allowed Markers:
 		 <tr>
 			<td colspan="7">
 			<div id="mailform">
+				<div id="dam_frontend_message" style="visibility:###MESSAGE_VISIBILTY###;width:200px;height:200px;background:grey;position:absolute">
+					<p>###MESSAGE###</p>
+					<p style="border:solid black 1px;background:lightgrey;" onclick="close_dam_frontend_message()">###CLOSE###</p>
+					<script type="text/javascript">
+						function close_dam_frontend_message() {
+							document.getElementById('dam_frontend_message').style.visibility = 'hidden';
+							}
+					</script>
+				</div>
 				<div style="float:left; margin-right:10px;">
-				<label>Von:</label><input type="text" name="tx_damfrontend_pi1[mail][from]" />
+				<label>###FROM###:</label><input type="text" name="tx_damfrontend_pi1[mail][from]" value="###FROM_DEFAULT###"/>
 				<br />
-				<label>An:</label><input type="text" name="tx_damfrontend_pi1[mail][to]" />
+				<label>###TO###:</label><input type="text" name="tx_damfrontend_pi1[mail][to]" />
 				<br />
-				<label>Subject:</label><input type="text" name="tx_damfrontend_pi1[mail][subject]" />
+				<label>###SUBJECT###:</label><input type="text" name="tx_damfrontend_pi1[mail][subject]" value="###SUBJECT_DEFAULT###" />
 				</div>
 				<div style="float:left;">
-				<label>Kommentar:</label><br />
-				<textarea cols="60" rows="5" name="tx_damfrontend_pi1[mail][body]" ></textarea>
+				<label>###COMMENT###:</label><br />
+				<textarea cols="60" rows="5" name="tx_damfrontend_pi1[mail][body]" >###COMMENT_DEFAULT###</textarea>
 				</div>
 			</div>
 			</td>
@@ -62,6 +71,7 @@ Allowed Markers:
 			</select>
 			<input type="submit" name="tx_damfrontend_pi1[submit]" value="###FILELIST_BATCH_GO###" />
 			<input type="hidden" name="tx_damfrontend_pi1[pid]" value="###FILELIST_BACK_PID###" />
+			<input type="hidden" name="tx_damfrontend_pi1[mailTemplate]" value="###MAIL_TEMPLATE###" />
 			</td>
 		</tr>
 	</table>
@@ -678,3 +688,30 @@ Template for displaying a single document in a list
 		</fieldset>
 	</form>
 <!-- ###EASYSEARCH### end-->
+
+
+
+<!-- *************************************
+
+	Mail template
+
+****************************************** -->
+
+<!-- ###MAIL_MESSAGE### begin-->
+<table>
+	<tr>
+		<td>###MAIL_SALUTATION###</td>
+	</tr>
+
+	<tr>
+		<td>###MAIL_COMMENT###</td>
+	</tr>
+
+	<tr>
+		<td>###MAIL_FOOTER###</td>
+	</tr>
+</table>
+<!-- ###MAIL_MESSAGE### end-->
+
+
+

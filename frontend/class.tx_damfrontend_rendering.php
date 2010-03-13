@@ -144,7 +144,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 	 * @param	[boolean]		$useRequestForm: if true, a request form will be rendered, where a FE User has to fill out a form
 	 * @return	[type]		...
 	 */
- 	function renderFileList($list, $resultcount, $pointer, $listLength, $useRequestForm) {
+ 	function renderFileList($list, $resultcount, $pointer, $listLength, $useRequestForm,$listConf =array()) {
 
 
  		if(!is_array($list)){
@@ -296,7 +296,31 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  		}
  		
  		$markerArray['###FILELIST_BACK_PID###']=$GLOBALS['TSFE']->id;
-		$content = tslib_cObj::substituteMarkerArray($content, $markerArray);
+ 		$markerArray['###COMMENT_DEFAULT###']=$this->pi_getLL('COMMENT_DEFAULT');
+ 		$markerArray['###COMMENT###']=$this->pi_getLL('COMMENT');
+ 		$markerArray['###SUBJECT###']=$this->pi_getLL('SUBJECT');
+ 		$markerArray['###TO###']=$this->pi_getLL('TO');
+ 		$markerArray['###FROM###']=$this->pi_getLL('FROM');
+ 		$markerArray['###SUBJECT_DEFAULT###']=$this->pi_getLL('SUBJECT_DEFAULT');
+ 		$markerArray['###FROM_DEFAULT###']=$GLOBALS['TSFE']->fe_user->user['email'];
+ 		$markerArray['###MESSAGE###']=$this->pi_getLL('MAIL_SUCCESS');
+		
+ 		# mail markers
+ 		$mailArray['###MAIL_SALUTATION###']=$this->pi_getLL('MAIL_SALUTATION');
+ 		#$mailArray['###MAIL_COMMENT###']=$this->pi_getLL('MAIL_SUCCESS');
+ 		$mailArray['###MAIL_FOOTER###']=$this->pi_getLL('MAIL_FOOTER');
+ 		$mailCode = tsLib_CObj::getSubpart($this->fileContent,'###MAIL_MESSAGE###');
+ 		$mailCode =	tslib_cObj::substituteMarkerArray($mailCode, $mailArray);
+ 		$markerArray['###MAIL_TEMPLATE###']=htmlspecialchars($mailCode);
+ 		
+		if ($listConf['MESSAGE_VISIBILTY']=="1") {
+	 		$markerArray['###MESSAGE_VISIBILTY###']='visible';
+		}
+		else {
+	 		$markerArray['###MESSAGE_VISIBILTY###']='hidden';
+		}
+ 		$markerArray['###CLOSE###']=$this->pi_getLL('CLOSE');
+ 		$content = tslib_cObj::substituteMarkerArray($content, $markerArray);
  			// substitute static user defined markers
  		$this->pi_loadLL();
  		$staticMarkers['###SETROWSPERVIEW###'] = $this->pi_getLL('setRowsPerView');

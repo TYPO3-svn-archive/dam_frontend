@@ -33,9 +33,9 @@ $userObj->fetchGroupData();
 tslib_eidtools::connectDB();
 $docLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_documents');
 $docLogic->feuser = $userObj;
-
 require_once(PATH_t3lib.'class.t3lib_stdgraphic.php');
 require_once(PATH_t3lib.'class.t3lib_page.php');
+require_once(PATH_t3lib.'class.t3lib_div.php');
 require_once(PATH_tslib.'class.tslib_gifbuilder.php');
 
 
@@ -47,10 +47,7 @@ if (!$_REQUEST['docID']
 	die ('<h1>Error</h1><p>You have no access to download a file. In this case no DocID was given!</p>');
 }
 
-
 $post = t3lib_div::_POST($prefixId);
-t3lib_div::debug(t3lib_div::getIndpEnv('TYPO3_SITE_URL'));
-die('hatl');
 if (is_array($post) && count($post) > 0) {
 	$filesToSend = array();
 
@@ -105,10 +102,14 @@ if (is_array($post) && count($post) > 0) {
         	exit();
 		break;
 		case 'sendAsMail':
-            sendMail($post['mail'],$archive);
-			echo '<h1>Mail sent</h1>';
-			echo '<p>Your mail was successfully sent.</p>';
-
+			if (sendMail($post['mail'],$archive,$post['mailTemplate'])) {
+            	redirect($post['pid'],'&tx_damfrontend_pi1[msg]=mail_success');
+            } 
+            else {
+				echo '<h1>Mail sent</h1>';
+				echo '<p>Your mail was not successfully sent.</p>';
+            } 
+			
             exit();
 		break;
 		case 'sendZippedAsMail':
@@ -142,31 +143,30 @@ if (is_array($post) && count($post) > 0) {
 	/**
 	 * @return	[type]		...
 	 */
-	function sendMail($maildata, $attachments) {
-	#	t3lib_div::debug($maildata);
+	function sendMail($maildata, $attachments,$mailTemplate) {
 		if (!$maildata['from']) $maildata['from']='norepley@'.t3lib_div::getIndpEnv('HTTP_HOST')	;
 		if (!$maildata['subject']) $maildata['from']='Downloads';
 		if (!$maildata['body']) $maildata['body']='Your download:';
 		if (!$maildata['to']) die('<h1>Please set a recpient</h1><p>I\' sorry, without a recipient i can\'t send your mail</p>' );
 		
-		require_once(PATH_t3lib.'class.t3lib_htmlmail.php');          
+		require_once(PATH_t3lib.'class.t3lib_htmlmail.php');
+		$mailTemplate = strip_tags($mailTemplate,'<table><tr><td><p>');          
+		$mailTemplate = str_replace('###MAIL_COMMENT###',strip_tags($maildata['body']),$mailTemplate);
 		$html_start='<html><head><title>Downloads</title></head><body>';
-		$oemessage = '<p>'.strip_tags($maildata['body']).'</p>';
 		$html_end='</body></html>';
-		
 		$htmlMail = t3lib_div::makeInstance('t3lib_htmlmail');
 		$htmlMail->start();
 		$htmlMail->recipient =strip_tags($maildata['to']);
 		$htmlMail->subject =strip_tags($maildata['subject']);
 		$htmlMail->from_email =strip_tags($maildata['from']);
-		$htmlMail->addPlain($oemessage);
+		$htmlMail->addPlain(strip_tags($maildata['body']));
 		foreach($attachments as $file) {
 			$htmlMail->addAttachment($file);
 		}
 		
-		$htmlMail->setHTML($htmlMail->encodeMsg($html_start.$oemessage.$html_end));
+		$htmlMail->setHTML($htmlMail->encodeMsg($html_start.$mailTemplate.$html_end));
 		
-		$htmlMail->send();
+		return $htmlMail->send();
 	}
 
 	/**
@@ -274,8 +274,9 @@ if (is_array($post) && count($post) > 0) {
 		return $filePath[3];
 	}
 
-	function redirect($pid) {
-		header('Location: ' . $url);
+	function redirect($pid,$params='') {
+		header('Location: '. t3lib_div::getIndpEnv('TYPO3_SITE_URL') .'?id='.$pid.$params);
+		exit();
 	}
 
 
