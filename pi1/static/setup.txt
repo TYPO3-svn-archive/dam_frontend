@@ -389,12 +389,14 @@ plugin.tx_damfrontend_pi1 {
 			typolink.extTarget = _blank
 
 			# TEXT Objects, starting with "1"
-			1.value = <option value="">nicht gew&auml;hlt</option>
-
+			1.value = not chosen
+			1.wrap=<option value="">|</option>
+			1.lang.de=nicht gew&auml;hlt
+			
 			2.value = <option value="ORIGINAL:ORIGINAL">original</option>
 
 			3.wrap = <option value="width:1024;y:768;resample:72">|</option>
-			3.value = optimized for powerpoint
+			3.value = resized 1024 * 768 72 dpi
 			3.lang.de = F&uuml;r Powerpoint optimiert
 
 			4.wrap = <option value="width:1024;height:768;resample:300">|</option>
@@ -851,45 +853,47 @@ plugin.tx_damfrontend_pi1 {
 			display:block;
 			float:left;
 			padding-left:20px;
-			background:url(typo3conf/ext/dam_frontend/res/images/checkbox_green.gif) no-repeat left top;
+			background:url(../typo3conf/ext/dam_frontend/res/images/checkbox_green.gif) no-repeat left top;
 		}
 		
 		.checkbox a{
 			display:block;
 			float:left;
 			padding-left:20px;
-			background:url(typo3conf/ext/dam_frontend/res/images/checkbox.gif) no-repeat left top;
+			background:url(../typo3conf/ext/dam_frontend/res/images/checkbox.gif) no-repeat left top;
 		}
 
 		.checkbox_grey a{
 			display:block;
 			float:left;
 			padding-left:20px;
-			background:url(typo3conf/ext/dam_frontend/res/images/checkbox_grey.gif) no-repeat left top;
+			background:url(../typo3conf/ext/dam_frontend/res/images/checkbox_grey.gif) no-repeat left top;
 		}
 		
 		.no_access {
-			background:url(typo3conf/ext/dam_frontend/res/images/no_access.gif) no-repeat left top;
+			background:url(../typo3conf/ext/dam_frontend/res/images/no_access.gif) no-repeat left top;
 			padding-left: 17px;
 			
 		}
 		
 		.tree_close {
 			padding-left: 17px;
-			background:url(typo3conf/ext/dam_frontend/res/images/tree_close.gif) no-repeat left top;
+			background:url(../typo3conf/ext/dam_frontend/res/images/tree_close.gif) no-repeat left top;
 		}
 		
 		.tree_open {
 			padding-left: 17px;
-			background:url(typo3conf/ext/dam_frontend/res/images/tree_open.gif) no-repeat left top;
+			background:url(../typo3conf/ext/dam_frontend/res/images/tree_open.gif) no-repeat left top;
 		}
 		.tree_noControll {
 			padding-left: 17px;
 		}
 
-		
-		
-
+		.dam-frontend-label {
+			display:block;
+			width:60px;
+			float:left;
+		}
 	)
 }
 

@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2006-2009 in2form.com (typo3@in2form.com)
+*  (c) 2006-2010 in2form.com (typo3@in2form.com)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -477,7 +477,6 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				$idAttr = htmlspecialchars($this->domIdPrefix.$this->getId($v['row']).'_'.$v['bank']);
 				
 				if ($this->conf['categoryTreeAdvanced.']['category.']['useAlternatingSubpart']==1) {
-					
 					$marker = $GLOBALS['TSFE']->tmpl->splitConfArray(array('cObjNum' => $this->conf['categoryTreeAdvanced.']['category.']['marker']), count($treeArr));
 					$marker  = $marker[$i]['cObjNum'];
 				}
