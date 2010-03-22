@@ -117,6 +117,30 @@ Allowed Markers:
 
 <!-- ********************************
 
+	template for records of the explorerview
+
+********************************  -->
+<!-- ###EXPLORERVIEW_RECORD### begin -->
+	<li>
+				###FILEICON### &nbsp; ###TITLE###
+	</li>
+<!-- ###EXPLORERVIEW_RECORD### end -->
+
+<!-- ###EXPLORERVIEW_RECORD_ODD### begin -->
+	<li class="odd">
+				###FILEICON### &nbsp; ###TITLE###
+	</li>
+<!-- ###EXPLORERVIEW_RECORD_ODD### end -->
+
+<!-- ###EXPLORERVIEW_RECORD_EVEN### begin -->
+	<li class="even">
+				###FILEICON### &nbsp; ###TITLE###
+	</li>
+<!-- ###EXPLORERVIEW_RECORD_EVEN### end -->
+
+
+<!-- ********************************
+
 	template for the browserresult list
 
 ********************************  -->
@@ -718,4 +742,27 @@ MAIL_FOOTER			Is filled by the locallang file of pi1, can be customized via typo
 <!-- ###MAIL_MESSAGE### end-->
 
 
+<h2>Explorer View</h2>
 
+
+<p>available elements for tree wrap</p>
+<ul>
+	<li>###TREE_ELEMENTS### : renders each category (in a loop)</li>
+</ul>
+<!-- ###TREE### begin -->
+<p>###LABEL_MESSAGE###</p>
+	###TREE_ELEMENTS###
+<!-- ###TREE### end -->
+
+<p>available elements</p>
+<ul>
+	<li>###TREELEVELCSS### : inline css style for moving child cats to right</li>
+	<li>###CATEGORY_TITLE### : category title (if has child cats wrapped in an a tag for tree navigation</li>
+</ul>
+<!-- ###EXPLORER_VIEW## begin -->
+	<div ###TREELEVELCSS### class="treeBgWhite">###CATEGORY_TITLE###</div>
+<!-- ###EXPLORER_VIEW### end -->
+
+<!-- ###EXPLORER_VIEW_2### begin -->
+	<div ###TREELEVELCSS### class="treeBgGrey">###CATEGORY_TITLE###</div>
+<!-- ###EXPLORER_VIEW_2### end -->

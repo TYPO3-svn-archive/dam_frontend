@@ -96,6 +96,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 	var $langFile;
  	var $filePath; // contains the physical path to the filereference
  	var $fileContent; // HTML content of the given filepath
+ 	var $fileContentTree; // HTML content of the given filepath for the advanced category tree
 
 	var $iconBaseAddress = null;
 	var $staticInfoObj;
@@ -178,7 +179,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  			$cObj->start($elem, 'tx_dam');
  			$countElement++;
  			$elem['count_id'] =$countElement;
- 			if ($pointer>0) $elem['count_id'] = $countElement  + $pointer*$listLength;
+ 			if ($pointer>0) $elem['count_id'] = $countElement  + $pointer * $listLength;
 
  			$markerArray = $this->recordToMarkerArray($elem, 'renderFields','tx_dam');
  			$markerArray =$markerArray + $this->substituteLangMarkers($record_Code);
@@ -207,13 +208,12 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  				);
  				// TODO implement me with cObj
  				$markerArray['###LINK_DOWNLOAD###'] = $this->pi_linkTP('request', $paramRequest);
-
  			} else {
 	 			$markerArray['###LINK_DOWNLOAD###'] = $cObj->cObjGetSingle($this->conf['filelist.']['link_download'], $this->conf['filelist.']['link_download.']);
 	 		}
 			$markerArray['###LINK_SELECT_DOWNLOAD###'] = '';
+			
 			if (is_array($this->conf['filelist.']['link_select_download.'])) {
-
 				$markerArray['###LINK_SELECT_DOWNLOAD###'] .= '<select name="'.$this->prefixId.'['.$elem['uid'].'][convert]">';
 				$i = 1;
 				while (is_array($this->conf['filelist.']['link_select_download.'][$i.'.'])) {
@@ -312,8 +312,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  		$mailCode = tsLib_CObj::getSubpart($this->fileContent,'###MAIL_MESSAGE###');
  		$mailCode =	tslib_cObj::substituteMarkerArray($mailCode, $mailArray);
  		$markerArray['###MAIL_TEMPLATE###']=htmlspecialchars($mailCode);
- 		
-		if ($listConf['MESSAGE_VISIBILTY']=="1") {
+		if ($listConf['MESSAGE_VISIBILTY']=="mail_success") {
 	 		$markerArray['###MESSAGE_VISIBILTY###']='visible';
 		}
 		else {
@@ -1477,19 +1476,18 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  * @return	[string]		html of the category
  * @author	stefan
  */
-	function renderCategoryTreeCategory($sel_class,$dataArray,$title,$control,$subpart) {
+	function renderCategoryTreeCategory($sel_class,$dataArray,$title,$control,$subpart,$scope='categoryTreeAdvanced') {
 		$this->pi_loadLL();
 
-		$this->fileContent= tsLib_CObj::fileResource($this->conf['categoryTreeAdvanced.']['templateFile']);
-		$subpart = tslib_CObj::getSubpart($this->fileContent,$subpart);
+		$subpart = tslib_CObj::getSubpart($this->fileContentTree,$subpart);
 		$markerArray = array();
 		$markerArray['###CATEGORY_TITLE###'] = $dataArray['HTML'];
 		$markerArray['###SELECT_CAT###'] = $dataArray['select_cat'];
-		$markerArray['###SELECTIONSTATUS###'] = $this->conf['categoryTreeAdvanced.']['categorySelection.']['selectionStatus.'][$sel_class];
+		$markerArray['###SELECTIONSTATUS###'] = $this->conf[$scope.'.']['categorySelection.']['selectionStatus.'][$sel_class];
 		$markerArray['###TREELEVELCSS###'] = $dataArray['treeLevelCSS'];
  		$content=tslib_cObj::substituteMarkerArray($subpart, $markerArray);
  		// todo support for static markers
- 		return $this->cObj->stdWrap($content,$this->conf['categoryTreeAdvanced.']['category.']);
+ 		return $this->cObj->stdWrap($content,$this->conf[$scope.'.']['category.']);
 	}
 
 
@@ -1501,9 +1499,9 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  * @return	[string]		html of the category
  * @author	stefan
  */
-	function renderCategoryTree($markerArray, $treeID=0) {
+	function renderCategoryTree($markerArray, $treeID=0,$scope='categoryTreeAdvanced') {
 		$this->pi_loadLL();
-		$this->fileContent= tsLib_CObj::fileResource($this->conf['categoryTreeAdvanced.']['templateFile']);
+		$this->fileContent= tsLib_CObj::fileResource($this->conf[$scope.'.']['templateFile']);
 		$subpart = tslib_CObj::getSubpart($this->fileContent,'###TREE###');
 		$markerArray['###LABEL_MESSAGE###']=$this->pi_getLL('LABEL_MESSAGE');
 
@@ -1520,8 +1518,8 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 		if ($this->piVars['catEditUID']) {
 			$param_array['tx_damfrontend_pi1[catEditUID]'] =$this->piVars['catEditUID'];
 		}
-		$this->conf['categoryTreeAdvanced.']['category_tree_selector_all.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
-		$markerArray['###CATEGORY_TREE_SELECTOR###'] .= $this->cObj->typoLink ($this->pi_getLL('CATEGORY_TREE_SELECTOR_ALL'),$this->conf['categoryTreeAdvanced.']['category_tree_selector_all.']) ;
+		$this->conf[$scope.'.']['category_tree_selector_all.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
+		$markerArray['###CATEGORY_TREE_SELECTOR###'] .= $this->cObj->typoLink ($this->pi_getLL('CATEGORY_TREE_SELECTOR_ALL'),$this->conf[$scope.'.']['category_tree_selector_all.']) ;
 
 		$param_array = array (
 					'tx_damfrontend_pi1[catPlus]' => null,
@@ -1535,11 +1533,11 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 		if ($this->piVars['catEditUID']) {
 			$param_array['tx_damfrontend_pi1[catEditUID]'] =$this->piVars['catEditUID'];
 		}
-		$this->conf['categoryTreeAdvanced.']['category_tree_selector_none.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
-		$markerArray['###CATEGORY_TREE_SELECTOR###'] .= $this->cObj->typoLink ($this->pi_getLL('CATEGORY_TREE_SELECTOR_NONE'),$this->conf['categoryTreeAdvanced.']['category_tree_selector_none.']) ;
+		$this->conf[$scope.'.']['category_tree_selector_none.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
+		$markerArray['###CATEGORY_TREE_SELECTOR###'] .= $this->cObj->typoLink ($this->pi_getLL('CATEGORY_TREE_SELECTOR_NONE'),$this->conf[$scope.'.']['category_tree_selector_none.']) ;
 		// todo support for static markers
  		$content=tslib_cObj::substituteMarkerArray($subpart, $markerArray);
- 		$this->cObj->stdWrap($content,$this->conf['categoryTreeAdvanced.']);
+ 		$this->cObj->stdWrap($content,$this->conf[$scope.'.']);
 		return $content;
 	}
 
@@ -1751,6 +1749,80 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 	 		$content.= $this->cObj->stdWrap($box,$this->conf['drillDown.']['selectorBox.']);
 	 	}	
 	 	$content.='</form>';
+ 		return $content;
+ 	}
+ 	
+ 	function renderDamRecordRow($elem,$countElement,$pointer,$listLength,$listCount,$scope='filelist') {
+ 		/*t3lib_div::debug($elem['title']);
+ 		t3lib_div::debug($countElement);
+ 		t3lib_div::debug($pointer);
+ 		t3lib_div::debug($listLength);
+ 		t3lib_div::debug($listCount);*/
+ 		
+ 		// Optionsplit for ###FILELIST_RECORD###
+		if ($this->conf[$scope.'.']['useAlternatingRows']==1) {
+			$filelist_record_marker = $GLOBALS['TSFE']->tmpl->splitConfArray(array('cObjNum' => $this->conf[$scope.'.']['marker.']['filelist_record_alterning']), $listCount);
+		}
+		else {
+			if (!isset($this->conf[$scope.'.']['marker.']['filelist_record'])) { $this->conf[$scope.'.']['marker.']['filelist_record'] = '###FILELIST_RECORD###'; }
+			$filelist_record_marker = $GLOBALS['TSFE']->tmpl->splitConfArray(array('cObjNum' => $this->conf[$scope.'.']['marker.']['filelist_record']), $listCount);
+		}
+ 		$record_Code = tsLib_CObj::getSubpart($this->fileContent,$filelist_record_marker[$countElement]['cObjNum']);
+ 		$cObj = t3lib_div::makeInstance('tslib_cObj');
+ 		$cObj->start($elem, 'tx_dam');
+ 		$elem['count_id'] =$countElement;
+ 		if ($pointer>0) $elem['count_id'] = $countElement  + $pointer*$listLength;
+
+ 		$markerArray = $this->recordToMarkerArray($elem, 'renderFields','tx_dam');
+ 		$markerArray =$markerArray + $this->substituteLangMarkers($record_Code);
+
+ 		$markerArray['###TX_DAMFRONTEND_FEUSER_UPLOAD###']	= $this->get_FEUserName($elem['tx_damfrontend_feuser_upload']);
+		$markerArray['###CRDATE_AGE###'] 					= $cObj->stdWrap($elem['crdate'], $this->conf['renderFields.']['crdate_age.']);
+		$markerArray['###DATE_CR_AGE###'] 					= $cObj->stdWrap($elem['date_cr'], $this->conf['renderFields.']['date_cr_age.']);
+		$markerArray['###CATEGORY###'] 						= $cObj->cObjGetSingle($this->conf['singleView.']['category.']['cObject'], $this->conf['singleView.']['category.']['cObject.']);
+		
+		if (!is_null($this->staticInfoObj)) { $markerArray['###LANGUAGE###'] = $this->staticInfoObj->getStaticInfoName('LANGUAGES', $elem['language'], '', '', false); }
+
+ 			// adding Markers for links to download and single View
+		if ($this->piVars['pointer']) $this->conf[$scope.'.']['link_single.']['stdWrap.']['typolink.']['additionalParams'].= '&tx_damfrontend_pi1[pointer]='.$this->piVars['pointer'];
+		
+		foreach ($this->piVars as $piVar=>$value) {
+			if (substr($piVar,0,5)=="sort_") $this->conf[$scope.'.']['link_single.']['stdWrap.']['typolink.']['additionalParams'].= '&tx_damfrontend_pi1['.$piVar.']='.$this->piVars[$piVar];
+		}
+
+		$markerArray['###LINK_SINGLE###'] = $cObj->cObjGetSingle($this->conf[$scope.'.']['link_single'], $this->conf[$scope.'.']['link_single.']);
+ 		$markerArray['###LINK_DOWNLOAD###'] = $cObj->cObjGetSingle($this->conf[$scope.'.']['link_download'], $this->conf[$scope.'.']['link_download.']);
+		$markerArray['###LINK_SELECT_DOWNLOAD###'] = '';
+
+		if (is_array($this->conf[$scope.'.']['link_select_download.'])) {
+			$markerArray['###LINK_SELECT_DOWNLOAD###'] .= '<select name="'.$this->prefixId.'['.$elem['uid'].'][convert]">';
+			$i = 1;
+			while (is_array($this->conf[$scope.'.']['link_select_download.'][$i.'.'])) {
+				$markerArray['###LINK_SELECT_DOWNLOAD###'] .= $cObj->TEXT($this->conf[$scope.'.']['link_select_download.'][$i.'.']);
+				$i++;
+			}
+			$markerArray['###LINK_SELECT_DOWNLOAD###'] .= '</select>';
+			$markerArray['###LINK_SELECT_DOWNLOAD###'] .= '<input type="submit" name="'.$this->prefixId.'['.$elem['uid'].'][submit]" value="ok" />';
+		}
+
+		$markerArray['###FILEICON###'] = $cObj->stdWrap('<img src="'.$this->getFileIconHref($elem['file_mime_type'],$elem['file_mime_subtype'] ).'" title="'.$elem['title'].'"  alt="'.$elem['title'].'"/>',$this->conf['renderFields.']['fileicon.']);
+
+			//render deletion button
+		if ($elem['allowDeletion']==1 AND $this->conf['enableDeletions']==1) {
+			$markerArray['###BUTTON_DELETE###'] = $cObj->cObjGetSingle($this->conf[$scope.'.']['button_delete'], $this->conf[$scope.'.']['button_delete.']);
+		} else {
+			$markerArray['###BUTTON_DELETE###'] ='';
+		}
+			//render edit button
+		if ($elem['allowEdit']==1 AND $this->conf['enableEdits']==1) {
+			$markerArray['###BUTTON_EDIT###'] = $cObj->cObjGetSingle($this->conf[$scope.'.']['button_edit'], $this->conf[$scope.'.']['button_edit.']);
+			$markerArray['###BUTTON_CATEDIT###'] = $cObj->cObjGetSingle($this->conf[$scope.'.']['button_catedit'], $this->conf[$scope.'.']['button_catedit.']);
+		} else {
+			$markerArray['###BUTTON_EDIT###'] ='';
+			$markerArray['###BUTTON_CATEDIT###'] ='';
+		}
+		$content = tslib_cObj::substituteMarkerArray($record_Code, $markerArray);
+		#t3lib_div::debug($content); 
  		return $content;
  	}
 }

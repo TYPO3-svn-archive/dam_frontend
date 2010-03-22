@@ -201,7 +201,7 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 					$WHERE = 'uid = '.$key ;
 					$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($FIELDS,$TABLE,$WHERE);
 					while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-						// todo check for language overlay
+						// TODO check for language overlay
 						if ($row['pid']==$pageID ) {
 							$returnArr[$key] = array();
 							$returnArr[$key] = array_unique($ar[$key]);

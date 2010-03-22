@@ -623,6 +623,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			case 11:
 				$content .= $this->drillDown();
 				break;
+			case 12:
+				$content .= $this->explorerView();
+				break;
 			default:
 				$content .= 'no view selected - nothing is displayed';
 				break;
@@ -922,7 +925,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		$this->fileListConf=array();
 		$this->fileListConf['msg']=$this->internal['msg'];
-		$this->fileListConf['MESSAGE_VISIBILTY']=1;
 		return true;
 	}
 
@@ -2019,7 +2021,33 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 		return $catArray;
 	}
+
 	
+	/**
+	 * shows the explorerView
+	 *
+	 * @return	[string] html of the content
+	 */
+	function explorerView() {
+		$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeViewAdvanced');
+		$tree->renderer = $this->renderer;
+		$tree->catLogic = $this->catLogic;
+		
+		$tree->init($this->internal['treeID'], $this);
+		$tree->title = $this->internal['treeName'];
+		$selCats  = $this->catList->getCatSelection($this->internal['treeID']);
+
+		$tree->selectedCats = $selCats[$this->internal['treeID']];
+
+		if (is_array($this->internal['catMounts'])) $tree->MOUNTS = $this->internal['catMounts'];
+		$tree->expandTreeLevel($this->conf['categoryTree.']['expandTreeLevel']);
+		$tree->additionalTreeConf['useExplorerView']=1;
+		$tree->additionalTreeConf['docLogic']=$this->docLogic;
+		
+		return  $this->cObj->stdWrap($tree->getBrowsableTree(), $this->conf['categoryTree.']['stdWrap.']);
+		
+		return $content;
+	}
 	
 }
 

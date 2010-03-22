@@ -91,7 +91,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 	var $rootIconIsSet = false;								// indicates, if a root icon must be added or not
 	var $mediaFolder;										// ID of the Folder, which contains the dam records
 	var $treeStructureArray;
-
+	var $additionalTreeConf= array();						// holds additonal rendering configuration
 	/**
 	 * prepares the category tree
 	 *
@@ -433,8 +433,17 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 	 * @return	string		The HTML code for the tree
 	 */
 	function printTree($treeArr='')	{
-		// 0 - show root icon always
+
+			// 0 - show root icon always
 		$i = 0; //counter to determine of a row is even or uneven
+			
+			// setup ts options for rendering
+		if ($this->additionalTreeConf['useExplorerView']==1) {
+			$scope='explorerView';						
+		}
+		else {
+			$scope='categoryTreeAdvanced';
+		}
 		if(!$this->rootIconIsSet AND count($treeArr)) {
 				// Artificial record for the tree root, id=0
 		}
@@ -443,7 +452,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		} else {
 			$titleLen = intval($this->BE_USER->uc['titleLen']);
 			$out=array();
-			
+			$this->renderer->fileContentTree= tsLib_CObj::fileResource($this->renderer->conf['categoryTreeAdvanced.']['templateFile']);
 			foreach($treeArr as $k => $v)	{
 
 				
@@ -475,7 +484,6 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				$control = $this->getControl($title, $v['row'], $v['bank']);
 				$v['select_cat'] = $this->wrapCatSelection('&nbsp;',$v['row'],$sel_class);
 				$idAttr = htmlspecialchars($this->domIdPrefix.$this->getId($v['row']).'_'.$v['bank']);
-				
 				if ($this->conf['categoryTreeAdvanced.']['category.']['useAlternatingSubpart']==1) {
 					$marker = $GLOBALS['TSFE']->tmpl->splitConfArray(array('cObjNum' => $this->conf['categoryTreeAdvanced.']['category.']['marker']), count($treeArr));
 					$marker  = $marker[$i]['cObjNum'];
@@ -488,11 +496,14 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 					
 				}
 				else {
-					$out['###TREE_ELEMENTS###'].= $this->renderer->renderCategoryTreeCategory($sel_class,$v,$title,$control,$marker);
+					$out['###TREE_ELEMENTS###'].= $this->renderer->renderCategoryTreeCategory($sel_class,$v,$title,$control,$marker,$scope);
+					if ($this->additionalTreeConf['useExplorerView']==1 AND $v['isOpen']==1) {
+						$out['###TREE_ELEMENTS###'].= $this->filelist($v['row']['uid']);						
+					}
 				}
 				$i++;
 			}
-			return $this->renderer->renderCategoryTree($out, $this->treeID);
+			return $this->renderer->renderCategoryTree($out, $this->treeID,$scope);
 		}
 	}
 
@@ -587,7 +598,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			if (is_array($rootRec))	{
 				$uid = $rootRec['uid'];		// In case it was swapped inside getRecord due to workspaces.
 					// Add the root of the mount to ->tree
-				$this->tree[]=array('HTML'=>$firstHtml, 'row'=>$rootRec, 'bank'=>$this->bank);
+				$this->tree[]=array('HTML'=>$firstHtml, 'row'=>$rootRec, 'bank'=>$this->bank,'isOpen'=>$isOpen);
 
 				// If the mount is expanded, go down:
 				if ($isOpen)	{
@@ -695,7 +706,8 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				'invertedDepth'=>$depth,
 				'blankLineCode'=>$blankLineCode,
 				'bank' => $this->bank,
-				'treeLevelCSS' =>'style ="padding:'.$this->conf['categoryTreeAdvanced.']['treeLevelCSS.']['paddingTop'].'px '.$this->conf['categoryTreeAdvanced.']['treeLevelCSS.']['paddingRight'].'px '.$this->conf['categoryTreeAdvanced.']['treeLevelCSS.']['paddingBottom'].'px '. $paddingLeft .'px;"'
+				'treeLevelCSS' =>'style ="padding:'.$this->conf['categoryTreeAdvanced.']['treeLevelCSS.']['paddingTop'].'px '.$this->conf['categoryTreeAdvanced.']['treeLevelCSS.']['paddingRight'].'px '.$this->conf['categoryTreeAdvanced.']['treeLevelCSS.']['paddingBottom'].'px '. $paddingLeft .'px;"',
+				'isOpen'=>$exp
 			);
 		}
 
@@ -891,6 +903,46 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			}
 		}
 		return $sel_class;
+	}
+	
+	/**
+	 * returns an array of files belonging to the given category
+	 *
+	 * @param	[int]		$catID
+	 * @return	[int]		tree_selectedCats, tree_unselectedCats, tree_selectedPartlyCats
+	 */	
+	function filelist($catID) {
+		$currentCat = array();
+		$currentCat[]=$catID;
+		
+		// initialization the document logic
+		$this->additionalTreeConf['docLogic']->categories = array();
+		$this->additionalTreeConf['docLogic']->categories[$this->cObj->data['uid']]=$currentCat;
+		
+		$result=array();
+		if (is_array($this->additionalTreeConf['filter'])) {
+			$this->internal['filterError'] = $this->additionalTreeConf['docLogic']->setFilter($this->internal['filter']);
+		}
+		#TODO implement sorting for the filelist
+		$this->additionalTreeConf['docLogic']->orderBy = 'tx_dam.'. 'title';
+		$this->additionalTreeConf['docLogic']->limit = '0,9999';
+		$files = $this->additionalTreeConf['docLogic']->getDocumentList($GLOBALS['TSFE']->fe_user->user['uid']);
+		if (is_array($files)) {
+			#$rescount = $this->additionalTreeConf['docLogic']->resultCount;
+			$i=0;
+			foreach ($files as $elem) {
+				$i++;
+				$content .= $this->renderer->renderDamRecordRow($elem,$i,0,9999,count($files),'explorerView');
+			}
+		}
+		else {
+			// render message
+			$content = $this->renderer->renderError('noDocInCat');
+		}
+		$content = $this->renderer->cObj->stdWrap($content,$this->renderer->conf['explorerView.']['filelist.']);
+		#t3lib_div::debug($content);
+		
+		return $content;
 	}
 }
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_catTreeViewAdvanced.php'])	{

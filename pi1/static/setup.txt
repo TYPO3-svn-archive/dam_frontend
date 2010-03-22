@@ -502,6 +502,22 @@ plugin.tx_damfrontend_pi1 {
 		renderFileEdit < .fileEdit
 	}
 
+	explorerView < .filelist
+	explorerView {
+		# how many items should be default in the filelist
+		defaultLength = 9999
+		useAlternatingRows = 1
+		marker {
+			filelist_record = ###EXPLORERVIEW_RECORD###
+			# optionSplit is possible:
+			filelist_record_alterning = ###EXPLORERVIEW_RECORD_ODD### |*| ###EXPLORERVIEW_RECORD_EVEN### || ###EXPLORERVIEW_RECORD_ODD### |*|
+		}
+		filelist.wrap = <ul>|</ul>
+		templateFile = {$plugin.tx_damfrontend_pi1.templateFile}
+		wrap = |
+		category.wrap = |
+	}
+
 	# configuration for subpart ###NEWFILTER_LINK###
 	newfilter_link {
 		# typolink: formurl action

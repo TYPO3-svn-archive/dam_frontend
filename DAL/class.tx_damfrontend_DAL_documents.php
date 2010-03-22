@@ -360,7 +360,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				if (!empty($cat) ) $hasCategories=true;
 			}
 			
-			
 			if ($hasCategories===true) {
 
 				/*
@@ -502,8 +501,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where,'',$this->orderBy);
 			$result = array();
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-#t3lib_div::debug($row);
-#t3lib_div::debug($this->checkAccess($row['uid'], 1));
 				if ($this->checkAccess($row['uid'], 1) && $this->checkDocumentAccess($row['fe_group'])) {
 					
 						// TODO: we should use SQL-LIMIT instead! Cant we create an SQL-Syntax for $this->checkAccess($row['uid'], 1) && $this->checkDocumentAccess($row['fe_group']) ??
