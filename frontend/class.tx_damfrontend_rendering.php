@@ -1781,6 +1781,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 		$markerArray['###CRDATE_AGE###'] 					= $cObj->stdWrap($elem['crdate'], $this->conf['renderFields.']['crdate_age.']);
 		$markerArray['###DATE_CR_AGE###'] 					= $cObj->stdWrap($elem['date_cr'], $this->conf['renderFields.']['date_cr_age.']);
 		$markerArray['###CATEGORY###'] 						= $cObj->cObjGetSingle($this->conf['singleView.']['category.']['cObject'], $this->conf['singleView.']['category.']['cObject.']);
+		$markerArray['###TREELEVELCSS###'] 					= $elem['treeLevelCSS'];
 		
 		if (!is_null($this->staticInfoObj)) { $markerArray['###LANGUAGE###'] = $this->staticInfoObj->getStaticInfoName('LANGUAGES', $elem['language'], '', '', false); }
 

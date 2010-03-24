@@ -498,7 +498,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 					$out['###TREE_ELEMENTS###'].= $this->renderer->renderCategoryTreeCategory($sel_class,$v,$title,$control,$marker,$scope);
 					if ($this->additionalTreeConf['useExplorerView']==1) {
 						if ($v['isOpen']==1 ) {
-							$out['###TREE_ELEMENTS###'].= $this->filelist($v['row']['uid']);
+							$out['###TREE_ELEMENTS###'].= $this->filelist($v['row']['uid'],$v['treeLevelCSS']);
 						}
 					}
 				}
@@ -919,7 +919,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 	 * @param	[int]		$catID
 	 * @return	[int]		tree_selectedCats, tree_unselectedCats, tree_selectedPartlyCats
 	 */	
-	function filelist($catID) {
+	function filelist($catID,$treeLevelCSS) {
 		$currentCat = array();
 		$currentCat[]=$catID;
 		
@@ -938,6 +938,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			$i=0;
 			foreach ($files as $elem) {
 				$i++;
+				$elem['treeLevelCSS']=$treeLevelCSS;
 				$content .= $this->renderer->renderDamRecordRow($elem,$i,0,9999,count($files),'explorerView');
 			}
 		}
