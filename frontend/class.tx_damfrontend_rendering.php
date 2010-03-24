@@ -1478,8 +1478,13 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  */
 	function renderCategoryTreeCategory($sel_class,$dataArray,$title,$control,$subpart,$scope='categoryTreeAdvanced') {
 		$this->pi_loadLL();
-
-		$subpart = tslib_CObj::getSubpart($this->fileContentTree,$subpart);
+		if ($scope == 'categoryTreeAdvanced') {
+			$file = $this->fileContentTree;
+		}
+		else {
+			$file = $this->fileContent;
+		}
+		$subpart = tslib_CObj::getSubpart($file ,$subpart);
 		$markerArray = array();
 		$markerArray['###CATEGORY_TITLE###'] = $dataArray['HTML'];
 		$markerArray['###SELECT_CAT###'] = $dataArray['select_cat'];
@@ -1753,21 +1758,17 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  	}
  	
  	function renderDamRecordRow($elem,$countElement,$pointer,$listLength,$listCount,$scope='filelist') {
- 		/*t3lib_div::debug($elem['title']);
- 		t3lib_div::debug($countElement);
- 		t3lib_div::debug($pointer);
- 		t3lib_div::debug($listLength);
- 		t3lib_div::debug($listCount);*/
  		
  		// Optionsplit for ###FILELIST_RECORD###
-		if ($this->conf[$scope.'.']['useAlternatingRows']==1) {
-			$filelist_record_marker = $GLOBALS['TSFE']->tmpl->splitConfArray(array('cObjNum' => $this->conf[$scope.'.']['marker.']['filelist_record_alterning']), $listCount);
-		}
-		else {
+		#if ($this->conf[$scope.'.']['useAlternatingRows']==1) {
+		#	$filelist_record_marker = $GLOBALS['TSFE']->tmpl->splitConfArray(array('cObjNum' => $this->conf[$scope.'.']['marker.']['filelist_record_alterning']), $listCount);
+		#}
+		#else {
 			if (!isset($this->conf[$scope.'.']['marker.']['filelist_record'])) { $this->conf[$scope.'.']['marker.']['filelist_record'] = '###FILELIST_RECORD###'; }
 			$filelist_record_marker = $GLOBALS['TSFE']->tmpl->splitConfArray(array('cObjNum' => $this->conf[$scope.'.']['marker.']['filelist_record']), $listCount);
-		}
- 		$record_Code = tsLib_CObj::getSubpart($this->fileContent,$filelist_record_marker[$countElement]['cObjNum']);
+		#}
+		#$test = $countElement  2;
+ 		$record_Code = tsLib_CObj::getSubpart($this->fileContent,$filelist_record_marker[0]['cObjNum']);
  		$cObj = t3lib_div::makeInstance('tslib_cObj');
  		$cObj->start($elem, 'tx_dam');
  		$elem['count_id'] =$countElement;

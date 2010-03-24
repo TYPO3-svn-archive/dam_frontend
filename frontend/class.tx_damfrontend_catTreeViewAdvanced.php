@@ -452,10 +452,9 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		} else {
 			$titleLen = intval($this->BE_USER->uc['titleLen']);
 			$out=array();
-			$this->renderer->fileContentTree= tsLib_CObj::fileResource($this->renderer->conf['categoryTreeAdvanced.']['templateFile']);
+			$this->renderer->fileContentTree= tsLib_CObj::fileResource($this->renderer->conf[$scope.'.']['templateFile']);
 			foreach($treeArr as $k => $v)	{
 
-				
 				$sel_class = 'tree_unselectedCats';
 				if (is_array($this->selectedCats) ) {
 
@@ -467,7 +466,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 					if (!$this->catLogic->checkCategoryUploadAccess($GLOBALS['TSFE']->fe_user->user['uid'],$v['row']['uid'])) {
 
 						$sel_class ='tree_no_access';
-						$v['HTML'] = $this->cObj->stdWrap ($v['HTML'],$this->conf['categoryTreeAdvanced.']['catTitle.']['no_access.']);
+						$v['HTML'] = $this->cObj->stdWrap ($v['HTML'],$this->conf[$scope.'.']['catTitle.']['no_access.']);
 					}
 				}
 				else {
@@ -476,29 +475,31 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 						if (!$this->catLogic->checkCategoryAccess ($GLOBALS['TSFE']->fe_user->user['uid'],$v['row']['uid'],1)){
 
 							$sel_class ='tree_no_access';
-							$v['HTML'] = $this->cObj->stdWrap ($v['HTML'],$this->conf['categoryTreeAdvanced.']['categoryTitle.']['no_cat_access.']);
+							$v['HTML'] = $this->cObj->stdWrap ($v['HTML'],$this->conf[$scope.'.']['categoryTitle.']['no_cat_access.']);
 						}
 					}
 				}
-				$title = $this->cObj->stdWrap ($this->getTitleStr($v['row'], $titleLen),$this->conf['categoryTreeAdvanced.']['catTitle.']);
+				$title = $this->cObj->stdWrap ($this->getTitleStr($v['row'], $titleLen),$this->conf[$scope.'.']['catTitle.']);
 				$control = $this->getControl($title, $v['row'], $v['bank']);
 				$v['select_cat'] = $this->wrapCatSelection('&nbsp;',$v['row'],$sel_class);
 				$idAttr = htmlspecialchars($this->domIdPrefix.$this->getId($v['row']).'_'.$v['bank']);
-				if ($this->conf['categoryTreeAdvanced.']['category.']['useAlternatingSubpart']==1) {
-					$marker = $GLOBALS['TSFE']->tmpl->splitConfArray(array('cObjNum' => $this->conf['categoryTreeAdvanced.']['category.']['marker']), count($treeArr));
+				
+				if ($this->conf[$scope.'.']['category.']['useAlternatingSubpart']==1) {
+					$marker = $GLOBALS['TSFE']->tmpl->splitConfArray(array('cObjNum' => $this->conf[$scope.'.']['category.']['marker']), count($treeArr));
 					$marker  = $marker[$i]['cObjNum'];
 				}
 				else {
-					
-					$marker = $this->conf['categoryTreeAdvanced.']['category.']['marker_single'];
+					$marker = $this->conf[$scope.'.']['category.']['marker_single'];
 				}
-				if ($this->conf['categoryTreeAdvanced.']['showRootCategory']==0 && $v['row']['uid']==0) {
+				if ($this->conf[$scope.'.']['showRootCategory']==0 && $v['row']['uid']==0) {
 					
 				}
 				else {
 					$out['###TREE_ELEMENTS###'].= $this->renderer->renderCategoryTreeCategory($sel_class,$v,$title,$control,$marker,$scope);
-					if ($this->additionalTreeConf['useExplorerView']==1 AND $v['isOpen']==1) {
-						$out['###TREE_ELEMENTS###'].= $this->filelist($v['row']['uid']);						
+					if ($this->additionalTreeConf['useExplorerView']==1) {
+						if ($v['isOpen']==1 ) {
+							$out['###TREE_ELEMENTS###'].= $this->filelist($v['row']['uid']);
+						}
 					}
 				}
 				$i++;
@@ -686,14 +687,20 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				$nextCount=$this->getCount($newID);
 				$exp=0;	// Clear "did expand" flag
 			}
-
+			if ($this->additionalTreeConf['useExplorerView']==1) {
+				
+				$nextCount=1;
+			}
 				// Set HTML-icons, if any:
 			if ($this->makeHTML)	{
 				$titleLen = $this->conf['categoryTreeAdvanced.']['categoryTitle.']['length'] ? $this->conf['categoryTreeAdvanced.']['categoryTitle.']['length']:30;
 				$title = $this->cObj->stdWrap ($this->getTitleStr($row, $titleLen),$this->conf['categoryTreeAdvanced.']['categoryTitle.']);
 				$HTML = $this->PM_wrap($row,$a,$c,$nextCount,$exp,$title);
 			}
-
+			$hasSubs=1;
+			$childs = $this->get_childCats($row['uid'], $this->treeStructureArray);
+			if (empty($childs)) $hasSubs=0;
+			
 			$treeDepth = 1000-$depth;
 
 			$paddingLeft = $treeDepth * $this->conf['categoryTreeAdvanced.']['treeLevelCSS.']['paddingLeft'];
@@ -707,7 +714,8 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				'blankLineCode'=>$blankLineCode,
 				'bank' => $this->bank,
 				'treeLevelCSS' =>'style ="padding:'.$this->conf['categoryTreeAdvanced.']['treeLevelCSS.']['paddingTop'].'px '.$this->conf['categoryTreeAdvanced.']['treeLevelCSS.']['paddingRight'].'px '.$this->conf['categoryTreeAdvanced.']['treeLevelCSS.']['paddingBottom'].'px '. $paddingLeft .'px;"',
-				'isOpen'=>$exp
+				'isOpen'=>$exp,
+				'hasSubs'=>$hasSubs
 			);
 		}
 
@@ -918,7 +926,6 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		// initialization the document logic
 		$this->additionalTreeConf['docLogic']->categories = array();
 		$this->additionalTreeConf['docLogic']->categories[$this->cObj->data['uid']]=$currentCat;
-		
 		$result=array();
 		if (is_array($this->additionalTreeConf['filter'])) {
 			$this->internal['filterError'] = $this->additionalTreeConf['docLogic']->setFilter($this->internal['filter']);
@@ -928,7 +935,6 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		$this->additionalTreeConf['docLogic']->limit = '0,9999';
 		$files = $this->additionalTreeConf['docLogic']->getDocumentList($GLOBALS['TSFE']->fe_user->user['uid']);
 		if (is_array($files)) {
-			#$rescount = $this->additionalTreeConf['docLogic']->resultCount;
 			$i=0;
 			foreach ($files as $elem) {
 				$i++;
@@ -937,7 +943,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		}
 		else {
 			// render message
-			$content = $this->renderer->renderError('noDocInCat');
+			$content .= $this->renderer->renderError('noDocInCat');
 		}
 		$content = $this->renderer->cObj->stdWrap($content,$this->renderer->conf['explorerView.']['filelist.']);
 		#t3lib_div::debug($content);

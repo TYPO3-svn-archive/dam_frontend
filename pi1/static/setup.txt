@@ -506,7 +506,7 @@ plugin.tx_damfrontend_pi1 {
 	explorerView {
 		# how many items should be default in the filelist
 		defaultLength = 9999
-		useAlternatingRows = 1
+		useAlternatingRows = 0
 		marker {
 			filelist_record = ###EXPLORERVIEW_RECORD###
 			# optionSplit is possible:
@@ -514,8 +514,26 @@ plugin.tx_damfrontend_pi1 {
 		}
 		filelist.wrap = <ul>|</ul>
 		templateFile = {$plugin.tx_damfrontend_pi1.templateFile}
-		wrap = |
 		category.wrap = |
+		useLanguageOverlay = 1
+		# if category.useAlternatingSubpart = 1 then a second subpart (TREE_ELEMENT_2) is used to render the even rows
+		category.useAlternatingSubpart = 0
+		#option split, if you want to use different markers for each row of a tree
+		category.marker =  ###EXPLORER_VIEW### |*| ###EXPLORER_VIEW_2### || ###EXPLORER_VIEW### |*|		
+		#marker if you want don't want to use alternating rows for the tree 
+		category.marker_single =  ###EXPLORER_VIEW###
+		
+		# 1 to show the root category (tree name) 
+		showRootCategory=0
+		
+		
+		treeLevelCSS {
+			paddingLeft = 16
+			paddingRight = 0
+			paddingTop = 0
+			paddingBottom = 0
+		}
+		wrap = |
 	}
 
 	# configuration for subpart ###NEWFILTER_LINK###
