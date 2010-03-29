@@ -495,7 +495,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		$this->internal['filter']['searchAllCats'] = 0;
 
-		$this->internal['msg'] = strip_tags($this->piVars['msg']);;
+		$this->internal['msg'] = strip_tags($this->piVars['msg']);
+			// delete piVar 'msg', then the message is only displayed once
+		unset($this->piVars['msg']);
 
 		// values for searching
 
@@ -924,7 +926,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 
 		$this->fileListConf=array();
-		$this->fileListConf['msg']=$this->internal['msg'];
+		$this->fileListConf['MESSAGE_VISIBILTY']=$this->internal['msg'];
 		return true;
 	}
 
