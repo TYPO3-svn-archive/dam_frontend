@@ -498,6 +498,16 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->internal['msg'] = strip_tags($this->piVars['msg']);
 			// delete piVar 'msg', then the message is only displayed once
 		unset($this->piVars['msg']);
+		if (	t3lib_div::_GP('setFilter') ||
+				t3lib_div::_GP('easySearchSetFilter') ||
+				t3lib_div::_GP('setListLength') ||
+				t3lib_div::_GP('resetFilter') ||
+				t3lib_div::_GP('tx_damfrontend_pi1[submit]') 
+				) {
+					// if a post button is pressed, the messages must be deleted, otherwise they would be displayed, if the get Parameter is still in the URL
+					unset($this->internal['msg']);
+		}
+		
 
 		// values for searching
 
