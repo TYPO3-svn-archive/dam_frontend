@@ -141,7 +141,8 @@ if (is_array($post) && count($post) > 0) {
 }
 
 	/**
-	 * @return	[type]		...
+	 * @return boolean return-value from t3lib_htmlmail -> send which returns
+	 * usually return value from php mail()
 	 */
 	function sendMail($maildata, $attachments,$mailTemplate) {
 		if (!$maildata['from']) $maildata['from']='norepley@'.t3lib_div::getIndpEnv('HTTP_HOST')	;
@@ -194,7 +195,7 @@ if (is_array($post) && count($post) > 0) {
 	 * @return	array		configuration Array
 	 */
 	function configuration2Array($configuration) {
-		// x:1024;y:768;dpi:300
+		// x:1024;y:768;dpi:300;ext:jpg
 		if ('' == $configuration) return array();
 		$config = array();
 		foreach (t3lib_div::trimExplode(';', $configuration, true) as $entry) {
@@ -235,6 +236,18 @@ if (is_array($post) && count($post) > 0) {
 		readfile($file);
 		exit();
 	}
+	
+	/**
+	 * This function sanitized the value for width/height 
+	 * @param string $size the value of width/height f.e. "100c-40", "30", "100m"
+	 * @return string empty if it is not valid
+	 */
+	function sanitizeImageDimension($size) {
+		// add whitespace check: 100m / 100c+-/[-100 - +100]
+		$matches = array();
+		preg_match('/^[0-9]*(m|c\+[0-9]*|c-[0-9]*|c)?$/', $size, $matches);
+		return $matches[0];
+	}
 
 	/**
 	 * @param	[type]		$filePath: ...
@@ -255,10 +268,12 @@ if (is_array($post) && count($post) > 0) {
 		$fileArray['import'] = $filePath;
 		// we need an "import." entry
 		$fileArray['import.'] = array();
+		
 		$fileArray = array(
-			'ext' => '',
-			'width' => (int)$configuration['width'],
-			'height' => (int)$configuration['height'],
+			// f.e. "jpg", "WEB" etc. - if it is not set, the filetype of the orignal file will be used
+			'ext' => htmlspecialchars($configuration['ext']),
+			'width' => sanitizeImageDimension($configuration['width']),
+			'height' => sanitizeImageDimension($configuration['height']),
 		);
 		// more params: added to the command line
 		// http://www.imagemagick.org/script/command-line-options.php
