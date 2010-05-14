@@ -266,11 +266,14 @@ class tx_damfrontend_pi1 extends tslib_pibase {
  			// adding custom filters
  		if ($this->conf['filterView.']['customFilters.'] ) {
 	 		foreach ($this->conf['filterView.']['customFilters.'] as $filter=>$value) {
-	 			$this->internal['filter']['customFilters'][$value['marker']]['type']=  $value['type'];
+	 			$this->internal['filter']['customFilters'][$value['marker']]['type'] =  $value['type'];
 	 			$this->internal['filter']['customFilters'][$value['marker']]['field']=  $value['field'];
+	 			$this->internal['filter']['customFilters'][$value['marker']]['value']=  $this->cObj->stdWrap($value['value'],$value['value.']);
 	 			if (t3lib_div::_GP($value['GP_Name'])<>'noselection') $this->internal['filter'][$value['marker']]=  strip_tags(t3lib_div::_GP($value['GP_Name']));
 	 		}
  		}
+ 		
+		
  		
  			// clear all 0 - values - now they are not shown in the frontend form
  		foreach ($this->internal['filter'] as $key => $value) {
@@ -319,6 +322,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$this->internal['filter']['searchAllCats_allowedCats'] =$catArr;
 		}
 		$this->internal['filter']['LanguageSelector'] = strip_tags(t3lib_div::_GP('LanguageSelector'));
+
 		$this->internal['filter']['creator'] = strip_tags(t3lib_div::_GP('creator'));
 		$this->internal['filter']['owner'] = strip_tags(t3lib_div::_GP('owner'));
 		$this->internal['filter']['categoryMount'] = strip_tags(t3lib_div::_GP('categoryMount'));
