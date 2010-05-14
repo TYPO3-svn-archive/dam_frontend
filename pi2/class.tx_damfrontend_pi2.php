@@ -122,6 +122,9 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 				$content .= $renderedItem;
 			  }
 		}
+		
+		$content = $this->cObj->substituteSubpart($this->template, "###TEMPLATE_LIST_ITEM###", $content);
+		
 		return $content;
 	}
 
