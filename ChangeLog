@@ -96,3 +96,8 @@ Version	0.1.0 TER Release with manual
 
 
 
+Version 0.6.x by Tizian Schmidlin <st@cabag.ch> on 2010-04-28
+Feature : Expanding more than one level since the beginning is now possible. Configure it by TS or Flexform
+Feature : Configure amount of entries shown per result page is now settable in the plugin settings.
+Feature : Configure amount of entries shown on new entry page is now settable in the plugin settings.
+

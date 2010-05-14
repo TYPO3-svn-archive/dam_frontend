@@ -660,7 +660,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 						case 'TEXT':
 							#t3lib_div::debug('type');
 							#t3lib_div::debug($filterArray[$filter]);
-							$this->additionalFilter .= $this->getCustomWhereString($value['field'],$filterArray[$filter]);
+							$this->additionalFilter .= $this->getCustomWhereString($value['field'],isset($value['value'])?$value['value']:$filterArray[$filter]);
 							break;
 					}
 				}

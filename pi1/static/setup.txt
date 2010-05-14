@@ -4,6 +4,10 @@ plugin.tx_damfrontend_pi1 {
 	_LOCAL_LANG.default.Group1 = Hallo Welt1
 	_LOCAL_LANG.default.Group2 = Hallo Welt2
 	_LOCAL_LANG.default.Group3 = Hallo Welt3
+	_LOCAL_LANG.de.asc = Hallo Welt3
+	_LOCAL_LANG.de.FILENAME_HEADER = Hallo Welt3
+	_LOCAL_LANG.default.asc = Hallo Welt3
+	
 	userFunc = tx_damfrontend_pi1->main
 	templateFile = {$plugin.tx_damfrontend_pi1.templateFile}
 	iconBaseAddress = 
@@ -303,16 +307,19 @@ plugin.tx_damfrontend_pi1 {
 		
 		# custom Filters allowed filtertype: TEXT, TIMESTAMP, INT (for custom columns in the dam table)
 		customFilters {
+			# Example for a custom filter
 			#tx_sh_damext1_literaturetype {
 			#	type = TEXT
 			#	field = tx_sh_damext1_literaturetype 
 			#	# name of the post value 
 			#	GP_Name = literatureType
 			#	marker = literatureType
+			
 			#	renderAs = SELECTOR
 			#	renderAs.HELLO1 = HELLO1
 			#	renderAs.HELLO2 = HELLO2
 			#	renderAs.HELLO3 = HELLO2
+			
 			#}  
 		}
 	}

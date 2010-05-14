@@ -271,9 +271,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 		foreach ($this->conf['filterView.']['customFilters.'] as $filter=>$value) {
 	 			$this->internal['filter']['customFilters'][$value['marker']]['type']=  $value['type'];
 	 			$this->internal['filter']['customFilters'][$value['marker']]['field']=  $value['field'];
+	 			$this->internal['filter']['customFilters'][$value['marker']]['value']=  $this->cObj->stdWrap($value['value'],$value['value.']);
 	 			if (t3lib_div::_GP($value['GP_Name'])<>'noselection') $this->internal['filter'][$value['marker']]=  strip_tags(t3lib_div::_GP($value['GP_Name']));
 	 		}
  		}
+ 		
+		
  		
  			// clear all 0 - values - now they are not shown in the frontend form
  		foreach ($this->internal['filter'] as $key => $value) {
@@ -322,18 +325,23 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$this->internal['filter']['searchAllCats_allowedCats'] =$catArr;
 		}
 		$this->internal['filter']['LanguageSelector'] = strip_tags(t3lib_div::_GP('LanguageSelector'));
+
 		$this->internal['filter']['creator'] = strip_tags(t3lib_div::_GP('creator'));
 		$this->internal['filter']['owner'] = strip_tags(t3lib_div::_GP('owner'));
 		$this->internal['filter']['categoryMount'] = strip_tags(t3lib_div::_GP('categoryMount'));
 
+			// delete all filters, if no filter is present
 		if (!count($this->filterState->getFilterFromSession())) {
 			$emptyArray = $this->internal['filter'];
 			foreach ($emptyArray as $key => $value) $emptyArray[$key] = ' ';
 			$this->filterState->setFilter($emptyArray);
 		}
+
+			// save the filters to the session, if the user clicks "search"
 		if (t3lib_div::_GP('setFilter') || t3lib_div::_GP('easySearchSetFilter')) {
 			$this->filterState->setFilter($this->internal['filter']);
 		}
+			// load the current filter
 		$this->internal['filter'] = $this->filterState->getFilterFromSession();
 
 
@@ -373,7 +381,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
  		}
 
  		if (!isset($this->internal['list']['listLength'])) {
-			if ($this->conf['filelist.']['defaultLength']) {
+ 			
+ 				// CAB - SS:23.4.10 - perPage can be configured also per flexform
+			if(!empty($this->conf['perPage'])) {
+				$this->internal['list']['listLength'] = (int)$this->conf['perPage'];
+			} 
+			elseif ($this->conf['filelist.']['defaultLength']) {
 				$this->internal['list']['listLength'] = $this->conf['filelist.']['defaultLength'];
 			}
 			else {
@@ -397,8 +410,14 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 		#pre defined sorting is only used, as long a user did not sort by himself
 		if (!$this->internal['list']['sorting'] ) {
-			if ($this->conf['filelist.']['orderBy']) {
-				$this->internal['list']['sorting']= $this->conf['filelist.']['orderBy']; 	# example ['filelist.']['orderBy'] = crdate DESC
+			// CAB:SS - 23.04.10 change orderBy for the latest view (viewID 9)
+			if($this->internal['viewID'] == 9) {
+				$this->internal['list']['sorting']= $this->conf['filelist.']['newFilesViewOrderBy'];
+			} 
+			else {
+				if ($this->conf['filelist.']['orderBy']) {
+					$this->internal['list']['sorting']= $this->conf['filelist.']['orderBy']; 	# example ['filelist.']['orderBy'] = crdate DESC
+				}
 			}
 		}
 
@@ -822,8 +841,20 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		$tree->selectedCats = $selCats[$this->internal['treeID']];
 
-		if (is_array($this->internal['catMounts'])) $tree->MOUNTS = $this->internal['catMounts'];
-		$tree->expandTreeLevel($this->conf['categoryTree.']['expandTreeLevel']);
+		if (is_array($this->internal['catMounts'])) {
+			$tree->MOUNTS = $this->internal['catMounts'];
+		}
+		
+		/**
+			Workaround for user setability of the number of level to be displayed since the beginning
+			CAB ST on 27.4.2010
+		*/
+		if(intval($this->conf['subLevels']) > 0) {
+			$tree->expandTreeLevel($this->conf['subLevels']);
+		}
+		else {
+			$tree->expandTreeLevel($this->conf['categoryTree.']['expandTreeLevel']);
+		}
 		return  $this->cObj->stdWrap($tree->getBrowsableTree(), $this->conf['categoryTree.']['stdWrap.']);
 	}
 
@@ -1924,8 +1955,21 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			// prepare the latest mode
 		$this->docLogic->conf['useLatestList'] = true;
 		$this->docLogic->conf['latestField'] = ($this->conf['filelist.']['latestView.']['field']) ? $this->conf['filelist.']['latestView.']['field'] : 'crdate';
-		$this->docLogic->conf['latestLimit'] = ($this->conf['filelist.']['latestView.']['limit']) ? $this->conf['filelist.']['latestView.']['limit'] : 20;
-		$this->docLogic->conf['latestDays'] = ($this->conf['filelist.']['latestView.']['latestDays'])? $this->conf['filelist.']['latestView.']['latestDays'] : 30;;
+		
+			// CAB:SS 23.4.10 - first try to use the setting by flexform
+		if($this->conf['amountOfNewImages']) {
+			$this->docLogic->conf['latestLimit'] = (int)$this->conf['amountOfNewImages'];
+		} 
+		elseif ($this->conf['filelist.']['latestView.']['limit']) {
+			$this->docLogic->conf['latestLimit'] = $this->conf['filelist.']['latestView.']['limit'];
+		} 
+		else {
+			$this->docLogic->conf['latestLimit'] = 20;
+		}
+		
+		// CAB:SS 23.4.10 - fixed bug - dont set latestDays to 30 per default because then the limit doesn't work anymore - both options aren't possible together
+		$this->docLogic->conf['latestDays'] = $this->conf['filelist.']['latestView.']['latestDays'];
+		
 		if ($this->conf['filelist.']['latestView.']['useCatsAsMounts']==1) {
 			if ($this->internal['catMounts']) $this->addAllCategories($this->internal['catMounts'],$this->internal['treeID'],true);		
 		}

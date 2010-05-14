@@ -185,22 +185,67 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 
 	/**
 	 * expand the tree for the first view
-	 *
+	 * @author Jonas Dübi, Tizian Schmidlin <jd@cabag.ch>, <st@cabag.ch>
 	 * @param	int		$levelDeepth defines how deep the tree is expanded
 	 * @return	void
 	 */
- 	function expandTreeLevel($levelDeepth=0) {
-			// expand only if tree was not expanded yet and level > 0
-		if ($this->user->getKey("ses",$this->treeID.'expandTreeLevel')<>1 && $levelDeepth>0) {
+	function expandTreeLevel($levelDepth=0) {
+ 		
+ 		// expand only if tree was not expanded yet and level > 0
+		if ($this->user->getKey("ses",$this->treeID.'expandTreeLevel')<>1 && $levelDepth > 0) {
+			$structure = $this->get_treeStructure();
+			
+			// remove "cat_" from "cat_22" in structure array
+			foreach($structure as $catNr => $parentID) {
+				$catNr = explode('_',$catNr);
+				$structureNumeric[$catNr[1]] = $parentID;
+			}
 			foreach ($this->MOUNTS as $mount => $ID) {
 				$this->stored[$mount][$ID]=1;
-				$this->savePosition();
-				// TODO support more than one level
-				$this->user->setKey("ses",$this->treeID.'expandTreeLevel', 1);
+
+				if($levelDepth > 1) {
+					// alls ids of categories up to the levelDepth
+					$idsWithinlevelDepth = array();
+					
+					// fill up $idsWithinlevelDepth
+					$this->getLevelsFromFlatTree($idsWithinlevelDepth, $structureNumeric, $ID, 0, ($levelDepth-2));
+					
+					foreach($idsWithinlevelDepth as $uid) {
+						$this->stored[$mount][$uid] = 1;
+					}
+				}
 			}
+			
+			$this->savePosition();
+			$this->user->setKey("ses",$this->treeID.'expandTreeLevel', 1);
 		}
  	}
 
+ 	/**
+ 	 * Recursive expandation function
+ 	 * @author Jonas Dübi, Tizian Schmidlin <jd@cabag.ch>, <st@cabag.ch>
+ 	 * 
+ 	 * @param &$idsWithinlevelDepth
+ 	 * @param &$structure
+ 	 * @param $currentParentId
+ 	 * @param $currentLevel
+ 	 * @param $upToLevel
+ 	 * @return [void]
+ 	 *
+ 	 */
+ 	function getLevelsFromFlatTree(&$idsWithinlevelDepth, &$structure, $currentParentId, $currentLevel, $upToLevel) {
+ 		$parentIds = array();
+ 		
+ 		foreach($structure as $uid => $parentId) {
+ 			if($parentId == $currentParentId) {
+ 				$idsWithinlevelDepth[] = $uid;
+ 				
+ 				if($currentLevel < $upToLevel) {
+ 					$this->getLevelsFromFlatTree($idsWithinlevelDepth, $structure, $uid, ($currentLevel + 1), $upToLevel);
+				}
+ 			}
+ 		}
+ 	}
 	/**
 	 * saves treestate inside of the fe_user Session Data
 	 *
@@ -433,8 +478,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 	 * @return	string		The HTML code for the tree
 	 */
 	function printTree($treeArr='')	{
-
-			// 0 - show root icon always
+		// 0 - show root icon always
 		$i = 0; //counter to determine of a row is even or uneven
 			
 			// setup ts options for rendering
