@@ -135,7 +135,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 
 	/**
 	 * gets all categories for the specified document and returns them as an array
-	 * includes also parent categories of the assigned categories
 	 *
 	 * @param	int		$fileUid: ...
 	 * @param	[type]		$simple: ...
@@ -205,9 +204,11 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			// all frontend usergroups assigned to the document
 			
 			$docgroups = $this->getDocumentFEGroups($docID, $relID);
+#t3lib_div::debug($docgroups);
 			if (empty($docgroups)) return true; // no groups assigned - allow access
 			// get the ID's of the usergroups, the current user is a member of
 			$usergroups = $this->feuser->groupData['uid'];
+#t3lib_div::debug($usergroups);
 			$valid = false;
 			foreach($docgroups as $docgroup) {
 				if ((array_search($docgroup['uid'], $usergroups))) {
@@ -273,8 +274,15 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			if ($relID == null || !intval($relID)) {
 				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getDocumentFEGroups: for the relID only integer values are allowed. Given value was:' .$relID, 'dam_frontend',3);
 			}
+			
 			// first find all categories for the given document
-			$catlist = $this->getCategoriesByDoc_Rootline($docID);
+			if ($this->conf['filelist.']['security_options.']['checkCategoriesByRootline']==1) {
+				// if the rootline option is enabled, all categoris from the rootline are checked
+				$catlist = $this->getCategoriesByDoc_Rootline($docID);
+			}
+			else {
+				$catlist = $this->getCategoriesByDoc($docID);
+			}
 			// accumulates all groups
 			$grouparray = array();
 			foreach ($catlist as $category)
@@ -501,6 +509,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where,'',$this->orderBy);
 			$result = array();
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+#t3lib_div::debug($row['title']);
 				if ($this->checkAccess($row['uid'], 1) && $this->checkDocumentAccess($row['fe_group'])) {
 					
 						// TODO: we should use SQL-LIMIT instead! Cant we create an SQL-Syntax for $this->checkAccess($row['uid'], 1) && $this->checkDocumentAccess($row['fe_group']) ??

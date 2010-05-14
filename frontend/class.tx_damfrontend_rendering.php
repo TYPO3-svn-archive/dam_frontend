@@ -1827,6 +1827,10 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 		#t3lib_div::debug($content); 
  		return $content;
  	}
+ 	
+ 	function get_LLLabel($label) {
+ 			return $this->pi_getLL($label);
+ 	}
 }
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_rendering.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_rendering.php']);

@@ -395,7 +395,7 @@ plugin.tx_damfrontend_pi1 {
 			
 			2.value = <option value="ORIGINAL:ORIGINAL">original</option>
 
-			3.wrap = <option value="width:1024;height:768;resample:72">|</option>
+			3.wrap = <option value="width:1024;y:768;resample:72">|</option>
 			3.value = resized 1024 * 768 72 dpi
 			3.lang.de = F&uuml;r Powerpoint optimiert
 
@@ -464,6 +464,7 @@ plugin.tx_damfrontend_pi1 {
 		security_options {
 			showOnlyFilesWithPermission=0
 			deleteFilesOfDeletedRecords = 1
+			checkCategoriesByRootline=0
 		}
 		
 		browselink {
@@ -526,7 +527,6 @@ plugin.tx_damfrontend_pi1 {
 		# 1 to show the root category (tree name) 
 		showRootCategory=0
 		
-		
 		treeLevelCSS {
 			paddingLeft = 16
 			paddingRight = 0
@@ -534,6 +534,10 @@ plugin.tx_damfrontend_pi1 {
 			paddingBottom = 0
 		}
 		wrap = |
+		
+		# shows a message, that there are no files in this cat (using LL: noDocInCat)
+		showEmptyMessage = 1
+		showEmptyMessage.wrap = <li>|</li>
 	}
 
 	# configuration for subpart ###NEWFILTER_LINK###

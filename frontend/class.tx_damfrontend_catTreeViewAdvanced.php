@@ -934,7 +934,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		$this->additionalTreeConf['docLogic']->orderBy = 'tx_dam.'. 'title';
 		$this->additionalTreeConf['docLogic']->limit = '0,9999';
 		$files = $this->additionalTreeConf['docLogic']->getDocumentList($GLOBALS['TSFE']->fe_user->user['uid']);
-		if (is_array($files)) {
+		if (!empty($files)) {
 			$i=0;
 			foreach ($files as $elem) {
 				$i++;
@@ -944,7 +944,8 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		}
 		else {
 			// render message
-			$content .= $this->renderer->renderError('noDocInCat');
+#t3lib_div::debug($this->renderer->conf);
+			if ($this->renderer->conf['explorerView.']['showEmptyMessage']==1) $content .= $this->renderer->cObj->stdWrap($this->renderer->get_LLLabel('noDocInCat'),$this->renderer->conf['explorerView.']['showEmptyMessage.']);
 		}
 		$content = $this->renderer->cObj->stdWrap($content,$this->renderer->conf['explorerView.']['filelist.']);
 		#t3lib_div::debug($content);
