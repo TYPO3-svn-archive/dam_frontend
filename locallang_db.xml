@@ -17,8 +17,8 @@
 			<label index="tx_damfrontend_feuser_upload">no owner is set</label>		
 			<label index="tx_damfrontend_fegroup">no group is set</label>	
 			<label index="flexform_perPage">Amount of records per page</label>
-			<label index="flexform_amountOfNewImages">Amount of shown new images (new image view only)</label>
-			<label index="flexform_amountOfExpandedLevels">How many sublevels should be shown?</label>	
+			<label index="flexform_amountOfNewImages">Amount of files for the latest view</label>
+			<label index="flexform_amountOfExpandedLevels">How many sublevels should be shown initially? (only for the advanced category tree)</label>	
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tt_content.list_type_pi1">DAM Frontend</label>
@@ -32,8 +32,8 @@
 			<label index="tx_damfrontend_feuser_upload">kein Eigentümer festgelegt</label>
 			<label index="tx_damfrontend_feuser_upload">kein Eigentümer festgelegt</label>	
 			<label index="flexform_perPage">Anzahl Ergebnisse pro Seite</label>
-			<label index="flexform_amountOfNewImages">Gesamtanzahl neuer Bilder (Nur Ansicht Neue Bilder)</label>
-			<label index="flexform_amountOfExpandedLevels">Wie viele Unterebenen sollen angezeigt werden?</label>						
+			<label index="flexform_amountOfNewImages">Gesamtanzahl neuer Dateien (Nur Ansicht geänderte Dateien)</label>
+			<label index="flexform_amountOfExpandedLevels">Wie viele Unterebenen sollen angezeigt werden (nur für den erweiterten Kategorienbaum)?</label>						
 		</languageKey>
 		﻿<languageKey index="ru" type="array">
 			<label index="tt_content.list_type_pi1">DAM внешнего интерфейса</label>
