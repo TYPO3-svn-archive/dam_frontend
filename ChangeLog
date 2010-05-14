@@ -1,3 +1,8 @@
+Version 0.6.x by Tizian Schmidlin <st@cabag.ch> on 2010-04-28
+Feature : Expanding more than one level since the beginning is now possible. Configure it by TS or Flexform
+Feature : Configure amount of entries shown per result page is now settable in the plugin settings.
+Feature : Configure amount of entries shown on new entry page is now settable in the plugin settings.
+
 Version 0.6.2
 Bug #4955: Problem using direct links to files
 Bug #5885: Urgent: Typoscript Setup/Constant Values are not taken into account for DAM frontend filelist view

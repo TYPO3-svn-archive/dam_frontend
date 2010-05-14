@@ -15,7 +15,10 @@
 			<label index="tx_damtree_fe_groups_none">no group has access</label>
 			<label index="tx_damtree_fe_groups">----- > single groups --> choose below -----</label>		
 			<label index="tx_damfrontend_feuser_upload">no owner is set</label>		
-			<label index="tx_damfrontend_fegroup">no group is set</label>		
+			<label index="tx_damfrontend_fegroup">no group is set</label>	
+			<label index="flexform_perPage">Amount of records per page</label>
+			<label index="flexform_amountOfNewImages">Amount of shown new images (new image view only)</label>
+			<label index="flexform_amountOfExpandedLevels">How many sublevels should be shown?</label>	
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tt_content.list_type_pi1">DAM Frontend</label>
@@ -26,7 +29,11 @@
 			<label index="tx_damtree_fe_groups_all">alle Gruppen habe Zugriff</label>
 			<label index="tx_damtree_fe_groups_none">keine Gruppe hat Zugriff</label>
 			<label index="tx_damtree_fe_groups">----- > einzelne Gruppen --> bitte unten wählen -----</label>		
-			<label index="tx_damfrontend_feuser_upload">kein Eigentümer festgelegt</label>				
+			<label index="tx_damfrontend_feuser_upload">kein Eigentümer festgelegt</label>
+			<label index="tx_damfrontend_feuser_upload">kein Eigentümer festgelegt</label>	
+			<label index="flexform_perPage">Anzahl Ergebnisse pro Seite</label>
+			<label index="flexform_amountOfNewImages">Gesamtanzahl neuer Bilder (Nur Ansicht Neue Bilder)</label>
+			<label index="flexform_amountOfExpandedLevels">Wie viele Unterebenen sollen angezeigt werden?</label>						
 		</languageKey>
 		﻿<languageKey index="ru" type="array">
 			<label index="tt_content.list_type_pi1">DAM внешнего интерфейса</label>
@@ -38,6 +45,9 @@
 			<label index="tx_damtree_fe_groups_none">ни одна группа не имеет доступа</label>
 			<label index="tx_damtree_fe_groups">----- &gt; отдельные группы --&gt; выберете ниже -----</label>
 			<label index="tx_damfrontend_feuser_upload">не установлен владелец</label>
+			<label index="flexform_perPage">Количество результатов на странице</label>
+			<label index="flexform_amountOfNewImages">Общее количество новых образов</label>
+			<label index="flexform_amountOfExpandedLevels">Сколько подуровней должно отображаться?</label>
 		</languageKey>
 	</data>
 </T3locallang>

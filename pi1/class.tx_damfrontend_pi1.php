@@ -374,7 +374,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
  		}
 
  		if (!isset($this->internal['list']['listLength'])) {
-			if ($this->conf['filelist.']['defaultLength']) {
+ 			
+ 				// CAB - SS:23.4.10 - perPage can be configured also per flexform
+			if(!empty($this->conf['perPage'])) {
+				$this->internal['list']['listLength'] = (int)$this->conf['perPage'];
+			} 
+			elseif ($this->conf['filelist.']['defaultLength']) {
 				$this->internal['list']['listLength'] = $this->conf['filelist.']['defaultLength'];
 			}
 			else {
@@ -398,8 +403,14 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 		#pre defined sorting is only used, as long a user did not sort by himself
 		if (!$this->internal['list']['sorting'] ) {
-			if ($this->conf['filelist.']['orderBy']) {
-				$this->internal['list']['sorting']= $this->conf['filelist.']['orderBy']; 	# example ['filelist.']['orderBy'] = crdate DESC
+			// CAB:SS - 23.04.10 change orderBy for the latest view (viewID 9)
+			if($this->internal['viewID'] == 9) {
+				$this->internal['list']['sorting']= $this->conf['filelist.']['newFilesViewOrderBy'];
+			} 
+			else {
+				if ($this->conf['filelist.']['orderBy']) {
+					$this->internal['list']['sorting']= $this->conf['filelist.']['orderBy']; 	# example ['filelist.']['orderBy'] = crdate DESC
+				}
 			}
 		}
 
@@ -807,8 +818,20 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		$tree->selectedCats = $selCats[$this->internal['treeID']];
 
-		if (is_array($this->internal['catMounts'])) $tree->MOUNTS = $this->internal['catMounts'];
-		$tree->expandTreeLevel($this->conf['categoryTree.']['expandTreeLevel']);
+		if (is_array($this->internal['catMounts'])) {
+			$tree->MOUNTS = $this->internal['catMounts'];
+		}
+		
+		/**
+			Workaround for user setability of the number of level to be displayed since the beginning
+			CAB ST on 27.4.2010
+		*/
+		if(intval($this->conf['subLevels']) > 0) {
+			$tree->expandTreeLevel($this->conf['subLevels']);
+		}
+		else {
+			$tree->expandTreeLevel($this->conf['categoryTree.']['expandTreeLevel']);
+		}
 		return  $this->cObj->stdWrap($tree->getBrowsableTree(), $this->conf['categoryTree.']['stdWrap.']);
 	}
 
@@ -1908,8 +1931,21 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			// prepare the latest mode
 		$this->docLogic->conf['useLatestList'] = true;
 		$this->docLogic->conf['latestField'] = ($this->conf['filelist.']['latestView.']['field']) ? $this->conf['filelist.']['latestView.']['field'] : 'crdate';
-		$this->docLogic->conf['latestLimit'] = ($this->conf['filelist.']['latestView.']['limit']) ? $this->conf['filelist.']['latestView.']['limit'] : 20;
-		$this->docLogic->conf['latestDays'] = ($this->conf['filelist.']['latestView.']['latestDays'])? $this->conf['filelist.']['latestView.']['latestDays'] : 30;;
+		
+			// CAB:SS 23.4.10 - first try to use the setting by flexform
+		if($this->conf['amountOfNewImages']) {
+			$this->docLogic->conf['latestLimit'] = (int)$this->conf['amountOfNewImages'];
+		} 
+		elseif ($this->conf['filelist.']['latestView.']['limit']) {
+			$this->docLogic->conf['latestLimit'] = $this->conf['filelist.']['latestView.']['limit'];
+		} 
+		else {
+			$this->docLogic->conf['latestLimit'] = 20;
+		}
+		
+		// CAB:SS 23.4.10 - fixed bug - dont set latestDays to 30 per default because then the limit doesn't work anymore - both options aren't possible together
+		$this->docLogic->conf['latestDays'] = $this->conf['filelist.']['latestView.']['latestDays'];
+		
 		if ($this->conf['filelist.']['latestView.']['useCatsAsMounts']==1) {
 			if ($this->internal['catMounts']) $this->addAllCategories($this->internal['catMounts'],$this->internal['treeID'],true);		
 		}

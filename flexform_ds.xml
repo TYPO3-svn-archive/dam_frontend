@@ -113,6 +113,33 @@
 				</TCEforms>
 				<type>array</type>
 				<el>
+					<perPage>
+ 						<TCEforms>
+ 							<label>LLL:EXT:dam_frontend/locallang_db.xml:flexform_perPage</label>
+ 							<config>
+ 								<type>input</type>
+								<size>10</size>
+ 							</config>
+ 						</TCEforms>
+ 					</perPage>
+					<amountOfNewImages>
+ 						<TCEforms>
+ 							<label>LLL:EXT:dam_frontend/locallang_db.xml:flexform_amountOfNewImages</label>
+ 							<config>
+ 								<type>input</type>
+								<size>10</size>
+ 							</config>
+ 						</TCEforms>
+ 					</amountOfNewImages>
+ 					<subLevels>
+ 						<TCEforms>
+ 							<label>LLL:EXT:dam_frontend/locallang_db.xml:flexform_amountOfExpandedLevels</label>
+ 							<config>
+ 								<type>input</type>
+								<size>10</size>
+ 							</config>
+ 						</TCEforms>
+ 					</subLevels>
 					<useStaticCatSelection>
  						<TCEforms>
  							<label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_useStaticCatSelection</label>
