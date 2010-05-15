@@ -67,7 +67,6 @@ plugin.tx_damfrontend_pi2 {
   checkIfFileExist=1
 
 	_CSS_DEFAULT_STYLE (
-				@CHARSET "UTF-8";
 	li.ddl_file_list_item {
 	list-style-type: none;
 	margin-left: 1em;

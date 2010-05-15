@@ -516,7 +516,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 		if ($this->internal['viewID'] == 9) {
 			$this->initList();
-			#$this->initFilter();
 		}
 
 		if ($this->internal['viewID'] == 1 or $this->internal['viewID'] == 6 or $this->internal['viewID'] == 8) {
