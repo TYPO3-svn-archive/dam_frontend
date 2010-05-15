@@ -606,6 +606,7 @@ plugin.tx_damfrontend_pi1 {
 			displayAnEmptyOption.localLangLabel =
 			displayAnEmptyOption.label = 
 		}
+		sortCategoriesByTitle=1
   	}
 
 

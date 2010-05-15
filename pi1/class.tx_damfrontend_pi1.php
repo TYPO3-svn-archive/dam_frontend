@@ -2026,19 +2026,23 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 */
 	function drillDown() {
 		
+			// check if there are selected categories for the drilldown view
 		if ($this->internal['drilldown']) {
+				// store the selected categories in an array
 			foreach($this->internal['drilldown'] as $key=>$cat) {
 				$selected[]=$cat;
 			}
 		}
 		
 		if (!is_array($selected)) {
-			// try to get 
+			// try to get the selected categories of the session
 			$selected= $GLOBALS['TSFE']->fe_user->getKey('ses','tx_damfrontend_pi1[drillDown]');
 		}
 		else {
+				// store the selected cats in the session for later usage
 			$GLOBALS['TSFE']->fe_user->setKey('ses','tx_damfrontend_pi1[drillDown]',$selected);
 		}
+		
 		$rootCats = explode(',',$this->conf['catMounts']);
 		$catArray = array();
 		$catArray = $this->drillDown_getCategories($rootCats,$selected);
@@ -2049,21 +2053,29 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 	
 	/**
-	 * shows the drill down search view
+	 * build the availalbe categories for the drilldown view
 	 *
 	 * @return	[array]
 	 */
 	function drillDown_getCategories($cats,$selected) {
+		
 		foreach($cats as $catID) {
 			$returnCats[$catID]=$this->catLogic->getCategoryTitleLocalized($this->catLogic->getCategory($catID));
 		}
-		$catArray[]=$returnCats;
+		
+		// order categories
+		if ($this->conf['drillDown.']['sortCategoriesByTitle']==1) {
+			t3lib_div::debug('jo man');
+			asort($returnCats);
+		}
+		$catArray[]=  $returnCats;
+		
 		if (is_array($selected)) {
 			foreach($cats as $catID) {
 				if (array_search($catID,$selected)===false) {
 				}
 				else {
-					// look for children
+					// look for children if the current category is selected
 					$childs = $this->catLogic->getChildCategories($catID);
 					if ($childs) {
 						$childCats=array();

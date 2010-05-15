@@ -111,13 +111,13 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		var $feuser;			// pointing to the fe user object instance - please use this instead of GLOBALS['TSFE]
 
 		/**
- * Sets fullTextSearchFields - in which fields should be searched
- *
- * description')
- *
- * @param	string		$fieldlist kommaseparated list of fields (f.e. 'title,
- * @return	void
- */
+		 * Sets fullTextSearchFields - in which fields should be searched
+		 *
+		 * description')
+		 *
+		 * @param	string		$fieldlist kommaseparated list of fields (f.e. 'title,
+		 * @return	void
+		 */
 		function setFullTextSearchFields($fieldlist) {
 			$this->fullTextSearchFields = $fieldlist;
 		}
