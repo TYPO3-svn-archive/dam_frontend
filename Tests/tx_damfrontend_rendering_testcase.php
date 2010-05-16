@@ -31,13 +31,21 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'Tests/class.tx_damfrontend_t
  * @package 
  * @subpackage 
  */
-class tx_dam_frontend_testcase extends tx_damfrontend_testlib {
+class tx_damfrontend_rendering_testcase extends tx_damfrontend_testlib {
 
 	/**
 	 * @test
 	 */
-	public function checkTestcase() {
-		$testString = "ja";
+	public function checkSetFileRefSetsFilePathAndFileContent() {
+		/*
+		$this->filePath = $filePath;
+ 		$this->fileContent = tsLib_CObj::fileResource($filePath);
+ 		
+ 		tx_dam::config_setValue('setup.indexing.auto', false);
+		$value = tx_dam::config_getValue('setup.indexing.auto');
+		self::assertFalse ($value);
+ 		*/
+
 		$expectedString = "ja";
 		$actualString = "ja";
 

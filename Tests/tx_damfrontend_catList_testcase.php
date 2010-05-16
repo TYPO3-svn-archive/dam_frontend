@@ -31,13 +31,12 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'Tests/class.tx_damfrontend_t
  * @package 
  * @subpackage 
  */
-class tx_dam_frontend_catList_testcase extends tx_damfrontend_testlib {
+class tx_damfrontend_catList_testcase extends tx_damfrontend_testlib {
 
 	/**
 	 * @test
 	 */
 	public function checkTestcase2() {
-		$testString = "ja";
 		$expectedString = "ja";
 		$actualString = "ja";
 

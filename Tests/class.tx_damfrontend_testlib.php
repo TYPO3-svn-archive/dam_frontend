@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+require_once(PATH_t3lib.'class.t3lib_div.php');
 require_once(PATH_tslib.'class.tslib_pibase.php');
 require_once(PATH_tslib.'class.tslib_content.php');
 
@@ -35,11 +36,43 @@ require_once(t3lib_extMgm::extPath('dam_frontend') . '/DAL/class.tx_damfrontend_
 require_once(t3lib_extMgm::extPath('dam_frontend') . '/frontend/class.tx_damfrontend_catTreeView.php');
 require_once(t3lib_extMgm::extPath('dam_frontend') . '/frontend/class.tx_damfrontend_catTreeViewAdvanced.php');
 require_once(t3lib_extMgm::extPath('dam_frontend') . '/frontend/class.tx_damfrontend_rendering.php');
+require_once(t3lib_extMgm::extPath('dam_frontend') . '/pi1/class.tx_damfrontend_pi1.php');
 
 
 class tx_damfrontend_testlib extends tx_phpunit_testcase { 
 
+	/**
+	 * backup of the global variables _GET, _POST, _SERVER
+	 *
+	 * @var array
+	 */
+	private $backupGlobalVariables;
 
+	/**
+	 * @var tx_damfrontend_pi1
+	 */
+	private $tx_damfrontend_pi1;
+
+	public function setUp() {
+		$this->backupGlobalVariables = array(
+			'_GET' => $_GET,
+			'_POST' => $_POST,
+			'_SERVER' => $_SERVER,
+			'TYPO3_CONF_VARS' =>  $GLOBALS['TYPO3_CONF_VARS'],
+		);
+		$this->tx_damfrontend_pi1 = t3lib_div::makeInstance('tx_damfrontend_pi1');	
+	}
+
+	public function tearDown() {
+		foreach ($this->backupGlobalVariables as $key => $data) {
+			$GLOBALS[$key] = $data;
+		}
+		unset(
+			$this->tx_damfrontend_pi1 
+		);
+	}
+	
+	
 	/***************************************
 	 *
 	 *	 Fixtures
