@@ -230,7 +230,7 @@ class tx_damfrontend_DAL_categories {
 	 * @param	int		$relID: id to specify read / download / upload access
 	 * @return	array		array of all category records
 	 */
-		function getCategories($groupArr, $relID) {
+		function getCategories($userID, $relID) {
 			if (!isset($userID) || !isset($relID) || $userID == '' || $relID == '') {
 				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getCategories: userID and relID must be set and empty strings are not allowed! Given value were$userID:' .$userID .' and relID: ' . $relID, 'dam_frontend',2);
 			}
