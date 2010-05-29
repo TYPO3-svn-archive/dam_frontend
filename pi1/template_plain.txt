@@ -8,8 +8,6 @@ Allowed Markers:
 ********************************  -->
 
 <!-- ###FILELIST### begin -->
-
-
 			###FILENAME_HEADER###
 
 			###FILELIST_RECORDS###
@@ -25,17 +23,12 @@ Allowed Markers:
 	template for records of the fileliste
 
 ********************************  -->
-<!-- ###FILELIST_RECORD### begin -->
-				###COUNT_ID### ###TITLE###
+<!-- ###FILELIST_RECORD### begin -->###COUNT_ID### ###TITLE###<!-- ###FILELIST_RECORD### end -->
 
-<!-- ###FILELIST_RECORD### end -->
-
-<!-- ###FILELIST_RECORD_ODD### begin -->
-				###COUNT_ID### ###TITLE###
+<!-- ###FILELIST_RECORD_ODD### begin -->###COUNT_ID### ###TITLE###
 <!-- ###FILELIST_RECORD_ODD### end -->
 
-<!-- ###FILELIST_RECORD_EVEN### begin -->
-				###COUNT_ID### ###TITLE###
+<!-- ###FILELIST_RECORD_EVEN### begin -->###COUNT_ID### ###TITLE###
 <!-- ###FILELIST_RECORD_EVEN### end -->
 
 
