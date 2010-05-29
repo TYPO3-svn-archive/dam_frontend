@@ -352,7 +352,10 @@ plugin.tx_damfrontend_pi1 {
 		#pre defined sorting
 		usePreDefinedSorting=1
 		orderBy = crdate DESC
-
+		
+		#sorting for the categories in the grouped filelist (allowed values: ASC, DESC)
+		groupedFileListCategorySorting = ASC
+		
 		# make column titles sortable
 		sortLinksForTitles = 0
 		
