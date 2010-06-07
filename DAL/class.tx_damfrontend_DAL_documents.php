@@ -481,12 +481,17 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			
 			if ($this->conf['useGroupedView']==1) {
 				$select .= ','. $this->catTable.'.title AS categoryTitle'; 
+				$groupedOrderBy = 'ASC';
+				// check if as ts setting exists, and if it is correct
+				if 	($this->conf['filelist.']['groupedFileListCategorySorting'] AND 
+					($this->conf['filelist.']['groupedFileListCategorySorting']=='ASC' OR
+					 $this->conf['filelist.']['groupedFileListCategorySorting']=='OR')) $groupedOrderBy = $this->conf['filelist.']['groupedFileListCategorySorting'];
 				
 				if ($this->orderBy) {
-					$this->orderBy = $this->catTable.'.title, '. $this->orderBy;
+					$this->orderBy = $this->catTable.'.title '.$groupedOrderBy.','. $this->orderBy;
 				} 
 				else {
-					$this->orderBy = $this->catTable.'.title';	
+					$this->orderBy = $this->catTable.'.title '.$groupedOrderBy;	
 				}
 				
 			}

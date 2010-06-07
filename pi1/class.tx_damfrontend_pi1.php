@@ -622,6 +622,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$content .= $this->uploadForm();
 				break;
 			case 8:
+					// grouped filelist
 				$content .= $this->fileList(false);
 				break;
 			case 9:
