@@ -1149,10 +1149,13 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 		 */
 		function checkDocumentAccess($docFEGroups) {
 
-			// if no fe group is assigned, access is given
+			// if no fe group is assigned, access is given (only if if the option showOnlyFilesWithPermission is set to 0
 			if (!$docFEGroups) {
+				//check if option showOnlyFilesWithPermission = 1 is set, then here must be returned False
+				if ($this->conf['filelist.']['security_options.']['showOnlyFilesWithPermission']==1) {
+					return false;
+				}
 				return true;
-				//FIXME must check if option showOnlyFilesWithPermission = 1 is set, then here must be returned False
 		}
 
 			$access = false;
