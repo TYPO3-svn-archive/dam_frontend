@@ -488,7 +488,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			
 			if ($this->conf['useGroupedView']==1) {
 				$select .= ','. $this->catTable.'.title AS categoryTitle'; 
-t3lib_div::debug( $this->conf['filelist.']['groupedFileListCategorySorting']);
 				$groupedOrderBy = 'ASC';
 				// check if as ts setting exists, and if it is correct
 				if 	($this->conf['filelist.']['groupedFileListCategorySorting'] AND 
@@ -514,6 +513,7 @@ t3lib_div::debug( $this->conf['filelist.']['groupedFileListCategorySorting']);
 				// limit = "pointer,counter"
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where,'',$this->orderBy);
 			$result = array();
+			#t3lib_div::debug($this->conf);
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 #t3lib_div::debug($row['title']);
 				if ($this->checkAccess($row['uid'], 1) && $this->checkDocumentAccess($row['fe_group'])) {
@@ -1158,10 +1158,13 @@ t3lib_div::debug( $this->conf['filelist.']['groupedFileListCategorySorting']);
 		 */
 		function checkDocumentAccess($docFEGroups) {
 
-			// if no fe group is assigned, access is given
+			// if no fe group is assigned, access is given (only if if the option showOnlyFilesWithPermission is set to 0
 			if (!$docFEGroups) {
+				//check if option showOnlyFilesWithPermission = 1 is set, then here must be returned False
+				if ($this->conf['filelist.']['security_options.']['showOnlyFilesWithPermission']==1) {
+					return false;
+				}
 				return true;
-				//FIXME must check if option showOnlyFilesWithPermission = 1 is set, then here must be returned False
 		}
 
 			$access = false;
