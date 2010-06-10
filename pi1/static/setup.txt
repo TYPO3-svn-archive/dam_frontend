@@ -353,7 +353,10 @@ plugin.tx_damfrontend_pi1 {
 		usePreDefinedSorting=1
 		orderBy = crdate DESC
 		
-		#sorting for the categories in the grouped filelist (allowed values: ASC, DESC)
+		#groupedFileListUseBackEndSorting: Shows the Categories sorted like set in the flexform in the backend
+		groupedFileListUseBackEndSorting = 1
+		
+		#sorting for the categories in the grouped filelist (allowed values: ASC, DESC) (works only if the setting groupedFileListUseBackEndSorting = 0)
 		groupedFileListCategorySorting = ASC
 		
 		# make column titles sortable

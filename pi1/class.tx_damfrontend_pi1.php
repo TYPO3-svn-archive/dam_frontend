@@ -621,6 +621,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			// that shall be rendered
 		switch ($this->internal['viewID']) {
 			case 1:
+					// standard filelist
 				$content .= $this->fileList(false);
 				break;
 			case 2:
@@ -643,6 +644,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$content .= $this->uploadForm();
 				break;
 			case 8:
+					// grouped view
 				$content .= $this->fileList(false);
 				break;
 			case 9:
@@ -1007,12 +1009,28 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 			if ($this->internal['list']['sorting']) $this->docLogic->orderBy = 'tx_dam.'. $this->internal['list']['sorting'];
 			$this->docLogic->limit = $this->internal['list']['limit'];
-			$this->docLogic->categories = $cats;
 			$this->docLogic->selectionMode = $this->internal['selectionMode'];
+			$files = array();
 			if ($this->internal['viewID']==8) {
-					$this->docLogic->conf['useGroupedView']=1;
+				$this->docLogic->conf['useGroupedView']=1;
 			}
-			$files = $this->docLogic->getDocumentList($this->userUID);
+			
+			if ($this->internal['viewID']==8 AND $this->conf['filelist.']['groupedFileListUseBackEndSorting']==1) {
+				foreach ($cats as $catSelection) {
+					foreach($catSelection as $catID) {
+						$currentCat= array();
+						$currentCat[][]=$catID;
+						$this->docLogic->categories = $currentCat;
+						$currentFiles = $this->docLogic->getDocumentList($this->userUID);
+						$files= array_merge($files,$currentFiles);
+					}
+				}
+			} 
+			else {
+				$this->docLogic->categories = $cats;
+				$files = $this->docLogic->getDocumentList($this->userUID);
+			}
+		
 			if (is_array($files)) {
 
 				$rescount = $this->docLogic->resultCount;
