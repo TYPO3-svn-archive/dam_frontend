@@ -346,6 +346,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 	 */
  	function renderFileGroupedList($list, $resultcount, $pointer, $listLength) {
 
+ 		// @TODO merge this function with renderFilelist
 
  		if(!is_array($list)){
  			//no result is given
@@ -500,6 +501,33 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  			$content = tsLib_CObj::substituteMarker($content, '###'.$label.'###', $this->pi_getLL($label, $label));
  		}
 		$content = tslib_cObj::substituteMarkerArray($content, $markerArray);
+		
+		$markerArray['###FILELIST_BACK_PID###']=$GLOBALS['TSFE']->id;
+ 		$markerArray['###COMMENT_DEFAULT###']=$this->pi_getLL('COMMENT_DEFAULT');
+ 		$markerArray['###COMMENT###']=$this->pi_getLL('COMMENT');
+ 		$markerArray['###SUBJECT###']=$this->pi_getLL('SUBJECT');
+ 		$markerArray['###TO###']=$this->pi_getLL('TO');
+ 		$markerArray['###FROM###']=$this->pi_getLL('FROM');
+ 		$markerArray['###SUBJECT_DEFAULT###']=$this->pi_getLL('SUBJECT_DEFAULT');
+ 		$markerArray['###FROM_DEFAULT###']=$GLOBALS['TSFE']->fe_user->user['email'];
+ 		$markerArray['###MESSAGE###']=$this->pi_getLL('MAIL_SUCCESS');
+		
+ 		# mail markers
+ 		$mailArray['###MAIL_SALUTATION###']=$this->pi_getLL('MAIL_SALUTATION');
+ 		#$mailArray['###MAIL_COMMENT###']=$this->pi_getLL('MAIL_SUCCESS');
+ 		$mailArray['###MAIL_FOOTER###']=$this->pi_getLL('MAIL_FOOTER');
+ 		$mailCode = tsLib_CObj::getSubpart($this->fileContent,'###MAIL_MESSAGE###');
+ 		$mailCode =	tslib_cObj::substituteMarkerArray($mailCode, $mailArray);
+ 		$markerArray['###MAIL_TEMPLATE###']=htmlspecialchars($mailCode);
+		if ($listConf['MESSAGE_VISIBILTY']=="mail_success") {
+	 		$markerArray['###MESSAGE_VISIBILTY###']='visible';
+		}
+		else {
+	 		$markerArray['###MESSAGE_VISIBILTY###']='hidden';
+		}
+ 		$markerArray['###CLOSE###']=$this->pi_getLL('CLOSE');
+ 		$content = tslib_cObj::substituteMarkerArray($content, $markerArray);
+		
  			// substitute static user defined markers
  		$this->pi_loadLL();
  		$staticMarkers['###SETROWSPERVIEW###'] = $this->pi_getLL('setRowsPerView');
@@ -788,13 +816,21 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 
 		foreach ($record as $key=>$value) {
 			if ('' == $key) continue; // empty key
-			if (!is_array($this->conf[$scope.'.'][$key.'.'])) { $this->conf[$scope.'.'][$key.'.'] = array(); }
-				// htmlSpecialChars = 1 is default - it has to be disabled via htmlSpecialChars = 0
-			if (!isset($this->conf[$scope.'.'][$key.'.']['htmlSpecialChars'])) {
-				$this->conf[$scope.'.'][$key.'.']['htmlSpecialChars'] = 1;
+			
+			// first try if $cObj->cObjGetSingle has a result, else do only a stdWrap
+			$markerArray['###'.strtoupper($key).'###'] = $cObj->cObjGetSingle($this->conf[$scope.'.'][$key], $this->conf[$scope.'.'][$key.'.']);
+			if (!$markerArray['###'.strtoupper($key).'###']) {
+				if (!is_array($this->conf[$scope.'.'][$key.'.'])) { $this->conf[$scope.'.'][$key.'.'] = array(); }
+					// htmlSpecialChars = 1 is default - it has to be disabled via htmlSpecialChars = 0
+				if (!isset($this->conf[$scope.'.'][$key.'.']['htmlSpecialChars'])) {
+					$this->conf[$scope.'.'][$key.'.']['htmlSpecialChars'] = 1;
+				}
+				$markerArray['###'.strtoupper($key).'###'] = $cObj->stdWrap((string)$value, $this->conf[$scope.'.'][$key.'.']);
 			}
-			$markerArray['###'.strtoupper($key).'###'] = $cObj->stdWrap((string)$value, $this->conf[$scope.'.'][$key.'.']);
- 		}
+		}
+
+		
+		
  		return $markerArray;
  	}
 
