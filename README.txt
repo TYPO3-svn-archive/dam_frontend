@@ -1,5 +1,3 @@
-DEVELOPMENT VERSION for trunk (currently 0.5)
-
 DAM Frontend is providing a powerful possibilty to select files out of the dam.
 
 Main features:
