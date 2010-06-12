@@ -484,7 +484,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			// loading post values from the drilldown view
 		if ($this->piVars['level0']){
 			do {
-				if (intval($this->piVars['level'.intval($i)])==0) break;
+				if (intval($this->piVars['level'.intval($i)])==0) {
+					$this->internal['drilldown']['level'.intval($i)]=0;
+					break;
+				}
 				$this->internal['drilldown']['level'.intval($i)] = intval($this->piVars['level'.intval($i)]);
 				$i++;
 			} while ($this->piVars['level'.intval($i)]);
@@ -807,12 +810,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			
 			$this->internal['list']['pointer'] = 0; 
 			$this->catList->unsetAllCategories();
-			
-			$subs = $this->catLogic->getSubCategories($catID);
-			$this->catList->op_Plus($catID, $this->internal['incomingtreeID']);
-			
-			foreach ($subs as $sub) {
-				$this->catList->op_Plus($sub['uid'], $this->internal['incomingtreeID']);
+			if ($catID>0) {
+				$subs = $this->catLogic->getSubCategories($catID);
+				$this->catList->op_Plus($catID, $this->internal['incomingtreeID']);
+				
+				foreach ($subs as $sub) {
+					$this->catList->op_Plus($sub['uid'], $this->internal['incomingtreeID']);
+				}
 			}
 		}
 	}
@@ -2083,7 +2087,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		
 		// order categories
 		if ($this->conf['drillDown.']['sortCategoriesByTitle']==1) {
-			t3lib_div::debug('jo man');
 			asort($returnCats);
 		}
 		$catArray[]=  $returnCats;
