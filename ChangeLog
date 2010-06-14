@@ -1,4 +1,5 @@
-Version 0.7.x
+Version 0.6.5
+Feature : Expanding more than one level since the beginning is now possible. Configure it by TS or Flexform  by Tizian Schmidlin <st@cabag.ch> on 2010-04-28
 
 Version 0.6.4
 Feature : Expanding more than one level since the beginning is now possible. Configure it by TS or Flexform  by Tizian Schmidlin <st@cabag.ch> on 2010-04-28
@@ -11,6 +12,7 @@ fixed bug 6670 another pointer error in conjunction with drilldown filter
 fixed bug 6610 categorization tree shows wrong localized ID
 fixed bug 6407 drilldown cat menu with curious orderingsystem
 fixed bug 6408 Drill Down Box with caption for "All Entries"
+
 
 Version 0.6.2
 Bug #4955: Problem using direct links to files
