@@ -182,6 +182,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  			if ($pointer>0) $elem['count_id'] = $countElement  + $pointer * $listLength;
 
  			$markerArray = $this->recordToMarkerArray($elem, 'renderFields','tx_dam');
+ 			
  			$markerArray =$markerArray + $this->substituteLangMarkers($record_Code);
 
  			$markerArray['###TX_DAMFRONTEND_FEUSER_UPLOAD###']= $this->get_FEUserName($elem['tx_damfrontend_feuser_upload']);
@@ -240,6 +241,14 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 				$markerArray['###BUTTON_CATEDIT###'] ='';
 			}
 
+ 			// Hook for additional fields
+ 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_DAM_RECORD'])) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_DAM_RECORD'] as $_classRef) { 
+					$_procObj = &t3lib_div::getUserObj($_classRef); 
+					$_procObj->render_dam_record(&$markerArray, $this, $elem);
+				}
+			}
+			
  			$rows .= tslib_cObj::substituteMarkerArray($record_Code, $markerArray);
  			$sortlinks = array();
  		}
@@ -730,6 +739,14 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 		// adding static user definded markers
  		$markerArray =$markerArray + $this->substituteLangMarkers($single_Code);
  		if (!is_null($this->staticInfoObj)) { $markerArray['###LANGUAGE###'] 	= $this->staticInfoObj->getStaticInfoName('LANGUAGES', $record['language'], '', '', false);}
+ 		
+ 		// Hook for additional fields
+ 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_SINGLE_VIEW'])) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_SINGLE_VIEW'] as $_classRef) { 
+					$_procObj = &t3lib_div::getUserObj($_classRef); 
+					$_procObj->renderSingleView(&$markerArray, $this, $record);
+				}
+			}
  		$content=tslib_cObj::substituteMarkerArray($single_Code, $markerArray);
 
  		$content = tslib_cObj::substituteMarker($content, '###TITLE_SINGLEVIEW###',$markerArray['###TITLE###']);
