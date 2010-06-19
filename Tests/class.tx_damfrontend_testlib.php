@@ -51,7 +51,8 @@ class tx_damfrontend_testlib extends tx_phpunit_testcase {
 	/**
 	 * @var tx_damfrontend_pi1
 	 */
-	private $tx_damfrontend_pi1;
+	public $tx_damfrontend_pi1;
+	public $tx_damfrontend_DAL_documents;
 
 	public function setUp() {
 		$this->backupGlobalVariables = array(
@@ -60,7 +61,8 @@ class tx_damfrontend_testlib extends tx_phpunit_testcase {
 			'_SERVER' => $_SERVER,
 			'TYPO3_CONF_VARS' =>  $GLOBALS['TYPO3_CONF_VARS'],
 		);
-		$this->tx_damfrontend_pi1 = t3lib_div::makeInstance('tx_damfrontend_pi1');	
+		$this->tx_damfrontend_pi1 = t3lib_div::makeInstance('tx_damfrontend_pi1');
+		$this->tx_damfrontend_DAL_documents = t3lib_div::makeInstance('tx_damfrontend_DAL_documents');
 	}
 
 	public function tearDown() {

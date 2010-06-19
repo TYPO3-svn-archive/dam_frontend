@@ -646,8 +646,11 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				}
 			}
 			if ($filterArray['filetype'] != '' && $filterArray['filetype'] != ' ') $this->additionalFilter .= ' AND '.$this->docTable.'.file_type = \''.$filterArray['filetype'].'\'' ;
+			
 			if ($filterArray['searchword'] != '' && $filterArray['searchword'] != ' ') $this->additionalFilter .= $this->getSearchwordWhereString($filterArray['searchword']);
+			
 			if ($filterArray['creator'] != '' && $filterArray['creator'] != ' ') $this->additionalFilter .= $this->getSearchwordWhereString($filterArray['creator'],'creator');
+			
 			# todo: check access (user must be part of the selected usergroup)
 			if ($filterArray['owner'] > 0 ) $this->additionalFilter .=   ' AND '.$this->docTable.'.tx_damfrontend_feuser_upload  ='.$filterArray['owner'];
 
@@ -660,12 +663,8 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				// looking for custom filters
 			if (is_array($filterArray['customFilters'])) {
 				foreach ($filterArray['customFilters'] as $filter=>$value) {
-	#t3lib_div::debug('Go:');
-	#t3lib_div::debug($value);
 					switch ($value['type']) {
 						case 'TEXT':
-							#t3lib_div::debug('type');
-							#t3lib_div::debug($filterArray[$filter]);
 							$this->additionalFilter .= $this->getCustomWhereString($value['field'],isset($value['value'])?$value['value']:$filterArray[$filter]);
 							break;
 					}
@@ -679,16 +678,58 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 * returns a searchword transfered to int
 	 *
 	 * @param	string		$searchword: blank separated string
+	 * @param	string		$searchField: blank separated string (optional)
+	 * 
 	 * @return	string		where clause, ready for adding it to the document array
 	 */
-		function getSearchwordWhereString($searchword) {
-			$searchFields = t3lib_div::trimExplode(',', $this->fullTextSearchFields, true);
-			if (0 == count($searchFields)) { return ''; }
-			$queryPart = array();
-			foreach ($searchFields as $field) {
-				$queryPart[] = ' '.$this->docTable.'.'.$field.' LIKE "%'.$GLOBALS['TYPO3_DB']->quoteStr(trim($searchword), $this->docTable).'%" ';
+		function getSearchwordWhereString($searchword,$searchField='') {
+			if ($searchField) {
+				$searchFields[] = $searchField;
 			}
-			return ' AND ('.implode(' OR ', $queryPart).') ';
+			else {
+				$searchFields = t3lib_div::trimExplode(',', $this->fullTextSearchFields, true);
+			}
+			if (0 == count($searchFields)) { return ''; }
+			
+			$queryPart = array();
+			
+			$sword_array = $this->get_searchWordArray($searchword);
+			if (is_array($sword_array))	{
+				foreach ($searchFields as $field) {
+					$searchStringOR=array();
+					$searchSQL_OR='';
+					$searchStringAND=array();
+					$searchSQL_AND='';
+					
+					foreach ($sword_array as $key=>$word) {
+							switch ($word['oper']) {
+							case 'OR':
+									$searchStringOR[] 		= '('. $this->docTable.'.'.$field . ' LIKE "%'.$GLOBALS['TYPO3_DB']->quoteStr(trim($word['sword']), $this->docTable).'%")';
+								break;
+							case 'AND':
+									$searchStringAND[] 		= '('. $this->docTable.'.'.$field . ' LIKE "%'.$GLOBALS['TYPO3_DB']->quoteStr(trim($word['sword']), $this->docTable).'%")';
+								break;
+							case 'AND NOT':
+									$searchStringAND[] 	= '('. $this->docTable.'.'.$field . ' NOT LIKE "%'.$GLOBALS['TYPO3_DB']->quoteStr(trim($word['sword']), $this->docTable).'%")';
+								break;
+							default:
+								$searchStringOR[] 			=  '('. $this->docTable.'.'.$field . ' LIKE "%'.$GLOBALS['TYPO3_DB']->quoteStr(trim($word['sword']), $this->docTable).'%")';
+								break;
+						}
+					}
+					if (!empty($searchStringOR)) $searchSQL_OR = '(' . implode(' OR ',$searchStringOR ).')';
+					if (!empty($searchStringAND)) $searchSQL_AND = '(' . implode(' AND ',$searchStringAND ).')';
+					if ($searchSQL_AND<>'') {
+						$result = $searchSQL_AND;
+					}
+					else {
+						$result = $searchSQL_OR;
+					}
+					if ($searchSQL_AND<>'' AND $searchSQL_OR<>'') $result = $searchSQL_AND . ' AND ' . $searchSQL_OR;
+					$queryPart[]=$result;
+				}
+				return ' AND ('.implode(' OR ', $queryPart).') ';
+			}
 		}
 
 	/**
@@ -1293,6 +1334,20 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			}
 		}
 		return $access;
+	}
+	
+	
+	function get_searchWordArray ($searchWord) {
+		$operator_translate_table = Array (		// case-sensitive. Defines the words, which will be operators between words
+			$this->conf['filterView.']['multipleSearchWords.']['operator_translate_table.']['AND.'],
+			$this->conf['filterView.']['multipleSearchWords.']['operator_translate_table.']['OR.'],
+			$this->conf['filterView.']['multipleSearchWords.']['operator_translate_table.']['NOT.'],
+		);
+		$search = t3lib_div::makeInstance('tslib_search');
+		$search->default_operator = $this->conf['filterView.']['multipleSearchWords.']['defaultOperator'] ? $this->conf['filterView.']['multipleSearchWords.']['defaultOperator'] : 'OR';
+		$search->operator_translate_table = $operator_translate_table;
+		$search->register_and_explode_search_string($searchWord);
+		return $search->sword_array;
 	}
 }
 
