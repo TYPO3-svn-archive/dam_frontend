@@ -108,7 +108,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			'3' => 'uploadaccess'
 		);
 
-		var $feuser;			// pointing to the fe user object instance - please use this instead of GLOBALS['TSFE]
+		var $feuser;			// pointing to the fe user object instance - please use this instead of GLOBALS['TSFE']
 
 		/**
 		 * Sets fullTextSearchFields - in which fields should be searched
