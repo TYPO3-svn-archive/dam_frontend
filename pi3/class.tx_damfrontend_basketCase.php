@@ -92,6 +92,15 @@ class tx_damfrontend_basketCase extends tslib_pibase {
 	 * @return	[void]		...
 	 */
 	function checkOut() {
+		
+			// check if checkout is possible
+			
+			// add usage data
+
+			// create mail
+			
+			// redirect to pushfile?
+			
 		return true;
 	}
 	
