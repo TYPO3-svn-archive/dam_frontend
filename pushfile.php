@@ -29,19 +29,20 @@
 error_reporting(E_ERROR);
 
 require_once(t3lib_extMgm::extPath('dam_frontend').'/DAL/class.tx_damfrontend_DAL_documents.php');
-
-$userObj = tslib_eidtools::initFeUser(); // Initialize FE user object
-$GLOBALS['TSFE']->fe_user = $userObj;
-$userObj->fetchGroupData();
-tslib_eidtools::connectDB();
-$docLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_documents');
-$docLogic->feuser = $userObj;
 require_once(PATH_t3lib.'class.t3lib_stdgraphic.php');
 require_once(PATH_t3lib.'class.t3lib_page.php');
 require_once(PATH_t3lib.'class.t3lib_div.php');
 require_once(PATH_tslib.'class.tslib_gifbuilder.php');
 
+$userObj = tslib_eidtools::initFeUser(); // Initialize FE user object
+$GLOBALS['TSFE']->fe_user = $userObj;
+$userObj->fetchGroupData();
 
+tslib_eidtools::connectDB();
+
+$docLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_documents');
+
+$docLogic->feuser = $userObj;
 
 
 $prefixId = 'tx_damfrontend_pi1';
@@ -294,38 +295,73 @@ if (is_array($post) && count($post) > 0) {
 		return $filePath[3];
 	}
 
+	/**
+	 * Redirects to the given page
+	 * 
+	 * @param	[int]		$pid: ID of the page to which should be redirected
+	 * @param	[string]	$params: string of additional parameters for the link
+	 * @return	[void]		...
+	 */
 	function redirect($pid,$params='') {
 		header('Location: '. t3lib_div::getIndpEnv('TYPO3_SITE_URL') .'?id='.$pid.$params);
 		exit();
 	}
 
+	
+	/**
+	 * Redirects to the given page
+	 * 
+	 * @param	[int]		$ID: ID of the dam_record that should be downloaded
+	 * @param	[string]	$params: string of additional parameters for the link
+	 * @return	[void]		...
+	 */	
+	function checkHash($ID,$valid,$FEUID,$hash) {
+		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dam_frontend']);
+		
+		return (md5($ID+$valid+$FEUID+$key)==$hash); 
+	}
 
-// test for access to a file
-$docID = intval(t3lib_div::GPvar('docID'));
-
-if ($docID==0) {
-	die('<h1>Error</h1><p>You have no access to download a file. In this case no correct DocID was given!</p>');
-}
-
-// check if a user has access to the selected categories (a user must have access to all categories that are selected)
-if (!$docLogic->checkAccess($docID, 2)) {
-	die('<h1>Sorry</h1><p>You do not have the right to download this file.');
-}
-
-// get the data of the selected document
-$doc = $docLogic->getDocument($docID);
-
-// check if a user has access to the dam record / file
-if (!$docLogic->checkDocumentAccess($doc['fe_group'])) {
-	die('<h1>Error</h1><p>You have no access to this file.');
-}
-$filePath = PATH_site.$doc['file_path'].$doc['file_name'];
-
-if (!sendFile($filePath, $doc['file_name'], $doc['file_mime_type'] . '/' . $doc['file_mime_subtype'])) {
-	die ('<h1>Sorry, file not found!</h1><p>The requested file was not found! Please contact the adminstrator and tell him that the id: '.$docID .' was not found');
-}
-
-
-
+	// test for access to a file
+	$docID = intval(t3lib_div::GPvar('docID'));
+	
+	if ($docID==0) {
+		die('<h1>Error</h1><p>You have no access to download a file. In this case no correct DocID was given!</p>');
+	}
+	
+	// get the data of the selected document
+	$doc = $docLogic->getDocument($docID);
+	$valid =  intval(t3lib_div::GPvar('valid'));
+	$feUserID =  intval(t3lib_div::GPvar('feuid'));
+	$hash =  t3lib_div::GPvar('dfhash');
+	
+	if (t3lib_div::GPvar('dfhash')){
+			// a hash was given, try to push the requested file, if the hash is valid
+		if ($valid>time()) {	
+			if (!checkHash($docID,$valid,$feuserID, $hash)) {
+				die('<h1>Sorry</h1><p>You do not have the right to download this file.');
+			} 
+		}	
+		else {
+			die('<h1>Error</h1><p>This link is not valid anymore. Please request this download again.</p');
+		}
+	
+	}	
+	else {
+		// check if a user has access to the selected categories (a user must have access to all categories that are selected)
+		if (!$docLogic->checkAccess($docID, 2)) {
+			die('<h1>Sorry</h1><p>You do not have the right to download this file.');
+		}
+		
+		// check if a user has access to the dam record / file
+		if (!$docLogic->checkDocumentAccess($doc['fe_group'])) {
+			die('<h1>Error</h1><p>You have no access to this file.');
+		}
+	}
+	
+	$filePath = PATH_site.$doc['file_path'].$doc['file_name'];
+	
+	if (!sendFile($filePath, $doc['file_name'], $doc['file_mime_type'] . '/' . $doc['file_mime_subtype'])) {
+		die ('<h1>Sorry, file not found!</h1><p>The requested file was not found! Please contact the adminstrator and tell him that the id: '.$docID .' was not found');
+	}
 
 ?>
