@@ -1,0 +1,13 @@
+# DAM Frontend Constants Begin
+  TSConstantEditor.tx_damfrontend_pi3 {
+    header = DAM Frontend
+    description = configuration for dam_frontend basket case
+  }
+
+# cat=tx_damfrontend_pi1//10; type=text; label= Template File
+plugin.tx_damfrontend_pi3.templateFile = EXT:dam_frontend/pi1/template.html
+
+# cat=tx_damfrontend_pi1//20; type=int; label= checkout id
+plugin.tx_damfrontend_pi1.checkOutID = 
+
+# tx_damfrontend_pi1 Constants End
