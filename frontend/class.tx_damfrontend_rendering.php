@@ -211,6 +211,10 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  				$markerArray['###LINK_DOWNLOAD###'] = $this->pi_linkTP('request', $paramRequest);
  			} else {
 	 			$markerArray['###LINK_DOWNLOAD###'] = $cObj->cObjGetSingle($this->conf['filelist.']['link_download'], $this->conf['filelist.']['link_download.']);
+	 			
+	 			$tsconf = $this->conf['filelist.']['link_download.'];
+	 			$tsconf['stdWrap.']['typolink.']['additionalParams'].=$this->makeDownloadHash($elem['uid']);
+	 			$markerArray['###LINK_DOWNLOAD_HASH###'] = $cObj->cObjGetSingle($this->conf['filelist.']['link_download'], $tsconf);
 	 		}
 			$markerArray['###LINK_SELECT_DOWNLOAD###'] = '';
 			
@@ -718,6 +722,10 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  		$markerArray = $this->recordToMarkerArray($record,'singleView');
  		$markerArray['###CRDATE_AGE###'] =  $cObj->stdWrap($record['crdate'], $this->conf['renderFields.']['crdate_age.']);
  		$markerArray['###LINK_DOWNLOAD###'] = $cObj->cObjGetSingle($this->conf['singleView.']['link_download'], $this->conf['singleView.']['link_download.']);
+ 		$tsconf = $this->conf['singleView.']['link_download.'];
+	 	$tsconf['stdWrap.']['typolink.']['additionalParams'].=$this->makeDownloadHash($elem['uid']);
+	 	$markerArray['###LINK_DOWNLOAD_HASH###'] = $cObj->cObjGetSingle($this->conf['singleView.']['link_download'], $tsconf);
+ 		
  		$markerArray['###BACK_LINK###'] = $this->cObj->typolink($cObj->cObjGetSingle($this->conf['singleView.']['backLink'], $this->conf['singleView.']['backLink.']), array('parameter' => $record['backPid']));
 		$markerArray['###TX_DAMFRONTEND_FEUSER_UPLOAD###']= $this->get_FEUserName($record['tx_damfrontend_feuser_upload']);
 		$markerArray['###FILEICON###'] = $cObj->stdWrap('<img src="'.$this->getFileIconHref($record['file_mime_type'],$record['file_mime_subtype'] ).'" title="'.$record['title'].'"  alt="'.$record['title'].'"/>',$this->conf['singleView.']['fileicon.']);
@@ -1900,6 +1908,17 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  	
  	function get_LLLabel($label) {
  			return $this->pi_getLL($label);
+ 	}
+ 	
+ 	function makeDownloadHash($ID) {
+ 		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dam_frontend']);
+		$key = $extConf['privateKey'];
+		$valid = time()+$this->conf['filelist.']['security_options.']['hashValidity'];
+		$user = $GLOBALS['TSFE']->fe_user;
+		if (is_array($user->user)) {
+			$FEUID = $user->user['uid'];
+		}
+		return '&dfhash='.md5($ID+$valid+$FEUID+$key).'&valid='.$valid.'&feuid='.$FEUID;
  	}
 }
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_rendering.php'])	{

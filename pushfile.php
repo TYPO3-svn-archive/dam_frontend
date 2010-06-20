@@ -317,7 +317,7 @@ if (is_array($post) && count($post) > 0) {
 	 */	
 	function checkHash($ID,$valid,$FEUID,$hash) {
 		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dam_frontend']);
-		
+		$key = $extConf['privateKey'];
 		return (md5($ID+$valid+$FEUID+$key)==$hash); 
 	}
 
