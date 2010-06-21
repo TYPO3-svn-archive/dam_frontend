@@ -7,9 +7,11 @@
 		<languageKey index="default" type="array">
 			<label index="list_mode_1">Mode 1</label>
 			<label index="flexform_display_title">Settings</label>
-			<label index="flexform_display_form">Settings</label>
-			<label index="flexform_baketCasePreview">Settings</label>
-			<label index="flexform_basketCase">Settings</label>
+			<label index="flexform_options">Options</label>
+			<label index="flexform_display_form">Display this view</label>
+			<label index="flexform_baketCasePreview">preview of the basketcase</label>
+			<label index="flexform_basketCase">basketcase checkout</label>
+			<label index="flexform_checkOutPageID">Page ID for the checkoutpage</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="list_mode_1">Modus 1</label>

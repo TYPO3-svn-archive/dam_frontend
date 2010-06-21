@@ -30,6 +30,7 @@ require_once(PATH_tslib.'class.tslib_pibase.php');
 ***************************************************************/
 #require_once(t3lib_extMgm::extPath('dam_frontend').'pi3/class.tx_damfrontend_basketCase.php');
 require_once('class.tx_damfrontend_basketCase.php');
+require_once('class.tx_damfrontend_basketCaseRendering.php');
 
 /**
  *
@@ -50,6 +51,7 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 	var $pi_checkCHash = TRUE;
 	var $basketCase;
 	var $errors; // array with error messages
+	var $renderer;
 	/**
 	 * Inits this class and instanceates all nescessary classes
 	 *
@@ -98,9 +100,10 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 	        }
 	  }
 
-	      // getting values from flexform ==> it's possible to overwrite flexform values with ts settings
-	  $flexform = $this->cObj->data['pi_flexform'];
-		$this->basketCase = new tx_damfrontend_basketCase;
+	  
+	  $this->basketCase = new tx_damfrontend_basketCase;
+	  $this->renderer = new tx_damfrontend_basketCaseRendering;
+	 #$this->basketCase = new tx_damfrontend_basketCase;
 	}
 
 	
@@ -111,8 +114,13 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 	 * @return	void
 	 */
 	function convertPiVars() {
-
-	
+		if (intval($this->piVars['add'])) {
+			$this->basketCase->addItem(intval($this->piVars['add']));
+		}
+		
+		if (intval($this->piVars['delete'])) {
+			$this->basketCase->deleteItem(intval($this->piVars['delete']));
+		}
  	}
 
 	/**
@@ -130,14 +138,14 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 			// reading parameters from different sources
 		$this->init($conf);
 		$this->convertPiVars();
-
-		switch ($this->internal['viewID']) {
+		
+		switch ($this->conf['viewID']) {
 			case 1:
-				$content .=	$this->basketCase_Preview();	
+				$content .= $this->basketCase_Checkout();
 				// mini basket case
 				break;
 			case 2:
-				$content .= $this->basketCase_Checkout();
+				$content .=	$this->basketCase_Preview();	
 				break;
 			default:
 				$content .= 'no view selected - nothing is displayed';
@@ -159,9 +167,6 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 		
 		if ($doCheckout == false) {
 			// display checkout form
-			if ($deleteItem) {
-				$this->basketCase->deleteItem($deleteItem);
-			}
 			return $this->renderer->renderCheckOutForm($this->basketCase->listItems());
 		}
 		else {
@@ -190,7 +195,7 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 	 * @return	string		The html content that is displayed on the website
 	 */
 	function basketCase_Preview() {
-		return '<div>Preview</div>';
+		return $this->renderer->renderPreview($this->basketCase->listItems());
 	}
 	
 	function doCheckOut(){

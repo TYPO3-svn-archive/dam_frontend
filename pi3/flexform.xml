@@ -13,16 +13,16 @@
 				<el>
 					<viewID>
 						<TCEforms>
-							<label>LLL:EXT::dam_frontend/pi3/locallang.xml:flexform_display_form</label>
+							<label>LLL:EXT:dam_frontend/pi3/locallang.xml:flexform_display_form</label>
 							<config>
 								<type>select</type>
 								<items>
 									<numIndex index="1" type="array">
-										<numIndex index="0">:dam_frontend/pi3/locallang.xml:flexform_basketCase</numIndex>
+										<numIndex index="0">LLL:EXT:dam_frontend/pi3/locallang.xml:flexform_basketCase</numIndex>
 										<numIndex index="1">1</numIndex>
 									</numIndex>
 									<numIndex index="2" type="array">
-										<numIndex index="0">:dam_frontend/pi3/locallang.xml:flexform_baketCasePreview</numIndex>
+										<numIndex index="0">LLL:EXT:dam_frontend/pi3/locallang.xml:flexform_baketCasePreview</numIndex>
 										<numIndex index="1">2</numIndex>
 									</numIndex>
 								</items>
@@ -35,5 +35,29 @@
 				</el>
 			</ROOT>
 		</sDEF>
+		<sOPT>
+			<ROOT>
+				<TCEforms>
+					<sheetTitle>LLL:EXT:dam_frontend/pi3/locallang.xml:flexform_options</sheetTitle>
+				</TCEforms>
+				<type>array</type>
+				<el>
+					<checkOutPageID>
+					<TCEforms>
+							<label>LLL:EXT:dam_frontend/pi3/locallang.xml:flexform_checkOutPageID</label>
+							<config>
+								<type>group</type>							
+								<internal_type>db</internal_type>							
+								<allowed>pages</allowed>
+								<size>1</size>
+								<minitems>0</minitems>
+								<maxitems>1</maxitems>
+								<default></default>
+							</config>
+						</TCEforms>
+					</checkOutPageID>
+				</el>
+			</ROOT>
+		</sOPT>
 	</sheets>
 </T3DataStructure>

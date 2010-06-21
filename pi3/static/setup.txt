@@ -15,4 +15,13 @@ plugin.tx_damfrontend_pi3 {
 		1 = fileadmin/test
 		2 = fileadmin/test2
 	}
+	marker {
+		add_to_basket = TEXT
+		add_to_basket {
+			value = Add to basket
+			typolink.parameter = 24
+			typolink.additionalParams =&tx_damfrontend_pi3[add]={field:uid}
+			typolink.additionalParams.insertData = 1
+		}
+	}
 }

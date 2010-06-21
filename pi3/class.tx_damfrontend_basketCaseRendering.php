@@ -1,5 +1,8 @@
 <?php
 
+require_once(PATH_tslib.'class.tslib_pibase.php');
+
+
 /***************************************************************
 *  Copyright notice
 *
@@ -25,10 +28,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-require_once(t3lib_extMgm::extPath('dam_frontend').'DAL/class.tx_damfrontend_DAL_documents.php');
-#require_once('../DAL/class.tx_damfrontend_DAL_documents.php');
-require_once(t3lib_extMgm::extPath('dam_frontend').'/DAL/class.tx_damfrontend_baseSessionData.php');
-
+#require_once(t3lib_extMgm::extPath('dam_frontend').'pi3/class.tx_damfrontend_basketCase.php');
+require_once('class.tx_damfrontend_basketCase.php');
 
 /**
  *
@@ -42,88 +43,82 @@ require_once(t3lib_extMgm::extPath('dam_frontend').'/DAL/class.tx_damfrontend_ba
  *
  * Depends on:		--
  */
-class tx_damfrontend_basketCase extends tx_damfrontend_baseSessionData  {
-
-	var $usageDescription;
-	var $items;
-	var $documents;
+class tx_damfrontend_basketCaseRendering extends tslib_pibase {
+	var $prefixId = 'tx_damfrontend_basketCaseRendering';		// Same as class name
+	var $scriptRelPath = 'pi1/class.tx_damfrontend_basketCaseRendering.php';	// Path to this script relative to the extension dir.
+	var $extKey = 'dam_frontend';	// The extension key.
 	
-	function tx_damfrontend_basketCase() {
-		parent::tx_damfrontend_baseSessionData();
-		$this->sessionVar = 'tx_damfrontend_basketCase';
-		$this->items = $this->getArrayFromUser();
-		$this->documents = new tx_damfrontend_DAL_documents;
-		$this->documents->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.']; 
+	function tx_damfrontend_basketCaseRendering() {
+		$this->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi3.'];
+		$this->pi_loadLL();
 	}
-	
-
 	/**
 	 * Inits this class and instanceates all nescessary classes
 	 *
-	 * @param	[int]		$id: ID of the dam_record that should be added
+	 * @param	[type]		$conf: ...
 	 * @return	[void]		...
 	 */
-	function addItem($id) {
-		//check if user is allowed to add
-		$this->items[]=$id;
-		$this->setArrayToUser(array_unique($this->items)); 
-		return true;
+	function renderCheckOutForm() {
+		return 'renderCheckOutForm';
 	}
 
 	/**
 	 * Inits this class and instanceates all nescessary classes
 	 *
-	 * @param	[int]		$id: ID of the dam_record that should be added
+	 * @param	[type]		$conf: ...
 	 * @return	[void]		...
 	 */
-	function deleteItem($id) {
-		$key = array_search($id, $this->items);
-		if (!$key) {
-			unset($this->items[$key]);
-			$this->setArrayToUser(array_unique($this->items));
-		}
-		return true;
-	}
-	
-	
-	/**
-	 * Inits this class and instanceates all nescessary classes
-	 *
-	 * @return	[mixes]		boolean in case of sucess
-	 */
-	function listItems() {
-		$result = array();
-		t3lib_div::debug($this->items);
-		if (array_count_values($this->items)>0) {
-			$this->documents->additionalFilter = ' AND tx_dam.uid in ('. implode(',',$this->items).')';
-			$this->documents->limit = '0,999999';
-			$result = $this->documents->getDocumentList($GLOBALS['TSFE']->fe_user->user['uid']);
-		}
-		return $result;
-	}
-	
-	/**
-	 * Inits this class and instanceates all nescessary classes
-	 *
-	 * @return	[void]		...
-	 */
-	function writeUsage() {
-		return true;
+	function renderMail() {
+		return 'renderMail';
 	}
 
 	
 	/**
 	 * Inits this class and instanceates all nescessary classes
 	 *
+	 * @param	[type]		$conf: ...
 	 * @return	[void]		...
 	 */
-	function clearBasketcase() {
-		return true;
+	function renderError() {
+		return 'renderError';
+	}
+
+	
+	/**
+	 * Inits this class and instanceates all nescessary classes
+	 *
+	 * @param	[type]		$conf: ...
+	 * @return	[void]		...
+	 */
+	function renderCheckOutResult() {
+		return 'renderCheckOutResult';
 	}
 	
+	/** 
+	 * Hook 
+	 * 
+	 */
+	function renderSingleView($markerArray,$plugin, $elem) {
+		// call the render_dam_record because it does the same we need in the singleView
+		$this->render_dam_record(&$markerArray,$plugin, $elem);
+	}
+
+	/** 
+	 * Hook 
+	 * 
+	 */
+	function render_dam_record($markerArray,$plugin, $elem){
+		$cObj = t3lib_div::makeInstance('tslib_cObj');
+		$cObj->start($elem, 'tx_dam');
+		$markerArray['###ADD_TO_BASKET###']= $cObj->cObjGetSingle($this->conf['marker.']['add_to_basket'], $this->conf['marker.']['add_to_basket.']);
+	}
 	
-	
+	function renderPreview($items) {
+		return 'basketCase Preview';
+	}
 }
+
+
 
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/pi1/class.tx_damfrontend_pi1.php'])	{
