@@ -6,6 +6,10 @@
 	<data type="array">
 		<languageKey index="default" type="array">
 			<label index="list_mode_1">Mode 1</label>
+			<label index="flexform_display_title">Settings</label>
+			<label index="flexform_display_form">Settings</label>
+			<label index="flexform_baketCasePreview">Settings</label>
+			<label index="flexform_basketCase">Settings</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="list_mode_1">Modus 1</label>

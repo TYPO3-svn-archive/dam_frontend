@@ -8,6 +8,7 @@
 		<languageKey index="default" type="array">
 			<label index="tt_content.list_type_pi1">DAM Frontend</label>
 			<label index="tt_content.list_type_pi2">DAM Frontend Filelist</label>
+			<label index="tt_content.list_type_pi3">DAM frontend basketcase extension</label>
 			<label index="tx_dam_cat.downloadaccess">download access for:</label>
 			<label index="tx_dam_cat.uploadaccess">upload access for:</label>
 			<label index="tx_dam_cat.readaccess">read access for:</label>
@@ -23,6 +24,7 @@
 		<languageKey index="de" type="array">
 			<label index="tt_content.list_type_pi1">DAM Frontend</label>
 			<label index="tt_content.list_type_pi2">DAM Frontend Dateiliste</label>
+			<label index="tt_content.list_type_pi3">DAM Frontend Warenkorb Erweiterung</label>
 			<label index="tx_dam_cat.downloadaccess">Download Berechtigung im Frontend für:</label>
 			<label index="tx_dam_cat.uploadaccess">Upload Berechtigung für:</label>
 			<label index="tx_dam_cat.readaccess">Darstellung im Frontend für:</label>

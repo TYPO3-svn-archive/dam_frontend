@@ -1,0 +1,39 @@
+<T3DataStructure>
+	<meta>
+		<langDisable>1</langDisable>
+		<!--  <langChildren>1</langChildren>!-->
+	</meta>
+	<sheets>
+		<sDEF>
+			<ROOT>
+				<TCEforms>
+					<sheetTitle>LLL:EXT:dam_frontend/pi3/locallang.xml:flexform_display_title</sheetTitle>
+				</TCEforms>
+				<type>array</type>
+				<el>
+					<viewID>
+						<TCEforms>
+							<label>LLL:EXT::dam_frontend/pi3/locallang.xml:flexform_display_form</label>
+							<config>
+								<type>select</type>
+								<items>
+									<numIndex index="1" type="array">
+										<numIndex index="0">:dam_frontend/pi3/locallang.xml:flexform_basketCase</numIndex>
+										<numIndex index="1">1</numIndex>
+									</numIndex>
+									<numIndex index="2" type="array">
+										<numIndex index="0">:dam_frontend/pi3/locallang.xml:flexform_baketCasePreview</numIndex>
+										<numIndex index="1">2</numIndex>
+									</numIndex>
+								</items>
+								<maxitems>1</maxitems>
+								<size>1</size>
+							</config>
+						</TCEforms>
+					</viewID>
+					
+				</el>
+			</ROOT>
+		</sDEF>
+	</sheets>
+</T3DataStructure>
