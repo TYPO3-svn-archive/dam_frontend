@@ -145,11 +145,6 @@ plugin.tx_damfrontend_pi1 {
 		wrap = |
 	}
 	
-	# renderCategoryTree is depreceated. Please use in future categoryTree
-	renderCategoryTree < .categoryTree
-	# this object is depreceated, Please use in future categoryTree
-	renderCategoryTree.info = this ts conf is depreceated
-	
 	categorySelection {
 		useLanguageOverlay=1
 	}
@@ -269,7 +264,7 @@ plugin.tx_damfrontend_pi1 {
 			wrap = | 
 		}
 	}
-
+	
 	filterView {
 		from_day.ifEmpty =
 		from_month.ifEmpty =
@@ -533,9 +528,6 @@ plugin.tx_damfrontend_pi1 {
 			button_confirm.wrap = |
 			button_cancel.wrap = |
 		}
-		
-		# renderFileEdit is depreceated please use fileEdit
-		renderFileEdit < .fileEdit
 	}
 
 	explorerView < .filelist

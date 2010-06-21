@@ -11,4 +11,8 @@ plugin.tx_damfrontend_pi3 {
 	userFunc = tx_damfrontend_pi3->main
 	templateFile = {$plugin.tx_damfrontend_pi3.templateFile}
 	checkOutID = {$plugin.tx_damfrontend_pi3.checkOutID}
+	checkOutNecessary {
+		1 = fileadmin/test
+		2 = fileadmin/test2
+	}
 }

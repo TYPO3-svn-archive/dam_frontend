@@ -25,6 +25,10 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+require_once(t3lib_extMgm::extPath('dam_frontend').'/DAL/class.tx_damfrontend_baseSessionData.php');
+
+
 /**
  *
  * class.tx_damfrontend_pi3.php
@@ -37,25 +41,17 @@
  *
  * Depends on:		--
  */
-class tx_damfrontend_basketCase extends tslib_pibase {
-	var $prefixId = 'tx_damfrontend_basketCase';		// Same as class name
-	var $scriptRelPath = 'pi1/class.tx_damfrontend_basketCase.php';	// Path to this script relative to the extension dir.
-	var $extKey = 'dam_frontend';	// The extension key.
-	var $pi_checkCHash = TRUE;
+class tx_damfrontend_basketCase extends tx_damfrontend_baseSessionData  {
 
 	var $usageDescription;
-
-	/**
-	 * Inits this class and instanceates all nescessary classes
-	 *
-	 * @param	[type]		$conf: ...
-	 * @return	[void]		...
-	 */
-	function init() {
-	    
-		
-
+	var $items;
+	
+	function tx_damfrontend_basketCase() {
+		parent::tx_damfrontend_baseSessionData();
+		$this->sessionVar = 'tx_damfrontend_basketCase';
+		$this->items = $this->getArrayFromUser();
 	}
+	
 
 	/**
 	 * Inits this class and instanceates all nescessary classes
@@ -64,6 +60,9 @@ class tx_damfrontend_basketCase extends tslib_pibase {
 	 * @return	[void]		...
 	 */
 	function addItem($id) {
+		//check if user is allowed to add
+		$this->items[]=$id;
+		$this->setArrayToUser(array_unique($this->items)); 
 		return true;
 	}
 
@@ -74,34 +73,23 @@ class tx_damfrontend_basketCase extends tslib_pibase {
 	 * @return	[void]		...
 	 */
 	function deleteItem($id) {
+		$key = array_search($id, $this->items);
+		if (!$key) {
+			unset($this->items[$key]);
+			$this->setArrayToUser(array_unique($this->items));
+		}
 		return true;
 	}
+	
 	
 	/**
 	 * Inits this class and instanceates all nescessary classes
 	 *
-	 * @return	[void]		...
+	 * @return	[mixes]		boolean in case of sucess
 	 */
 	function listItems() {
-		return true;
-	}
-	
-	/**
-	 * Inits this class and instanceates all nescessary classes
-	 *
-	 * @return	[void]		...
-	 */
-	function checkOut() {
-		
-			// check if checkout is possible
-			
-			// add usage data
-
-			// create mail
-			
-			// redirect to pushfile?
-			
-		return true;
+		// check access foreach item
+		return $this->items;
 	}
 	
 	/**
@@ -112,9 +100,20 @@ class tx_damfrontend_basketCase extends tslib_pibase {
 	function writeUsage() {
 		return true;
 	}
+
+	
+	/**
+	 * Inits this class and instanceates all nescessary classes
+	 *
+	 * @return	[void]		...
+	 */
+	function clearBasketcase() {
+		return true;
+	}
+	
+	
+	
 }
-
-
 
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/pi1/class.tx_damfrontend_pi1.php'])	{

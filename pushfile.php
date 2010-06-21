@@ -54,7 +54,7 @@ if (!$_REQUEST['docID']
 $post = t3lib_div::_POST($prefixId);
 if (is_array($post) && count($post) > 0) {
 	$filesToSend = array();
-
+		
 	foreach ($post as $docID => $configuration) {
 		if (!is_numeric($docID)) {
 			continue; // not a file-id
@@ -79,10 +79,17 @@ if (is_array($post) && count($post) > 0) {
 		if ($docID <= 0) {
 			die('<h1>Error</h1><p>You have no access to download a file. In this case no correct DocID was given!</p>');
 		}
-		if (!$docLogic->checkAccess($docID, 1)) {
+		if (!$docLogic->checkAccess($docID, 2)) {
 			die('<h1>Error</h1><p>You have no access to download this file.');
 		}
 		$doc = $docLogic->getDocument($docID);
+		// 
+		// @TODO check if a checkout is necessary
+		
+		// 	check if a user has access to the dam record / file
+		if (!$docLogic->checkDocumentAccess($doc['fe_group'])) {
+			die('<h1>Error</h1><p>You have no access to this file.');
+		}
 		$filePath = PATH_site.$doc['file_path'].$doc['file_name'];
 		if ($tmp = createFile($filePath, configuration2Array($configuration['convert']))) {
 			$filesToSend[] = array('file' => $tmp, 'filename' => $doc['file_name'], 'contenttype' => $doc['file_mime_type'] . '/' . $doc['file_mime_subtype']);
@@ -347,6 +354,9 @@ if (is_array($post) && count($post) > 0) {
 	
 	}	
 	else {
+		// 
+		// @TODO check if a checkout is necessary
+		
 		// check if a user has access to the selected categories (a user must have access to all categories that are selected)
 		if (!$docLogic->checkAccess($docID, 2)) {
 			die('<h1>Sorry</h1><p>You do not have the right to download this file.');
