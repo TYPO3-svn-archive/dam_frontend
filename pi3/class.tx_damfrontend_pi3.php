@@ -62,13 +62,12 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 	    
 			// Init FlexForm configuration for plugin
 		$this->pi_initPIflexForm(); 
-
+	
 	    	// Read extension configuration
 	    $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
 	    if (is_array($extConf)) {
-	       $conf = t3lib_div::array_merge($extConf, $conf);
+	       $conf = t3lib_div::array_merge($conf,$extConf);
 	    }
-
 	    	// Read TYPO3_CONF_VARS configuration
 	    $varsConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey];
 	      if (is_array($varsConf)) {
@@ -99,11 +98,12 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 	                $this->conf[$key] = $conf[$key];
 	        }
 	  }
-
 	  
-	  $this->basketCase = new tx_damfrontend_basketCase;
-	  $this->renderer = new tx_damfrontend_basketCaseRendering;
-	 #$this->basketCase = new tx_damfrontend_basketCase;
+		$this->basketCase = new tx_damfrontend_basketCase;
+		$this->renderer = new tx_damfrontend_basketCaseRendering;
+		$this->renderer->cObj = $this->cObj;
+		$this->renderer->conf = $this->conf;
+		#$this->basketCase = new tx_damfrontend_basketCase;
 	}
 
 	

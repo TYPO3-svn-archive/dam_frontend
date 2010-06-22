@@ -12,6 +12,11 @@
 			<label index="flexform_baketCasePreview">preview of the basketcase</label>
 			<label index="flexform_basketCase">basketcase checkout</label>
 			<label index="flexform_checkOutPageID">Page ID for the checkoutpage</label>
+			<label index="item">item</label>
+			<label index="items">items</label>
+			<label index="itemstext">in the basketcase.</label>
+			<label index="no_itemstext">No items in the basketcase.</label>
+			<label index="checkout">checkout1</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="list_mode_1">Modus 1</label>

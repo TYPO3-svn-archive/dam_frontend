@@ -31,6 +31,7 @@ require_once(PATH_tslib.'class.tslib_pibase.php');
 #require_once(t3lib_extMgm::extPath('dam_frontend').'pi3/class.tx_damfrontend_basketCase.php');
 require_once(t3lib_extMgm::extPath('dam_frontend').'frontend/class.tx_damfrontend_rendering.php');
 require_once('class.tx_damfrontend_basketCase.php');
+require_once('class.tx_damfrontend_basketCase.php');
 
 /**
  *
@@ -46,7 +47,7 @@ require_once('class.tx_damfrontend_basketCase.php');
  */
 class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 	var $prefixId = 'tx_damfrontend_basketCaseRendering';		// Same as class name
-	var $scriptRelPath = 'pi1/class.tx_damfrontend_basketCaseRendering.php';	// Path to this script relative to the extension dir.
+	var $scriptRelPath = 'pi3/class.tx_damfrontend_basketCaseRendering.php';	// Path to this script relative to the extension dir.
 	var $extKey = 'dam_frontend';	// The extension key.
 	
 	function tx_damfrontend_basketCaseRendering() {
@@ -140,14 +141,28 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 	}
 	
 	function renderPreview($items) {
-		if (empty($items)) {
-			return 'no items in the basket case';
+		$this->pi_loadLL();
+		$htmlTemplate = tsLib_CObj::getSubpart(tsLib_CObj::fileResource($this->conf['templateFile']),'###BASKET_CASE###');
+		$markerArray= array();	 
+		if (count($items)==0) {
+			$markerArray['###ITEMS###']='';
+			$markerArray['###ITEMSTEXT###']=$this->pi_getLL('no_itemstext');
+			$markerArray['###CHECKOUT###']='';
 		} 
 		else {
-			#if (count)
-			return count($items) .' items in the basket case';
+			count($items)==1 ? $markerArray['###ITEMS###']='1 ' . $this->pi_getLL('item'):$markerArray['###ITEMS###']=count($items). ' ' .$this->pi_getLL('items');;
+			$markerArray['###ITEMSTEXT### ']=$this->pi_getLL('itemstext');
+			$markerArray['###CHECKOUT###']=$this->cObj->cObjGetSingle($this->conf['marker.']['checkout'], $this->conf['marker.']['checkout.']);
 		}
-		return $rows;
+		
+		//Debug statements
+		if ($this->conf['enableDebug']==1) {
+			if ($this->conf['debug.']['render_dam_record.']['markerArray']==1)	t3lib_div::debug($markerArray);
+			if ($this->conf['debug.']['render_dam_record.']['conf']==1)			t3lib_div::debug($this->conf);
+			if ($this->conf['debug.']['render_dam_record.']['items']==1)			t3lib_div::debug($items);
+		}
+			
+		return tslib_cObj::substituteMarkerArray($htmlTemplate, $markerArray);
 	}
 }
 

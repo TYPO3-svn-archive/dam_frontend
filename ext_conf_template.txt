@@ -1,2 +1,5 @@
 # cat=basic//10; type=String; label= Private Key: This key is used to build a hash for download links that should be valid without logging into the Frontend
 privateKey = jkarkkjker1320
+
+# cat=basic//10; type=boolean; label= Enable Debugging: If you want to allow debug statements
+enableDebug = 0
