@@ -980,10 +980,20 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		$files = $this->additionalTreeConf['docLogic']->getDocumentList($GLOBALS['TSFE']->fe_user->user['uid']);
 		if (!empty($files)) {
 			$i=0;
+			// Optionsplit for ###FILELIST_RECORD###
+			if ($this->conf['explorerView.']['useAlternatingRows']==1) {
+				$filelist_record_marker = $GLOBALS['TSFE']->tmpl->splitConfArray(array('cObjNum' => $this->conf['explorerView.']['marker.']['filelist_record_alterning']), count($files));
+			}
+			else {
+				if (!isset($this->conf['explorerView.']['marker.']['filelist_record'])) { $this->conf['explorerView.']['marker.']['filelist_record'] = '###FILELIST_RECORD###'; }
+				$filelist_record_marker = $GLOBALS['TSFE']->tmpl->splitConfArray(array('cObjNum' => $this->conf['explorerView.']['marker.']['filelist_record']), count($files));
+			}
+	 		$list_Code = tsLib_CObj::getSubpart(tsLib_CObj::fileResource($this->conf['templateFile']),$filelist_record_marker);
+			$cObj = t3lib_div::makeInstance('tslib_cObj');
 			foreach ($files as $elem) {
 				$i++;
 				$elem['treeLevelCSS']=$treeLevelCSS;
-				$content .= $this->renderer->renderDamRecordRow($elem,$i,0,9999,count($files),'explorerView');
+				$content .= $this->renderer->renderDamRecordRow($elem,$i,0,9999,'explorerView',$list_Code,$cObj);
 			}
 		}
 		else {
