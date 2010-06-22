@@ -149,6 +149,7 @@ plugin.tx_damfrontend_pi1 {
 		useLanguageOverlay=1
 	}
 	
+	#renderFields is depreceated: please use filelist for markers for the filelist or singleView for s
 	renderFields {
 	# set stdWrap config for each field
 		file_size {
@@ -348,6 +349,7 @@ plugin.tx_damfrontend_pi1 {
 	}
 	
 	# configuration for subpart ###FILELIST###
+	filelist < .renderFields
 	filelist {
 		# typolink : formurl action
 		form_url.parameter.data = TSFE:id
