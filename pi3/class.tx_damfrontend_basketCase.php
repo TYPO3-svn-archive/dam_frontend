@@ -47,6 +47,7 @@ class tx_damfrontend_basketCase extends tx_damfrontend_baseSessionData  {
 	var $usageDescription;
 	var $items;
 	var $documents;
+	var $conf;
 	
 	function tx_damfrontend_basketCase() {
 		parent::tx_damfrontend_baseSessionData();
@@ -78,7 +79,10 @@ class tx_damfrontend_basketCase extends tx_damfrontend_baseSessionData  {
 	 */
 	function deleteItem($id) {
 		$key = array_search($id, $this->items);
-		if (!$key===false) {
+		if ($key===false) {
+			
+		}
+		else {
 			unset($this->items[$key]);
 			$this->setArrayToUser(array_unique($this->items));
 		}

@@ -3,11 +3,11 @@
 	template for mini basketcase
 
 ********************************  -->
-<!-- ###BASKET_CASE### begin -->
+<!-- ###BASKET_CASE_PREVIEW### begin -->
 	<div>
 				###ITEMS### ###ITEMSTEXT### ###CHECKOUT###
 	</div>
-<!-- ###BASKET_CASE### end -->
+<!-- ###BASKET_CASE_PREVIEW### end -->
 
 
 <!-- ********************************
@@ -20,3 +20,35 @@
 				###THUMB### ###TITLE### ###DELETE_FROM_BASKET###
 	</div>
 <!-- ###FILELIST_RECORD### end -->
+
+
+<!-- ********************************
+
+	template for the basketcase
+
+********************************  -->
+<!-- ###BASKET_CASE### begin -->
+	<div>
+	<form action="###TARGET###" method="post">
+				<p>###ITEMS### ###ITEMSTEXT###</p>
+				<div>###RECORDS###</div>
+				<label>###LABEL_USAGE###</label>
+				<textarea name="tx_damfrontend_pi3[usage]" cols="50" rows="10">###USAGE###</textarea><br>
+				<input type="checkbox" name="tx_damfrontend_pi3[accept]" value="accept">###LABEL_ACCEPT###<br>
+				<input type="submit" value="###LABEL_SUBMIT###">
+	</form>
+	</div>
+<!-- ###BASKET_CASE### end -->
+
+
+<!-- ********************************
+
+	template for records of the fileliste
+
+********************************  -->
+<!-- ###ERROR### begin -->
+	<div>
+				###MESSAGE###
+	</div>
+<!-- ###ERROR### end -->
+

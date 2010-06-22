@@ -45,6 +45,11 @@ plugin.tx_damfrontend_pi3 {
 			stdWrap.override = Please set constant "plugin.tx_damfrontend_pi3.checkOutID".
 			stdWrap.override.if.isFalse = {$plugin.tx_damfrontend_pi3.checkOutID}
 		}
+		CheckOutFormTarget {
+			parameter.data = TSFE:id
+			addQueryString = 1
+			returnLast=url
+		}
 	}
 	debug {
 		render_dam_record {

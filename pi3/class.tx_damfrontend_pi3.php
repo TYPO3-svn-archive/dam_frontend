@@ -120,6 +120,11 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 		if (intval($this->piVars['delete'])) {
 			$this->basketCase->deleteItem(intval($this->piVars['delete']));
 		}
+
+		if ($this->piVars['usage']) {
+			$this->data['usage']=strip_tags($this->piVars['usage']);
+		}
+		
  	}
 
 	/**
@@ -163,26 +168,18 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 	 * @return	string		The html content that is displayed on the website
 	 */
 	function basketCase_Checkout() {
-		
-		if ($doCheckout == false) {
-			// display checkout form
-			return $this->renderer->renderCheckOutForm($this->basketCase->listItems());
-		}
-		else {
-			// check if checkout is possible 
-			if ($this->checkOutPossible()) {
+		t3lib_div::debug($this->piVars);
+		if ($this->checkOutPossible()) {
 				if ($this->doCheckOut()) {
 					return $this->renderer->renderCheckOutResult($this->basketCase->listItems()) ;
 				}
 				else {
 					return $this->renderer->renderError($this->errors);
 				}
-			}
-			else {
-				return $this->renderer->renderCheckOutForm($this->basketCase->listItems(),$this->errors);
-			}
 		}
-		return '<div>Checkout</div>';
+		else {
+			return $this->renderer->renderCheckOutForm($this->basketCase->listItems(),$this->errors,$this->data);
+		}
 	}
 	
 	
@@ -214,6 +211,19 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 	 */
 	function sendMail() {
 		
+	}
+	
+	function checkOutPossible() {
+		t3lib_div::debug($this->piVars);
+		if ($this->piVars['accept']=='accept' AND $this->piVars['usage']<>'') {
+			return true;
+		}
+		else {
+			if (!$this->piVars['accept']) 		$this->errors['notAccepted']=1;
+			if (empty($this->piVars['usage'])) 	$this->errors['usageMissing']=1;
+			t3lib_div::debug($this->errors);
+			return false;
+		} 
 	}
 	
 }
