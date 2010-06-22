@@ -78,7 +78,7 @@ class tx_damfrontend_basketCase extends tx_damfrontend_baseSessionData  {
 	 */
 	function deleteItem($id) {
 		$key = array_search($id, $this->items);
-		if (!$key) {
+		if (!$key===false) {
 			unset($this->items[$key]);
 			$this->setArrayToUser(array_unique($this->items));
 		}
@@ -93,8 +93,7 @@ class tx_damfrontend_basketCase extends tx_damfrontend_baseSessionData  {
 	 */
 	function listItems() {
 		$result = array();
-		t3lib_div::debug($this->items);
-		if (array_count_values($this->items)>0) {
+		if (!empty($this->items)) {
 			$this->documents->additionalFilter = ' AND tx_dam.uid in ('. implode(',',$this->items).')';
 			$this->documents->limit = '0,999999';
 			$result = $this->documents->getDocumentList($GLOBALS['TSFE']->fe_user->user['uid']);
@@ -108,6 +107,7 @@ class tx_damfrontend_basketCase extends tx_damfrontend_baseSessionData  {
 	 * @return	[void]		...
 	 */
 	function writeUsage() {
+		
 		return true;
 	}
 
@@ -118,6 +118,8 @@ class tx_damfrontend_basketCase extends tx_damfrontend_baseSessionData  {
 	 * @return	[void]		...
 	 */
 	function clearBasketcase() {
+		unset($this->items);
+		$this->setArrayToUser($this->items);
 		return true;
 	}
 	

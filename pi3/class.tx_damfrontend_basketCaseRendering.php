@@ -29,6 +29,7 @@ require_once(PATH_tslib.'class.tslib_pibase.php');
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 #require_once(t3lib_extMgm::extPath('dam_frontend').'pi3/class.tx_damfrontend_basketCase.php');
+require_once(t3lib_extMgm::extPath('dam_frontend').'frontend/class.tx_damfrontend_rendering.php');
 require_once('class.tx_damfrontend_basketCase.php');
 
 /**
@@ -58,8 +59,33 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 	 * @param	[type]		$conf: ...
 	 * @return	[void]		...
 	 */
-	function renderCheckOutForm() {
-		return 'renderCheckOutForm';
+	function renderCheckOutForm($items) {
+		if (empty($item)) {
+			
+		} 
+		else {
+			$damRendering = new tx_damfrontend_rendering;
+			$damRendering->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.'];
+	 		$countElement = 0;
+			$rows = '';
+			$cObj = t3lib_div::makeInstance('tslib_cObj');
+	 		$record_Code = tsLib_CObj::getSubpart(tsLib_CObj::fileResource($this->conf['templateFile']),'###FILELIST_RECORD###');
+	 		// overwrite the ts setting for the filelist
+	 		$damRendering->conf['filelist.'] = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.'];
+	 		foreach ($items as $item) {
+	 			$countElement++;
+	 			$cObj->start($item, 'tx_dam');
+	 			$markerArray['###DELETE_FROM_BASKET###']= $cObj->cObjGetSingle($this->conf['marker.']['delete_from_basket'], $this->conf['marker.']['delete_from_basket.']);
+	 			$tsConf = $this->conf['marker.']['thumb.'];
+	 			$tsConf['file'] = $item['file_path'].$item['file_name'];
+	 			$tsConf['params.']['width'] = '50m';
+	 			$tsConf['params.']['heigth'] = '50m';
+	 			t3lib_div::debug($tsConf);
+	 			$markerArray['###THUMB###']=$cObj->cObjGetSingle($this->conf['marker.']['thumb'], $tsConf);
+	 			$rows .= $damRendering->renderDamRecordRow($item,$countElement,0,9999,'filelist',$record_Code,$cObj,$markerArray );
+	 		}
+		}
+		return $rows;
 	}
 
 	/**
@@ -90,7 +116,7 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 	 * @param	[type]		$conf: ...
 	 * @return	[void]		...
 	 */
-	function renderCheckOutResult() {
+	function renderCheckOutResult($items) {
 		return 'renderCheckOutResult';
 	}
 	
@@ -114,7 +140,14 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 	}
 	
 	function renderPreview($items) {
-		return 'basketCase Preview';
+		if (empty($items)) {
+			return 'no items in the basket case';
+		} 
+		else {
+			#if (count)
+			return count($items) .' items in the basket case';
+		}
+		return $rows;
 	}
 }
 

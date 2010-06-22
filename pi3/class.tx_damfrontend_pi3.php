@@ -117,7 +117,6 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 		if (intval($this->piVars['add'])) {
 			$this->basketCase->addItem(intval($this->piVars['add']));
 		}
-		
 		if (intval($this->piVars['delete'])) {
 			$this->basketCase->deleteItem(intval($this->piVars['delete']));
 		}

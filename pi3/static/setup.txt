@@ -7,9 +7,8 @@ plugin.tx_damfrontend_pi3 {
 	_LOCAL_LANG.de.asc = Hallo Welt3
 	_LOCAL_LANG.de.FILENAME_HEADER = Hallo Welt3
 	_LOCAL_LANG.default.asc = Hallo Welt3
-	
+	templateFile = EXT:dam_frontend/pi3/template.html
 	userFunc = tx_damfrontend_pi3->main
-	templateFile = {$plugin.tx_damfrontend_pi3.templateFile}
 	checkOutID = {$plugin.tx_damfrontend_pi3.checkOutID}
 	checkOutNecessary {
 		1 = fileadmin/test
@@ -19,9 +18,23 @@ plugin.tx_damfrontend_pi3 {
 		add_to_basket = TEXT
 		add_to_basket {
 			value = Add to basket
-			typolink.parameter = 24
+			typolink.parameter.data = TSFE:id
 			typolink.additionalParams =&tx_damfrontend_pi3[add]={field:uid}
 			typolink.additionalParams.insertData = 1
 		}
+		delete_from_basket = TEXT 
+		delete_from_basket { 
+			value = delete from basket
+			typolink.parameter.data =TSFE:id
+			typolink.additionalParams =&tx_damfrontend_pi3[delete]={field:uid}
+			typolink.additionalParams.insertData = 1
+		}
+		thumb = IMAGE
+		thumb {
+			file = {field:file_path}{field:file_name}
+			params.width = 8 
+			wrap = |
+		}
 	}
+	
 }
