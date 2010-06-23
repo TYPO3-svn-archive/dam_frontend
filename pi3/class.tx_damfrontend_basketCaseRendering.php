@@ -71,11 +71,20 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 				// text how many items are in the basket
 			count($items)==1 ? $markerArray['###ITEMS###']='1 ' . $this->pi_getLL('item'):$markerArray['###ITEMS###']=count($items). ' ' .$this->pi_getLL('items');;
 			$markerArray['###ITEMSTEXT###']=$this->pi_getLL('itemstext');
+			
+				// usage text area
 			$markerArray['###LABEL_USAGE###']=$this->pi_getLL('label_usage');
+			if ($errors['usageMissing']) $markerArray['###LABEL_USAGE###']=$this->cObj->stdWrap($this->pi_getLL('missing_data'),$this->conf['marker.']['missingData.'])  . $markerArray['###LABEL_USAGE###'];
+			$markerArray['###USAGE###']= $data['usage'];
+			
+				// checkbox accept usage conditions
 			$markerArray['###LABEL_ACCEPT###']=$this->pi_getLL('label_accept');
+			if ($errors['notAccepted']) $markerArray['###LABEL_ACCEPT###']=$this->cObj->stdWrap($this->pi_getLL('missing_data'),$this->conf['marker.']['missingData.'])  . $markerArray['###LABEL_ACCEPT###'];
+			$data['accept']=='accept' ? $markerArray['###CHECKED###']='checked':$markerArray['###CHECKED###']=''; 
+			
 			$markerArray['###LABEL_SUBMIT###']=$this->pi_getLL('label_submit');
 			$markerArray['###TARGET###']= $this->cObj->typolink('', $this->conf['marker.']['CheckOutFormTarget.']);
-			$markerArray['###USAGE###']= $data['usage'];
+			
 				// render details of the basket
 			$damRendering = new tx_damfrontend_rendering;
 			$damRendering->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.'];

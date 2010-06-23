@@ -21,6 +21,9 @@
 			<label index="label_usage">Please fill in your usage:</label>
 			<label index="label_accept">Accept our usage conditions.</label>
 			<label index="label_submit">submit</label>
+			<label index="missing_data">Missing! </label>
+			<label index="noUsage">Storing of the usage data failed! Please try it again. </label>
+			<label index="noUser">No user is currently logged in. You have to be logged in, to perform any actions with the basket case.</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="list_mode_1">Modus 1</label>

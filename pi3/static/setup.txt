@@ -50,9 +50,15 @@ plugin.tx_damfrontend_pi3 {
 			addQueryString = 1
 			returnLast=url
 		}
+		missingData.wrap = <span style="color:red">|</span>
 	}
 	debug {
 		render_dam_record {
+			items=0
+			conf=0
+			markerArray=0
+		}
+		renderCheckOutForm {
 			items=0
 			conf=0
 			markerArray=0

@@ -34,7 +34,7 @@
 				<div>###RECORDS###</div>
 				<label>###LABEL_USAGE###</label>
 				<textarea name="tx_damfrontend_pi3[usage]" cols="50" rows="10">###USAGE###</textarea><br>
-				<input type="checkbox" name="tx_damfrontend_pi3[accept]" value="accept">###LABEL_ACCEPT###<br>
+				<input type="checkbox" name="tx_damfrontend_pi3[accept]" value="accept" ###CHECKED###>###LABEL_ACCEPT###<br>
 				<input type="submit" value="###LABEL_SUBMIT###">
 	</form>
 	</div>
@@ -52,3 +52,25 @@
 	</div>
 <!-- ###ERROR### end -->
 
+
+<!-- ********************************
+
+	template for mail
+
+********************************  -->
+<!-- ###MAIL### begin -->
+<html>
+<head>
+	<title>Downloads</title>
+</head>
+<body>
+	###SALUTATION### ###FE_USER_NAME###
+	
+	###TEXT1###
+	
+	###RECORDS###
+	
+	###TEXT2###
+</body>
+</html>	
+<!-- ###MAIL### end -->

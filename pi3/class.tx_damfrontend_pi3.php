@@ -46,7 +46,7 @@ require_once('class.tx_damfrontend_basketCaseRendering.php');
  */
 class tx_damfrontend_pi3 extends tslib_pibase {
 	var $prefixId = 'tx_damfrontend_pi3';		// Same as class name
-	var $scriptRelPath = 'pi1/class.tx_damfrontend_pi3.php';	// Path to this script relative to the extension dir.
+	var $scriptRelPath = 'pi3/class.tx_damfrontend_pi3.php';	// Path to this script relative to the extension dir.
 	var $extKey = 'dam_frontend';	// The extension key.
 	var $pi_checkCHash = TRUE;
 	var $basketCase;
@@ -124,6 +124,9 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 		if ($this->piVars['usage']) {
 			$this->data['usage']=strip_tags($this->piVars['usage']);
 		}
+		if ($this->piVars['accept']) {
+			$this->data['accept']=strip_tags($this->piVars['accept']);
+		}
 		
  	}
 
@@ -142,6 +145,7 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 			// reading parameters from different sources
 		$this->init($conf);
 		$this->convertPiVars();
+		if (!$GLOBALS['TSFE']->fe_user->user['uid']) return $this->pi_wrapInBaseClass($this->renderer->renderError($this->pi_getLL('noUser')));
 		
 		switch ($this->conf['viewID']) {
 			case 1:
@@ -168,10 +172,12 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 	 * @return	string		The html content that is displayed on the website
 	 */
 	function basketCase_Checkout() {
-		t3lib_div::debug($this->piVars);
+		
 		if ($this->checkOutPossible()) {
 				if ($this->doCheckOut()) {
-					return $this->renderer->renderCheckOutResult($this->basketCase->listItems()) ;
+					$content = $this->renderer->renderCheckOutResult($this->basketCase->listItems());
+					$this->basketCase->clearBasketcase();
+					return  content;
 				}
 				else {
 					return $this->renderer->renderError($this->errors);
@@ -195,13 +201,15 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 	}
 	
 	function doCheckOut(){
-			// check each item if user is allowed to check it out
-
+			if (!$this->basketCase->writeUsage($this->data)) {
+				$this->errors['noUsage']=$this->pi_getLL('noUsage');
+				return false;
+			}
+			
 			// create mail
-				
+			$this->sendMail($this->basketCase->listItems());
 		
-			// redirect to pushfile and create a #;
-		
+		return true;
 	}
 	
 	/**
@@ -211,6 +219,37 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 	 */
 	function sendMail() {
 		
+		// get FE_USER data
+		
+		t3lib_div::debug($GLOBALS['TSFE']->fe_user->user);
+		die('halt');
+		$recipient_email = $tmp['email'];
+		
+		if (!$maildata['from']) $maildata['from']='norepley@'.t3lib_div::getIndpEnv('HTTP_HOST')	;
+		if (!$maildata['subject']) $maildata['from']='Downloads';
+		if (!$maildata['body']) $maildata['body']='Your download:';
+		if (!$maildata['to']) die('<h1>Please set a recpient</h1><p>I\' sorry, without a recipient i can\'t send your mail</p>' );
+		
+		require_once(PATH_t3lib.'class.t3lib_htmlmail.php');
+		$mailTemplate = str_replace( array("\r\n","\n","\r"), '<br>', $mailTemplate); // like nl2br() (sh 2010-03-28)
+		$mailTemplate = strip_tags($mailTemplate,'<table><tr><td><p><b><br>'); // allow b and br (sh 2010-03-28)
+		$maildata['htmlbody'] = str_replace( array("\r\n","\n","\r"), '<br>', $maildata['body'] ); // like nl2br() (sh 2010-03-28)
+		$mailTemplate = str_replace('###MAIL_COMMENT###',strip_tags($maildata['htmlbody'],'<br>'),$mailTemplate); // allow br (sh 2010-03-28)
+		$html_start='<html><head><title>Downloads</title></head><body>';
+		$html_end='</body></html>';
+		$htmlMail = t3lib_div::makeInstance('t3lib_htmlmail');
+		$htmlMail->start();
+		$htmlMail->recipient =strip_tags($maildata['to']);
+		$htmlMail->subject =strip_tags($maildata['subject']);
+		$htmlMail->from_email =strip_tags($maildata['from']);
+		$htmlMail->addPlain(strip_tags($maildata['body']));
+		foreach($attachments as $file) {
+			$htmlMail->addAttachment($file);
+		}
+		
+		$htmlMail->setHTML($htmlMail->encodeMsg($html_start.$mailTemplate.$html_end));
+		
+		return $htmlMail->send();
 	}
 	
 	function checkOutPossible() {
@@ -221,7 +260,6 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 		else {
 			if (!$this->piVars['accept']) 		$this->errors['notAccepted']=1;
 			if (empty($this->piVars['usage'])) 	$this->errors['usageMissing']=1;
-			t3lib_div::debug($this->errors);
 			return false;
 		} 
 	}
