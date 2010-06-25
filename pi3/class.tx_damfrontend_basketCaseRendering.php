@@ -93,7 +93,7 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 			$cObj = t3lib_div::makeInstance('tslib_cObj');
 	 		$record_Code = tsLib_CObj::getSubpart(tsLib_CObj::fileResource($this->conf['templateFile']),'###FILELIST_RECORD###');
 	 		// overwrite the ts setting for the filelist
-	 		$damRendering->conf['filelist.'] = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.'];
+	 		#$damRendering->conf['filelist.'] = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.'];
 	 		foreach ($items as $item) {
 	 			$countElement++;
 	 			$cObj->start($item, 'tx_dam');
@@ -124,8 +124,43 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 	 * @param	[type]		$conf: ...
 	 * @return	[void]		...
 	 */
-	function renderMail() {
-		return 'renderMail';
+	function renderMail($items) {
+		$this->pi_loadLL();
+		$htmlTemplate = tsLib_CObj::getSubpart(tsLib_CObj::fileResource($this->conf['templateFile']),'###MAIL###');
+		$markerArray= array();	 
+		if (empty($items)) {
+			return $this->renderError($this->pi_getLL('error_no_items'));
+		} 
+		else {
+			$markerArray['###SALUTATION###']	= $this->pi_getLL('SALUTATION');
+			$markerArray['###FE_USER_NAME###']	= $GLOBALS['TSFE']->fe_user->user['name'];
+			$markerArray['###TEXT1###']			= $this->pi_getLL('TEXT1');
+			$markerArray['###TEXT2###']			= $this->pi_getLL('TEXT2');
+
+				// render details of the basket
+			$damRendering = new tx_damfrontend_rendering;
+			$damRendering->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.'];
+	 		$countElement = 0;
+			$rows = '';
+			$cObj = t3lib_div::makeInstance('tslib_cObj');
+	 		$record_Code = tsLib_CObj::getSubpart(tsLib_CObj::fileResource($this->conf['templateFile']),'###MAIL_RECORD###');
+	 		
+	 		foreach ($items as $item) {
+	 			$countElement++;
+	 			$cObj->start($item, 'tx_dam');
+	 			$rows .= $damRendering->renderDamRecordRow($item,$countElement,0,9999,'filelist',$record_Code,$cObj,$markerArray );
+	 		}
+	 		$markerArray['###RECORDS###']=$rows;
+		}
+		
+			//Debug statements
+		if ($this->conf['enableDebug']==1) {
+			if ($this->conf['debug.']['renderMail.']['markerArray']==1)		t3lib_div::debug($markerArray);
+			if ($this->conf['debug.']['renderMail.']['conf']==1)			t3lib_div::debug($this->conf);
+			if ($this->conf['debug.']['renderMail.']['items']==1)			t3lib_div::debug($items);
+		}
+		
+		return tslib_cObj::substituteMarkerArray($htmlTemplate, $markerArray);
 	}
 
 	

@@ -174,6 +174,7 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 	function basketCase_Checkout() {
 		
 		if ($this->checkOutPossible()) {
+				return $this->doCheckOut();
 				if ($this->doCheckOut()) {
 					$content = $this->renderer->renderCheckOutResult($this->basketCase->listItems());
 					$this->basketCase->clearBasketcase();
@@ -184,6 +185,8 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 				}
 		}
 		else {
+				// if the user has not clicked "submit", then show no "missing" warning, so we need to delete the error array
+			if (!$this->piVars['submit']) unset($this->errors);
 			return $this->renderer->renderCheckOutForm($this->basketCase->listItems(),$this->errors,$this->data);
 		}
 	}
@@ -207,8 +210,9 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 			}
 			
 			// create mail
-			$this->sendMail($this->basketCase->listItems());
-		
+			if ($this->conf['sendMailAfterCheckout']==1) {
+				$this->sendMail($this->basketCase->listItems());
+			}
 		return true;
 	}
 	
@@ -217,43 +221,34 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 	 *
 	 * @return	[void]		...
 	 */
-	function sendMail() {
-		
-		// get FE_USER data
-		
-		t3lib_div::debug($GLOBALS['TSFE']->fe_user->user);
-		die('halt');
-		$recipient_email = $tmp['email'];
-		
-		if (!$maildata['from']) $maildata['from']='norepley@'.t3lib_div::getIndpEnv('HTTP_HOST')	;
-		if (!$maildata['subject']) $maildata['from']='Downloads';
-		if (!$maildata['body']) $maildata['body']='Your download:';
-		if (!$maildata['to']) die('<h1>Please set a recpient</h1><p>I\' sorry, without a recipient i can\'t send your mail</p>' );
+	function sendMail($items) {
 		
 		require_once(PATH_t3lib.'class.t3lib_htmlmail.php');
-		$mailTemplate = str_replace( array("\r\n","\n","\r"), '<br>', $mailTemplate); // like nl2br() (sh 2010-03-28)
-		$mailTemplate = strip_tags($mailTemplate,'<table><tr><td><p><b><br>'); // allow b and br (sh 2010-03-28)
-		$maildata['htmlbody'] = str_replace( array("\r\n","\n","\r"), '<br>', $maildata['body'] ); // like nl2br() (sh 2010-03-28)
-		$mailTemplate = str_replace('###MAIL_COMMENT###',strip_tags($maildata['htmlbody'],'<br>'),$mailTemplate); // allow br (sh 2010-03-28)
-		$html_start='<html><head><title>Downloads</title></head><body>';
-		$html_end='</body></html>';
-		$htmlMail = t3lib_div::makeInstance('t3lib_htmlmail');
-		$htmlMail->start();
-		$htmlMail->recipient =strip_tags($maildata['to']);
-		$htmlMail->subject =strip_tags($maildata['subject']);
-		$htmlMail->from_email =strip_tags($maildata['from']);
-		$htmlMail->addPlain(strip_tags($maildata['body']));
-		foreach($attachments as $file) {
-			$htmlMail->addAttachment($file);
+		// get FE_USER data
+		if (!$GLOBALS['TSFE']->fe_user->user['email']) {
+			if ($this->conf['showMailWarning']==1) {
+				return $this->renderer->renderError($this->pi_getLL('noMailAdress'));
+			}
+		}
+		else {
+			$recipient_email = $GLOBALS['TSFE']->fe_user->user['email'];
 		}
 		
-		$htmlMail->setHTML($htmlMail->encodeMsg($html_start.$mailTemplate.$html_end));
 		
+		if (!$this->conf['mail.']['from']) $maildata['from']='norepley@'.t3lib_div::getIndpEnv('HTTP_HOST')	;
+		($this->conf['mail.']['subject']) ? $maildata['subject']= $this->cObj->cObjGetSingle($this->conf['mail.']['subject'],$this->conf['mail.']['subject.']) :$maildata['subject']='Your downloads' ;
+		$maildata['htmlbody'] = $this->renderer->renderMail($this->basketCase->listItems());
+		$htmlMail = t3lib_div::makeInstance('t3lib_htmlmail');
+		$htmlMail->start();
+		$htmlMail->recipient =$recipient_email;
+		$htmlMail->subject =$maildata['subject'];
+		$htmlMail->from_email =$maildata['from'];
+		#$htmlMail->addPlain(strip_tags($maildata['body']));
+		$htmlMail->setHTML($htmlMail->encodeMsg($maildata['htmlbody']));
 		return $htmlMail->send();
 	}
 	
 	function checkOutPossible() {
-		t3lib_div::debug($this->piVars);
 		if ($this->piVars['accept']=='accept' AND $this->piVars['usage']<>'') {
 			return true;
 		}

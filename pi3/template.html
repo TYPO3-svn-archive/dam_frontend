@@ -24,6 +24,18 @@
 
 <!-- ********************************
 
+	template for records of the fileliste
+
+********************************  -->
+<!-- ###MAIL_RECORD### begin -->
+	<div>
+				###TITLE### ###LINK_DOWNLOAD_HASH###
+	</div>
+<!-- ###MAIL_RECORD### end -->
+
+
+<!-- ********************************
+
 	template for the basketcase
 
 ********************************  -->
@@ -35,6 +47,7 @@
 				<label>###LABEL_USAGE###</label>
 				<textarea name="tx_damfrontend_pi3[usage]" cols="50" rows="10">###USAGE###</textarea><br>
 				<input type="checkbox" name="tx_damfrontend_pi3[accept]" value="accept" ###CHECKED###>###LABEL_ACCEPT###<br>
+				<input type="hidden" name="tx_damfrontend_pi3[submit]" value="submit" />
 				<input type="submit" value="###LABEL_SUBMIT###">
 	</form>
 	</div>
@@ -64,13 +77,13 @@
 	<title>Downloads</title>
 </head>
 <body>
-	###SALUTATION### ###FE_USER_NAME###
+	###SALUTATION### ###FE_USER_NAME###,<br>
 	
-	###TEXT1###
+	<p>>###TEXT1###</p
 	
 	###RECORDS###
 	
-	###TEXT2###
+	<p>###TEXT2###</p>
 </body>
 </html>	
 <!-- ###MAIL### end -->

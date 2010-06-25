@@ -1791,7 +1791,6 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  		$tsconf = $this->conf[$scope.'.']['link_download.'];
  		$tsconf['stdWrap.']['typolink.']['additionalParams'].=$this->makeDownloadHash($elem['uid']);
  		$markerArray['###LINK_DOWNLOAD_HASH###'] = $cObj->cObjGetSingle($this->conf[$scope.'.']['link_download'], $tsconf);
-
  		$markerArray['###LINK_SELECT_DOWNLOAD###'] = '';
 		
 		if (is_array($this->conf[$scope.'.']['link_select_download.'])) {

@@ -24,6 +24,11 @@
 			<label index="missing_data">Missing! </label>
 			<label index="noUsage">Storing of the usage data failed! Please try it again. </label>
 			<label index="noUser">No user is currently logged in. You have to be logged in, to perform any actions with the basket case.</label>
+			<label index="mail_subject">Your requested downloads</label>
+			<label index="noMailAdress">I'm sorry, i can't send you an email, because there is no mail adress configured for you.</label>
+			<label index="TEXT2">Thank you for downloading the pictures</label>
+			<label index="TEXT1">here are your photos:</label>
+			<label index="SALUTATION">Hi</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="list_mode_1">Modus 1</label>
