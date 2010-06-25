@@ -110,14 +110,16 @@ class tx_damfrontend_basketCase extends tx_damfrontend_baseSessionData  {
 	 *
 	 * @return	[void]		...
 	 */
-	function writeUsage() {
+	function writeUsage($incommingData) {
 		// create record for usage
+		t3lib_div::debug($incommingData);
 		$data= array();
-		$data['description']=$this->usageDescription;
-		$data['feuser']=$this->usageDescription;
+		$data['description']=$incommingData['usage'];
+		$data['feuser']=$GLOBALS['TSFE']->feuser->user['uid'];
 		$data['pid']=tx_dam_db::getPid();
 		$data['cruser_id']=$GLOBALS['TSFE']->feuser->user['uid'];
 		$data['crdate']=time();
+		$data['dateusage']=time();
 		$data['tstamp']=time();
 		$res = $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_damfrontend_usage',$data,$no_quote_fields = FALSE);	
 		$newID = $GLOBALS['TYPO3_DB']->sql_insert_id();
