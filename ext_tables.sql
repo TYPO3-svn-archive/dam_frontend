@@ -81,3 +81,32 @@ CREATE TABLE tx_dam (
 CREATE TABLE tt_content (
     tx_damdownloadlist_records blob NOT NULL
 );
+
+
+#
+# Table structure for table 'tx_damfrontendavailability_usage'
+#
+CREATE TABLE tx_damfrontend_usage (
+	uid int(11) NOT NULL auto_increment,
+	pid int(11) DEFAULT '0' NOT NULL,
+	tstamp int(11) DEFAULT '0' NOT NULL,
+	crdate int(11) DEFAULT '0' NOT NULL,
+	cruser_id int(11) DEFAULT '0' NOT NULL,
+	sys_language_uid int(11) DEFAULT '0' NOT NULL,
+	l10n_parent int(11) DEFAULT '0' NOT NULL,
+	l10n_diffsource mediumtext,
+	sorting int(10) DEFAULT '0' NOT NULL,
+	deleted tinyint(4) DEFAULT '0' NOT NULL,
+	hidden tinyint(4) DEFAULT '0' NOT NULL,
+	starttime int(11) DEFAULT '0' NOT NULL,
+	endtime int(11) DEFAULT '0' NOT NULL,
+	fe_group int(11) DEFAULT '0' NOT NULL,
+	recuid int(11) DEFAULT '0' NOT NULL,
+	description text,
+	dateusage int(11) DEFAULT '0' NOT NULL,
+	feuser int(11) DEFAULT '0' NOT NULL,
+	
+	PRIMARY KEY (uid),
+	KEY parent (pid)
+);
+

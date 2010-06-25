@@ -111,7 +111,26 @@ class tx_damfrontend_basketCase extends tx_damfrontend_baseSessionData  {
 	 * @return	[void]		...
 	 */
 	function writeUsage() {
+		// create record for usage
+		$data= array();
+		$data['description']=$this->usageDescription;
+		$data['feuser']=$this->usageDescription;
+		$data['pid']=tx_dam_db::getPid();
+		$data['cruser_id']=$GLOBALS['TSFE']->feuser->user['uid'];
+		$data['crdate']=time();
+		$data['tstamp']=time();
+		$res = $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_damfrontend_usage',$data,$no_quote_fields = FALSE);	
+		$newID = $GLOBALS['TYPO3_DB']->sql_insert_id();
 		
+		// create mm_ref for dam reference
+		$MMdata = array();
+		$MMdata['tablenames']='tx_damfrontend_usage';
+		#$MMdata['ident']=$this->usageDescription;
+		$MMdata['uid_foreign']=$newID;
+		foreach ($this->items as $item) {
+			$MMdata['uid_local']=$item;
+			$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_dam_mm_ref',$MMdata,$no_quote_fields = FALSE);	
+		}
 		return true;
 	}
 
@@ -135,5 +154,4 @@ class tx_damfrontend_basketCase extends tx_damfrontend_baseSessionData  {
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/pi1/class.tx_damfrontend_pi1.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/pi1/class.tx_damfrontend_pi1.php']);
 }
-
 ?>

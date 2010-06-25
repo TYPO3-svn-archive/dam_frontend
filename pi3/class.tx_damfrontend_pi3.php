@@ -174,11 +174,10 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 	function basketCase_Checkout() {
 		
 		if ($this->checkOutPossible()) {
-				return $this->doCheckOut();
 				if ($this->doCheckOut()) {
 					$content = $this->renderer->renderCheckOutResult($this->basketCase->listItems());
 					$this->basketCase->clearBasketcase();
-					return  content;
+					return $content;
 				}
 				else {
 					return $this->renderer->renderError($this->errors);

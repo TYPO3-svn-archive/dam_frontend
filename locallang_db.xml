@@ -19,7 +19,12 @@
 			<label index="tx_damfrontend_fegroup">no group is set</label>	
 			<label index="flexform_perPage">Amount of records per page</label>
 			<label index="flexform_amountOfNewImages">Amount of files for the latest view</label>
-			<label index="flexform_amountOfExpandedLevels">How many sublevels should be shown initially? (only for the advanced category tree)</label>	
+			<label index="flexform_amountOfExpandedLevels">How many sublevels should be shown initially? (only for the advanced category tree)</label>
+			<label index="tx_damfrontend_usage">Usage of pictures</label>
+			<label index="tx_damfrontend_usage.recuid">ID of the dam record</label>
+			<label index="tx_damfrontend_usage.description">Description</label>
+			<label index="tx_damfrontend_usage.dateusage">Date of the usage</label>
+			<label index="tx_damfrontend_usage.feuser">User that used that picture</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tt_content.list_type_pi1">DAM Frontend</label>
@@ -36,6 +41,11 @@
 			<label index="flexform_perPage">Anzahl Ergebnisse pro Seite</label>
 			<label index="flexform_amountOfNewImages">Gesamtanzahl neuer Dateien (Nur Ansicht geänderte Dateien)</label>
 			<label index="flexform_amountOfExpandedLevels">Wie viele Unterebenen sollen angezeigt werden (nur für den erweiterten Kategorienbaum)?</label>						
+			<label index="tx_damfrontend_usage">Verwendung des Bildes</label>
+			<label index="tx_damfrontend_usage.recuid">ID des DAM Datensatzes</label>
+			<label index="tx_damfrontend_usage.description">Beschreibung</label>
+			<label index="tx_damfrontend_usage.dateusage">Datum der Verwendung</label>
+			<label index="tx_damfrontend_usage.feuser">Nutzer des Bilder</label>
 		</languageKey>
 		﻿<languageKey index="ru" type="array">
 			<label index="tt_content.list_type_pi1">DAM внешнего интерфейса</label>

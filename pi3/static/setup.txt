@@ -70,5 +70,20 @@ plugin.tx_damfrontend_pi3 {
 			conf=0
 			markerArray=0
 		}
+		renderPreview {
+			items=0
+			conf=0
+			markerArray=0
+		}
+		renderCheckOutResult {
+			items=0
+			conf=0
+			markerArray=0
+		}
+		renderMail {
+			items=0
+			conf=0
+			markerArray=0
+		}
 	}
 }

@@ -133,7 +133,28 @@ $TCA["tx_damfrontend_filterStates"] = Array (
 	)
 );
 
-
+$TCA['tx_damfrontend_usage'] = array (
+	'ctrl' => array (
+		'title'     => 'LLL:EXT:dam_frontend_availability/locallang_db.xml:tx_damfrontendavailability_usage',		
+		'label'     => 'uid',	
+		'tstamp'    => 'tstamp',
+		'crdate'    => 'crdate',
+		'cruser_id' => 'cruser_id',
+		'languageField'            => 'sys_language_uid',	
+		'transOrigPointerField'    => 'l10n_parent',	
+		'transOrigDiffSourceField' => 'l10n_diffsource',	
+		'sortby' => 'sorting',	
+		'delete' => 'deleted',	
+		'enablecolumns' => array (		
+			'disabled' => 'hidden',	
+			'starttime' => 'starttime',	
+			'endtime' => 'endtime',	
+			'fe_group' => 'fe_group',
+		),
+		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'tca.php',
+		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'icon_tx_damfrontend_usage.gif',
+	),
+);
 /**********************************************
 *
 * 	inclusion of classes for displaying of category tree in the backend
