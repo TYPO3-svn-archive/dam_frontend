@@ -44,6 +44,18 @@ $docLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_documents');
 
 $docLogic->feuser = $userObj;
 
+$pid = intval(t3lib_div::GPvar('id'));
+// initialize TSFE
+require_once(PATH_tslib.'class.tslib_fe.php');
+require_once(PATH_t3lib.'class.t3lib_page.php');
+$temp_TSFEclassName = t3lib_div::makeInstanceClassName('tslib_fe');
+$GLOBALS['TSFE'] = new $temp_TSFEclassName($TYPO3_CONF_VARS, $pid, 0, true);
+$GLOBALS['TSFE']->connectToDB();
+$GLOBALS['TSFE']->initFEuser();
+$GLOBALS['TSFE']->determineId();
+$GLOBALS['TSFE']->getCompressedTCarray();
+$GLOBALS['TSFE']->initTemplate();
+$GLOBALS['TSFE']->getConfigArray();
 
 $prefixId = 'tx_damfrontend_pi1';
 if (!$_REQUEST['docID']
@@ -84,7 +96,17 @@ if (is_array($post) && count($post) > 0) {
 		}
 		$doc = $docLogic->getDocument($docID);
 		// 
-		// @TODO check if a checkout is necessary
+		$hash =  t3lib_div::GPvar('dfhash');
+		$valid =  intval(t3lib_div::GPvar('valid'));
+		$feUserID =  intval(t3lib_div::GPvar('feuid'));
+		if (!checkHash($docID,$valid,$feuserID, $hash)) {
+			die('<h1>Sorry</h1><p>You do not have the right to download this file.');
+		}	
+		else {
+			if ($valid>time()) {	
+				die('<h1>Error</h1><p>This link is not valid anymore. Please request this download again.</p');
+			} 
+		}
 		
 		// 	check if a user has access to the dam record / file
 		if (!$docLogic->checkDocumentAccess($doc['fe_group'])) {
@@ -316,11 +338,13 @@ if (is_array($post) && count($post) > 0) {
 
 	
 	/**
-	 * Redirects to the given page
+	 * checks if a hash is valid
 	 * 
 	 * @param	[int]		$ID: ID of the dam_record that should be downloaded
-	 * @param	[string]	$params: string of additional parameters for the link
-	 * @return	[void]		...
+	 * @param	[int]		$valid: string of additional parameters for the link
+	 * @param	[int]		$FEUID: string of additional parameters for the link
+	 * @param	[string]	$hash: string of additional parameters for the link
+	 * @return	[boolean]	true if checkHosh is true 	...
 	 */	
 	function checkHash($ID,$valid,$FEUID,$hash) {
 		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dam_frontend']);
@@ -328,6 +352,33 @@ if (is_array($post) && count($post) > 0) {
 		return (md5($ID+$valid+$FEUID+$key)==$hash); 
 	}
 
+	
+	/**
+	 * checks if a hash is valid
+	 * 
+	 * @param	[path]		Path which should be cheeked
+	 * @param	[int]		$valid: string of additional parameters for the link
+	 * @param	[int]		$FEUID: string of additional parameters for the link
+	 * @param	[string]	$hash: string of additional parameters for the link
+	 * @return	[boolean]	true if checkHosh is true 	...
+	 */	
+	function checkOutNecessary($path) {
+		$restrictedFolders = array();
+		$restrictedFolders = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.']['filelist.']['security_options.']['checkOutFolders.'];
+		if (empty($restrictedFolders)) return false;
+
+		foreach ($restrictedFolders as $folder) {
+			if (strlen($path)>=strlen($folder)) {
+			 if ($path==substr($folder,0,strlen($path))) {
+			 	return true;
+			 }
+			}
+		}
+		return false; 
+	}
+
+	
+	
 	// test for access to a file
 	$docID = intval(t3lib_div::GPvar('docID'));
 	
@@ -337,35 +388,28 @@ if (is_array($post) && count($post) > 0) {
 	
 	// get the data of the selected document
 	$doc = $docLogic->getDocument($docID);
-	$valid =  intval(t3lib_div::GPvar('valid'));
-	$feUserID =  intval(t3lib_div::GPvar('feuid'));
-	$hash =  t3lib_div::GPvar('dfhash');
-	
-	if (t3lib_div::GPvar('dfhash')){
-			// a hash was given, try to push the requested file, if the hash is valid
-		if ($valid>time()) {	
-			if (!checkHash($docID,$valid,$feuserID, $hash)) {
-				die('<h1>Sorry</h1><p>You do not have the right to download this file.');
-			} 
+	if (checkOutNecessary($doc['file_path'])) {
+		$hash =  t3lib_div::GPvar('dfhash');
+		$valid =  intval(t3lib_div::GPvar('valid'));
+		$feUserID =  intval(t3lib_div::GPvar('feuid'));
+		if (!checkHash($docID,$valid,$feuserID, $hash)) {
+			die('<h1>Sorry</h1><p>You do not have the right to download this file.');
 		}	
 		else {
-			die('<h1>Error</h1><p>This link is not valid anymore. Please request this download again.</p');
+			if ($valid>time()) {	
+				die('<h1>Error</h1><p>This link is not valid anymore. Please request this download again.</p');
+			} 
 		}
+	} 
 	
-	}	
-	else {
-		// 
-		// @TODO check if a checkout is necessary
-		
-		// check if a user has access to the selected categories (a user must have access to all categories that are selected)
-		if (!$docLogic->checkAccess($docID, 2)) {
-			die('<h1>Sorry</h1><p>You do not have the right to download this file.');
-		}
-		
-		// check if a user has access to the dam record / file
-		if (!$docLogic->checkDocumentAccess($doc['fe_group'])) {
-			die('<h1>Error</h1><p>You have no access to this file.');
-		}
+	// check if a user has access to the selected categories (a user must have access to all categories that are selected)
+	if (!$docLogic->checkAccess($docID, 2)) {
+		die('<h1>Sorry</h1><p>You do not have the right to download this file.');
+	}
+	
+	// check if a user has access to the dam record / file
+	if (!$docLogic->checkDocumentAccess($doc['fe_group'])) {
+		die('<h1>Error</h1><p>You have no access to this file.');
 	}
 	
 	$filePath = PATH_site.$doc['file_path'].$doc['file_name'];

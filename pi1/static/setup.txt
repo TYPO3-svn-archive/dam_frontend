@@ -497,6 +497,10 @@ plugin.tx_damfrontend_pi1 {
 			checkCategoriesByRootline=0
 			# how long is link with a hash valid (in seconds)
 			hashValidity = 604800
+			checkOutFolders {
+				#1 = fileadmin/
+				#2 = fileadmin/user4
+			}
 		}
 		
 		browselink {
