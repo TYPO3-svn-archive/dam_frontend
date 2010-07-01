@@ -22,7 +22,7 @@ plugin.tx_damfrontend_pi1 {
 	useTreeAndSelection = 1 
 	categoryTree {
 		preSelectChildCategories = 0
-		
+		showHiddenCategories = 0
 		useLanguageOverlay = 1
 		wrap = |
 		# plus control to select categories
@@ -91,6 +91,7 @@ plugin.tx_damfrontend_pi1 {
 	
 	categoryTreeAdvanced {
 		templateFile = EXT:dam_frontend/pi1/template_tree.html
+		showHiddenCategories = 0
 		useLanguageOverlay = 1
 		# if = 1 then a second subpart (TREE_ELEMENT_2) is used to render the even rows
 		category.useAlternatingSubpart = 1

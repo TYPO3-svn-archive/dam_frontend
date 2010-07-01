@@ -694,73 +694,71 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			$crazyRecursionLimiter--;
 
 			$newID = $row['uid'];
-
 			if ($newID==0)	{
 				t3lib_BEfunc::typo3PrintError ('Endless recursion detected', 'TYPO3 has detected an error in the database. Please fix it manually (e.g. using phpMyAdmin) and change the UID of '.$this->table.':0 to a new value.<br /><br />See <a href="http://bugs.typo3.org/view.php?id=3495" target="_blank">bugs.typo3.org/view.php?id=3495</a> to get more information about a possible cause.',0);
 				exit;
 			}
-
-			$this->tree[]=array();		// Reserve space.
-			end($this->tree);
-			$treeKey = key($this->tree);	// Get the key for this space
-			$LN = ($a==$c)?'blank':'line';
-
-				// If records should be accumulated, do so
-			if ($this->setRecs)	{
-				$this->recs[$row['uid']] = $row;
-			}
-
-				// Accumulate the id of the element in the internal arrays
-			$this->ids[] = $idH[$row['uid']]['uid'] = $row['uid'];
-			$this->ids_hierarchy[$depth][] = $row['uid'];
-			$this->orig_ids_hierarchy[$depth][] = $row['_ORIG_uid'] ? $row['_ORIG_uid'] : $row['uid'];
-
-				// Make a recursive call to the next level
-			$HTML_depthData = $depthData.$this->cObj->IMAGE($this->conf['categoryTreeAdvanced.']['treeNavIcons.'][$LN.'.']);
-			if ($depth>1 && $this->expandNext($newID) && !$row['php_tree_stop'])	{
-				$nextCount=$this->getTree(
-						$newID,
-						$depth-1,
-						$this->makeHTML ? $HTML_depthData : '',
-						$blankLineCode.','.$LN,
-						$row['_SUBCSSCLASS']
-					);
-				if (count($this->buffer_idH))	$idH[$row['uid']]['subrow']=$this->buffer_idH;
-				$exp=1;	// Set "did expand" flag
-			} else {
-				$nextCount=$this->getCount($newID);
-				$exp=0;	// Clear "did expand" flag
-			}
-			if ($this->additionalTreeConf['useExplorerView']==1) {
+				$this->tree[]=array();		// Reserve space.
+				end($this->tree);
+				$treeKey = key($this->tree);	// Get the key for this space
+				$LN = ($a==$c)?'blank':'line';
+	
+					// If records should be accumulated, do so
+				if ($this->setRecs)	{
+					$this->recs[$row['uid']] = $row;
+				}
+	
+					// Accumulate the id of the element in the internal arrays
+				$this->ids[] = $idH[$row['uid']]['uid'] = $row['uid'];
+				$this->ids_hierarchy[$depth][] = $row['uid'];
+				$this->orig_ids_hierarchy[$depth][] = $row['_ORIG_uid'] ? $row['_ORIG_uid'] : $row['uid'];
+	
+					// Make a recursive call to the next level
+				$HTML_depthData = $depthData.$this->cObj->IMAGE($this->conf['categoryTreeAdvanced.']['treeNavIcons.'][$LN.'.']);
+				if ($depth>1 && $this->expandNext($newID) && !$row['php_tree_stop'])	{
+					$nextCount=$this->getTree(
+							$newID,
+							$depth-1,
+							$this->makeHTML ? $HTML_depthData : '',
+							$blankLineCode.','.$LN,
+							$row['_SUBCSSCLASS']
+						);
+					if (count($this->buffer_idH))	$idH[$row['uid']]['subrow']=$this->buffer_idH;
+					$exp=1;	// Set "did expand" flag
+				} else {
+					$nextCount=$this->getCount($newID);
+					$exp=0;	// Clear "did expand" flag
+				}
+				if ($this->additionalTreeConf['useExplorerView']==1) {
+					
+					$nextCount=1;
+				}
+					// Set HTML-icons, if any:
+				if ($this->makeHTML)	{
+					$titleLen = $this->conf['categoryTreeAdvanced.']['categoryTitle.']['length'] ? $this->conf['categoryTreeAdvanced.']['categoryTitle.']['length']:30;
+					$title = $this->cObj->stdWrap ($this->getTitleStr($row, $titleLen),$this->conf['categoryTreeAdvanced.']['categoryTitle.']);
+					$HTML = $this->PM_wrap($row,$a,$c,$nextCount,$exp,$title);
+				}
+				$hasSubs=1;
+				$childs = $this->get_childCats($row['uid'], $this->treeStructureArray);
+				if (empty($childs)) $hasSubs=0;
 				
-				$nextCount=1;
-			}
-				// Set HTML-icons, if any:
-			if ($this->makeHTML)	{
-				$titleLen = $this->conf['categoryTreeAdvanced.']['categoryTitle.']['length'] ? $this->conf['categoryTreeAdvanced.']['categoryTitle.']['length']:30;
-				$title = $this->cObj->stdWrap ($this->getTitleStr($row, $titleLen),$this->conf['categoryTreeAdvanced.']['categoryTitle.']);
-				$HTML = $this->PM_wrap($row,$a,$c,$nextCount,$exp,$title);
-			}
-			$hasSubs=1;
-			$childs = $this->get_childCats($row['uid'], $this->treeStructureArray);
-			if (empty($childs)) $hasSubs=0;
-			
-			$treeDepth = 1000-$depth;
-
-			$paddingLeft = $treeDepth * $this->conf['categoryTreeAdvanced.']['treeLevelCSS.']['paddingLeft'];
-
-				// Finally, add the row/HTML content to the ->tree array in the reserved key.
-			$this->tree[$treeKey] = Array(
-				'row'=>$row,
-				'HTML'=>$HTML,
-				'HTML_depthData' => $this->makeHTML==2 ? $HTML_depthData : '',
-				'invertedDepth'=>$depth,
-				'blankLineCode'=>$blankLineCode,
-				'bank' => $this->bank,
-				'treeLevelCSS' =>'style ="padding:'.$this->conf['categoryTreeAdvanced.']['treeLevelCSS.']['paddingTop'].'px '.$this->conf['categoryTreeAdvanced.']['treeLevelCSS.']['paddingRight'].'px '.$this->conf['categoryTreeAdvanced.']['treeLevelCSS.']['paddingBottom'].'px '. $paddingLeft .'px;"',
-				'isOpen'=>$exp,
-				'hasSubs'=>$hasSubs
-			);
+				$treeDepth = 1000-$depth;
+	
+				$paddingLeft = $treeDepth * $this->conf['categoryTreeAdvanced.']['treeLevelCSS.']['paddingLeft'];
+	
+					// Finally, add the row/HTML content to the ->tree array in the reserved key.
+				$this->tree[$treeKey] = Array(
+					'row'=>$row,
+					'HTML'=>$HTML,
+					'HTML_depthData' => $this->makeHTML==2 ? $HTML_depthData : '',
+					'invertedDepth'=>$depth,
+					'blankLineCode'=>$blankLineCode,
+					'bank' => $this->bank,
+					'treeLevelCSS' =>'style ="padding:'.$this->conf['categoryTreeAdvanced.']['treeLevelCSS.']['paddingTop'].'px '.$this->conf['categoryTreeAdvanced.']['treeLevelCSS.']['paddingRight'].'px '.$this->conf['categoryTreeAdvanced.']['treeLevelCSS.']['paddingBottom'].'px '. $paddingLeft .'px;"',
+					'isOpen'=>$exp,
+					'hasSubs'=>$hasSubs
+				);
 		}
 
 		$this->getDataFree($res);
@@ -816,8 +814,8 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 	 * @return	[type]		...
 	 */
 	function getDataInit($parentId,$subCSSclass='') {
-			$this->clause =  ' AND sys_language_uid = ' . 0;
- 		
+		$this->clause =  ' AND sys_language_uid = 0' ;
+ 		if ($this->conf['categoryTreeAdvanced.']['showHiddenCategories']==0) $this->clause .= ' AND hidden = 0';  
 		if (is_array($this->data)) {
 			if (!is_array($this->dataLookup[$parentId][$this->subLevelID])) {
 				$parentId = -1;

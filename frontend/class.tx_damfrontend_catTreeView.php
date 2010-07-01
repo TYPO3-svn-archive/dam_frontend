@@ -126,13 +126,14 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	 */
  	function init($treeID = '', $plugin = null) {
  		$langWhere = ' AND sys_language_uid = 0';
+		if (isset($plugin)) $this->plugin = $plugin;
+		$this->cObj = $this->plugin->cObj;
+		$this->conf = $this->plugin->conf;
+ 		if ($this->conf['categoryTree.']['showHiddenCategories']==0) $langWhere .= ' AND hidden = 0';
 		parent::init($langWhere);
  		$this->treeID = $treeID;
  		$this->user =& $GLOBALS['TSFE']->fe_user;
  		$this->backPath = 'typo3/';
-		if (isset($plugin)) $this->plugin = $plugin;
-		$this->cObj = $this->plugin->cObj;
-		$this->conf = $this->plugin->conf;
 		#$this->iconPath = $this->conf['categoryTree.']['iconPath'];
 		#$this->rootIcon = $this->conf['categoryTree.']['treeRootIcon'];
 	}
