@@ -353,7 +353,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 * @return	[array]		returns an array which contains all selected records
 	 */
 		function getDocumentList($userUID=0) {
-			#t3lib_div::debug($this->categories);
 			if(!is_array($this->categories)) {
 				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getDcoumentList: for the this->categories is no array. Given value was:' .$this->categories, 'dam_frontend',3);
 			}
@@ -362,7 +361,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 			$filter .= ' AND ('.$this->docTable.'.starttime < '.time().' OR '.$this->docTable.'.starttime = 0)';
 			$filter .= ' AND ('.$this->docTable.'.endtime > '.time().' OR '.$this->docTable.'.endtime = 0)';
 			
-			#t3lib_div::debug(count($this->categories));
 			$hasCategories=false;
 			foreach ($this->categories as $cat) {
 				if (!empty($cat) ) $hasCategories=true;
@@ -444,7 +442,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 					}
 					$z++;
 				}
-#				t3lib_div::debug($filter);
 				if  ($this->conf['useTreeAndSelection'] == 0) {
 					$where .= $filter;
 				}
@@ -503,8 +500,13 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				
 			}
 
-#t3lib_div::debug( $where);
-#t3lib_div::debug('SELECT ' . $select . ' FROM ' . $from . ' WHERE '. $where . ' ORDER BY '  .$this->orderBy);
+			//Debug statements
+		if ($this->conf['enableDebug']==1) {
+			if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['SQL']==1)		t3lib_div::debug('SELECT ' . $select . ' FROM ' . $from . ' WHERE '. $where . ' ORDER BY '  .$this->orderBy);;
+			if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['conf']==1)			t3lib_div::debug($this->conf);
+		}
+			
+
 			$resultCounter=0;
 				// executing the final query and convert the results into an array
 				// is defnied as: $this->internal['list']['limit'] = $this->internal['list']['pointer'].','. ($this->internal['list']['listLength']);
@@ -513,10 +515,15 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				// limit = "pointer,counter"
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where,'',$this->orderBy);
 			$result = array();
-			#t3lib_div::debug($this->conf);
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-#t3lib_div::debug($row['title']);
+				if ($this->conf['enableDebug']==1) {
+					if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['rows']==1)		t3lib_div::debug($row);;
+				}
 				if ($this->checkAccess($row['uid'], 1) && $this->checkDocumentAccess($row['fe_group'])) {
+
+						if ($this->conf['enableDebug']==1) {
+							if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['rowsAfterAccessCheck']==1)		t3lib_div::debug($row);;
+						}
 					
 						// TODO: we should use SQL-LIMIT instead! Cant we create an SQL-Syntax for $this->checkAccess($row['uid'], 1) && $this->checkDocumentAccess($row['fe_group']) ??
 						// Problem: this code is not performant. one idea is to fetch only a limited number of rows and check in a loop if enough rows are delivered after the permission check. One prob is left, because its difficult (or impossible) to find the right position in combination with the pagelimit / pagebrowser
