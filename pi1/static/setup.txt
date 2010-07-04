@@ -537,18 +537,10 @@ plugin.tx_damfrontend_pi1 {
 		}
 	}
 
-	explorerView < .filelist
+	explorerView < .categoryTreeAdvanced
 	explorerView {
 		# how many items should be default in the filelist
 		defaultLength = 9999
-		useAlternatingRows = 0
-		marker {
-			filelist_record = ###EXPLORERVIEW_RECORD###
-			# optionSplit is possible:
-			filelist_record_alterning = ###EXPLORERVIEW_RECORD_ODD### |*| ###EXPLORERVIEW_RECORD_EVEN### || ###EXPLORERVIEW_RECORD_ODD### |*|
-		}
-		filelist.wrap = <ul style="list-style:none;">|</ul>
-		templateFile = {$plugin.tx_damfrontend_pi1.templateFile}
 		category.wrap = |
 		useLanguageOverlay = 1
 		# if category.useAlternatingSubpart = 1 then a second subpart (TREE_ELEMENT_2) is used to render the even rows
@@ -572,6 +564,18 @@ plugin.tx_damfrontend_pi1 {
 		# shows a message, that there are no files in this cat (using LL: noDocInCat)
 		showEmptyMessage = 1
 		showEmptyMessage.wrap = <li>|</li>
+	}
+	
+	explorerViewElements <.filelist
+	explorerViewElements {
+		useAlternatingRows = 0
+		marker {
+			filelist_record = ###EXPLORERVIEW_RECORD###
+			# optionSplit is possible:
+			filelist_record_alterning = ###EXPLORERVIEW_RECORD_ODD### |*| ###EXPLORERVIEW_RECORD_EVEN### || ###EXPLORERVIEW_RECORD_ODD### |*|
+		}
+		filelist.wrap = <ul style="list-style:none;">|</ul>
+		templateFile = {$plugin.tx_damfrontend_pi1.templateFile}
 	}
 
 	# configuration for subpart ###NEWFILTER_LINK###
@@ -968,8 +972,10 @@ plugin.tx_damfrontend_pi1 {
 			float:left;
 		}
 	)
+	debug {
+		tx_damfrontend_DAL_documents.getDocumentList.SQL=1
+	}
 }
-
 [globalVar = LIT:1 = {$plugin.tx_damfrontend_pi1.doNotUsePushFile}]
 # for using advanced download features with resizing we cannot use an direct link
 plugin.tx_damfrontend_pi1 {
@@ -1003,5 +1009,6 @@ plugin.tx_damfrontend_pi1 {
 		title.typolink.additionalParams >
 	}
 }
+
 
 [end]
