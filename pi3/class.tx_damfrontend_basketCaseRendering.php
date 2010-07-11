@@ -86,7 +86,7 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 			$markerArray['###TARGET###']= $this->cObj->typolink('', $this->conf['marker.']['CheckOutFormTarget.']);
 			
 				// render details of the basket
-			$damRendering = new tx_damfrontend_rendering;
+			$damRendering = t3lib_div::makeInstance('tx_damfrontend_rendering');
 			$damRendering->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.'];
 	 		$countElement = 0;
 			$rows = '';
@@ -138,7 +138,7 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 			$markerArray['###TEXT2###']			= $this->pi_getLL('TEXT2');
 
 				// render details of the basket
-			$damRendering = new tx_damfrontend_rendering;
+			$damRendering = t3lib_div::makeInstance('tx_damfrontend_rendering');
 			$damRendering->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.'];
 	 		$countElement = 0;
 			$rows = '';
@@ -197,7 +197,7 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 			$markerArray['###TEXT2###']			= $this->pi_getLL('TEXT2');
 
 				// render details of the basket
-			$damRendering = new tx_damfrontend_rendering;
+			$damRendering = t3lib_div::makeInstance('tx_damfrontend_rendering');
 			$damRendering->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.'];
 	 		$countElement = 0;
 			$rows = '';

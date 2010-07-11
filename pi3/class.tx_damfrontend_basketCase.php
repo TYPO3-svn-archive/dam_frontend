@@ -53,7 +53,7 @@ class tx_damfrontend_basketCase extends tx_damfrontend_baseSessionData  {
 		parent::tx_damfrontend_baseSessionData();
 		$this->sessionVar = 'tx_damfrontend_basketCase';
 		$this->items = $this->getArrayFromUser();
-		$this->documents = new tx_damfrontend_DAL_documents;
+		$this->documents = t3lib_div::makeInstance('tx_damfrontend_DAL_documents');
 		$this->documents->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.']; 
 	}
 	

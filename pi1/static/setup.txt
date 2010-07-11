@@ -973,7 +973,7 @@ plugin.tx_damfrontend_pi1 {
 		}
 	)
 	debug {
-		tx_damfrontend_DAL_documents.getDocumentList.SQL=1
+		tx_damfrontend_DAL_documents.getDocumentList.SQL=0
 	}
 }
 [globalVar = LIT:1 = {$plugin.tx_damfrontend_pi1.doNotUsePushFile}]
