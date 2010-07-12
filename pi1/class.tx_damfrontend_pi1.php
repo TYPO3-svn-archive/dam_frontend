@@ -1992,6 +1992,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		// CAB:SS 23.4.10 - fixed bug - dont set latestDays to 30 per default because then the limit doesn't work anymore - both options aren't possible together
 		$this->docLogic->conf['latestDays'] = $this->conf['filelist.']['latestView.']['latestDays'];
 		
+			// User definded Sorting is only possible, if latestDay >0, otherwise we hove to count the lastest files  
+		if ($this->docLogic->conf['latestDays']>0) {
+			$this->docLogic->orderBy = $this->internal['list']['sorting'];
+		}
 		if ($this->conf['filelist.']['latestView.']['useCatsAsMounts']==1) {
 			if ($this->internal['catMounts']) $this->addAllCategories($this->internal['catMounts'],$this->internal['treeID'],true);		
 		}

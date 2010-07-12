@@ -371,6 +371,9 @@ plugin.tx_damfrontend_pi1 {
 		usePreDefinedSorting=1
 		orderBy = crdate DESC
 		
+		#oder by clause for the lastestView
+		newFilesViewOrderBy = cddate DESC
+		
 		#groupedFileListUseBackEndSorting: Shows the Categories sorted like set in the flexform in the backend
 		groupedFileListUseBackEndSorting = 1
 		
@@ -569,13 +572,13 @@ plugin.tx_damfrontend_pi1 {
 	explorerViewElements <.filelist
 	explorerViewElements {
 		useAlternatingRows = 0
+		lastestView <
 		marker {
 			filelist_record = ###EXPLORERVIEW_RECORD###
 			# optionSplit is possible:
 			filelist_record_alterning = ###EXPLORERVIEW_RECORD_ODD### |*| ###EXPLORERVIEW_RECORD_EVEN### || ###EXPLORERVIEW_RECORD_ODD### |*|
 		}
 		filelist.wrap = <ul style="list-style:none;">|</ul>
-		templateFile = {$plugin.tx_damfrontend_pi1.templateFile}
 	}
 
 	# configuration for subpart ###NEWFILTER_LINK###

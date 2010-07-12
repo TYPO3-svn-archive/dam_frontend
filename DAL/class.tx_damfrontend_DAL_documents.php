@@ -471,9 +471,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 						$this->conf['latestLimit']=0;
 					}  
 					else {
-						#t3lib_div::debug($this->orderBy);
 						if ($this->orderBy) {
-							
 							$this->orderBy =$this->docTable.'.'.$this->conf['latestField'] . ' DESC, ' . $this->orderBy;
 						}
 						else {
