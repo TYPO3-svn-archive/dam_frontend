@@ -372,7 +372,7 @@ plugin.tx_damfrontend_pi1 {
 		orderBy = crdate DESC
 		
 		#oder by clause for the lastestView
-		newFilesViewOrderBy = cddate DESC
+		newFilesViewOrderBy = crdate DESC
 		
 		#groupedFileListUseBackEndSorting: Shows the Categories sorted like set in the flexform in the backend
 		groupedFileListUseBackEndSorting = 1
