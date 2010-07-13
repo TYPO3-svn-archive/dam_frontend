@@ -185,6 +185,12 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 				} else {
 					$returnArr =  null;
 				}
+				//Debug statements
+				$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dam_frontend']);
+				if ($extConf['enableDebug']==1) {
+					$conf =$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.'];
+					if ($conf['debug.']['tx_damfrontend_catlist.']['getCatSelection']==1)		t3lib_div::debug($returnArr);
+				}
 				return $returnArr;
 			}
 		}
@@ -207,6 +213,11 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 							$returnArr[$key] = array_unique($ar[$key]);
 						}
 					}
+				}
+				$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dam_frontend']);
+				if ($extConf['enableDebug']==1) {
+					$conf =$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.'];
+					if ($conf['debug.']['tx_damfrontend_catlist.']['getCatSelection']==1)		t3lib_div::debug($returnArr);
 				}
 				return is_array($returnArr) ? $returnArr: null;
 			}

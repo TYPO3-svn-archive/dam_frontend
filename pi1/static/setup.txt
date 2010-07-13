@@ -977,6 +977,7 @@ plugin.tx_damfrontend_pi1 {
 	)
 	debug {
 		tx_damfrontend_DAL_documents.getDocumentList.SQL=0
+		tx_damfrontend_catlist.getCatSelection=1
 	}
 }
 [globalVar = LIT:1 = {$plugin.tx_damfrontend_pi1.doNotUsePushFile}]
