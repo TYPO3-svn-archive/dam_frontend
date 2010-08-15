@@ -178,11 +178,13 @@ if (is_array($post) && count($post) > 0) {
 	 * usually return value from php mail()
 	 */
 	function sendMail($maildata, $attachments,$mailTemplate) {
-		if (!$maildata['from']) $maildata['from']='norepley@'.t3lib_div::getIndpEnv('HTTP_HOST')	;
-		if (!$maildata['subject']) $maildata['from']='Downloads';
-		if (!$maildata['body']) $maildata['body']='Your download:';
-		if (!$maildata['to']) die('<h1>Please set a recpient</h1><p>I\' sorry, without a recipient i can\'t send your mail</p>' );
+        if (!$maildata['from']) $maildata['from']='noreply@'.t3lib_div::getIndpEnv('HTTP_HOST');
+        if (!$maildata['subject'] || $maildata['subject']=='') $maildata['err'].=' subject';//$maildata['from']='Downloads';
+        if (!$maildata['body'] || $maildata['body']=='') $maildata['err'].=' content';//$maildata['body']='Your download:';
+        if (!$maildata['to']) $maildata['err'].=' recipient';
 		
+        if ($maildata['err']) die('<h1>Please set fields '.$maildata['err'].'</h1><p>I\'m sorry, without <b>'.$maildata['err'].'</b> I can\'t send your mail</p>' );
+        
 		require_once(PATH_t3lib.'class.t3lib_htmlmail.php');
 		$mailTemplate = str_replace( array("\r\n","\n","\r"), '<br>', $mailTemplate); // like nl2br() (sh 2010-03-28)
 		$mailTemplate = strip_tags($mailTemplate,'<table><tr><td><p><b><br>'); // allow b and br (sh 2010-03-28)
