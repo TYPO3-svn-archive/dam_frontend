@@ -226,8 +226,14 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 	 * 
 	 */
 	function renderSingleView($markerArray,$plugin, $elem) {
-		// call the render_dam_record because it does the same we need in the singleView
-		$this->render_dam_record(&$markerArray,$plugin, $elem);
+	$cObj = t3lib_div::makeInstance('tslib_cObj');
+		$cObj->start($elem, 'tx_dam');
+		if ($elem['tx_damfrontendavailability_agency']==1) {
+			$markerArray['###ADD_TO_BASKET###']= '';
+		}
+		else {
+			$markerArray['###ADD_TO_BASKET###']= $cObj->cObjGetSingle($this->conf['marker.']['add_to_basket'], $this->conf['marker.']['add_to_basket.']);
+		}
 	}
 
 	/** 
@@ -237,7 +243,12 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 	function render_dam_record($markerArray,$plugin, $elem){
 		$cObj = t3lib_div::makeInstance('tslib_cObj');
 		$cObj->start($elem, 'tx_dam');
-		$markerArray['###ADD_TO_BASKET###']= $cObj->cObjGetSingle($this->conf['marker.']['add_to_basket'], $this->conf['marker.']['add_to_basket.']);
+		if ($elem['tx_damfrontendavailability_agency']==1) {
+			$markerArray['###ADD_TO_BASKET###']= '';
+		}
+		else {
+			$markerArray['###ADD_TO_BASKET###']= $cObj->cObjGetSingle($this->conf['marker.']['add_to_basket'], $this->conf['marker.']['add_to_basket.']);
+		}
 	}
 	
 	function renderPreview($items) {

@@ -15,20 +15,24 @@ plugin.tx_damfrontend_pi3 {
 		2 = fileadmin/test2
 	}
 	marker {
-		add_to_basket = TEXT
+		add_to_basket = IMAGE
 		add_to_basket {
-			value = Add to basket
-			typolink.parameter.data = TSFE:id
-			typolink.additionalParams =&tx_damfrontend_pi3[add]={field:uid}
-			typolink.additionalParams.insertData = 1
+			file = EXT:dam_frontend/pi3/gfx/basket_add.png
+			imageLinkWrap = 1
+			imageLinkWrap {
+				enable = 1
+				typolink.parameter.data = TSFE:id
+				typolink.additionalParams =&tx_damfrontend_pi3[add]={field:uid}
+				typolink.additionalParams.insertData = 1
+			}
+			altText = [ + ]
+			titleText = LLL:EXT:dam_frontend/pi3/locallang.xml:add_to_basket
 		}
-		delete_from_basket = TEXT 
-		delete_from_basket { 
-			value = delete from basket
-			typolink.parameter.data =TSFE:id
-			typolink.additionalParams =&tx_damfrontend_pi3[delete]={field:uid}
-			typolink.additionalParams.insertData = 1
-		}
+		delete_from_basket < add_to_basket
+		delete_from_basket.file=EXT:dam_frontend/pi3/gfx/basket_remove.png
+		delete_from_basket.imageLinkWrap.typolink.additionalParams =&tx_damfrontend_pi3[delete]={field:uid}
+		delete_from_basket.altText = [ - ]
+		delete_from_basket.titleText = LLL:EXT:dam_frontend/pi3/locallang.xml:delete_from_basket
 		thumb = IMAGE
 		thumb {
 			file = {field:file_path}{field:file_name}

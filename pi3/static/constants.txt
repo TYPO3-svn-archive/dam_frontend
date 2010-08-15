@@ -4,7 +4,7 @@
     description = configuration for dam_frontend basket case
   }
 
-# cat=tx_damfrontend_pi1//10; type=text; label= Template File
+# cat=tx_damfrontend_pi3//10; type=text; label= Template File
 plugin.tx_damfrontend_pi3.templateFile = EXT:dam_frontend/pi1/template.html
 
 # cat=tx_damfrontend_pi3//20; type=int; label= checkout id

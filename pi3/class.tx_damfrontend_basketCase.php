@@ -112,7 +112,6 @@ class tx_damfrontend_basketCase extends tx_damfrontend_baseSessionData  {
 	 */
 	function writeUsage($incommingData) {
 		// create record for usage
-		t3lib_div::debug($incommingData);
 		$data= array();
 		$data['description']=$incommingData['usage'];
 		$data['feuser']=$GLOBALS['TSFE']->feuser->user['uid'];

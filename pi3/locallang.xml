@@ -5,7 +5,6 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
-			<label index="list_mode_1">Mode 1</label>
 			<label index="flexform_display_title">Settings</label>
 			<label index="flexform_options">Options</label>
 			<label index="flexform_display_form">Display this view</label>
@@ -29,9 +28,35 @@
 			<label index="TEXT2">Thank you for downloading the pictures</label>
 			<label index="TEXT1">here are your photos:</label>
 			<label index="SALUTATION">Hi</label>
+			<label index="add_to_basket">Add to basket</label>
+			<label index="delete_from_basket">Delete from basket</label>
 		</languageKey>
 		<languageKey index="de" type="array">
-			<label index="list_mode_1">Modus 1</label>
+			<label index="flexform_display_title">Einstellungen</label>
+			<label index="flexform_options">Optionen</label>
+			<label index="flexform_display_form">Zeige diese Ansicht</label>
+			<label index="flexform_baketCasePreview">Vorschau des Warenkorb</label>
+			<label index="flexform_basketCase">Bestellung abschließen</label>
+			<label index="flexform_checkOutPageID">Seiten ID für die Bestellvorgangseite</label>
+			<label index="item">Artikel</label>
+			<label index="items">Artikel</label>
+			<label index="itemstext">im Warenkorb.</label>
+			<label index="no_itemstext">Keine Artikel im Warenkorb.</label>
+			<label index="checkout">Bestellen</label>
+			<label index="error_no_items">Es sind keine Artikel im Warenkorb.</label>
+			<label index="label_usage">Bitte geben Sie die Nutzungsdaten an:</label>
+			<label index="label_accept">Bitte aktzeptieren Sie die Nutzungsbedingungen.</label>
+			<label index="label_submit">Übermitteln</label>
+			<label index="missing_data">Fehlende Angaben! </label>
+			<label index="noUsage">Speichern der Nutzungsdaten ist fehlgeschlagen! Bitte versuchen Sie es erneut. </label>
+			<label index="noUser">Bitte melden Sie sich an. Um Artikel in den Warenkorb legen zu können, müssen Sie angemeldet sein.</label>
+			<label index="mail_subject">Ihre angeforderten Downloads</label>
+			<label index="noMailAdress">Entschuldigung, aber ich kann keine E-Mail versenden, da im Benutzerprofil keine Adresse hinterlegt ist.</label>
+			<label index="TEXT2">Danke für das Bestellen der Artikel</label>
+			<label index="TEXT1">Hier sind Ihre Artikel:</label>
+			<label index="SALUTATION">Hallo</label>
+			<label index="add_to_basket">Zum Warenkorb hinzufügen</label>
+			<label index="delete_from_basket">Vom Warenkorb löschen</label>
 		</languageKey>
 		<languageKey index="nl" type="array">
 			<label index="list_mode_1">Mode 1</label>

@@ -220,7 +220,7 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 	 *
 	 * @return	[void]		...
 	 */
-	function sendMail($items) {
+	function sendMail() {
 		
 		require_once(PATH_t3lib.'class.t3lib_htmlmail.php');
 		// get FE_USER data
@@ -234,7 +234,12 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 		}
 		
 		
-		if (!$this->conf['mail.']['from']) $maildata['from']='norepley@'.t3lib_div::getIndpEnv('HTTP_HOST')	;
+		if (!$this->conf['mail.']['from']) {
+			$maildata['from']='noreply@'.t3lib_div::getIndpEnv('HTTP_HOST');
+		}
+		else {
+			$maildata['from']=$this->conf['mail.']['from'];
+		}
 		($this->conf['mail.']['subject']) ? $maildata['subject']= $this->cObj->cObjGetSingle($this->conf['mail.']['subject'],$this->conf['mail.']['subject.']) :$maildata['subject']='Your downloads' ;
 		$maildata['htmlbody'] = $this->renderer->renderMail($this->basketCase->listItems());
 		$htmlMail = t3lib_div::makeInstance('t3lib_htmlmail');
