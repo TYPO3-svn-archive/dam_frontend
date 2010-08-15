@@ -520,7 +520,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 					if ($this->conf['filelist.']['browselink.']['browselinkUsePrevNext']==1) {
 							// previous link
 						if ($z>0) {
-							$this->piVars['pointer'] = $z-1;
+							$this->piVars['pointer'] = ($z-1).'#listAnchor';;
 							$listElemsPrevious =  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP_keepPiVars($this->pi_getLL('BROWSELINK_PREV')),$this->conf['filelist.']['browselink.']));
 						}
 						else {
@@ -532,14 +532,14 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 							$listElemsNext =  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_getLL('BROWSELINK_NEXT'),$this->conf['filelist.']['browselink.']));
 						}
 						else {
-							$this->piVars['pointer'] = $z+1;
+							$this->piVars['pointer'] = ($z+1).'#listAnchor';;
 							$listElemsNext =  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP_keepPiVars($this->pi_getLL('BROWSELINK_NEXT')),$this->conf['filelist.']['browselink.']));
 						}
 					}
 				}
 				else {
 						// link to other pages
-					$this->piVars['pointer'] = $z;
+					$this->piVars['pointer'] = $z.'#listAnchor';;
 					$listElems .=  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP_keepPiVars($z+1,$this->piVars),$this->conf['filelist.']['browselink.']));
 				}
 			}
@@ -673,12 +673,12 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  		if (!is_null($this->staticInfoObj)) { $markerArray['###LANGUAGE###'] 	= $this->staticInfoObj->getStaticInfoName('LANGUAGES', $record['language'], '', '', false);}
  		
  		// Hook for additional fields
- 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_SINGLE_VIEW'])) {
-				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_SINGLE_VIEW'] as $_classRef) { 
-					$_procObj = &t3lib_div::getUserObj($_classRef); 
-					$_procObj->renderSingleView(&$markerArray, $this, $record);
-				}
+ 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_SINGLE_VIEW'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_SINGLE_VIEW'] as $_classRef) { 
+				$_procObj = &t3lib_div::getUserObj($_classRef); 
+				$_procObj->renderSingleView(&$markerArray, $this, $record);
 			}
+		}
  		$content=tslib_cObj::substituteMarkerArray($single_Code, $markerArray);
 
  		$content = tslib_cObj::substituteMarker($content, '###TITLE_SINGLEVIEW###',$markerArray['###TITLE###']);

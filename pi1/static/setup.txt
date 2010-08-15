@@ -20,6 +20,10 @@ plugin.tx_damfrontend_pi1 {
 	useAdvancedCategoryTree = 0
 		#if more than one tree element at a page is use, then a AND selection is used between the trees
 	useTreeAndSelection = 1 
+	
+	performance {
+		useSimplePageBrowser=1
+	}
 	categoryTree {
 		preSelectChildCategories = 0
 		showHiddenCategories = 0
@@ -977,7 +981,7 @@ plugin.tx_damfrontend_pi1 {
 	)
 	debug {
 		tx_damfrontend_DAL_documents.getDocumentList.SQL=0
-		tx_damfrontend_catlist.getCatSelection=1
+		tx_damfrontend_catlist.getCatSelection=0	
 	}
 }
 [globalVar = LIT:1 = {$plugin.tx_damfrontend_pi1.doNotUsePushFile}]

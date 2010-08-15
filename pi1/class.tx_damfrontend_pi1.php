@@ -1046,8 +1046,14 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				if ($noOfPages<0)$noOfPages=0;
 				
 				if($this->internal['list']['pointer'] >$noOfPages) {
-					// set pointer to max value
-					return  $this->renderer->renderError('noPointerError');
+					// set pointer to max value / correct the no of pages
+					$this->internal['list']['pointer']= $noOfPages;
+					$this->internal['list']['limit'] = $noOfPages.','. ($this->internal['list']['listLength']);
+					$this->docLogic->limit = $this->internal['list']['limit'];
+					#fetch files again if we are over the limit
+					$this->listState->setListState($this->internal['list']); 
+					$files = $this->docLogic->getDocumentList($this->userUID);
+					#return  $this->renderer->renderError('noPointerError');
 				}
 
 				 //get the html from the renderer
