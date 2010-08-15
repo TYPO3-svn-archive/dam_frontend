@@ -517,6 +517,7 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 				if ($this->conf['enableDebug']==1) {
 					if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['rows']==1)		t3lib_div::debug($row);;
 				}
+				$resultCounterComplete++;
 				if ($this->checkAccess($row['uid'], 1) && $this->checkDocumentAccess($row['fe_group'])) {
 
 						if ($this->conf['enableDebug']==1) {
@@ -526,7 +527,6 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 						// TODO: we should use SQL-LIMIT instead! Cant we create an SQL-Syntax for $this->checkAccess($row['uid'], 1) && $this->checkDocumentAccess($row['fe_group']) ??
 						// Problem: this code is not performant. one idea is to fetch only a limited number of rows and check in a loop if enough rows are delivered after the permission check. One prob is left, because its difficult (or impossible) to find the right position in combination with the pagelimit / pagebrowser
 						// add row only, if the current resultID is between the limit range
-					if ($resultCounter >=$startRecord && $resultCounter<=($startRecord+$listLength-1)){
 						// @TODO limit the latest View
 						
 							// check if user is allowed to download a file
@@ -541,20 +541,34 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 							$row['allowDeletion']=1;
 							$row['allowEdit']=1;
 						} 
-						$result[] = $row;
 						
+					if ($resultCounter >=$startRecord && $resultCounter<=($startRecord+$listLength-1)){
+						$result[] = $row;
 					}
+					$totalResult[] = $row;					
 						// pointer starts at "0" so the first result counter has to be 0 too
 					$resultCounter++;
 					if ($this->conf['latestLimit']>0 && $resultCounter==$this->conf['latestLimit']) {
 						break;
 					}
+					if ($this->conf['performance.']['useSimplePageBrowser']==1) {
+							// check if the current record belongs to the next page
+							// in the result browser. If so, the rest of the result will
+							// not checked for access, so we increase performance
+						if ($resultCounter>($startRecord+$listLength-1)) {
+							// get those records, which do allready hove no access
+							$diff = $resultCounterComplete - $resultCounter;
+							$resultCounter = $GLOBALS['TYPO3_DB']->sql_num_rows($res)- $diff;
+							break;
+						}
+					}
 				}
 			}
-
+			
+			
+			
 			$this->resultCount = $resultCounter;
 			return $result;
-			
 		}
 
 
