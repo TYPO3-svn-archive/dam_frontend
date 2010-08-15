@@ -26,5 +26,6 @@ t3lib_extMgm::addPItoST43($_EXTKEY,'pi3/class.tx_damfrontend_pi3.php','_pi3','li
 $TYPO3_CONF_VARS['FE']['eID_include']['dam_frontend_push'] = t3lib_extMgm::extPath($_EXTKEY).'pushfile.php';
 
 // add hook for pi3
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_DAM_RECORD'][] = 'EXT:dam_frontend/pi3/class.tx_damfrontend_basketCaseRendering.php:tx_damfrontend_basketCaseRendering';
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_DAM_RECORD'][]  = 'EXT:dam_frontend/pi3/class.tx_damfrontend_basketCaseRendering.php:tx_damfrontend_basketCaseRendering';
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_SINGLE_VIEW'][] = 'EXT:dam_frontend/pi3/class.tx_damfrontend_basketCaseRendering.php:tx_damfrontend_basketCaseRendering'; 
 ?>
