@@ -439,7 +439,7 @@ class tx_damfrontend_DAL_categories {
 				}
 				$SELECT = '*';
 				$FROM = $this->catTable;
-				$WHERE = 'parent_id = '.$catID . ' AND sys_language_uid=0 ' . t3lib_BEfunc::BEenableFields($this->catTable). ' AND deleted = 0';
+				$WHERE = 'parent_id = '.$catID . ' AND sys_language_uid=0 ' . tslib_cObj::enableFields($this->catTable). ' AND deleted = 0';
 				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE);
 				while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 					$records[]=$row;
