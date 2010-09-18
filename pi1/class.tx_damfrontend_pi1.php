@@ -733,7 +733,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					if (is_array($this->internal['catPreSelection'])) {
 						foreach ($this->internal['catPreSelection'] as $catMount) {
 							if (strlen($catMount)) {
-								if ($this->conf['categoryTree']['preSelectChildCategories']==1) {
+								if ($this->conf['categoryTree.']['preSelectChildCategories']==1) {
 									$subs = $this->catLogic->getSubCategories($catMount);
 									$this->catList->op_Plus($catMount, $this->internal['treeID']);
 									foreach ($subs as $sub) {
@@ -945,7 +945,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				if ($this->saveCategorisation==1 ) {
 						$docData = $this->docLogic->getDocument($this->internal['catEditUID']);
 
-						if ($docData['tx_damfrontend_feuser_upload']==$this->userUID) {
+						if ( $this->docLogic->checkEditRights($docData)===TRUE) {
 							$this->saveCategories($this->internal['catEditUID'],false);
 							$this->internal['catEditUID']=null;
 						}

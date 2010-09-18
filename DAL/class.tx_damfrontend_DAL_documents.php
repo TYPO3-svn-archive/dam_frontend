@@ -670,7 +670,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			
 			if ($filterArray['creator'] != '' && $filterArray['creator'] != ' ') $this->additionalFilter .= $this->getSearchwordWhereString($filterArray['creator'],'creator');
 			
-			# todo: check access (user must be part of the selected usergroup)
+			// TODO: check access (user must be part of the selected usergroup)
 			if ($filterArray['owner'] > 0 ) $this->additionalFilter .=   ' AND '.$this->docTable.'.tx_damfrontend_feuser_upload  ='.$filterArray['owner'];
 
 			if (trim($filterArray['LanguageSelector']) != '' && $filterArray['LanguageSelector'] != 'nosel') $this->additionalFilter .=  ' AND '.$this->docTable.'.language = "'.trim($filterArray['LanguageSelector']).'"';
@@ -678,7 +678,6 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			if ($filterArray['showOnlyFilesWithPermission'] == 1) $this->additionalFilter .=  ' AND '.$this->docTable.'.fe_group <>"" AND '.$this->docTable.'.fe_group <>"-1" AND '.$this->docTable.'.fe_group <>"-2" AND '.$this->docTable.'.fe_group <>"0"';
 			
 			if (is_array($filterArray['searchAllCats_allowedCats'])) $this->conf['searchAllCats_allowedCats'] = implode(',',$filterArray['searchAllCats_allowedCats']);
-#t3lib_div::debug($filterArray);			
 				// looking for custom filters
 			if (is_array($filterArray['customFilters'])) {
 				foreach ($filterArray['customFilters'] as $filter=>$value) {
