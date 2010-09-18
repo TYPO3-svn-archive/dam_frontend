@@ -805,6 +805,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 			else {
 				end ($this->internal['drilldown']);
+				while (! current($this->internal['drilldown']) && !current($this->internal['drilldown']) === FALSE) prev($this->internal['drilldown']);
 				$catID = current($this->internal['drilldown']);
 			}
 			
