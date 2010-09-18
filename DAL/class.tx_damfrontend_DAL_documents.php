@@ -6,7 +6,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2006-2009 in2form.com (typo3@in2form.com)
+*  (c) 2006-2010 in2code.de (info@in2code.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -354,6 +354,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 	 * @return	[array]		returns an array which contains all selected records
 	 */
 		function getDocumentList($userUID=0) {
+			
 			$cObj = t3lib_div::makeInstance('tslib_cObj');
 			$cObj->start();
 			$filter = $cObj->enableFields('tx_dam');
@@ -388,21 +389,18 @@ require_once(PATH_tslib.'class.tslib_content.php');
 
 			$queryText = array();
 			$z = 0;
+			
 			/**
 			 * every element in the categories array stores a list of cats that are associated with an array
-			 *
-			 *
-			 *
 			 */
 			foreach($this->categories as $number => $catList) {
-
+											
 					if ($this->searchAllCats === true) {
 						if ($this->conf['searchAllCats_allowedCats']) {
 								// limit the search in categories
 							$catString ='('.$this->catTable.'.uid IN ('. $this->conf['searchAllCats_allowedCats'] .'))';
 						} 
 						else {
-
 								// no limitation for category is set
 							$catString = "1=1";
 						}
@@ -443,7 +441,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 					$z++;
 				}
 				if  ($this->conf['useTreeAndSelection'] == 0) {
-					$where .= $filter;
+					$where = '('.$where.')'. $filter;
 				}
 			}
 			else {
