@@ -1,7 +1,8 @@
 <?php
 require_once(t3lib_extMgm::extPath('dam_frontend').'/DAL/class.tx_damfrontend_DAL_categories.php');
 require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
-
+require_once(t3lib_extMgm::extPath('cms').'/tslib/class.tslib_search.php');
+require_once(PATH_tslib.'class.tslib_content.php');
 /***************************************************************
 *  Copyright notice
 *
@@ -353,13 +354,12 @@ require_once(t3lib_extMgm::extPath('dam').'/lib/class.tx_dam_indexing.php');
 	 * @return	[array]		returns an array which contains all selected records
 	 */
 		function getDocumentList($userUID=0) {
+			$cObj = t3lib_div::makeInstance('tslib_cObj');
+			$cObj->start();
+			$filter = $cObj->enableFields('tx_dam');
 			if(!is_array($this->categories)) {
 				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getDcoumentList: for the this->categories is no array. Given value was:' .$this->categories, 'dam_frontend',3);
 			}
-				// TODO: use API: Enablefields
-			$filter = ' AND '.$this->docTable.'.deleted = 0  AND '.$this->docTable.'.hidden = 0';
-			$filter .= ' AND ('.$this->docTable.'.starttime < '.time().' OR '.$this->docTable.'.starttime = 0)';
-			$filter .= ' AND ('.$this->docTable.'.endtime > '.time().' OR '.$this->docTable.'.endtime = 0)';
 			
 			$hasCategories=false;
 			foreach ($this->categories as $cat) {

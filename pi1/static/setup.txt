@@ -23,6 +23,7 @@ plugin.tx_damfrontend_pi1 {
 	
 	performance {
 		useSimplePageBrowser=1
+		checkDownloadRight=1
 	}
 	categoryTree {
 		preSelectChildCategories = 0
