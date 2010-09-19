@@ -348,38 +348,38 @@ require_once(PATH_tslib.'class.tslib_content.php');
 	 * @param	[type]		$userUID: ...
 	 * @return	[array]		returns an array which contains all selected records
 	 */
-		function getDocumentList($userUID=0) {
+	function getDocumentList($userUID=0) {
 			
-			$cObj = t3lib_div::makeInstance('tslib_cObj');
-			$cObj->start();
-			$filter = $cObj->enableFields('tx_dam');
-			if(!is_array($this->categories)) {
-				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getDcoumentList: for the this->categories is no array. Given value was:' .$this->categories, 'dam_frontend',3);
-			}
-			
-			$hasCategories=false;
-			foreach ($this->categories as $cat) {
-				if (!empty($cat) ) $hasCategories=true;
-			}
-			
-			if ($hasCategories===true) {
+		$cObj = t3lib_div::makeInstance('tslib_cObj');
+		$cObj->start();
+		$filter = $cObj->enableFields('tx_dam');
+		if(!is_array($this->categories)) {
+			if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getDcoumentList: for the this->categories is no array. Given value was:' .$this->categories, 'dam_frontend',3);
+		}
+		
+		$hasCategories=false;
+		foreach ($this->categories as $cat) {
+			if (!empty($cat) ) $hasCategories=true;
+		}
+		
+		if ($hasCategories===true) {
 
-				/*
-				 * Building the from clause manually by joining the DAM tables
-				 */
-				$select = $this->docTable.'.uid';
-				$from = $this->docTable.' INNER JOIN '.$this->mm_Table.' ON '.$this->mm_Table.'.uid_local  = '.$this->docTable.
-				'.uid INNER JOIN '.$this->catTable.' ON '.$this->mm_Table.'.uid_foreign = '.$this->catTable.'.uid';
+			/*
+			 * Building the from clause manually by joining the DAM tables
+			 */
+			$select = $this->docTable.'.uid';
+			$from = $this->docTable.' INNER JOIN '.$this->mm_Table.' ON '.$this->mm_Table.'.uid_local  = '.$this->docTable.
+			'.uid INNER JOIN '.$this->catTable.' ON '.$this->mm_Table.'.uid_foreign = '.$this->catTable.'.uid';
 
-				$filter .= $this->additionalFilter;
+			$filter .= $this->additionalFilter;
 
 
-				// preparing the category array - deleting all empty entries
-				foreach($this->categories as $number => $catList) {
-					if (!count($catList)) {
-						unset($this->categories[$number]);
-					}
+			// preparing the category array - deleting all empty entries
+			foreach($this->categories as $number => $catList) {
+				if (!count($catList)) {
+					unset($this->categories[$number]);
 				}
+			}
 
 			$queryText = array();
 			$z = 0;
@@ -508,61 +508,62 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['conf']==1)			t3lib_div::debug($this->conf);
 		}
 			
+			// get result counter
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('DISTINCT tx_dam.uid', $from, $where,'',$this->orderBy);
 		
-			
+			// TODO check why count does not work?
+		#$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('DISTINCT count(tx_dam.uid) AS counter', $from, $where);
 		
-				// get result counter
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('DISTINCT tx_dam.uid', $from, $where,'',$this->orderBy);
-			
-				// TODO check why count does not work?
-			#$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('DISTINCT count(tx_dam.uid) AS counter', $from, $where);
-			
-			
-			$resultCounter = $GLOBALS['TYPO3_DB']->sql_num_rows($res); 
 		
-			
-				// if latest list is used and a fixed number of entries has to be shown
-			if ($this->conf['latestLimit']>0 ){
-				if ($endRecord > $this->conf['latestLimit']) $endRecord = $this->conf['latestLimit'] ;
-			}
-				
-				// get the download access list
-			$whereAccess =$where . ' AND ' .  $this->getDownloadAccessSQL();
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tx_dam.uid', $from, $whereAccess,'',$this->orderBy,$startRecord.','.$listLength);
-			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				$uidsAllowedForDownload[]=$row['uid'];
-			}
-			
-				// executing the final query and convert the results into an array
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where,'',$this->orderBy,$startRecord.','.$listLength);
-			$result = array();
-			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				if ($this->conf['enableDebug']==1) {
-					if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['rows']==1)		t3lib_div::debug($row);;
-				}
-
-				if ($this->conf['enableDebug']==1) {
-					if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['rowsAfterAccessCheck']==1)		t3lib_div::debug($row);;
-				}
-			
-					// check if user is allowed to download a file
-				// FIXME $uidsAllowedForDownload
-					$row['allowDownload']=1;	
-					
-					//add a delete information
-				if ($this->checkEditRights($row)===TRUE){
-					$row['allowDeletion']=1;
-					$row['allowEdit']=1;
-				} 
-				
-				$result[] = $row;
-
-			}
-			
-			$this->resultCount = $resultCounter;
-			return $result;
+		$resultCounter = $GLOBALS['TYPO3_DB']->sql_num_rows($res); 
+	
+		
+			// if latest list is used and a fixed number of entries has to be shown
+		if ($this->conf['latestLimit']>0 ){
+			if ($endRecord > $this->conf['latestLimit']) $endRecord = $this->conf['latestLimit'] ;
 		}
+		$whereAccess =$where;
+			// get the download access list
+		#$whereAccess =$where . ' AND ' .  $this->getDownloadAccessSQL();
+		t3lib_div::debug('$whereAccess');
+		t3lib_div::debug($whereAccess);
+		t3lib_div::debug($select);
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tx_dam.uid, tx_dam_cat.tx_damtree_fe_groups_downloadaccess', $from, $whereAccess,'',$this->orderBy);
+		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+			$uidsAllowedForDownload[]=array($row['uid'],$row['tx_damtree_fe_groups_downloadaccess'] );
+		}
+		
+			// executing the final query and convert the results into an array
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where,'',$this->orderBy,$startRecord.','.$listLength);
+		$result = array();
+		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+			if ($this->conf['enableDebug']==1) {
+				if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['rows']==1)		t3lib_div::debug($row);;
+			}
+
+			if ($this->conf['enableDebug']==1) {
+				if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['rowsAfterAccessCheck']==1)		t3lib_div::debug($row);;
+			}
+		
+				// check if user is allowed to download a file
+			// FIXME 
+			#$uidsAllowedForDownload
+				$row['allowDownload']=1;	
+				
+				//add a delete information
+			if ($this->checkEditRights($row)===TRUE){
+				$row['allowDeletion']=1;
+				$row['allowEdit']=1;
+			} 
+			
+			$result[] = $row;
+
+		}
+		
+		$this->resultCount = $resultCounter;
+		t3lib_div::debug($uidsAllowedForDownload);
+		return $result;
+	}
 
 
 
@@ -822,7 +823,6 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			unset($newrecord['file_readable']);
 			// executing the insert operation for the database
 			$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_dam', $newrecord);
-			// FIXME check if all fields exist, because a user can enter his own fields (mapping of fe_user data to dam records)
 			// FIXME insert error handling, if $newID is empty or 0
 			$newID = $GLOBALS['TYPO3_DB']->sql_insert_id();
 			return $newID;
@@ -853,12 +853,12 @@ require_once(PATH_tslib.'class.tslib_content.php');
 		}
 
 		/**
- * @param	int		$uid UID of the dam entry, which should be created
- * @param	[type]		$deleteFile: ...
- * @param	[type]		$userUID: ...
- * @return	boolean		true, if the deletion was sucessful
- * @author stefan
- */
+		 * @param	int		$uid UID of the dam entry, which should be created
+		 * @param	[type]		$deleteFile: ...
+		 * @param	[type]		$userUID: ...
+		 * @return	boolean		true, if the deletion was sucessful
+		 * @author stefan
+		 */
 		function delete_document ($uid,$deleteFile=false, $userUID = 0) {
 			$doc = $this->getDocument($uid)	;
 			if ($doc['tx_damfrontend_feuser_upload']==$userUID) {
