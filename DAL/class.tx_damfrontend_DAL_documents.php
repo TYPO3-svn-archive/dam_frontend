@@ -443,20 +443,22 @@ require_once(PATH_tslib.'class.tslib_content.php');
 				if  ($this->conf['useTreeAndSelection'] == 0) {
 					$where = '('.$where.')'. $filter;
 				}
+				
+				// adding access information for categories
+				$where .= $cObj->enableFields($this->catTable);
 			}
 			else {
 				// query without using categories
 				$from=$this->docTable;
 				if ($this->conf['searchAllCats_allowedCats']) {
 					// limit the search in categories
-					 $filter .='AND ('.$this->catTable.'.uid IN ('. $this->conf['searchAllCats_allowedCats'] .'))';
+					 $filter .='AND ('.$this->catTable.'.uid IN ('. $this->conf['searchAllCats_allowedCats'] .'))' . $cObj->enableFields($this->catTable);;
 					 $from = $this->docTable.' INNER JOIN '.$this->mm_Table.' ON '.$this->mm_Table.'.uid_local  = '.$this->docTable.'.uid INNER JOIN '.$this->catTable.' ON '.$this->mm_Table.'.uid_foreign = '.$this->catTable.'.uid';
 				} 
 				$filter .= $this->additionalFilter;
 				$select='*';
 				$where.= ' 1=1 '.$filter;
 			}
-			// TODO: is there a reason not to define SELECT here?
 			// TODO: do not use '*' but whitlist defined via TypoScript
 			$select = ' DISTINCT '.$this->docTable.'.*';
 			if ($this->conf['useLatestList']==1) {
@@ -496,19 +498,36 @@ require_once(PATH_tslib.'class.tslib_content.php');
 				
 			}
 
+		if ($this->conf['filelist.']['security_options.']['showOnlyFilesWithPermission']==1) {
+			$where .=  $this->getOnlyFilesWithPermissionSQL();
+		}
+			
 			//Debug statements
 		if ($this->conf['enableDebug']==1) {
 			if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['SQL']==1)		t3lib_div::debug('SELECT ' . $select . ' FROM ' . $from . ' WHERE '. $where . ' ORDER BY '  .$this->orderBy);;
 			if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['conf']==1)			t3lib_div::debug($this->conf);
 		}
 			
-
-			$resultCounter=0;
-				// executing the final query and convert the results into an array
+		
+			
+		
+				// get result counter
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('count(tx_dam.uid) AS counter', $from, $where,'',$this->orderBy);
+			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+			$resultCounter = $row['counter'];
+		
 				// is defnied as: $this->internal['list']['limit'] = $this->internal['list']['pointer'].','. ($this->internal['list']['listLength']);
 			list($pointer, $listLength) = explode (',',$this->limit);
 			$startRecord = $pointer * $listLength;
 				// limit = "pointer,counter"
+				
+				// get the download access list
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tx_dam.uid', $from, $where,'',$this->orderBy,$startRecord.','.$listLength);
+			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+				$uidsAllowedForDownload[]=$row['uid'];
+			}
+				// executing the final query and convert the results into an array
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where,'',$this->orderBy);
 			$result = array();
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
@@ -525,7 +544,6 @@ require_once(PATH_tslib.'class.tslib_content.php');
 						// TODO: we should use SQL-LIMIT instead! Cant we create an SQL-Syntax for $this->checkAccess($row['uid'], 1) && $this->checkDocumentAccess($row['fe_group']) ??
 						// Problem: this code is not performant. one idea is to fetch only a limited number of rows and check in a loop if enough rows are delivered after the permission check. One prob is left, because its difficult (or impossible) to find the right position in combination with the pagelimit / pagebrowser
 						// add row only, if the current resultID is between the limit range
-						// @TODO limit the latest View
 						
 							// check if user is allowed to download a file
 						if ($this->checkAccess($row['uid'], 2)) {
@@ -1364,6 +1382,20 @@ require_once(PATH_tslib.'class.tslib_content.php');
 		$search->operator_translate_table = $operator_translate_table;
 		$search->register_and_explode_search_string($searchWord);
 		return $search->sword_array;
+	}
+	
+	function getOnlyFilesWithPermissionSQL () {
+		return " AND NOT ((tx_dam.fe_group='' OR 	tx_dam.fe_group IS NULL	OR 	tx_dam.fe_group='0' 
+	OR (
+			tx_dam.fe_group LIKE '%,0,%' OR tx_dam.fe_group LIKE '0,%' 
+		OR tx_dam.fe_group LIKE '%,0' OR tx_dam.fe_group='0') 
+		OR (
+				tx_dam.fe_group LIKE '%,-1,%' 
+			OR tx_dam.fe_group LIKE '-1,%' 
+			OR tx_dam.fe_group LIKE '%,-1' 
+			OR tx_dam.fe_group='-1'
+			)
+		))";
 	}
 }
 
