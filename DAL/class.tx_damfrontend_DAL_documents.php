@@ -166,13 +166,12 @@ require_once(PATH_tslib.'class.tslib_content.php');
 
 	/**
 	 * Checks, if access is allowed by a given file (path + name)
-	 * This function is retrieving the uid in the dam by resolving name and path and sending the uid to the function  checkAcess
+	 * This function is retrieving the path filename and then checks, if a user has access to that file
 	 *
 	 * @param	string		$filePath: ...
 	 * @return	boolean		true if access is allowed
 	 * @see checkAccess
 	 */
-	 //TODO this function is not used? delete it? - Stefan
 		function checkAccess_fileRef($filePath) {
 			// getting filename and filepath from the given path
 			$splitpos = strrpos($filePath, '/') + 1;
@@ -186,7 +185,6 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			return $this->checkAccess(intval($row['uid']),2);
 		}
 
-// TODO implement a function which combines checkAccess and checkDokumentAcess  - Stefan
 	/**
 	 * checks, if the current user has access to an specific document
 	 * if the document has no g, the access is not limited
@@ -203,13 +201,10 @@ require_once(PATH_tslib.'class.tslib_content.php');
 				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function checkAccess: for the relID only integer values are allowed. Given value was:' .$relID, 'dam_frontend',3);
 			}
 			// all frontend usergroups assigned to the document
-			
 			$docgroups = $this->getDocumentFEGroups($docID, $relID);
-#t3lib_div::debug($docgroups);
 			if (empty($docgroups)) return true; // no groups assigned - allow access
 			// get the ID's of the usergroups, the current user is a member of
 			$usergroups = $this->feuser->groupData['uid'];
-#t3lib_div::debug($usergroups);
 			$valid = false;
 			foreach($docgroups as $docgroup) {
 				if ((array_search($docgroup['uid'], $usergroups))) {
@@ -380,7 +375,6 @@ require_once(PATH_tslib.'class.tslib_content.php');
 
 
 				// preparing the category array - deleting all empty entries
-				// TODO: rethinking if it is a good idea to change $this->categories in a function for reading entrys?
 				foreach($this->categories as $number => $catList) {
 					if (!count($catList)) {
 						unset($this->categories[$number]);
@@ -459,7 +453,6 @@ require_once(PATH_tslib.'class.tslib_content.php');
 				$select='*';
 				$where.= ' 1=1 '.$filter;
 			}
-			// TODO: do not use '*' but whitlist defined via TypoScript
 			$select = ' DISTINCT '.$this->docTable.'.*';
 			if ($this->conf['useLatestList']==1) {
 					// if latest days is set the
@@ -502,9 +495,16 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			$where .=  $this->getOnlyFilesWithPermissionSQL();
 		}
 			
+			// is defnied as: $this->internal['list']['limit'] = $this->internal['list']['pointer'].','. ($this->internal['list']['listLength']);
+			// limit = "pointer,counter"
+		list($pointer, $listLength) = explode (',',$this->limit);
+		$startRecord = $pointer * $listLength;
+		$endRecord = $startRecord + $listLength;
+		
+		
 			//Debug statements
 		if ($this->conf['enableDebug']==1) {
-			if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['SQL']==1)		t3lib_div::debug('SELECT ' . $select . ' FROM ' . $from . ' WHERE '. $where . ' ORDER BY '  .$this->orderBy);;
+			if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['SQL']==1)		t3lib_div::debug('SELECT ' . $select . ' FROM ' . $from . ' WHERE '. $where . ' ORDER BY '  .$this->orderBy . ' LIMIT ('. $startRecord.','.$listLength .')');
 			if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['conf']==1)			t3lib_div::debug($this->conf);
 		}
 			
@@ -512,76 +512,53 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			
 		
 				// get result counter
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('count(tx_dam.uid) AS counter', $from, $where,'',$this->orderBy);
-			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-			$resultCounter = $row['counter'];
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('DISTINCT tx_dam.uid', $from, $where,'',$this->orderBy);
+			
+				// TODO check why count does not work?
+			#$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('DISTINCT count(tx_dam.uid) AS counter', $from, $where);
+			
+			
+			$resultCounter = $GLOBALS['TYPO3_DB']->sql_num_rows($res); 
 		
-				// is defnied as: $this->internal['list']['limit'] = $this->internal['list']['pointer'].','. ($this->internal['list']['listLength']);
-			list($pointer, $listLength) = explode (',',$this->limit);
-			$startRecord = $pointer * $listLength;
-				// limit = "pointer,counter"
+			
+				// if latest list is used and a fixed number of entries has to be shown
+			if ($this->conf['latestLimit']>0 ){
+				if ($endRecord > $this->conf['latestLimit']) $endRecord = $this->conf['latestLimit'] ;
+			}
 				
 				// get the download access list
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tx_dam.uid', $from, $where,'',$this->orderBy,$startRecord.','.$listLength);
+			$whereAccess =$where . ' AND ' .  $this->getDownloadAccessSQL();
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tx_dam.uid', $from, $whereAccess,'',$this->orderBy,$startRecord.','.$listLength);
 			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				$uidsAllowedForDownload[]=$row['uid'];
 			}
+			
 				// executing the final query and convert the results into an array
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where,'',$this->orderBy);
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where,'',$this->orderBy,$startRecord.','.$listLength);
 			$result = array();
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				if ($this->conf['enableDebug']==1) {
 					if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['rows']==1)		t3lib_div::debug($row);;
 				}
-				$resultCounterComplete++;
-				if ($this->checkAccess($row['uid'], 1) && $this->checkDocumentAccess($row['fe_group'])) {
 
-						if ($this->conf['enableDebug']==1) {
-							if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['rowsAfterAccessCheck']==1)		t3lib_div::debug($row);;
-						}
-					
-						// TODO: we should use SQL-LIMIT instead! Cant we create an SQL-Syntax for $this->checkAccess($row['uid'], 1) && $this->checkDocumentAccess($row['fe_group']) ??
-						// Problem: this code is not performant. one idea is to fetch only a limited number of rows and check in a loop if enough rows are delivered after the permission check. One prob is left, because its difficult (or impossible) to find the right position in combination with the pagelimit / pagebrowser
-						// add row only, if the current resultID is between the limit range
-						
-							// check if user is allowed to download a file
-						if ($this->checkAccess($row['uid'], 2)) {
-							$row['allowDownload']=1;	
-						}
-						else {
-							$row['allowDownload']=0;	
-						}						
-							//add a delete information
-						if ($this->checkEditRights($row)===TRUE){
-							$row['allowDeletion']=1;
-							$row['allowEdit']=1;
-						} 
-						
-					if ($resultCounter >=$startRecord && $resultCounter<=($startRecord+$listLength-1)){
-						$result[] = $row;
-					}
-					$totalResult[] = $row;					
-						// pointer starts at "0" so the first result counter has to be 0 too
-					$resultCounter++;
-					if ($this->conf['latestLimit']>0 && $resultCounter==$this->conf['latestLimit']) {
-						break;
-					}
-					if ($this->conf['performance.']['useSimplePageBrowser']==1) {
-							// check if the current record belongs to the next page
-							// in the result browser. If so, the rest of the result will
-							// not checked for access, so we increase performance
-						if ($resultCounter>($startRecord+$listLength-1)) {
-							// get those records, which do allready hove no access
-							$diff = $resultCounterComplete - $resultCounter;
-							$resultCounter = $GLOBALS['TYPO3_DB']->sql_num_rows($res)- $diff;
-							break;
-						}
-					}
+				if ($this->conf['enableDebug']==1) {
+					if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['rowsAfterAccessCheck']==1)		t3lib_div::debug($row);;
 				}
+			
+					// check if user is allowed to download a file
+				// FIXME $uidsAllowedForDownload
+					$row['allowDownload']=1;	
+					
+					//add a delete information
+				if ($this->checkEditRights($row)===TRUE){
+					$row['allowDeletion']=1;
+					$row['allowEdit']=1;
+				} 
+				
+				$result[] = $row;
+
 			}
-			
-			
 			
 			$this->resultCount = $resultCounter;
 			return $result;
@@ -686,7 +663,6 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			
 			if ($filterArray['creator'] != '' && $filterArray['creator'] != ' ') $this->additionalFilter .= $this->getSearchwordWhereString($filterArray['creator'],'creator');
 			
-			// TODO: check access (user must be part of the selected usergroup)
 			if ($filterArray['owner'] > 0 ) $this->additionalFilter .=   ' AND '.$this->docTable.'.tx_damfrontend_feuser_upload  ='.$filterArray['owner'];
 
 			if (trim($filterArray['LanguageSelector']) != '' && $filterArray['LanguageSelector'] != 'nosel') $this->additionalFilter .=  ' AND '.$this->docTable.'.language = "'.trim($filterArray['LanguageSelector']).'"';
@@ -1370,7 +1346,12 @@ require_once(PATH_tslib.'class.tslib_content.php');
 		return $access;
 	}
 	
-	
+	 /**
+	 * returns a sql where statement, for each searchword
+	 *
+	 * @param	string		$searchWord: the search phrase a user is looking for e.g. "results 2010"
+	 * @return	array		an array with each search word and operator 
+	 */
 	function get_searchWordArray ($searchWord) {
 		$operator_translate_table = Array (		// case-sensitive. Defines the words, which will be operators between words
 			$this->conf['filterView.']['multipleSearchWords.']['operator_translate_table.']['AND.'],
@@ -1383,7 +1364,12 @@ require_once(PATH_tslib.'class.tslib_content.php');
 		$search->register_and_explode_search_string($searchWord);
 		return $search->sword_array;
 	}
-	
+
+	/**
+	 * returns a sql where statement, for looking only for files with permission
+	 *
+	 * @return	string		String with a SQL Where statement 
+	 */
 	function getOnlyFilesWithPermissionSQL () {
 		return " AND NOT ((tx_dam.fe_group='' OR 	tx_dam.fe_group IS NULL	OR 	tx_dam.fe_group='0' 
 	OR (
@@ -1396,6 +1382,49 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			OR tx_dam.fe_group='-1'
 			)
 		))";
+	}
+
+	
+	/**
+	 * returns a sql where statement, for looking only for files with permission
+	 *
+	 * @return	string		String with a SQL Where statement 
+	 */
+	function getDownloadAccessSQL () {
+		$where="(		tx_dam_cat.tx_damtree_fe_groups_downloadaccess='' 
+				OR 	tx_dam_cat.tx_damtree_fe_groups_downloadaccess IS NULL 
+				OR 	tx_dam_cat.tx_damtree_fe_groups_downloadaccess='0' 
+			OR (
+					tx_dam_cat.tx_damtree_fe_groups_downloadaccess LIKE '%,0,%' 
+				OR	tx_dam_cat.tx_damtree_fe_groups_downloadaccess LIKE '0,%' 
+				OR 	tx_dam_cat.tx_damtree_fe_groups_downloadaccess LIKE '%,0' 
+				OR	tx_dam_cat.tx_damtree_fe_groups_downloadaccess='0') 
+			";
+		
+		if (!is_array($this->feuser->user)) {
+				// no user is logged in 
+			$where.=
+			" OR
+				(	tx_dam_cat.tx_damtree_fe_groups_downloadaccess LIKE '%,-1,%' 
+				OR 	tx_dam_cat.tx_damtree_fe_groups_downloadaccess LIKE '-1,%' 
+				OR 	tx_dam_cat.tx_damtree_fe_groups_downloadaccess LIKE '%,-1' 
+				OR 	tx_dam_cat.tx_damtree_fe_groups_downloadaccess='-1'
+				)";	
+		}
+		else {
+				// get the user groups of the current user
+			$usergroups = $this->feuser->groupData['uid'];
+			foreach ($usergroups as $group) {
+				$where.= 
+				" OR
+					(	tx_dam_cat.tx_damtree_fe_groups_downloadaccess LIKE '%,".$group.",%' 
+					OR 	tx_dam_cat.tx_damtree_fe_groups_downloadaccess LIKE '".$group.",%' 
+					OR 	tx_dam_cat.tx_damtree_fe_groups_downloadaccess LIKE '%,".$group."' 
+					OR 	tx_dam_cat.tx_damtree_fe_groups_downloadaccess='".$group."'
+					)";	
+			}
+		}
+		return $where.=')';
 	}
 }
 
