@@ -485,17 +485,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		if ($this->piVars['level0']){
 			do {
 				if (intval($this->piVars['level'.intval($i)])==0) {
-					$this->internal['drilldown']['level'.intval($i)]=0;
+					#$this->internal['drilldown']['level'.intval($i)]=0;
 					break;
 				}
 				$this->internal['drilldown']['level'.intval($i)] = intval($this->piVars['level'.intval($i)]);
 				$i++;
 			} while ($this->piVars['level'.intval($i)]);
 		}
-		# @TODO check to delete
-			#// check if we are still on the same page. If we are at a different page,
-		#$incommingPID = $GLOBALS['TSFE']->id;
-
 		// Selection Mode
 		$this->internal['selectionMode'] = intval($this->piVars['selectionMode']);
 
@@ -805,7 +801,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 			else {
 				end ($this->internal['drilldown']);
-				while (! current($this->internal['drilldown']) && !current($this->internal['drilldown']) === FALSE) prev($this->internal['drilldown']);
+				#while (! current($this->internal['drilldown']) && !current($this->internal['drilldown']) === FALSE) prev($this->internal['drilldown']);
 				$catID = current($this->internal['drilldown']);
 			}
 			
