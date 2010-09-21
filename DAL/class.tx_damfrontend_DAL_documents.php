@@ -367,7 +367,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 		foreach ($this->categories as $cat) {
 			if (!empty($cat) ) $hasCategories=true;
 		}
-		
+		$checkCats=true;
 		if ($hasCategories===true) {
 
 			/*
@@ -457,7 +457,9 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			else {
 				// query without using categories
 				$from=$this->docTable;
+				$checkCats=false;
 				if ($this->conf['searchAllCats_allowedCats']) {
+					$checkCats=true;
 					// limit the search in categories to only allowed categories
 					 $filter .='AND ('.$this->catTable.'.uid IN ('. $this->conf['searchAllCats_allowedCats'] .'))' . $cObj->enableFields($this->catTable);;
 					 $from = $this->docTable.' INNER JOIN '.$this->mm_Table.' ON '.$this->mm_Table.'.uid_local  = '.$this->docTable.'.uid INNER JOIN '.$this->catTable.' ON '.$this->mm_Table.'.uid_foreign = '.$this->catTable.'.uid';
@@ -544,9 +546,11 @@ require_once(PATH_tslib.'class.tslib_content.php');
 		$whereAccess =$where;
 			// get the download access list
 		$whereAccess =$where . ' AND ' .  $this->getDownloadAccessSQL();
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tx_dam.uid, tx_dam_cat.tx_damtree_fe_groups_downloadaccess', $from, $whereAccess,'',$this->orderBy);
-		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			$uidsAllowedForDownload[]=$row['uid'];
+		if ($checkCats) {
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tx_dam.uid, tx_dam_cat.tx_damtree_fe_groups_downloadaccess', $from, $whereAccess,'',$this->orderBy);
+			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+				$uidsAllowedForDownload[]=$row['uid'];
+			}
 		}
 			// executing the final query and convert the results into an array
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where,'',$this->orderBy,$startRecord.','.$listLength);
@@ -571,9 +575,17 @@ require_once(PATH_tslib.'class.tslib_content.php');
 				$row = tx_dam_db::getRecordOverlay('tx_dam', $row, $conf);			
 			}
 			
+			if ($checkCats) {
 				// check if user is allowed to download a file
-			if (in_array($row['uid'],$uidsAllowedForDownload)) {
-				$row['allowDownload']=1;	
+				if (in_array($row['uid'],$uidsAllowedForDownload)) {
+					$row['allowDownload']=1;	
+				}
+				else {
+					$row['allowDownload']=0;	
+				}
+			}
+			else {
+					$row['allowDownload']=1;				
 			}
 				
 				//add a delete information
@@ -1422,7 +1434,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 		$where="  NOT (tx_dam_cat.fe_group='' OR tx_dam_cat.fe_group IS NULL OR tx_dam_cat.fe_group='0') 
 				 AND NOT (tx_dam_cat.fe_group LIKE '%,-2,%' OR tx_dam_cat.fe_group LIKE '-2,%' OR tx_dam_cat.fe_group LIKE '%,-2' OR tx_dam_cat.fe_group='-2') ";
 
-		if (!is_array($this->feuser->user)) {
+		if (is_array($this->feuser->user)) {
 				// get the user groups of the current user
 			$usergroups = $this->feuser->groupData['uid'];
 			foreach ($usergroups as $group) {
