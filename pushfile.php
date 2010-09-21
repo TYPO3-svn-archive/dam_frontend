@@ -35,8 +35,8 @@ require_once(PATH_t3lib.'class.t3lib_div.php');
 require_once(PATH_tslib.'class.tslib_gifbuilder.php');
 
 $userObj = tslib_eidtools::initFeUser(); // Initialize FE user object
-$GLOBALS['TSFE']->fe_user = $userObj;
 $userObj->fetchGroupData();
+$GLOBALS['TSFE']->fe_user = $userObj;
 
 tslib_eidtools::connectDB();
 
@@ -262,6 +262,7 @@ if (is_array($post) && count($post) > 0) {
 		if (!$filesize) {
 			return false;
 		}
+		$download = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.']['forceDownloadForFiles'];
 		if ($download==1) {
 			header("Content-type: application/force-download");
 			header("Content-disposition: attachment; filename=\"".rawurlencode($filename)."\"");

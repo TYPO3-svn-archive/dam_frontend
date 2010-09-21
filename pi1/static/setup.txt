@@ -21,6 +21,9 @@ plugin.tx_damfrontend_pi1 {
 		#if more than one tree element at a page is use, then a AND selection is used between the trees
 	useTreeAndSelection = 1 
 	
+		# force download or display in file in the browser
+	forceDownloadForFiles=1
+	
 	categoryTree {
 		preSelectChildCategories = 0
 		showHiddenCategories = 0
@@ -175,7 +178,9 @@ plugin.tx_damfrontend_pi1 {
 		}
 		crdate_age.stdWrap.age = 1
 		date_cr < .crdate
+		#title.typolink.target= _blank
 		title.typolink.parameter.data = TSFE:id
+		
 		title.typolink.parameter.if.value=1
 		title.typolink.parameter.if.equals.field=allowDownload
   		title.typolink.additionalParams = &eID=dam_frontend_push&docID={field:uid}
