@@ -358,7 +358,7 @@ plugin.tx_damfrontend_pi1 {
 	# configuration for subpart ###FILELIST###
 	filelist < .renderFields
 	filelist {
-		useLanguageOverlay = 1
+		useLanguageOverlay = 0
 		
 		# typolink : formurl action
 		form_url.parameter.data = TSFE:id

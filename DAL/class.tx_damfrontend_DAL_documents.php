@@ -543,6 +543,10 @@ require_once(PATH_tslib.'class.tslib_content.php');
 		if ($this->conf['latestLimit']>0 ){
 			if ($endRecord > $this->conf['latestLimit']) $endRecord = $this->conf['latestLimit'] ;
 		}
+		
+			// show only records of the live workspace
+		$where .= ' AND NOT tx_dam.pid=-1 AND tx_dam.t3ver_state!=1';
+		
 		$whereAccess =$where;
 			// get the download access list
 		$whereAccess =$where . ' AND ' .  $this->getDownloadAccessSQL();
