@@ -21,10 +21,6 @@ plugin.tx_damfrontend_pi1 {
 		#if more than one tree element at a page is use, then a AND selection is used between the trees
 	useTreeAndSelection = 1 
 	
-	performance {
-		useSimplePageBrowser=1
-		checkDownloadRight=1
-	}
 	categoryTree {
 		preSelectChildCategories = 0
 		showHiddenCategories = 0
@@ -357,6 +353,8 @@ plugin.tx_damfrontend_pi1 {
 	# configuration for subpart ###FILELIST###
 	filelist < .renderFields
 	filelist {
+		useLanguageOverlay = 1
+		
 		# typolink : formurl action
 		form_url.parameter.data = TSFE:id
 		form_url.addQueryString = 1
@@ -503,7 +501,7 @@ plugin.tx_damfrontend_pi1 {
 		security_options {
 			showOnlyFilesWithPermission=0
 			deleteFilesOfDeletedRecords = 1
-			checkCategoriesByRootline=0
+			checkAllRelatedCategories=1
 			# how long is link with a hash valid (in seconds)
 			hashValidity = 604800
 			checkOutFolders {

@@ -317,7 +317,13 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			$where = 'uid ='.$docID;
 			$from = $this->docTable;
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where);
-			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);				
+			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);	
+			if ($this->conf['filelist.']['useLanguageOverlay']==1) {
+				$langConf['sys_language_uid'] = $GLOBALS['TSFE']->sys_language_uid;
+				$row['pid']=tx_dam_db::getPid();
+				$row = tx_dam_db::getRecordOverlay('tx_dam', $row, $conf);			
+			}
+			
 			return $row;
 		}
 
@@ -434,20 +440,33 @@ require_once(PATH_tslib.'class.tslib_content.php');
 					}
 					$z++;
 				}
+				
 				if  ($this->conf['useTreeAndSelection'] == 0) {
 					$where = '('.$where.')'. $filter;
 				}
 				
 				// adding access information for categories
 				$where .= $cObj->enableFields($this->catTable);
+				
+				// limit the categories. Hide those categories, a use has not access to it
+				if ($this->conf['filelist.']['security_options.']['checkAllRelatedCategories']==1) {
+					$resctrictedUids = $this->getCategoriesWithNoAccess();
+					if ($resctrictedUids)	$where .= ' AND NOT tx_dam_cat.uid IN ('.$resctrictedUids.')';
+				}
 			}
 			else {
 				// query without using categories
 				$from=$this->docTable;
 				if ($this->conf['searchAllCats_allowedCats']) {
-					// limit the search in categories
+					// limit the search in categories to only allowed categories
 					 $filter .='AND ('.$this->catTable.'.uid IN ('. $this->conf['searchAllCats_allowedCats'] .'))' . $cObj->enableFields($this->catTable);;
 					 $from = $this->docTable.' INNER JOIN '.$this->mm_Table.' ON '.$this->mm_Table.'.uid_local  = '.$this->docTable.'.uid INNER JOIN '.$this->catTable.' ON '.$this->mm_Table.'.uid_foreign = '.$this->catTable.'.uid';
+					
+					// limit the categories. Hide those categories, a use has not access to it
+					if ($this->conf['filelist.']['security_options.']['checkAllRelatedCategories']==1) {
+						$resctrictedUids = $this->getCategoriesWithNoAccess();
+						if ($resctrictedUids)	$filter .= ' AND NOT tx_dam_cat.uid IN ('.$resctrictedUids.')';
+					}
 				} 
 				$filter .= $this->additionalFilter;
 				$select='*';
@@ -458,9 +477,9 @@ require_once(PATH_tslib.'class.tslib_content.php');
 					// if latest days is set the
 					if (intval($this->conf['latestDays'])>0) {
 						$d = intval($this->conf['latestDays']);
-						$now  = time() - (60*60*24*$d);
+						$dateLimit  = time() - (60*60*24*$d);
 						
-						$where.= ' AND '.$this->docTable.'.'.$this->conf['latestField'] .' > '.$now ;
+						$where.= ' AND '.$this->docTable.'.'.$this->conf['latestField'] .' > '.$dateLimit ;
 						$this->conf['latestLimit']=0;
 					}  
 					else {
@@ -525,17 +544,19 @@ require_once(PATH_tslib.'class.tslib_content.php');
 		$whereAccess =$where;
 			// get the download access list
 		$whereAccess =$where . ' AND ' .  $this->getDownloadAccessSQL();
-		t3lib_div::debug('$whereAccess');
-		t3lib_div::debug($whereAccess);
-		#t3lib_div::debug($select);
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tx_dam.uid, tx_dam_cat.tx_damtree_fe_groups_downloadaccess', $from, $whereAccess,'',$this->orderBy);
 		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			$uidsAllowedForDownload[]=array($row['uid'],$row['tx_damtree_fe_groups_downloadaccess'] );
+			$uidsAllowedForDownload[]=$row['uid'];
 		}
-		
 			// executing the final query and convert the results into an array
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where,'',$this->orderBy,$startRecord.','.$listLength);
 		$result = array();
+		
+		if ($this->conf['filelist.']['useLanguageOverlay']==1) {
+				$langConf['sys_language_uid'] = $GLOBALS['TSFE']->sys_language_uid;
+				$damPID=tx_dam_db::getPid();
+		}
+		
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			if ($this->conf['enableDebug']==1) {
 				if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['rows']==1)		t3lib_div::debug($row);;
@@ -545,10 +566,15 @@ require_once(PATH_tslib.'class.tslib_content.php');
 				if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['rowsAfterAccessCheck']==1)		t3lib_div::debug($row);;
 			}
 		
+			if ($this->conf['filelist.']['useLanguageOverlay']==1) {
+				$row['pid']=$damPID;
+				$row = tx_dam_db::getRecordOverlay('tx_dam', $row, $conf);			
+			}
+			
 				// check if user is allowed to download a file
-			// FIXME 
-			#$uidsAllowedForDownload
+			if (in_array($row['uid'],$uidsAllowedForDownload)) {
 				$row['allowDownload']=1;	
+			}
 				
 				//add a delete information
 			if ($this->checkEditRights($row)===TRUE){
@@ -556,12 +582,13 @@ require_once(PATH_tslib.'class.tslib_content.php');
 				$row['allowEdit']=1;
 			} 
 			
+			
 			$result[] = $row;
 
 		}
 		
 		$this->resultCount = $resultCounter;
-		t3lib_div::debug($uidsAllowedForDownload);
+		#t3lib_div::debug($uidsAllowedForDownload);
 		return $result;
 	}
 
@@ -1384,6 +1411,41 @@ require_once(PATH_tslib.'class.tslib_content.php');
 		))";
 	}
 
+	/**
+	 * returns a list of uids, a fe_user has no read access
+	 *
+	 * @return	string / boolean 	String with uids commaseparated / false in case of no cats
+	 */
+	function getCategoriesWithNoAccess () {
+		$select = 'uid';
+		$from	= 'tx_dam_cat';
+		$where="  NOT (tx_dam_cat.fe_group='' OR tx_dam_cat.fe_group IS NULL OR tx_dam_cat.fe_group='0') 
+				 AND NOT (tx_dam_cat.fe_group LIKE '%,-2,%' OR tx_dam_cat.fe_group LIKE '-2,%' OR tx_dam_cat.fe_group LIKE '%,-2' OR tx_dam_cat.fe_group='-2') ";
+
+		if (!is_array($this->feuser->user)) {
+				// get the user groups of the current user
+			$usergroups = $this->feuser->groupData['uid'];
+			foreach ($usergroups as $group) {
+				$where.= 
+				" AND NOT
+					(	tx_dam_cat.fe_group LIKE '%,".$group.",%' 
+					OR 	tx_dam_cat.fe_group LIKE '".$group.",%' 
+					OR 	tx_dam_cat.fe_group LIKE '%,".$group."' 
+					OR 	tx_dam_cat.fe_group='".$group."'
+					)";	
+			}
+		}
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select,$from,$where);
+		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+			$result[] = $row['uid'];
+		}
+		if ($result) {
+			return  implode(',',$result);
+		}
+		else {
+			return false;
+		}
+	}
 	
 	/**
 	 * returns a sql where statement, for looking only for files with permission
