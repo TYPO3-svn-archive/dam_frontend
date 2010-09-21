@@ -524,10 +524,10 @@ require_once(PATH_tslib.'class.tslib_content.php');
 		}
 		$whereAccess =$where;
 			// get the download access list
-		#$whereAccess =$where . ' AND ' .  $this->getDownloadAccessSQL();
+		$whereAccess =$where . ' AND ' .  $this->getDownloadAccessSQL();
 		t3lib_div::debug('$whereAccess');
 		t3lib_div::debug($whereAccess);
-		t3lib_div::debug($select);
+		#t3lib_div::debug($select);
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('tx_dam.uid, tx_dam_cat.tx_damtree_fe_groups_downloadaccess', $from, $whereAccess,'',$this->orderBy);
 		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			$uidsAllowedForDownload[]=array($row['uid'],$row['tx_damtree_fe_groups_downloadaccess'] );

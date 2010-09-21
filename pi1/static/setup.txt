@@ -982,6 +982,7 @@ plugin.tx_damfrontend_pi1 {
 	)
 	debug {
 		tx_damfrontend_DAL_documents.getDocumentList.SQL=0
+		tx_damfrontend_DAL_documents.getDocumentList.conf=0
 		tx_damfrontend_DAL_documents.getDocumentList.rows=0
 		tx_damfrontend_DAL_documents.getDocumentList.rowsAfterAccessCheck=0
 		tx_damfrontend_catlist.getCatSelection=0	
