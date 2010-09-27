@@ -59,6 +59,7 @@
 
 require_once(t3lib_extMgm::extPath('dam_frontend').'/DAL/class.tx_damfrontend_DAL_categories.php');
 require_once(t3lib_extMgm::extPath('dam_frontend').'/DAL/class.tx_damfrontend_baseSessionData.php');
+require_once(PATH_tslib.'class.tslib_content.php');
 
 class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 
@@ -201,10 +202,13 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 			}
 			else {
 				$returnArr=array();
+				$cObj = t3lib_div::makeInstance('tslib_cObj');
+				$cObj->start();
 				foreach ($ar as $key=>$value) {
 					$FIELDS = 'pid';
 					$TABLE = 'tt_content';
 					$WHERE = 'uid = '.$key ;
+					$WHERE .= $cObj->enableFields('tt_content');
 					$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($FIELDS,$TABLE,$WHERE);
 					while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 						// TODO check for language overlay

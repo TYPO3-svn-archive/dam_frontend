@@ -43,6 +43,7 @@
  */
 
 require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
+require_once(PATH_tslib.'class.tslib_content.php');
 
 /**
  * [CLASS/FUNCTION INDEX of SCRIPT]
@@ -73,7 +74,7 @@ class tx_damfrontend_DAL_categories {
 	var $docTable = 'tx_dam';
 	var $mm_Table = 'tx_dam_mm_cat';
 	//TODO add support for start stop field
-	var $filter = ' AND deleted = 0 AND hidden = 0';
+	var $filter = '';
 	// array with all availible access relations
 	var $relations = array(
 		'1' => 'readaccess',
@@ -101,6 +102,9 @@ class tx_damfrontend_DAL_categories {
 			$SELECT = '*';
 			$FROM = $this->catTable;
 			$WHERE = 'uid = '.$catID . $this->filter;
+			$cObj = t3lib_div::makeInstance('tslib_cObj');
+			$cObj->start();
+			$WHERE .= $cObj->enableFields('tx_dam_cat');
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE);
 			$record =  $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 			return $record;
@@ -155,6 +159,9 @@ class tx_damfrontend_DAL_categories {
 				$SELECT = 'uid';
 				$FROM = $this->catTable;
 				$WHERE = 'parent_id = '.$catID.$this->filter . ' AND sys_language_uid = 0';
+				$cObj = t3lib_div::makeInstance('tslib_cObj');
+				$cObj->start();
+				$WHERE .= $cObj->enableFields('tx_dam_cat');
 				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE);
 
 				// adding new category records to the table
@@ -423,7 +430,7 @@ class tx_damfrontend_DAL_categories {
 		}
 		
 		
-/**
+	/**
 	 * gets all child categories of an existing category
 	 *
 	 * @param	int		$catID category to check
