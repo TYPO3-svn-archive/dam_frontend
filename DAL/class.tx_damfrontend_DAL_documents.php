@@ -279,6 +279,10 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			else {
 				$catlist = $this->getCategoriesByDoc($docID);
 			}
+			
+			// FIXME
+			// if relID ==1 check access field of cats instead
+			
 			// accumulates all groups
 			$grouparray = array();
 			foreach ($catlist as $category)
@@ -525,7 +529,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 		
 			//Debug statements
 		if ($this->conf['enableDebug']==1) {
-			if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['SQL']==1)		t3lib_div::debug('SELECT ' . $select . ' FROM ' . $from . ' WHERE '. $where . ' ORDER BY '  .$this->orderBy . ' LIMIT ('. $startRecord.','.$listLength .')');
+			if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['SQL']==1)		t3lib_div::debug('SELECT ' . $select . ' FROM ' . $from . ' WHERE '. $where . ' ORDER BY '  .$this->orderBy . ' LIMIT '. $startRecord.','.$listLength);
 			if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['conf']==1)			t3lib_div::debug($this->conf);
 		}
 			
@@ -545,7 +549,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 		}
 		
 			// show only records of the live workspace
-		$where .= ' AND NOT tx_dam.pid=-1 AND tx_dam.t3ver_state!=1';
+		$where .= ' AND tx_dam.pid!=-1 AND tx_dam.t3ver_state!=1';
 		
 		$whereAccess =$where;
 			// get the download access list
@@ -604,7 +608,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 		}
 		
 		$this->resultCount = $resultCounter;
-		#t3lib_div::debug($uidsAllowedForDownload);
+		#t3lib_div::debug($result);
 		return $result;
 	}
 
