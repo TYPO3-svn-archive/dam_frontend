@@ -224,8 +224,8 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 				$markerArray['###'.strtoupper($key).'_HEADER###'] = $this->cObj->stdWrap($this->pi_linkTP_keepPiVars($this->cObj->cObjGetSingle($this->conf['filelist.']['sortlinks.'][$key], $this->conf['filelist.']['sortlinks.'][$key.'.'])),$this->conf['filelist.']['sortlinks.'][$key.'.'][$tsWrap.'.']);
 					// todo unset kills the whole piVars need to find a more elegant way to deal with it
 				unset ($this->piVars);
-				$this->piVars = $tmpPiVars;
 			}
+			$this->piVars = $tmpPiVars;
  		}
 
  		foreach (array('FILELIST_BATCH_SELECT', 'FILELIST_BATCH_GO', 'FILELIST_BATCH_CREATEZIPFILE', 'FILELIST_BATCH_SENDASMAIL', 'FILELIST_BATCH_SENDZIPPEDFILESASMAIL', 'FILELIST_BATCH_SENDFILELINK', 'FILELIST_BATCH_SENDZIPPEDFILELINK', 'FILENAME_HEADER', 'FILENAME_HEADER', 'FILETYPE_HEADER', 'CR_DATE_HEADER') as $label) {
@@ -520,7 +520,9 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 					if ($this->conf['filelist.']['browselink.']['browselinkUsePrevNext']==1) {
 							// previous link
 						if ($z>0) {
-							$this->piVars['pointer'] = ($z-1).'#listAnchor';;
+							// TODO add cObj
+							#$this->piVars['pointer'] = ($z-1).'#listAnchor';;
+							$this->piVars['pointer'] = ($z-1);
 							$listElemsPrevious =  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP_keepPiVars($this->pi_getLL('BROWSELINK_PREV')),$this->conf['filelist.']['browselink.']));
 						}
 						else {
@@ -532,14 +534,18 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 							$listElemsNext =  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_getLL('BROWSELINK_NEXT'),$this->conf['filelist.']['browselink.']));
 						}
 						else {
-							$this->piVars['pointer'] = ($z+1).'#listAnchor';;
+							// TODO add cObj
+							#$this->piVars['pointer'] = ($z+1).'#listAnchor';;
+							$this->piVars['pointer'] = ($z+1);
 							$listElemsNext =  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP_keepPiVars($this->pi_getLL('BROWSELINK_NEXT')),$this->conf['filelist.']['browselink.']));
 						}
 					}
 				}
 				else {
 						// link to other pages
-					$this->piVars['pointer'] = $z.'#listAnchor';;
+							// TODO add cObj
+						#					$this->piVars['pointer'] = $z.'#listAnchor';;
+					$this->piVars['pointer'] = $z;
 					$listElems .=  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP_keepPiVars($z+1,$this->piVars),$this->conf['filelist.']['browselink.']));
 				}
 			}
