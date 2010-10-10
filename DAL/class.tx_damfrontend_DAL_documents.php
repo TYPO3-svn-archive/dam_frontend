@@ -360,9 +360,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 	 */
 	function getDocumentList($userUID=0) {
 			
-		$cObj = t3lib_div::makeInstance('tslib_cObj');
-		$cObj->start();
-		$filter = $cObj->enableFields('tx_dam');
+		$filter =  tslib_cObj::enableFields('tx_dam');
 		if(!is_array($this->categories)) {
 			if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getDcoumentList: for the this->categories is no array. Given value was:' .$this->categories, 'dam_frontend',3);
 		}
@@ -450,7 +448,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 				}
 				
 				// adding access information for categories
-				$where .= $cObj->enableFields($this->catTable);
+				$where .=  tslib_cObj::enableFields($this->catTable);
 				
 				// limit the categories. Hide those categories, a use has not access to it
 				if ($this->conf['filelist.']['security_options.']['checkAllRelatedCategories']==1) {
@@ -532,8 +530,11 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['SQL']==1)		t3lib_div::debug('SELECT ' . $select . ' FROM ' . $from . ' WHERE '. $where . ' ORDER BY '  .$this->orderBy . ' LIMIT '. $startRecord.','.$listLength);
 			if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['conf']==1)			t3lib_div::debug($this->conf);
 		}
-			
-			// get result counter
+
+		// do not select missing files
+		$where   .=" AND tx_dam.file_status != 255";
+		
+		// get result counter
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('DISTINCT tx_dam.uid', $from, $where,'',$this->orderBy);
 		
 			// TODO check why count does not work?

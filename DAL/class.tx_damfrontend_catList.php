@@ -202,13 +202,11 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 			}
 			else {
 				$returnArr=array();
-				$cObj = t3lib_div::makeInstance('tslib_cObj');
-				$cObj->start();
 				foreach ($ar as $key=>$value) {
 					$FIELDS = 'pid';
 					$TABLE = 'tt_content';
 					$WHERE = 'uid = '.$key ;
-					$WHERE .= $cObj->enableFields('tt_content');
+					$WHERE .= tslib_cObj::enableFields('tt_content');
 					$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($FIELDS,$TABLE,$WHERE);
 					while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 						// TODO check for language overlay

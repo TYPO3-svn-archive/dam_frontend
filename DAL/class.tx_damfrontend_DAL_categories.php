@@ -102,9 +102,7 @@ class tx_damfrontend_DAL_categories {
 			$SELECT = '*';
 			$FROM = $this->catTable;
 			$WHERE = 'uid = '.$catID . $this->filter;
-			$cObj = t3lib_div::makeInstance('tslib_cObj');
-			$cObj->start();
-			$WHERE .= $cObj->enableFields('tx_dam_cat');
+			$WHERE .=  tslib_cObj::enableFields('tx_dam_cat');
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE);
 			$record =  $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 			return $record;
@@ -159,9 +157,7 @@ class tx_damfrontend_DAL_categories {
 				$SELECT = 'uid';
 				$FROM = $this->catTable;
 				$WHERE = 'parent_id = '.$catID.$this->filter . ' AND sys_language_uid = 0';
-				$cObj = t3lib_div::makeInstance('tslib_cObj');
-				$cObj->start();
-				$WHERE .= $cObj->enableFields('tx_dam_cat');
+				$WHERE .=  tslib_cObj::enableFields('tx_dam_cat');
 				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE);
 
 				// adding new category records to the table
