@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007 Martin Baum <martin_baum@gmx.net>
+*  (c) 2007-2010 Stefan Busemann <info@in2code.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -31,7 +31,7 @@ require_once(PATH_t3lib . 'class.t3lib_iconworks.php');
  * Plugin 'DAM Frontend Filelist' for the 'dam_frontend' extension.
  * based on dam_downloadlist by Davide Principi <d.principi@provincia.ps.it
  *
- * @author	Stefan Busemann <typo3in2form.com>
+ * @author	Stefan Busemann <info@in2code.de>
  * @package	TYPO3
  * @subpackage	tx_damfrontend
  */
@@ -184,16 +184,23 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 	function selectDamRecords() {
 		$dbh = $GLOBALS['TYPO3_DB'];
 
+		// define language overlay
+		$conf = array(
+			'sys_language_uid' => $this->sys_language_uid,
+			'lovl_mode' => ''
+		);
+		
 		// fetch DAM UIDs from tt_content -
 		$this->damUidList = t3lib_div::intExplode(',', $this->cObj->data[$this->fieldDamUidList]);
 
-		$fieldList = array('uid','title', 'ident', 'description', 'file_path', 'file_name', 'file_size', 'file_mime_type', 'file_mime_subtype', 'file_type', 'file_mtime','file_dl_name','keywords','description','alt_text','abstract','language','publisher','copyright','date_cr','date_mod','tx_damfrontend_feuser_upload');
+		$fieldList = array('t3ver_id', 't3ver_state', 't3ver_wsid', 't3ver_count', 'ident', 'description', 'keywords', 'alt_text', 'abstract', 'language', 'publisher', 'copyright', 'date_cr', 'date_mod', 'tx_damfrontend_feuser_upload');
 		
 		$damTableName = 'tx_dam';
 		$whereClause = 'uid IN (' . implode(', ', $this->damUidList) . ')' .
+			'  AND sys_language_uid=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($this->sys_language_uid, 'tx_dam') .
 			t3lib_BEfunc::deleteClause($damTableName) . $this->cObj->enableFields($damTableName);
 
-		$fields = 'pid,' . t3lib_BEfunc::getCommonSelectFields($damTableName, '') . ',' . implode(', ', $fieldList);
+		$fields = tx_dam_db::getMetaInfoFieldList(false, $fieldList);
 
 		$resObj = $dbh->exec_SELECTquery($fields,
 										 $damTableName,
@@ -209,6 +216,7 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 			if (!array_key_exists($groupKey, $rows)) {
 		  		$rows[$groupKey] = array();
 			}
+			$record = tx_dam_db::getRecordOverlay('tx_dam', $record, $conf);
 			$rows[$groupKey][$record['uid']] = $record;
 			$rows[$record['uid']] = $groupKey;
 		  }
@@ -216,7 +224,8 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 		} else {
 		  // plain procedure
 		  while ($record = $dbh->sql_fetch_assoc($resObj)) {
-			$rows['group_' . $record['uid']] = array( $record['uid'] => $record);
+			$record = tx_dam_db::getRecordOverlay('tx_dam', $record, $conf);
+		  	$rows['group_' . $record['uid']] = array( $record['uid'] => $record);
 		  }
 		}
 
