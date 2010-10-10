@@ -132,10 +132,10 @@ $TCA["tx_damfrontend_filterStates"] = Array (
 		"fe_admin_fieldList" => "hidden, title, description, from, to, searchword, filetypes, categories",
 	)
 );
-
+// FIXME Label for that field
 $TCA['tx_damfrontend_usage'] = array (
 	'ctrl' => array (
-		'title'     => 'LLL:EXT:dam_frontend_availability/locallang_db.xml:tx_damfrontendavailability_usage',		
+		'title'     => 'Usage (Frantend)',		
 		'label'     => 'uid',	
 		'tstamp'    => 'tstamp',
 		'crdate'    => 'crdate',
