@@ -533,7 +533,10 @@ require_once(PATH_tslib.'class.tslib_content.php');
 
 		// do not select missing files
 		$where   .=" AND tx_dam.file_status != 255";
-		
+
+		// show only records of the live workspace
+		$where .= ' AND tx_dam.pid!=-1 AND tx_dam.t3ver_state!=1';
+				
 		// get result counter
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('DISTINCT tx_dam.uid', $from, $where,'',$this->orderBy);
 		
@@ -549,9 +552,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			if ($endRecord > $this->conf['latestLimit']) $endRecord = $this->conf['latestLimit'] ;
 		}
 		
-			// show only records of the live workspace
-		$where .= ' AND tx_dam.pid!=-1 AND tx_dam.t3ver_state!=1';
-		
+	
 		$whereAccess =$where;
 			// get the download access list
 		$whereAccess =$where . ' AND ' .  $this->getDownloadAccessSQL();
