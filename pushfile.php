@@ -99,13 +99,16 @@ if (is_array($post) && count($post) > 0) {
 		$hash =  t3lib_div::GPvar('dfhash');
 		$valid =  intval(t3lib_div::GPvar('valid'));
 		$feUserID =  intval(t3lib_div::GPvar('feuid'));
-		if (!checkHash($docID,$valid,$feuserID, $hash)) {
-			die('<h1>Sorry</h1><p>You do not have the right to download this file.');
-		}	
-		else {
-			if ($valid>time()) {	
-				die('<h1>Error</h1><p>This link is not valid anymore. Please request this download again.</p');
-			} 
+		
+		if (checkOutNecessary($doc['file_path'])){
+			if (!checkHash($docID,$valid,$feuserID, $hash)) {
+				die('<h1>Sorry</h1><p>You do not have the right to download this file.');
+			}	
+			else {
+				if ($valid>time()) {	
+					die('<h1>Error</h1><p>This link is not valid anymore. Please request this download again.</p');
+				} 
+			}
 		}
 		
 		// 	check if a user has access to the dam record / file
@@ -361,7 +364,7 @@ if (is_array($post) && count($post) > 0) {
 
 	
 	/**
-	 * checks if a hash is valid
+	 * checks if a checkout / hash download is necessary
 	 * 
 	 * @param	[path]		Path which should be cheeked
 	 * @param	[int]		$valid: string of additional parameters for the link
