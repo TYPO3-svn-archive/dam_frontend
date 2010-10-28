@@ -511,6 +511,21 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 		unset ($this->piVars['confirmDeleteUID']);
 		unset ($this->piVars['editUID']);
 		unset ($this->piVars['catEditUID']);
+				$param_array = array (
+					'tx_damfrontend_pi1[catPlus_Rec]' => null,
+					'tx_damfrontend_pi1[catPlus]' => null,
+					'tx_damfrontend_pi1[catMinus]' => null,
+					'tx_damfrontend_pi1[catMinus_Rec]' => null,
+					'tx_damfrontend_pi1[catAll]' => null,
+					'tx_damfrontend_pi1[catEquals]' => null,
+					'tx_damfrontend_pi1[editUID]' => null,
+					'tx_damfrontend_pi1[catEditUID]' => null
+				);
+		
+		$this->conf['filelist.']['browselink.']['typolink.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
+		
+		$cObj =  $this->cObj;
+		
 		if ($resultcount % $listLength==0) $noOfPages = $noOfPages-1+$limiter;
 
 			for ($z = 0; $z <= $noOfPages; $z++) {
@@ -520,33 +535,30 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 					if ($this->conf['filelist.']['browselink.']['browselinkUsePrevNext']==1) {
 							// previous link
 						if ($z>0) {
-							// TODO add cObj
-							#$this->piVars['pointer'] = ($z-1).'#listAnchor';;
-							$this->piVars['pointer'] = ($z-1);
-							$listElemsPrevious =  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP_keepPiVars($this->pi_getLL('BROWSELINK_PREV')),$this->conf['filelist.']['browselink.']));
+							$param_array['tx_damfrontend_pi1[pointer]'] =  ($z-1);
+							$this->conf['filelist.']['browselinkPrev.']['typolink.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
+							$listElemsPrevious .=  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $cObj->stdWrap ($z+1,$this->conf['filelist.']['browselinkPrev.']));
 						}
 						else {
-								//we are the the last first, so show only the label
-							$listElemsPrevious =  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_getLL('BROWSELINK_PREV'),$this->conf['filelist.']['browselink.']));
+								//we are the first, so show only the label
+							$listElemsPrevious =  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_getLL('BROWSELINK_PREV'),$this->conf['filelist.']['browselinkFirst.']));
 						}
 						if ($z==$noOfPages) {
 								//we are the the last page, so show only the label
 							$listElemsNext =  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_getLL('BROWSELINK_NEXT'),$this->conf['filelist.']['browselink.']));
 						}
 						else {
-							// TODO add cObj
-							#$this->piVars['pointer'] = ($z+1).'#listAnchor';;
-							$this->piVars['pointer'] = ($z+1);
-							$listElemsNext =  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP_keepPiVars($this->pi_getLL('BROWSELINK_NEXT')),$this->conf['filelist.']['browselink.']));
+							$param_array['tx_damfrontend_pi1[pointer]'] =  ($z+1);
+							$this->conf['filelist.']['browselinkNext.']['typolink.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
+							$listElemsNext .=  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $cObj->stdWrap ($z+1,$this->conf['filelist.']['browselinkNext.']));							
 						}
 					}
 				}
 				else {
-						// link to other pages
-							// TODO add cObj
-						#					$this->piVars['pointer'] = $z.'#listAnchor';;
-					$this->piVars['pointer'] = $z;
-					$listElems .=  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_linkTP_keepPiVars($z+1,$this->piVars),$this->conf['filelist.']['browselink.']));
+						// link to other result pages
+					$param_array['tx_damfrontend_pi1[pointer]'] = $z;
+					$this->conf['filelist.']['browselink.']['typolink.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
+					$listElems .=  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $cObj->stdWrap ($z+1,$this->conf['filelist.']['browselink.']));
 				}
 			}
 			$listElems = $listElemsPrevious .$listElems .$listElemsNext;

@@ -513,10 +513,27 @@ plugin.tx_damfrontend_pi1 {
 		browselink {
 			browselinkUsePrevNext = 1
 			#wrap around the whole browselinks
-			resultList.wrap = |
+			resultList.wrap = <a name="test"></a>|
 			#wrap for a single browse link e.g. 1, 2, ...
 			wrap= |
+			typolink.section = test
+			typolink.parameter.data = TSFE:id
+			
+			typolink.addQueryString = 1
+			typolink.parameter.insertData = 1
 		}
+		
+		browselinkPrev = TEXT
+		browselinkPrev.typolink.section = test
+		browselinkPrev.typolink.parameter.data = TSFE:id
+		browselinkPrev.data = LLL:EXT:dam_frontend/pi1/locallang.xml:BROWSELINK_PREV
+		
+		browselinkNext < .browselinkPrev
+		browselinkNext.data = LLL:EXT:dam_frontend/pi1/locallang.xml:BROWSELINK_NEXT
+		
+		browselinkLast.wrap  = |
+		browselinkFirst.wrap  = |
+		
 		browselinkCurrent.wrap= <span style="border: 1px solid black">|</span>
 		
 		fileDeleteSuccessMessage {
