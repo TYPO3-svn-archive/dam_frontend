@@ -276,7 +276,18 @@ if (is_array($post) && count($post) > 0) {
 		}
 		header("Content-Transfer-Encoding: Binary");
 		header("Content-length: ".$filesize);
-		readfile($file);
+		
+		// If it's a large file, readfile might not be able to do it in one go, so:
+		$chunksize = 1 * (1024 * 1024); // how many bytes per chunk
+		$handle = fopen($file, 'rb');
+		$buffer = '';
+		while (!feof($handle)) {
+			$buffer = fread($handle, $chunksize);
+			echo $buffer;
+			ob_flush();
+			flush();
+		}
+		fclose($handle);
 		exit();
 	}
 	
