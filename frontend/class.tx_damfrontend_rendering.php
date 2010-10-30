@@ -511,16 +511,14 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 		unset ($this->piVars['confirmDeleteUID']);
 		unset ($this->piVars['editUID']);
 		unset ($this->piVars['catEditUID']);
-				$param_array = array (
-					'tx_damfrontend_pi1[catPlus_Rec]' => null,
-					'tx_damfrontend_pi1[catPlus]' => null,
-					'tx_damfrontend_pi1[catMinus]' => null,
-					'tx_damfrontend_pi1[catMinus_Rec]' => null,
-					'tx_damfrontend_pi1[catAll]' => null,
-					'tx_damfrontend_pi1[catEquals]' => null,
-					'tx_damfrontend_pi1[editUID]' => null,
-					'tx_damfrontend_pi1[catEditUID]' => null
-				);
+		unset ($this->piVars['pointer']);
+		unset ($this->piVars['treeID']);
+		unset ($this->piVars['msg']);
+		$param_array = array();
+		foreach ($this->piVars as $piVar =>$value) {
+			$param_array['tx_damfrontend_pi1['.$piVar.']']=$value;
+		}
+	
 		
 		$this->conf['filelist.']['browselink.']['typolink.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
 		
@@ -545,7 +543,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 						}
 						if ($z==$noOfPages) {
 								//we are the the last page, so show only the label
-							$listElemsNext =  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_getLL('BROWSELINK_NEXT'),$this->conf['filelist.']['browselink.']));
+							$listElemsNext =  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $this->cObj->stdWrap ($this->pi_getLL('BROWSELINK_NEXT'),$this->conf['filelist.']['browselinkLast.']));
 						}
 						else {
 							$param_array['tx_damfrontend_pi1[pointer]'] =  ($z+1);
@@ -749,6 +747,9 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  				break;
  			case 'no_access':
  				$message = $this->pi_getLL('noAccessError');
+ 			case 'ERROR_STORE_FILE':
+ 				$message = $this->pi_getLL('ERROR_STORE_FILE');
+ 				break;
  			case 'custom':
  				$message = strip_tags($customMessage. '&nbsp;'. $customMessage2);
  				break;

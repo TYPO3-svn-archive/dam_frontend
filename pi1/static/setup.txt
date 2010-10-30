@@ -519,7 +519,7 @@ plugin.tx_damfrontend_pi1 {
 			typolink.section = test
 			typolink.parameter.data = TSFE:id
 			
-			typolink.addQueryString = 1
+			#typolink.addQueryString = 1
 			typolink.parameter.insertData = 1
 		}
 		
