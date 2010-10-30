@@ -463,7 +463,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 				if ($this->conf['searchAllCats_allowedCats']) {
 					$checkCats=true;
 					// limit the search in categories to only allowed categories
-					 $filter .='AND ('.$this->catTable.'.uid IN ('. $this->conf['searchAllCats_allowedCats'] .'))' . $cObj->enableFields($this->catTable);;
+					 $filter .='AND ('.$this->catTable.'.uid IN ('. $this->conf['searchAllCats_allowedCats'] .'))' . tslib_cObj::enableFields($this->catTable);
 					 $from = $this->docTable.' INNER JOIN '.$this->mm_Table.' ON '.$this->mm_Table.'.uid_local  = '.$this->docTable.'.uid INNER JOIN '.$this->catTable.' ON '.$this->mm_Table.'.uid_foreign = '.$this->catTable.'.uid';
 					
 					// limit the categories. Hide those categories, a use has not access to it
@@ -994,10 +994,11 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			list($purename,$type) = split('\.',$filename);
 			$newversion = $newDoc['tx_damfrontend_version'];
 			$new_filename = $purename.'_v'.$newversion.'.'.$filetype;
-				// copy the new file from temp dir to destionation dir with new version number
-			copy(PATH_site.$newDoc['file_path'].$newDoc['file_name'],$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$new_filename);
-				// delete the temp file
-			unlink($newDoc['file_path'].$newDoc['file_name']);
+			
+			if (!$this->moveFile(PATH_site.$newDoc['file_path'].$newDoc['file_name'],$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$new_filename)) {
+				return false;
+			}
+				// 
 
 				//copying the old data to the new id
 				// record with the old file
@@ -1171,15 +1172,22 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			$newDoc = $this->getDocument($docID);
 			// TODO Review
 			if (is_file($GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName'))) {
-				unlink($GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName'));
-			}
-
-				// copy the new file from temp dir to destionation dir
-			copy(PATH_site.$newDoc['file_path'].$newDoc['file_name'],$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName'));
+				//
+				$fileToDelete = $GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
 				
-			// delete the temp file
-			unlink($newDoc['file_path'].$newDoc['file_name']);
-
+				// rename it 
+				rename($fileToDelete, $fileToDelete.'.delete');
+			}
+			
+			if (!$this->moveFile(PATH_site.$newDoc['file_path'].$newDoc['file_name'],$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName'))) {
+				// rename it again
+				rename($fileToDelete.'.delete', $fileToDelete);
+				return false;
+			} 
+			else {
+				unlink($fileToDelete.'.delete');
+			}
+			
 				// update the new file
 			$newDoc['file_name']=$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
 			$newDoc['file_path']=$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath');
@@ -1316,10 +1324,11 @@ require_once(PATH_tslib.'class.tslib_content.php');
 					// copy file to the final destination
 				$uploadFile = $GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
 				if ($uploadFile<>'') {
-					// FIXME insert error handling
-					copy(PATH_site.$newDoc['file_path'].$newDoc['file_name'],$uploadFile);
-						// delete the temp file
-					unlink($newDoc['file_path'].$newDoc['file_name']);
+					if ($this->moveFile(PATH_site.$newDoc['file_path'].$newDoc['file_name'],$uploadFile)==false) {
+						t3lib_div::debug('move file false');
+						$returnID = false;
+						break;
+					}
 
 						// set the dam record info the the final state
 					$newDoc['deleted']=0;
@@ -1510,6 +1519,25 @@ require_once(PATH_tslib.'class.tslib_content.php');
 		}
 		return $where.=')';
 	}
+	
+	/**
+	 * moves a file 
+	 *
+	 * @return	boolean	true if success 
+	 */
+	function moveFile ($source, $destination) {
+		t3lib_div::upload_copy_move($source,$destination);
+		
+		// check if movement was successful
+		if (!is_file($destination)) return false;
+		
+		// delete the temp file
+		unlink($source);
+		
+		return true;
+	}
+	
+	
 }
 
 

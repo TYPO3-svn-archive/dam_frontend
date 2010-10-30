@@ -141,6 +141,7 @@
 			<label index="BROWSELINK_NEXT">next</label>
 			<label index="SEARCH">Search ...</label>
 			<label index="DROPDOWN_CATEGORIES_HEADER">Limit search to:</label>	
+			<label index="ERROR_STORE_FILE">Sorry, the uploaded file could not be stored. Please try it again or inform your administrator.</label>	
 					
 		</languageKey>
 		<languageKey index="de" type="array">
@@ -266,7 +267,7 @@
 			<label index="BROWSELINK_NEXT">nächste</label>
 			<label index="SEARCH">suchen ...</label>
 			<label index="DROPDOWN_CATEGORIES_HEADER">Suche eingrenzen auf:</label>
-
+			<label index="ERROR_STORE_FILE">Entschuldigung, aber die hochgeladene Datei konnte nicht gespeichert werden. Bitte versuchen Sie es erneut oder informieren Sie den Administrator. Vielen Dank.</label>		
 		</languageKey>
 		<languageKey index="nl" type="array">
 			<label index="list_mode_1">Mode 1</label>

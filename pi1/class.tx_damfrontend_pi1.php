@@ -1250,7 +1250,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 
 			// works only if a user is logged on -> use access rights for the content element to set the access rights for upload
-			// TODO implement upload rights
 		if (is_array($GLOBALS['TSFE']->fe_user->user)) {
 			// todo maybe built an option to restrict uploads for users
 
@@ -1267,12 +1266,14 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 						return $this->versioningForm();
 					}
 					else {
-						$this->handleOneStepUpload($newID);
+						if (!$this->handleOneStepUpload($newID)) $returnCode=$this->pi_getLL('ERROR_STORE_FILE') ;
 						$this->getIncomingDocData();
 						$step = 2;
 					}
 				}
-				else {
+				
+				
+				if (intval($returnCode) == 0) {
 					// -- UPLOAD NOT SUCCESSFUL --
 
 					// rendering of an error message - messages from the upload extension
@@ -1317,9 +1318,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			if($this->saveCategorisation==1) {
 				$docID = intval($GLOBALS['TSFE']->fe_user->getKey('ses','categoriseID'));
 				$this->saveCategories($docID);
-				$this->storeDocument($docID);
-				$this->categorise=false;
-				$step = 4;
+				if ($this->storeDocument($docID)==false) {
+					$step= 'uploadError';	
+				}
+				else {
+					$this->categorise=false;
+					$step = 4;
+				}
 			}
 		}
 		else {
@@ -1346,6 +1351,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				break;
 			case 4:
 				return $this->renderer->renderUploadSuccess();
+				break;
+			case 'uploadError':
+				return $this->renderer->renderError('ERROR_STORE_FILE');
 				break;
 			default:
 				return 'no step!';
@@ -1488,7 +1496,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					unlink($uploadfile);
 				}
 
-					// set Document to delted, that it is not shown in the frontend
+					// set Document to deleted, that it is not shown in the frontend
 				$this->documentData['deleted']=1;
 
 					// set fe_user group
@@ -1874,6 +1882,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				if ($this->docLogic->checkOwnerRights($uid,$this->userUID)===TRUE){
 					$uid = $this->handleVersioning($this->versioning);
 					$uid = $this->handleOneStepUpload($uid);
+					if (!$uid) return $this->renderer->renderError('ERROR_STORE_FILE');
 					$GLOBALS['TSFE']->fe_user->setKey('ses','saveID', $uid);
 					$GLOBALS['TSFE']->fe_user->setKey('ses','uploadID',$uid);
 				}
@@ -1943,6 +1952,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				// load the default categories
 			$this->saveCategories($newID,true);
 			$newID = $this->storeDocument($newID);
+			if ($newID==false) {
+				return false;
+			}
 				// set the sessions key again, that the edit meta data form is shown
 			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadID', $newID);
 			$GLOBALS['TSFE']->fe_user->setKey('ses','saveID', $newID);
@@ -1959,6 +1971,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 */
 	function storeDocument ($docID) {
 		$returnID = $this->docLogic->storeDocument($docID);
+		
+		if ($returnID == false) {
+			t3lib_div::debug($returnID);
+			t3lib_div::debug('$returnID false');
+			return false;
+		}
 		$GLOBALS['TSFE']->fe_user->setKey('ses','uploadID','');
 		$GLOBALS['TSFE']->fe_user->setKey('ses','saveID', '');
 		$GLOBALS['TSFE']->fe_user->setKey('ses','versioningOverrideID','');
