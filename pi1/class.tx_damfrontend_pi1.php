@@ -761,13 +761,14 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 			// easySearch
 		if (t3lib_div::_GP('easySearchSetFilter') OR t3lib_div::_GP('setFilter')) {
-				//unset only if the current content element is the search box
-			if ($this->internal['viewID']==10 OR $this->internal['viewID']==5 ) {
+
+			//unset only if the current content element is the search box
+			if ($this->internal['viewID']==10 OR  (t3lib_div::_GP('setFilter') AND $this->internal['filter']['categoryMount'] ) ) {
 				$this->catList->unsetAllCategories();
 			}
 
-			if ($this->internal['filter']['categoryMount']=='noselection' && $this->internal['incomingtreeID'] <> $this->internal['treeID']) {
-				// use all categories of the
+			if ($this->internal['filter']['categoryMount']=='noselection' && ($this->internal['incomingtreeID'] <> $this->internal['treeID']) AND $this->internal['viewID']==10) {
+				// use all categories --> used only for the easy search
 				$row = t3lib_BEfunc::getRecord('tt_content',$this->internal['incomingtreeID']);
 				$cObj = t3lib_div::makeInstance('tslib_cObj');
 				$cObj->start($row, 'tt_content');
