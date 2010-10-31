@@ -203,10 +203,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	  else {
 	      $this->internal['catMounts'] = explode(',',$this->conf['catMounts']);
 	  }
-
-
+		// clean catMounts
+		foreach ($this->internal['catMounts'] as $key => $value) {
+			if (! $value>0) unset($this->internal['catMounts'][$key]);
+		}
 	  $this->internal['treeName'] = strip_tags($this->conf['treeName']);
-	      $this->internal['treeID'] = $this->cObj->data['uid'];
+	  $this->internal['treeID'] = $this->cObj->data['uid'];
 
 	  $this->internal['useStaticCatSelection'] = $this->conf['useStaticCatSelection'];
 	        $uploadMounts = strip_tags($this->pi_getFFvalue($flexform, 'uploadMounts', 'sUploadSettings'));
@@ -1084,8 +1086,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 */
 	function filterView() {
 		$this->internal['filter']['categories']=$this->get_CategoryList($this->internal['catMounts'],$this->internal['filter']['categoryMount']);
-		$content = $this->renderer->renderEasySearch($this->internal['filter'], $this->internal['filterError']);
-		
 		$content = $this->renderer->renderFilterView($this->internal['filter'], $this->internal['filterError']);
 		if ($this->internal['filter']['searchAllCats'] ==true) {
 			$content=str_replace("name=\"dam_fe_allCats\"","name=\"dam_fe_allCats\" checked",$content);
@@ -1784,21 +1784,25 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @author stefan
 	 */
 	function get_CategoryList ($catMounts,$currentCategory ='') {
-
-		$SELECT = '*';
-		$FROM = 'tx_dam_cat';
-		$WHERE = 'uid in ('. implode(',',$catMounts).')';
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE);
-		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			if ($row['uid']==$currentCategory) {
-				$row['selected']=1;
+		if (empty ($catMounts)) {
+			return array();			
+		} 
+		else {
+			$SELECT = '*';
+			$FROM = 'tx_dam_cat';
+			$WHERE = 'uid in ('. implode(',',$catMounts).')';
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE);
+			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+				if ($row['uid']==$currentCategory) {
+					$row['selected']=1;
+				}
+				else {
+					$row['selected']=0;
+				}
+				$catList[]=$row;
 			}
-			else {
-				$row['selected']=0;
-			}
-			$catList[]=$row;
+			return $catList;
 		}
-		return $catList;
 	}
 
 
