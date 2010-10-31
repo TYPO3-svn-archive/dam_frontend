@@ -214,7 +214,6 @@ if (is_array($post) && count($post) > 0) {
 		
 		$htmlMail->setHTML($htmlMail->encodeMsg($html_start.$mailTemplate.$html_end));
 		
-		die ('halt');
 		return $htmlMail->send();
 	}
 
