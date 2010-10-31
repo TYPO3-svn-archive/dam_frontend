@@ -249,7 +249,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  				}
  			}
  			
- 			$selektor = $this->renderSelector($options,'','tx_damfrontend[signature]',1,false,false);
+ 			$selektor = $this->renderSelector($options,'','tx_damfrontend_pi1[signature]',1,false,false);
  			$markerArray['###SIGNATURE###']=$this->cObj->cObjGetSingle($this->conf['filelist.']['mailOptions.']['label'], $this->conf['filelist.']['mailOptions.']['label.']);
  			$markerArray['###SIGNATURE###'].=$this->cObj->stdWrap($selektor, $this->conf['filelist.']['mailOptions.']);;
  			$markerArray['###SIGNATURE###']=$this->cObj->stdWrap($markerArray['###SIGNATURE###'], $this->conf['filelist.']['mailOptions.']['signaturesSelector.']);

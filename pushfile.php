@@ -65,6 +65,7 @@ if (!$_REQUEST['docID']
 }
 
 $post = t3lib_div::_POST($prefixId);
+t3lib_div::debug($post);
 if (is_array($post) && count($post) > 0) {
 	$filesToSend = array();
 		
@@ -139,7 +140,7 @@ if (is_array($post) && count($post) > 0) {
         	exit();
 		break;
 		case 'sendAsMail':
-			if (sendMail($post['mail'],$archive,$post['mailTemplate'])) {
+			if (sendMail($post['mail'],$archive,$post['mailTemplate'], $post)) {
             	redirect($post['pid'],'&tx_damfrontend_pi1[msg]=mail_success');
             } 
             else {
@@ -181,7 +182,7 @@ if (is_array($post) && count($post) > 0) {
 	 * @return boolean return-value from t3lib_htmlmail -> send which returns
 	 * usually return value from php mail()
 	 */
-	function sendMail($maildata, $attachments,$mailTemplate) {
+	function sendMail($maildata, $attachments,$mailTemplate, $configuration) {
         if (!$maildata['from']) $maildata['from']='noreply@'.t3lib_div::getIndpEnv('HTTP_HOST');
         if (!$maildata['subject'] || $maildata['subject']=='') $maildata['err'].=' subject';//$maildata['from']='Downloads';
         if (!$maildata['body'] || $maildata['body']=='') $maildata['err'].=' content';//$maildata['body']='Your download:';
@@ -189,7 +190,10 @@ if (is_array($post) && count($post) > 0) {
 		
         $localCObj = t3lib_div::makeInstance('tslib_cObj');	// Local cObj.
 		$localCObj->start(array());
-        $ts = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.']['filelist.']['security_options.']['checkOutFolders.'];
+        $ts = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.'];
+        t3lib_div::debug($post['signature']);
+        t3lib_div::debug($ts['filelist.']['mailOptions.']['signatures.']);
+		t3lib_div::debug($localCObj->cObjGetSingle($ts['filelist.']['mailOptions.']['signatures.'][$post['signature']], $ts['filelist.']['mailOptions.']['signatures.'][$post['signature'].'.']));
 		
         if ($maildata['err']) die('<h1>Please set fields '.$maildata['err'].'</h1><p>I\'m sorry, without <b>'.$maildata['err'].'</b> I can\'t send your mail</p>' );
         
@@ -212,6 +216,7 @@ if (is_array($post) && count($post) > 0) {
 		
 		$htmlMail->setHTML($htmlMail->encodeMsg($html_start.$mailTemplate.$html_end));
 		
+		die ('halt');
 		return $htmlMail->send();
 	}
 
