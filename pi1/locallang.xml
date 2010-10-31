@@ -142,6 +142,7 @@
 			<label index="SEARCH">Search ...</label>
 			<label index="DROPDOWN_CATEGORIES_HEADER">Limit search to:</label>	
 			<label index="ERROR_STORE_FILE">Sorry, the uploaded file could not be stored. Please try it again or inform your administrator.</label>	
+			<label index="LABEL_SIGNATURE">Please choose your signatur</label>	
 					
 		</languageKey>
 		<languageKey index="de" type="array">

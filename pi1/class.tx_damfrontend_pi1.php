@@ -203,10 +203,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	  else {
 	      $this->internal['catMounts'] = explode(',',$this->conf['catMounts']);
 	  }
-		// clean catMounts
-		foreach ($this->internal['catMounts'] as $key => $value) {
-			if (! $value>0) unset($this->internal['catMounts'][$key]);
-		}
+
 	  $this->internal['treeName'] = strip_tags($this->conf['treeName']);
 	  $this->internal['treeID'] = $this->cObj->data['uid'];
 
@@ -1784,25 +1781,22 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @author stefan
 	 */
 	function get_CategoryList ($catMounts,$currentCategory ='') {
-		if (empty ($catMounts)) {
-			return array();			
-		} 
-		else {
-			$SELECT = '*';
-			$FROM = 'tx_dam_cat';
-			$WHERE = 'uid in ('. implode(',',$catMounts).')';
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE);
-			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				if ($row['uid']==$currentCategory) {
-					$row['selected']=1;
-				}
-				else {
-					$row['selected']=0;
-				}
-				$catList[]=$row;
+		$where =  implode(',',$catMounts);
+		if (!$where) return array();
+		$SELECT = '*';
+		$FROM = 'tx_dam_cat';
+		$WHERE = 'uid in ('. implode(',',$catMounts).')';
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE);
+		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+			if ($row['uid']==$currentCategory) {
+				$row['selected']=1;
 			}
-			return $catList;
+			else {
+				$row['selected']=0;
+			}
+			$catList[]=$row;
 		}
+		return $catList;
 	}
 
 

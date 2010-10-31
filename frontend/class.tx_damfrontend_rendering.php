@@ -240,6 +240,24 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  		$markerArray['###FROM###']=$this->pi_getLL('FROM');
  		$markerArray['###SUBJECT_DEFAULT###']=$this->pi_getLL('SUBJECT_DEFAULT');
  		$markerArray['###FROM_DEFAULT###']=$GLOBALS['TSFE']->fe_user->user['email'];
+ 		
+ 		$options = array();
+ 		if ($this->conf['filelist.']['mailOptions.']['signatures.']) {
+ 			foreach ($this->conf['filelist.']['mailOptions.']['signatures.'] as $signatureID=>$value) {
+ 				if ('.' <> substr($signatureID, -1)){
+ 					$options[] = $this->cObj->cObjGetSingle($this->conf['filelist.']['mailOptions.']['signatures.'][$signatureID], $this->conf['filelist.']['mailOptions.']['signatures.'][$signatureID.'.']);
+ 				}
+ 			}
+ 			
+ 			$selektor = $this->renderSelector($options,'','tx_damfrontend[signature]',1,false,false);
+ 			$markerArray['###SIGNATURE###']=$this->cObj->cObjGetSingle($this->conf['filelist.']['mailOptions.']['label'], $this->conf['filelist.']['mailOptions.']['label.']);
+ 			$markerArray['###SIGNATURE###'].=$this->cObj->stdWrap($selektor, $this->conf['filelist.']['mailOptions.']);;
+ 			$markerArray['###SIGNATURE###']=$this->cObj->stdWrap($markerArray['###SIGNATURE###'], $this->conf['filelist.']['mailOptions.']['signaturesSelector.']);
+ 		}
+ 		else {
+	 		$markerArray['###SIGNATURE###']='';
+ 		}
+ 		
  		$markerArray['###MESSAGE###']=$this->pi_getLL('MAIL_SUCCESS');
 		
  		# mail markers

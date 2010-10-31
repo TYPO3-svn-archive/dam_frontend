@@ -53,6 +53,7 @@ Allowed Markers:
 				<label class="dam-frontend-label">###TO###:</label><input type="text" name="tx_damfrontend_pi1[mail][to]" />
 				<br />
 				<label class="dam-frontend-label">###SUBJECT###:</label><input type="text" name="tx_damfrontend_pi1[mail][subject]" value="###SUBJECT_DEFAULT###" />
+				###SIGNATURE###
 				</div>
 				<div style="float:left;">
 				<label >###COMMENT###:</label><br />
@@ -153,65 +154,6 @@ Allowed Markers:
 	</ul>
 <!--  ###BROWSERESULTLIST### -->
 
-
-
-
-<!-- ********************************
-
-	template for the Filterlist list
-
-********************************  -->
-
-<!-- ###FILTERLIST### begin-->
-	<table>
-		<!-- ###FILTERLIST_ELEM### begin-->
-		<tr>
-			<td>###NAME###</td>
-			<td>###DESCRIPTION###</td>
-		</tr>
-		<!-- ###FILTERLIST_ELEM### end-->
-	</table>
-
-<!-- ###FILTERLIST### end-->
-
-
-
-<!-- ********************************
-
-	Link for creation of a new filter
-
-********************************  -->
-
-<!-- ###NEWFILTER_LINK### begin-->
-	<form action="###FORM_URL###" method="post">
-		<input type="submit" value="Neuer Filter" name="newFilter" class="button" />
-	</form>
-<!-- ###NEWFILTER_LINK### end-->
-
-
-
-<!-- *********************************
-
-		Template for creation of new filter.
-		User can insert title and description of a filter record
-
-*********************************  -->
-
-<!-- ###NEWFILTER### begin-->
-	<form action="###FORM_URL###" method="post">
-		<fieldset>
-			<label>###FILTER_TITLE_LABEL###:</label>
-			<input name="title" type="text" size="40" style="font-size: 130%"/>
-			<br /><br />
-			<label>###FILTER_DESCRIPTION_LABEL###:</label>
-			<textarea cols="30" rows="10" name="description" ></textarea>
-			<br />
-			<br />
-			<input name="submit" type="submit" value="###SAVE###" name="" class="button" />
-			<input name="cancel" type="reset" value="###CANCEL###" name="" class="button"/>
-		</fieldset>
-	</form>
-<!-- ###NEWFILTER### end-->
 
 
 
@@ -356,48 +298,6 @@ Template for displaying a single document in a list
 <!-- ###FILTERVIEW### end-->
 
 
-
-
-
-<!-- ###REQUESTFORM### begin-->
-<form action="###FORM_URL###" method="post">
-	<fieldset>
-		<legend>###REQUEST_FORM_LEGEND###</legend>
-		###REQUEST_FORM_TEXT###<br />
-		<b>###TITLE###</b><br />
-		<br />
-		###REQUEST_FORM_ADRESS_HEADER###<br />
-		<br />
-		<table>
-			<tr>
-				<td>###REQUEST_FORM_FIRST_NAME_DESCRIPTION###:</td>
-				<td><input type="text" name="firstname" size="40" value="###REQUEST_FORM_FIRST_NAME###"/> <span class="error_requestform">###REQUEST_FORM_FIRST_NAME_ERROR_FIRSTNAME###</span></td>
-			</tr>
-			<tr>
-				<td>##REQUEST_FORM_LAST_NAME_DESCRIPTION###:</td>
-				<td><input type="text" name="lastname" size="40" value="###REQUEST_FORM_LAST_NAME###"/> <span class="error_requestform">###REQUEST_FORM_FIRST_NAME_ERROR_LASTNAME###</span></td>
-			</tr>
-			<tr>
-				<td>##REQUEST_FORM_EMail_DESCRIPTION###</td>
-				<td><input type="text" name="email" size="40" value="###REQUEST_FORMEMAIL###"/> <span class="error_requestform">###REQUEST_FORM_FIRST_NAME_ERROR_EMAIL###</span></td>
-			</tr>
-			<tr>
-				<td>##REQUEST_FORM_ADRESS_DESCRIPTION###</td>
-				<td><input type="text" name="adress" size="40" value="###REQUEST_FORM_ADRESS###"/> <span class="error_requestform">###REQUEST_FORM_FIRST_NAME_ERROR_ADRESS###</span></td>
-			</tr>
-			<tr>
-				<td>##REQUEST_FORM_TOWN_DESCRIPTION###</td>
-				<td><input type="text" name="plz" size="5" value="###REQUEST_FORM_ZIP###" /><input type="text" name="town" size="33" value="###TOWN###"/> <span class="error_requestform">###ERROR_ZIP### ###ERROR_TOWN###</span></td>
-			</tr>
-		</table>
-
-		<br />
-		<input type="submit" value="###REQUEST_FORM_SEND_BUTTON###" /> <a href="###REQUEST_FORM_BACK_URL###">###REQUEST_FORM_BACK_URL_TEXT###</a>
-		<input type="hidden" name="docID" value="###UID###" />
-		<input type="hidden" name="sendRequestform" value="1"/>
-	</fieldset>
-</form>
-<!-- ###REQUESTFORM### end-->
 
 
 <!--  ****************************

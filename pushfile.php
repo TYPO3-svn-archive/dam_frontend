@@ -30,6 +30,7 @@ error_reporting(E_ERROR);
 
 require_once(t3lib_extMgm::extPath('dam_frontend').'/DAL/class.tx_damfrontend_DAL_documents.php');
 require_once(PATH_t3lib.'class.t3lib_stdgraphic.php');
+require_once (PATH_tslib.'class.tslib_content.php');
 require_once(PATH_t3lib.'class.t3lib_page.php');
 require_once(PATH_t3lib.'class.t3lib_div.php');
 require_once(PATH_tslib.'class.tslib_gifbuilder.php');
@@ -185,6 +186,10 @@ if (is_array($post) && count($post) > 0) {
         if (!$maildata['subject'] || $maildata['subject']=='') $maildata['err'].=' subject';//$maildata['from']='Downloads';
         if (!$maildata['body'] || $maildata['body']=='') $maildata['err'].=' content';//$maildata['body']='Your download:';
         if (!$maildata['to']) $maildata['err'].=' recipient';
+		
+        $localCObj = t3lib_div::makeInstance('tslib_cObj');	// Local cObj.
+		$localCObj->start(array());
+        $ts = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.']['filelist.']['security_options.']['checkOutFolders.'];
 		
         if ($maildata['err']) die('<h1>Please set fields '.$maildata['err'].'</h1><p>I\'m sorry, without <b>'.$maildata['err'].'</b> I can\'t send your mail</p>' );
         

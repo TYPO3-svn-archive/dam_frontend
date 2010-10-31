@@ -149,7 +149,7 @@ plugin.tx_damfrontend_pi1 {
 		useLanguageOverlay=1
 	}
 	
-	#renderFields is depreceated: please use filelist for markers for the filelist or singleView for s
+	
 	renderFields {
 	# set stdWrap config for each field
 		file_size {
@@ -557,6 +557,31 @@ plugin.tx_damfrontend_pi1 {
 			uids_FEGroups =
 			button_confirm.wrap = |
 			button_cancel.wrap = |
+		}
+		
+		mailOptions {
+			#The signatures are getting rendered automatically via /frontend/class.tx_damfrontend_rendering.php
+			signatures {
+				1 = TEXT
+				1 {
+					value = HeadQuarter
+					signature = TEXT
+					signature.value = Hallo Welt
+				}
+				2 = TEXT
+				2 {
+					value = München
+					signature = TEXT
+					signature.value = Hallo Welt in München
+				}
+			}
+			signaturesSelector.wrap = <br>|
+			wrap = <br>|<br>
+			label = TEXT
+			label {
+				data = LLL:EXT:dam_frontend/pi1/locallang.xml:LABEL_SIGNATURE
+				wrap =<label>|</label>
+			}
 		}
 	}
 
