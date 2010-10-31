@@ -341,9 +341,13 @@ Template for displaying a single document in a list
 				###DROPDOWN_LANGUAGE###
 
 				<br />
+				
+				###DROPDOWN_CATEGORIES_HEADER###
+				###DROPDOWN_CATEGORIES###
 				<br />
 				<input type="hidden" value="0" name="tx_damfrontend_pi1[pointer]" />
 				<input type="checkbox" name="dam_fe_allCats" value="true" /> ###LABEL_NO_CAT###
+				<input type="hidden" value="###TREEID###" name="tx_damfrontend_pi1[treeID]" />
 				<input type="submit" value="###RESET_FILTER###" name="resetFilter" class="button"></input> &nbsp; &nbsp; &nbsp;
 				<input type="submit" value="###SET_FILTER###" name="setFilter" class="button"></input>
 

@@ -817,7 +817,21 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  		$markerArray  = $this->recordToMarkerArray($filterArray);
 		$markerArray =$markerArray + $this->substituteLangMarkers($formCode);
 
+		if (is_array($filterArray['categories'])) {
+	 		$markerArray['###TREEID###'] =  $this->cObj->data['uid'];
+	 		$markerArray['###DROPDOWN_CATEGORIES_HEADER###'] = $this->cObj->stdWrap($this->pi_getLL('DROPDOWN_CATEGORIES_HEADER'),$this->conf['filterview.']['dropdown_categories_header.']);
+			$markerArray['###DROPDOWN_CATEGORIES###'] = $this->renderCatgoryList($filterArray['categories']);
+		} 
+		else {
+			$markerArray['###DROPDOWN_CATEGORIES###']='';
+			$markerArray['###TREEID###'] =  '';
+	 		$markerArray['###DROPDOWN_CATEGORIES_HEADER###'] = '';
+		}
 
+		$markerArray['###DROPDOWN_LANGUAGE###'] = $this->renderLanguageSelector($filterArray['LanguageSelector']);
+ 		if (!isset($this->conf['filterview.']['form_url.']['parameter'])) {
+			$this->conf['filterview.']['form_url.']['parameter'] = $GLOBALS['TSFE']->id;
+		}
 
 		// error handling
  		$markerArray['###ERROR_TO_DATE###'] = $errorArray['error_to_date'] ? $this->pi_getLL('error_renderFilterView_date_to') : '';

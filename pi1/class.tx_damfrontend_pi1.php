@@ -760,9 +760,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 
 			// easySearch
-		if (t3lib_div::_GP('easySearchSetFilter')) {
+		if (t3lib_div::_GP('easySearchSetFilter') OR t3lib_div::_GP('setFilter')) {
 				//unset only if the current content element is the search box
-			if ($this->internal['viewID']==10) $this->catList->unsetAllCategories();
+			if ($this->internal['viewID']==10 OR $this->internal['viewID']==5 ) {
+				$this->catList->unsetAllCategories();
+			}
 
 			if ($this->internal['filter']['categoryMount']=='noselection' && $this->internal['incomingtreeID'] <> $this->internal['treeID']) {
 				// use all categories of the
@@ -770,6 +772,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$cObj = t3lib_div::makeInstance('tslib_cObj');
 				$cObj->start($row, 'tt_content');
 				$cObj->data['pi_flexform'] = t3lib_div::xml2array($cObj->data['pi_flexform']);
+				
 				// getting values from flexform ==> it's possible to overwrite flexform values with ts setttings
 				$this->internal['catMounts'] = explode(',',$this->pi_getFFvalue($cObj->data['pi_flexform'], 'catMounts', 'sSelection'));
 				$this->addAllCategories($this->internal['catMounts'],$this->internal['incomingtreeID'],true);
@@ -1079,6 +1082,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @return	[string]		$content html auf filterview
 	 */
 	function filterView() {
+		$this->internal['filter']['categories']=$this->get_CategoryList($this->internal['catMounts'],$this->internal['filter']['categoryMount']);
+		$content = $this->renderer->renderEasySearch($this->internal['filter'], $this->internal['filterError']);
+		
 		$content = $this->renderer->renderFilterView($this->internal['filter'], $this->internal['filterError']);
 		if ($this->internal['filter']['searchAllCats'] ==true) {
 			$content=str_replace("name=\"dam_fe_allCats\"","name=\"dam_fe_allCats\" checked",$content);

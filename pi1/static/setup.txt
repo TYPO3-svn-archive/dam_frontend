@@ -284,7 +284,7 @@ plugin.tx_damfrontend_pi1 {
 		searchwordFields = description, title
 		# display only user of these fe_usergroups in the owner selector (commaseparated)
 		filterUserGroup = 
-		
+		dropdown_categories_header.wrap = <label>|</label>
 		# if searchAllCats are filtered by allowedCats, then you can define, if the selected cats used as mounts or as normal cats
 		searchCatsAsMounts = 1
 		
