@@ -191,16 +191,14 @@ if (is_array($post) && count($post) > 0) {
         $localCObj = t3lib_div::makeInstance('tslib_cObj');	// Local cObj.
 		$localCObj->start(array());
         $ts = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.'];
-        t3lib_div::debug($post['signature']);
-        t3lib_div::debug($ts['filelist.']['mailOptions.']['signatures.']);
-		t3lib_div::debug($localCObj->cObjGetSingle($ts['filelist.']['mailOptions.']['signatures.'][$post['signature']], $ts['filelist.']['mailOptions.']['signatures.'][$post['signature'].'.']));
 		
         if ($maildata['err']) die('<h1>Please set fields '.$maildata['err'].'</h1><p>I\'m sorry, without <b>'.$maildata['err'].'</b> I can\'t send your mail</p>' );
         
 		require_once(PATH_t3lib.'class.t3lib_htmlmail.php');
 		$mailTemplate = str_replace( array("\r\n","\n","\r"), '<br>', $mailTemplate); // like nl2br() (sh 2010-03-28)
 		$mailTemplate = strip_tags($mailTemplate,'<table><tr><td><p><b><br>'); // allow b and br (sh 2010-03-28)
-		$maildata['htmlbody'] = str_replace( array("\r\n","\n","\r"), '<br>', $maildata['body'] ); // like nl2br() (sh 2010-03-28)
+		$maildata['htmlbody'] 	= 	str_replace( array("\r\n","\n","\r"), '<br>', $maildata['body'] ); // like nl2br() (sh 2010-03-28)
+		$maildata['htmlbody'] 	.=	$localCObj->cObjGetSingle($ts['filelist.']['mailOptions.']['signatures.'][$configuration['signature'].'.']['signature'], $ts['filelist.']['mailOptions.']['signatures.'][$configuration['signature'].'.']['signature'.'.']);
 		$mailTemplate = str_replace('###MAIL_COMMENT###',strip_tags($maildata['htmlbody'],'<br>'),$mailTemplate); // allow br (sh 2010-03-28)
 		$html_start='<html><head><title>Downloads</title></head><body>';
 		$html_end='</body></html>';

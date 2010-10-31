@@ -245,7 +245,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  		if ($this->conf['filelist.']['mailOptions.']['signatures.']) {
  			foreach ($this->conf['filelist.']['mailOptions.']['signatures.'] as $signatureID=>$value) {
  				if ('.' <> substr($signatureID, -1)){
- 					$options[] = $this->cObj->cObjGetSingle($this->conf['filelist.']['mailOptions.']['signatures.'][$signatureID], $this->conf['filelist.']['mailOptions.']['signatures.'][$signatureID.'.']);
+ 					$options[$signatureID] = $this->cObj->cObjGetSingle($this->conf['filelist.']['mailOptions.']['signatures.'][$signatureID], $this->conf['filelist.']['mailOptions.']['signatures.'][$signatureID.'.']);
  				}
  			}
  			
