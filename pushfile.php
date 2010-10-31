@@ -65,7 +65,6 @@ if (!$_REQUEST['docID']
 }
 
 $post = t3lib_div::_POST($prefixId);
-t3lib_div::debug($post);
 if (is_array($post) && count($post) > 0) {
 	$filesToSend = array();
 		

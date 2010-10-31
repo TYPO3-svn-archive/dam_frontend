@@ -1978,8 +1978,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$returnID = $this->docLogic->storeDocument($docID);
 		
 		if ($returnID == false) {
-			t3lib_div::debug($returnID);
-			t3lib_div::debug('$returnID false');
 			return false;
 		}
 		$GLOBALS['TSFE']->fe_user->setKey('ses','uploadID','');
