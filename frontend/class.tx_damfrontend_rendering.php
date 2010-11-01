@@ -1791,6 +1791,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 			</script>
 			<form action="" method="post" name="frm">
 			<input type="hidden" name="tx_damfrontend_pi1[treeID]" value="'.$this->cObj->data['uid'].'">
+			<input type="hidden" name="setFilter"/>
 			';
    		if($this->conf['drillDown.']['selectorBox.']['displayAnEmptyOption.']['localLangLabel']) {
 	   		$noSelectionLabel=$this->pi_getLL($this->conf['drillDown.']['selectorBox.']['displayAnEmptyOption.']['localLangLabel']);
