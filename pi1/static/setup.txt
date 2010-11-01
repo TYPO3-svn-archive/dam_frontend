@@ -501,7 +501,6 @@ plugin.tx_damfrontend_pi1 {
 		security_options {
 			showOnlyFilesWithPermission=0
 			deleteFilesOfDeletedRecords = 1
-			checkAllRelatedCategories=1
 			# how long is link with a hash valid (in seconds)
 			hashValidity = 604800
 			checkOutFolders {
@@ -626,29 +625,14 @@ plugin.tx_damfrontend_pi1 {
 		filelist.wrap = <ul style="list-style:none;">|</ul>
 	}
 
-	# configuration for subpart ###NEWFILTER_LINK###
-	newfilter_link {
-		# typolink: formurl action
-		form_url.parameter.data = TSFE:id
-		form_url.addQueryString = 1
-	}
+
 	# configuration for subpart ###FILTERVIEW###
 	filterview {
 		# typolink : formurl action
 		form_url.parameter.data = TSFE:id
 		form_url.addQueryString = 1
 	}
-	# configuration for subpart ###NEWFILTER###
-	newfilter {
-		# stdWrap
-		save =
-		# stdWrap
-		cancel =
-		# stdWrap
-		filter_title_label =
-		# stdWrap
-		filter_description_label =
-	}
+
 
 	mediaTypes {
 		DEFAULT {

@@ -46,10 +46,32 @@ class ext_update  {
 	 */	
     public function main()	{
     if(t3lib_div::_GP('update')) {
-				
-    		$result = $GLOBALS['TYPO3_DB']->execUpdateQuery();
-    	
-	    	$content = 'Update successful!';
+			
+    	$from_table = "tx_dam_cat_readaccess_mm";
+    	$select_fields = 'uid_local';
+    	$groupBy ='uid_local';
+    	$tce = t3lib_div::makeInstance('t3lib_TCEmain'); 
+    	$tce->stripslashes_values = 0;
+    	$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select_fields, $from_table, '', $groupBy);
+    	while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc ($res)) {
+    		$where = 'uid_local = ' . $row['uid_local'];
+    		$select_fields = 'uid_foreign';
+    		$resResult = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select_fields, $from_table, $where);
+    		$result = array();
+    		while ($resultRow = $GLOBALS['TYPO3_DB']->sql_fetch_assoc ($resResult)) {
+    			$result[]=$resultRow['uid_foreign'];
+    		}
+
+    		$data['tx_dam_cat'][$row['uid_local']] = array(
+    			'fe_group' => implode(',',$result)
+    		);
+    		$tce->start($data, array());
+    		$tce->process_datamap();
+    		$tce->updateRefIndex('tx_dam_cat',$row['uid_local']);
+    		$i++;
+    	}
+    		
+	    	$content = 'Update successful!. We updated '. $i . ' rows.';
 		} else {
 			$content = '<form name="static_info_tables_form" action="'.htmlspecialchars(t3lib_div::linkThisScript()).'" method="post">';
 			$linkScript = t3lib_div::slashJS(t3lib_div::linkThisScript());

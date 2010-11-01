@@ -1,4 +1,30 @@
 Version 0.7.x
+Major Feature #6963: Explorer View
+Major Feature #8214: shopping cart
+Feature #2808: add Mail functionality to pushfile
+Feature #7770: Option for checkCategoriesByRootline
+Feature #7973: Sorting for grouped filelist (categories)
+Feature #8140: groupedFileListUseBackEndSorting
+Feature #8141: customRendering for dam columns
+Feature #8213: Support for multiple searchwords
+Feature #8327: Hooks for filelist and singleView
+Feature #8363: Allow Downloads with a Hash
+Feature #8370: add custom ts objects
+Feature #9306: Performance option
+Feature #9859: localization of dam entries
+Feature #10179: Language Overlay for pi2
+Feature #10543: Improve rendering of mimetypes
+Feature #10548: Integrate Easy Search in Searchform
+Feature #10550: Signatures for mail function
+fixed Bug #6406: Redundant files when working with workspaces
+fixed Bug #7232: Check directory permissions and success during upload
+fixed Bug #7415: useTreeAndSelection does not work
+fixed Bug #8588: Hidden Categories are shown in the cat trees
+fixed Bug #8808: Drilldown Interface missbehaviour with subcategory
+fixed Bug #9009: Drilldown Interface should only show Categories which are allowed
+fixed Bug #9088: Category edit doesn't work in frontend
+fixed Bug #9466: tx_damfrontend_DAL_documents::getDocumentList show also deleted dam records
+fixed Bug #9952: Drilldown Problem with IE
 
 Version 0.6.5
 fixed bug 6670 another pointer error in conjunction with drilldown filter

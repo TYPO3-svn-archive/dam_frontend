@@ -41,25 +41,6 @@ t3lib_extMgm::addToAllTCAtypes("pages","tx_damtree_dam_cats;;;;1-1-1");
  *
  ***************************************/
 $tempColumns = Array (
-	"tx_damtree_fe_groups_readaccess" => Array (
-		"exclude" => 1,
-		"label" => "LLL:EXT:dam_frontend/locallang_db.php:tx_dam_cat.readaccess",
-		"config" => Array (
-			"items" => Array(
-				Array("LLL:EXT:dam_frontend/locallang_db.php:tx_damtree_fe_groups_all", -1),
-				Array("LLL:EXT:dam_frontend/locallang_db.php:tx_damtree_fe_groups_none", -2),
-				Array("LLL:EXT:dam_frontend/locallang_db.php:tx_damtree_fe_groups", '--div--')
-			),
-			'exclusiveKeys' => '-1,-2',
-			"type" => "select",
-			"foreign_table" =>"fe_groups",
-			"internal_type" => "db",
-			"size" => 5,
-			"minitems" => 0,
-			"maxitems" => 50,
-			"MM" => "tx_dam_cat_readaccess_mm",
-		)
-	),
 	"tx_damtree_fe_groups_downloadaccess" => Array (
 		"exclude" => 1,
 		"label" => "LLL:EXT:dam_frontend/locallang_db.php:tx_dam_cat.downloadaccess",

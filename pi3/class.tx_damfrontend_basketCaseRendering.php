@@ -100,8 +100,8 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 	 			$markerArray['###DELETE_FROM_BASKET###']= $cObj->cObjGetSingle($this->conf['marker.']['delete_from_basket'], $this->conf['marker.']['delete_from_basket.']);
 	 			$tsConf = $this->conf['marker.']['thumb.'];
 	 			$tsConf['file'] = $item['file_path'].$item['file_name'];
-	 			$tsConf['params.']['width'] = '50m';
-	 			$tsConf['params.']['heigth'] = '50m';
+	 			$tsConf['params.']['width'] = '50px';
+	 			#$tsConf['params.']['heigth'] = '50m';
 	 			$markerArray['###THUMB###']=$cObj->cObjGetSingle($this->conf['marker.']['thumb'], $tsConf);
 	 			$rows .= $damRendering->renderDamRecordRow($item,$countElement,0,9999,'filelist',$record_Code,$cObj,$markerArray );
 	 		}

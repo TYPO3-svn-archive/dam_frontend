@@ -15,7 +15,7 @@
 			<label index="items">items</label>
 			<label index="itemstext">in the basketcase.</label>
 			<label index="no_itemstext">No items in the basketcase.</label>
-			<label index="checkout">checkout1</label>
+			<label index="checkout">checkout</label>
 			<label index="error_no_items">There are no items in the basektcase.</label>
 			<label index="label_usage">Please fill in your usage:</label>
 			<label index="label_accept">Accept our usage conditions.</label>
