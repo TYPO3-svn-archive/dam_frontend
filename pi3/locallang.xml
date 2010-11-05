@@ -7,6 +7,7 @@
 		<languageKey index="default" type="array">
 			<label index="flexform_display_title">Settings</label>
 			<label index="flexform_options">Options</label>
+			<label index="flexform_templateFile">Template file for CheckOut and Basket preview</label>
 			<label index="flexform_display_form">Display this view</label>
 			<label index="flexform_baketCasePreview">preview of the basketcase</label>
 			<label index="flexform_basketCase">basketcase checkout</label>
@@ -32,6 +33,7 @@
 			<label index="delete_from_basket">Delete from basket</label>
 		</languageKey>
 		<languageKey index="de" type="array">
+			<label index="flexform_templateFile">Template Datei für Warenkorb und Vorschau</label>
 			<label index="flexform_display_title">Einstellungen</label>
 			<label index="flexform_options">Optionen</label>
 			<label index="flexform_display_form">Zeige diese Ansicht</label>
