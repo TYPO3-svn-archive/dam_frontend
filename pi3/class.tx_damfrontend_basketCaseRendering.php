@@ -62,7 +62,22 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 	 */
 	function renderCheckOutForm($items, $errors = array(), $data= array()) {
 		$this->pi_loadLL();
-		$htmlTemplate = tsLib_CObj::getSubpart(tsLib_CObj::fileResource($this->conf['templateFile']),'###BASKET_CASE###');
+		
+		/*
+		 * 
+		 *  switch to read in the new flexform-value "templateFile" if it exists
+		 *  FMEY: 04.11.2010
+		 *  
+		 *  */
+		
+		if ($this->pi_getFFvalue($flexform, 'templateFile', 'sOptions'))	{
+			$htmlTemplate = tsLib_CObj::getSubpart(tsLib_CObj::fileResource($this->pi_getFFvalue($flexform, 'templateFile', 'sOptions')));
+		}	else	{
+			
+			$htmlTemplate = tsLib_CObj::getSubpart(tsLib_CObj::fileResource($this->conf['templateFile']),'###BASKET_CASE###');
+		
+		}
+		
 		$markerArray= array();	 
 		if (empty($items)) {
 			return $this->renderError($this->pi_getLL('error_no_items'));

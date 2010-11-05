@@ -231,7 +231,20 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->catLogic= t3lib_div::makeInstance('tx_damfrontend_DAL_categories');
 		$this->catList = t3lib_div::makeInstance('tx_damfrontend_catList');
 		$this->renderer = t3lib_div::makeInstance('tx_damfrontend_rendering');
-		$this->renderer->setFileRef($this->conf['templateFile']);
+		
+		/*
+		 * 
+		 *  switch to read in the new flexform-value "templateFile" if it exists
+		 *  FMEY: 04.11.2010
+		 *  
+		 *  */
+		
+		if ($this->pi_getFFvalue($flexform, 'templateFile', 'sOptions'))	{
+			$this->renderer->setFileRef($this->pi_getFFvalue($flexform, 'templateFile', 'sOptions'));
+		}	else	{
+			$this->renderer->setFileRef($this->conf['templateFile']);
+		}
+		
 		$this->renderer->piVars = $this->piVars;
 		$this->renderer->conf = $this->conf;
 		$this->renderer->cObj = $this->cObj;

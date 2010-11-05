@@ -1,257 +1,278 @@
 <T3DataStructure>
-	<meta>
-		<langDisable>1</langDisable>
-		<!--  <langChildren>1</langChildren>!-->
-	</meta>
-	<sheets>
-		<sDEF>
-			<ROOT>
-				<TCEforms>
-					<sheetTitle>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_display_title</sheetTitle>
-				</TCEforms>
-				<type>array</type>
-				<el>
-					<viewID>
-						<TCEforms>
-							<label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_display_form</label>
-							<config>
-								<type>select</type>
-								<items>
-									<numIndex index="1" type="array">
-										<numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_fileList</numIndex>
-										<numIndex index="1">1</numIndex>
-									</numIndex>
-									<numIndex index="2" type="array">
-										<numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_catTree</numIndex>
-										<numIndex index="1">2</numIndex>
-									</numIndex>
-									<numIndex index="3" type="array">
-										<numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_catSelection</numIndex>
-										<numIndex index="1">3</numIndex>
-									</numIndex>
-									<numIndex index="4" type="array">
-										<numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_singleView</numIndex>
-										<numIndex index="1">4</numIndex>
-									</numIndex>
-									<numIndex index="5" type="array">
-										<numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_filterView</numIndex>
-										<numIndex index="1">5</numIndex>
-									</numIndex>
-									<numIndex index="6" type="array">
-										<numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_myFiles</numIndex>
-										<numIndex index="1">6</numIndex>
-									</numIndex>
-									<numIndex index="7" type="array">
-										<numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_uploadForm</numIndex>
-										<numIndex index="1">7</numIndex>
-									</numIndex>
-									<numIndex index="8" type="array">
-										<numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_groupedCategories</numIndex>
-										<numIndex index="1">8</numIndex>
-									</numIndex>
-									<numIndex index="9" type="array">
-										<numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_useLatestList</numIndex>
-										<numIndex index="1">9</numIndex>
-									</numIndex>
-									<numIndex index="10" type="array">
-										<numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_easySearch</numIndex>
-										<numIndex index="1">10</numIndex>
-									</numIndex>
-									<numIndex index="11" type="array">
-										<numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_DrillDown</numIndex>
-										<numIndex index="1">11</numIndex>
-									</numIndex>
-									<numIndex index="12" type="array">
-										<numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_Explorer</numIndex>
-										<numIndex index="1">12</numIndex>
-									</numIndex>
-								</items>
-								<maxitems>1</maxitems>
-								<size>1</size>
-							</config>
-						</TCEforms>
-					</viewID>
-				</el>
-			</ROOT>
-		</sDEF>
-		<sSelection>
-			<ROOT>
-				<TCEforms>
-					<sheetTitle>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_selection_title</sheetTitle>
-				</TCEforms>
-				<type>array</type>
-				<el>
-					<catMounts>
-						<TCEforms>
-							<label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_selection_cats</label>
-							<config>
-								<type>select</type>							
-								<form_type>user</form_type>
-								<userFunc>EXT:dam/lib/class.tx_dam_tcefunc.php:tx_dam_tceFunc->getSingleField_selectTree</userFunc>
-								
-								<treeViewClass>EXT:dam/components/class.tx_dam_selectionCategory.php:tx_dam_selectionCategory</treeViewClass>
-								<foreign_table>tx_dam_cat</foreign_table>
-								<size>5</size>
-								<autoSizeMax>25</autoSizeMax>
-								<minitems>0</minitems>
-								<maxitems>99</maxitems>
-								<default></default>
-							</config>
-						</TCEforms>
-					</catMounts>
-					<treeName>
-						<TCEforms>
-							<label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_treeName</label>
-							<config>
-								<type>input</type>
-							</config>
-						</TCEforms>
-					</treeName>
-				</el>
-			</ROOT>
-		</sSelection>
-		<sOptions>
-			<ROOT>
-				<TCEforms>
-					<sheetTitle>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_option_title</sheetTitle>
-				</TCEforms>
-				<type>array</type>
-				<el>
-					<perPage>
- 						<TCEforms>
- 							<label>LLL:EXT:dam_frontend/locallang_db.xml:flexform_perPage</label>
- 							<config>
- 								<type>input</type>
-								<size>10</size>
- 							</config>
- 						</TCEforms>
- 					</perPage>
-					<amountOfNewImages>
- 						<TCEforms>
- 							<label>LLL:EXT:dam_frontend/locallang_db.xml:flexform_amountOfNewImages</label>
- 							<config>
- 								<type>input</type>
-								<size>10</size>
- 							</config>
- 						</TCEforms>
- 					</amountOfNewImages>
- 					<subLevels>
- 						<TCEforms>
- 							<label>LLL:EXT:dam_frontend/locallang_db.xml:flexform_amountOfExpandedLevels</label>
- 							<config>
- 								<type>input</type>
-								<size>10</size>
- 							</config>
- 						</TCEforms>
- 					</subLevels>
-					<useStaticCatSelection>
- 						<TCEforms>
- 							<label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_useStaticCatSelection</label>
- 							<config>
- 								<type>check</type>
- 							</config>
- 						</TCEforms>
- 					</useStaticCatSelection>
- 					<enableDeletions>
- 						<TCEforms>
- 							<label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_enableDeletions</label>
- 							<config>
- 								<type>check</type>
- 							</config>
- 						</TCEforms>
- 					</enableDeletions>
- 					<enableEdits>
- 						<TCEforms>
- 							<label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_enableEdits</label>
- 							<config>
- 								<type>check</type>
- 							</config>
- 						</TCEforms>
- 					</enableEdits>
- 					<FilterUserGroup>
- 						<TCEforms>
- 							<label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_FilterUserGroup</label>
- 							<config>
- 								<type>select</type>
-								<foreign_table>fe_groups</foreign_table>
-								<internal_type>db</internal_type>
-								<size>5</size>	
-								<minitems>0</minitems>
-								<autoSizeMax>3</autoSizeMax>
-								<maxitems>50</maxitems>
- 							</config>
- 						</TCEforms>
- 					</FilterUserGroup>
- 					<feEditGroups>
- 						<TCEforms>
- 							<label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_feEditGroups</label>
- 							<config>
- 								<type>select</type>
-								<foreign_table>fe_groups</foreign_table>
-								<internal_type>db</internal_type>
-								<size>5</size>	
-								<minitems>0</minitems>
-								<autoSizeMax>3</autoSizeMax>
-								<maxitems>50</maxitems>
- 							</config>
- 						</TCEforms>
- 					</feEditGroups>
-				</el>
-			</ROOT>
-		</sOptions>
-		<sUploadSettings>
-			<ROOT>
-				<TCEforms>
-					<sheetTitle>Upload Settings</sheetTitle>
-				</TCEforms>
-				<type>array</type>
-				<el>
-					<uploadMounts>
-						<TCEforms>
-							<label>LLL:EXT:dam_frontend/locallang_tca.xml:upload_settings</label>
-							<config>
-								<type>select</type>							
-								<form_type>user</form_type>
-								<userFunc>EXT:dam/lib/class.tx_dam_tcefunc.php:tx_dam_tceFunc->getSingleField_selectTree</userFunc>				
-								<treeViewClass>EXT:dam/components/class.tx_dam_selectionCategory.php:tx_dam_selectionCategory</treeViewClass>
-								<foreign_table>tx_dam_cat</foreign_table>
-								<size>5</size>
-								<autoSizeMax>10</autoSizeMax>
-								<minitems>0</minitems>
-								<maxitems>10</maxitems>
-								<default></default>
-							</config>
-						</TCEforms>
-					</uploadMounts>
-				</el>
-			</ROOT>
-		</sUploadSettings>
-		<sPreSelectSettings>
-			<ROOT>
-				<TCEforms>
-					<sheetTitle>Preselect Categories</sheetTitle>
-				</TCEforms>
-				<type>array</type>
-				<el>
-					<catPreSelection>
-						<TCEforms>
-							<label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_catPreSelection</label>
-							<config>
-								<type>select</type>							
-								<form_type>user</form_type>
-								<userFunc>EXT:dam/lib/class.tx_dam_tcefunc.php:tx_dam_tceFunc->getSingleField_selectTree</userFunc>				
-								<treeViewClass>EXT:dam/components/class.tx_dam_selectionCategory.php:tx_dam_selectionCategory</treeViewClass>
-								<foreign_table>tx_dam_cat</foreign_table>
-								<size>5</size>
-								<autoSizeMax>10</autoSizeMax>
-								<minitems>0</minitems>
-								<maxitems>10</maxitems>
-								<default></default>
-							</config>
-						</TCEforms>
-					</catPreSelection>
-				</el>
-			</ROOT>
-		</sPreSelectSettings>
-	</sheets>
+ <meta type="array">
+  <langDisable>1</langDisable>
+ </meta>
+ <sheets type="array">
+  <sDEF type="array">
+   <ROOT type="array">
+    <TCEforms type="array">
+     <sheetTitle>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_display_title</sheetTitle>
+    </TCEforms>
+    <type>array</type>
+    <el type="array">
+     <viewID type="array">
+      <TCEforms type="array">
+       <label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_display_form</label>
+       <config type="array">
+        <type>select</type>
+        <items type="array">
+         <numIndex index="1" type="array">
+          <numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_fileList</numIndex>
+          <numIndex index="1">1</numIndex>
+         </numIndex>
+         <numIndex index="2" type="array">
+          <numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_catTree</numIndex>
+          <numIndex index="1">2</numIndex>
+         </numIndex>
+         <numIndex index="3" type="array">
+          <numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_catSelection</numIndex>
+          <numIndex index="1">3</numIndex>
+         </numIndex>
+         <numIndex index="4" type="array">
+          <numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_singleView</numIndex>
+          <numIndex index="1">4</numIndex>
+         </numIndex>
+         <numIndex index="5" type="array">
+          <numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_filterView</numIndex>
+          <numIndex index="1">5</numIndex>
+         </numIndex>
+         <numIndex index="6" type="array">
+          <numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_myFiles</numIndex>
+          <numIndex index="1">6</numIndex>
+         </numIndex>
+         <numIndex index="7" type="array">
+          <numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_uploadForm</numIndex>
+          <numIndex index="1">7</numIndex>
+         </numIndex>
+         <numIndex index="8" type="array">
+          <numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_groupedCategories</numIndex>
+          <numIndex index="1">8</numIndex>
+         </numIndex>
+         <numIndex index="9" type="array">
+          <numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_useLatestList</numIndex>
+          <numIndex index="1">9</numIndex>
+         </numIndex>
+         <numIndex index="10" type="array">
+          <numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_easySearch</numIndex>
+          <numIndex index="1">10</numIndex>
+         </numIndex>
+         <numIndex index="11" type="array">
+          <numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_DrillDown</numIndex>
+          <numIndex index="1">11</numIndex>
+         </numIndex>
+         <numIndex index="12" type="array">
+          <numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_Explorer</numIndex>
+          <numIndex index="1">12</numIndex>
+         </numIndex>
+        </items>
+        <maxitems>1</maxitems>
+        <size>1</size>
+       </config>
+      </TCEforms>
+     </viewID>
+    </el>
+   </ROOT>
+  </sDEF>
+  <sSelection type="array">
+   <ROOT type="array">
+    <TCEforms type="array">
+     <sheetTitle>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_selection_title</sheetTitle>
+    </TCEforms>
+    <type>array</type>
+    <el type="array">
+     <catMounts type="array">
+      <TCEforms type="array">
+       <label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_selection_cats</label>
+       <config type="array">
+        <type>select</type>
+        <form_type>user</form_type>
+        <userFunc>EXT:dam/lib/class.tx_dam_tcefunc.php:tx_dam_tceFunc-&gt;getSingleField_selectTree</userFunc>
+        <treeViewClass>EXT:dam/components/class.tx_dam_selectionCategory.php:tx_dam_selectionCategory</treeViewClass>
+        <foreign_table>tx_dam_cat</foreign_table>
+        <size>5</size>
+        <autoSizeMax>25</autoSizeMax>
+        <minitems>0</minitems>
+        <maxitems>99</maxitems>
+        <default></default>
+       </config>
+      </TCEforms>
+     </catMounts>
+     <treeName type="array">
+      <TCEforms type="array">
+       <label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_treeName</label>
+       <config type="array">
+        <type>input</type>
+       </config>
+      </TCEforms>
+     </treeName>
+    </el>
+   </ROOT>
+  </sSelection>
+  <sOptions type="array">
+   <ROOT type="array">
+    <TCEforms type="array">
+     <sheetTitle>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_option_title</sheetTitle>
+    </TCEforms>
+    <type>array</type>
+    <el type="array">
+     <perPage type="array">
+      <TCEforms type="array">
+       <label>LLL:EXT:dam_frontend/locallang_db.xml:flexform_perPage</label>
+       <config type="array">
+        <type>input</type>
+        <size>10</size>
+       </config>
+      </TCEforms>
+     </perPage>
+     <amountOfNewImages type="array">
+      <TCEforms type="array">
+       <label>LLL:EXT:dam_frontend/locallang_db.xml:flexform_amountOfNewImages</label>
+       <config type="array">
+        <type>input</type>
+        <size>10</size>
+       </config>
+      </TCEforms>
+     </amountOfNewImages>
+     <subLevels type="array">
+      <TCEforms type="array">
+       <label>LLL:EXT:dam_frontend/locallang_db.xml:flexform_amountOfExpandedLevels</label>
+       <config type="array">
+        <type>input</type>
+        <size>10</size>
+       </config>
+      </TCEforms>
+     </subLevels>
+     <useStaticCatSelection type="array">
+      <TCEforms type="array">
+       <label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_useStaticCatSelection</label>
+       <config type="array">
+        <type>check</type>
+       </config>
+      </TCEforms>
+     </useStaticCatSelection>
+     <enableDeletions type="array">
+      <TCEforms type="array">
+       <label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_enableDeletions</label>
+       <config type="array">
+        <type>check</type>
+       </config>
+      </TCEforms>
+     </enableDeletions>
+     <enableEdits type="array">
+      <TCEforms type="array">
+       <label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_enableEdits</label>
+       <config type="array">
+        <type>check</type>
+       </config>
+      </TCEforms>
+     </enableEdits>
+     <FilterUserGroup type="array">
+      <TCEforms type="array">
+       <label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_FilterUserGroup</label>
+       <config type="array">
+        <type>select</type>
+        <foreign_table>fe_groups</foreign_table>
+        <internal_type>db</internal_type>
+        <size>5</size>
+        <minitems>0</minitems>
+        <autoSizeMax>3</autoSizeMax>
+        <maxitems>50</maxitems>
+       </config>
+      </TCEforms>
+     </FilterUserGroup>
+     <feEditGroups type="array">
+      <TCEforms type="array">
+       <label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_feEditGroups</label>
+       <config type="array">
+        <type>select</type>
+        <foreign_table>fe_groups</foreign_table>
+        <internal_type>db</internal_type>
+        <size>5</size>
+        <minitems>0</minitems>
+        <autoSizeMax>3</autoSizeMax>
+        <maxitems>50</maxitems>
+       </config>
+      </TCEforms>
+     </feEditGroups>
+     <templateFile type="array">
+      <TCEforms type="array">
+          <label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_templateFile</label>
+       <config type="array">
+        <type_t3dev>link</type_t3dev>
+        <type>input</type>
+        <size type="integer">15</size>
+        <max type="integer">255</max>
+        <eval>trim</eval>
+        <wizards type="array">
+         <_PADDING type="integer">2</_PADDING>
+         <link type="array">
+          <type>popup</type>
+          <title>Template Datei wählen</title>
+          <icon>link_popup.gif</icon>
+          <script>browse_links.php?mode=wizard</script>
+          <JSopenParams>height=300,width=500,status=0,menubar=0,scrollbars=1</JSopenParams>
+         </link>
+        </wizards>
+       </config>
+
+      </TCEforms>
+     </templateFile>
+    </el>
+   </ROOT>
+  </sOptions>
+  <sUploadSettings type="array">
+   <ROOT type="array">
+    <TCEforms type="array">
+     <sheetTitle>Upload Settings</sheetTitle>
+    </TCEforms>
+    <type>array</type>
+    <el type="array">
+     <uploadMounts type="array">
+      <TCEforms type="array">
+       <label>LLL:EXT:dam_frontend/locallang_tca.xml:upload_settings</label>
+       <config type="array">
+        <type>select</type>
+        <form_type>user</form_type>
+        <userFunc>EXT:dam/lib/class.tx_dam_tcefunc.php:tx_dam_tceFunc-&gt;getSingleField_selectTree</userFunc>
+        <treeViewClass>EXT:dam/components/class.tx_dam_selectionCategory.php:tx_dam_selectionCategory</treeViewClass>
+        <foreign_table>tx_dam_cat</foreign_table>
+        <size>5</size>
+        <autoSizeMax>10</autoSizeMax>
+        <minitems>0</minitems>
+        <maxitems>10</maxitems>
+        <default></default>
+       </config>
+      </TCEforms>
+     </uploadMounts>
+    </el>
+   </ROOT>
+  </sUploadSettings>
+  <sPreSelectSettings type="array">
+   <ROOT type="array">
+    <TCEforms type="array">
+     <sheetTitle>Preselect Categories</sheetTitle>
+    </TCEforms>
+    <type>array</type>
+    <el type="array">
+     <catPreSelection type="array">
+      <TCEforms type="array">
+       <label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_catPreSelection</label>
+       <config type="array">
+        <type>select</type>
+        <form_type>user</form_type>
+        <userFunc>EXT:dam/lib/class.tx_dam_tcefunc.php:tx_dam_tceFunc-&gt;getSingleField_selectTree</userFunc>
+        <treeViewClass>EXT:dam/components/class.tx_dam_selectionCategory.php:tx_dam_selectionCategory</treeViewClass>
+        <foreign_table>tx_dam_cat</foreign_table>
+        <size>5</size>
+        <autoSizeMax>10</autoSizeMax>
+        <minitems>0</minitems>
+        <maxitems>10</maxitems>
+        <default></default>
+       </config>
+      </TCEforms>
+     </catPreSelection>
+    </el>
+   </ROOT>
+  </sPreSelectSettings>
+ </sheets>
 </T3DataStructure>

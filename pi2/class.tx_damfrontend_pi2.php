@@ -84,8 +84,19 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 
 			// get icon base address
 		$this->iconBaseAddress = $this->conf['iconBaseAddress'];
-
-		$templateFile = t3lib_div::getFileAbsFileName($this->conf['template']); //getting filename of the template
+		
+		/*
+		 * 
+		 *  switch to read in the new flexform-value "templateFile" if it exists
+		 *  FMEY: 04.11.2010
+		 *  
+		 *  */
+		
+		if ($this->pi_getFFvalue($flexform, 'templateFile', 'sOptions'))	{
+			$templateFile = t3lib_div::getFileAbsFileName($this->pi_getFFvalue($flexform, 'templateFile', 'sOptions'));
+		}	else	{
+			$templateFile = t3lib_div::getFileAbsFileName($this->conf['template']); //getting filename of the template	
+		}
 
 		if ($templateFile && @is_file($templateFile)) {
 		  $this->template = $this->cObj->getSubpart($this->cObj->fileResource($this->conf['template']), '###TEMPLATE_LIST###');
