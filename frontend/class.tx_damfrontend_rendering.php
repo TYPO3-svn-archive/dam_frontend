@@ -191,6 +191,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 		$markerArray = array();
 		$markerArray['###FILENAME_HEADER###'] = $this->pi_getLL('FILENAME_HEADER');
 		$markerArray['###FILETYPE_HEADER###'] = $this->pi_getLL('FILETYPE_HEADER');
+		$markerArray['###FILE_SIZE_HEADER###'] = $this->pi_getLL('FILE_SIZE_HEADER');
 		$markerArray['###CR_DATE_HEADER###']  = $this->pi_getLL('CR_DATE_HEADER');
 		$markerArray['###LANGUAGE_HEADER###'] = $this->pi_getLL('LANGUAGE_HEADER');
 		$markerArray['###OWNER_HEADER###'] = $this->pi_getLL('OWNER_HEADER');

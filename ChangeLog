@@ -1,4 +1,5 @@
 Version 0.7.x
+Fixed Bug #10732: Missing Marker ###FILE_SIZE_HEADER###
 Major Feature #6963: Explorer View
 Major Feature #8214: shopping cart
 Feature #2808: add Mail functionality to pushfile
