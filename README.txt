@@ -1,4 +1,4 @@
-DEVELOPMENT VERSION for trunk (currently 0.5)
+DEVELOPMENT VERSION for trunk (currently 0.7)
 
 DAM Frontend is providing a powerful possibilty to select files out of the dam.
 
@@ -18,10 +18,8 @@ All values that can be configured via TypoScript has htmlSpecialChars = 1 set by
 You have to unset it for every field you do not want htmlSpecialChars used. Be aware of opening
 XSS-Issues without htmlSpecialChars = 1!
 
-Roadmap:
-* language overlay for dam entries
 
 Development Plattform:
 http://forge.typo3.org/projects/show/extension-dam_frontend
 
-release 0.4.2 / 13.6.2009
+release 0.7.7 / nn

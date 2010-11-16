@@ -17,7 +17,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend') . '/frontend/class.tx_damfron
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2006-2009 in2form.com (typo3@in2form.com)
+*  (c) 2006-2010 in2code.de (dam_frontend@in2code.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
