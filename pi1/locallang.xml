@@ -250,7 +250,7 @@
 			<label index="BUTTON_NEXT">Weiter</label>
 			<label index="LABEL_MESSAGE">Hinweis</label>
 			<label index="MESSAGE_TEXT_DELETION_SUCESS">Die Datei wurde erfolgreich gelöscht.</label>
-			<label index="BUTTON_CONFIRM">bestötigen</label>
+			<label index="BUTTON_CONFIRM">bestätigen</label>
 			<label index="BUTTON_BACK">zurück</label>
 			<label index="LANGUAGE_HEADER">Sprache</label>
 			<label index="CREATOR_HEADER">Autor</label>
