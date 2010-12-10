@@ -535,7 +535,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 		unset ($this->piVars['msg']);
 		unset ($this->piVars['level0']);
 		$param_array = array();
-		foreach ($this->piVars as $piVar =>$value) {
+		foreach ((array) $this->piVars as $piVar =>$value) {
 			$param_array['tx_damfrontend_pi1['.$piVar.']']=$value;
 		}
 	
