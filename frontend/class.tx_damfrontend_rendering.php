@@ -402,6 +402,14 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 				$markerArray['###BUTTON_CATEDIT###'] ='';
 			}
 
+			// NEW Hook for additional fields
+            if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_GROUPEDLIST_VIEW'])) {
+                foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_GROUPEDLIST_VIEW'] as $_classRef) { 
+                    $_procObj = &t3lib_div::getUserObj($_classRef); 
+                    $_procObj->renderListView(&$markerArray, $this, $elem);
+                }
+            }
+			
  			$rows .= tslib_cObj::substituteMarkerArray($record_Code, $markerArray);
  			$sortlinks = array();
  		}
