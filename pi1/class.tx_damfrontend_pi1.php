@@ -685,9 +685,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 */
 	function getInputTree() {
 		
-			if ($this->internal['catAll']) {
+			if ($this->internal['catAll'] AND $this->internal['viewID']==2) {
+				// do catAll only, if the current element is a treeElement
+				
 				foreach ($this->internal['catMounts'] as $catMount) {
-
+					
 					if (!$catMount) {
 						$catMount=0;
 					}
