@@ -3,6 +3,8 @@
 	<name>dam_frontend</name>
 	<comment></comment>
 	<projects>
+		<project>dam_dev</project>
+		<project>TYPO3 4.3</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

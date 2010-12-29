@@ -772,14 +772,19 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 
 			// easySearch
+		if (t3lib_div::_GP('resetFilter')) {
+			$this->catList->unsetAllCategories();
+		}
+		 
 		if (t3lib_div::_GP('easySearchSetFilter') OR t3lib_div::_GP('setFilter')) {
-
 			//unset only if the current content element is the search box
-			if ($this->internal['viewID']==10 OR  (t3lib_div::_GP('setFilter') AND $this->internal['filter']['categoryMount'] ) ) {
+			if ($this->internal['viewID']==10 or (t3lib_div::_GP('setFilter') )) {
 				$this->catList->unsetAllCategories();
 			}
 
+			
 			if ($this->internal['filter']['categoryMount']=='noselection' && ($this->internal['incomingtreeID'] <> $this->internal['treeID']) AND $this->internal['viewID']==10) {
+				// EASY Search
 				// use all categories --> used only for the easy search
 				$row = t3lib_BEfunc::getRecord('tt_content',$this->internal['incomingtreeID']);
 				$cObj = t3lib_div::makeInstance('tslib_cObj');
@@ -789,10 +794,28 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				// getting values from flexform ==> it's possible to overwrite flexform values with ts setttings
 				$this->internal['catMounts'] = explode(',',$this->pi_getFFvalue($cObj->data['pi_flexform'], 'catMounts', 'sSelection'));
 				$this->addAllCategories($this->internal['catMounts'],$this->internal['incomingtreeID'],true);
-			}
+			} 
 			else {
-				// use the posted category to restrict
-				$this->addAllCategories(array($this->internal['filter']['categoryMount']),$this->internal['incomingtreeID'],true);
+				// restrict for the given category, which is used in the selectorbox of the easysearch form
+				$catID = $this->internal['catPlus_Rec'];
+				if (intval(t3lib_div::_GP('categoryMount'))>0) {
+					$this->catList->op_Plus(t3lib_div::_GP('categoryMount'), $this->internal['incomingtreeID']);
+					$catID = t3lib_div::_GP('categoryMount');
+					if ($this->conf['easySearch.']['selectAllChilds']==1) {
+						if ($catID==-1 ) $catID=0;
+						$subs = $this->catLogic->getSubCategories($catID);
+						foreach ($subs as $sub) {
+							$this->catList->op_Plus($sub['uid'], $this->internal['incomingtreeID']);
+						}
+					}
+				}
+			}
+			
+			if (t3lib_div::_GP('categoryMount') AND t3lib_div::_GP('setFilter')) {
+				// if a category restriction is used in the search form
+				if ($this->internal['viewID']<>10 AND $this->internal['viewID']<>5 AND intval(t3lib_div::_GP('categoryMount'))>0) {
+					$this->catList->op_Equals(t3lib_div::_GP('categoryMount'), $this->internal['treeID']);
+				}
 			}
 		}
 		

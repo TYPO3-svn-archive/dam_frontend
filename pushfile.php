@@ -41,6 +41,8 @@ $GLOBALS['TSFE']->fe_user = $userObj;
 
 tslib_eidtools::connectDB();
 
+tslib_eidtools::initLanguage();
+
 $docLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_documents');
 
 $docLogic->feuser = $userObj;
