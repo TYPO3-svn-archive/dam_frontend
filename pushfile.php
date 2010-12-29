@@ -3,7 +3,7 @@
  * ************************************************************
  *  Copyright notice
  *
- *  (c) 2006-2010  (Stefan Busemann / martin_baum@gmx.net)
+ *  (c) 2006-2011  (Stefan Busemann / martin_baum@gmx.net)
  *  All rights reserved
  *
  *  This script is part of the Typo3 project. The Typo3 project is
@@ -92,10 +92,10 @@ if (is_array($post) && count($post) > 0) {
 		}
 
 		if ($docID <= 0) {
-			die('<h1>Error</h1><p>You have no access to download a file. In this case no correct DocID was given!</p>');
+			noAccess('<h1>Error</h1><p>You have no access to download a file. In this case no correct DocID was given!</p>',$docID);
 		}
 		if (!$docLogic->checkAccess($docID, 2)) {
-			die('<h1>Error</h1><p>You have no access to download this file.');
+			noAccess('<h1>Error</h1><p>You have no access to download this file.',$docID);
 		}
 		$doc = $docLogic->getDocument($docID);
 		// 
@@ -116,7 +116,7 @@ if (is_array($post) && count($post) > 0) {
 		
 		// 	check if a user has access to the dam record / file
 		if (!$docLogic->checkDocumentAccess($doc['fe_group'])) {
-			die('<h1>Error</h1><p>You have no access to this file.');
+			noAccess('<h1>Error</h1><p>You have no access to this file.',$docID);
 		}
 		$filePath = PATH_site.$doc['file_path'].$doc['file_name'];
 		if ($tmp = createFile($filePath, configuration2Array($configuration['convert']))) {
@@ -406,6 +406,19 @@ if (is_array($post) && count($post) > 0) {
 		return false; 
 	}
 
+	function noAccess($message,$docID) {
+		
+		$redirect=$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.']['filelist.']['security_options.']['redirectToLoginPage'];
+		$URL=$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.']['filelist.']['security_options.']['redirectToURL'];
+		
+		if ($redirect) {
+			$redirectURL = urlencode('?id=7&eID=dam_frontend_push&docID='.$docID);
+			header('Location: '. $URL.$redirectURL);
+		}
+		else {
+			die($message);
+		}
+	}
 	
 	
 	// test for access to a file
@@ -433,18 +446,18 @@ if (is_array($post) && count($post) > 0) {
 	
 	// check if a user has access to the selected categories (a user must have access to all categories that are selected)
 	if (!$docLogic->checkAccess($docID, 1)) {
-		die('<h1>Sorry</h1><p>You do not have the right to download this file.');
+		noAccess('<h1>Sorry</h1><p>You do not have the right to download this file.',$docID);
 	}
 	
 	
 	// check if a user has access to the selected categories (a user must have access to all categories that are selected)
 	if (!$docLogic->checkAccess($docID, 2)) {
-		die('<h1>Sorry</h1><p>You do not have the right to download this file.');
+		noAccess('<h1>Sorry</h1><p>You do not have the right to download this file.',$docID);
 	}
 	
 	// check if a user has access to the dam record / file
 	if (!$docLogic->checkDocumentAccess($doc['fe_group'])) {
-		die('<h1>Error</h1><p>You have no access to this file.');
+		noAccess('<h1>Error</h1><p>You have no access to this file.',$docID);
 	}
 	
 	$filePath = PATH_site.$doc['file_path'].$doc['file_name'];
