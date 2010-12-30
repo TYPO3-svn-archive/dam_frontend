@@ -20,6 +20,7 @@ plugin.tx_damfrontend_pi1 {
 	forceDownloadForFiles=1
 	
 	categoryTree {
+		showCategoriesControl=1
 		preSelectChildCategories = 0
 		showHiddenCategories = 0
 		useLanguageOverlay = 1
@@ -59,16 +60,21 @@ plugin.tx_damfrontend_pi1 {
 		categoryTitle.wrap = |
 		categoryTitle.length = 30
 		
+		#categoryTitle.action options are catPlus or catEquals
+		categoryTitle.action = catEquals 
+		
 		#IMAGE Objects for rendering the cat tree
-		treeRootIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}catfolder.gif
 		treePlusIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}plus.gif
 		treePlusIconBottom.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}plusbottom.gif
 		treeMinusIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}minus.gif
 		treeMinusIconBottom.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}minusbottom.gif
 		treeJoinIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}join.gif
 		treeJoinIconBottom.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}joinbottom.gif
+		
+		treeRootIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}catfolder.gif
 		treeCatIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}cat.gif
-
+		treeOpenCatIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}folder_open.png
+		treeRootOpenIcon < .treeOpenCatIcon  
 		treeNavIcons {
 			# default objects are IMAGE
 			line.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}line.gif

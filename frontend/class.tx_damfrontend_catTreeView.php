@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2006-2010 in2form.com (typo3@in2form.com)
+*  (c) 2006-2011 in2form.com (typo3@in2code.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -32,7 +32,7 @@
  *
  * @package typo3
  * @subpackage tx_dam_frontend
- * @author Martin Baum <typo3@in2form.com>
+ * @author Stefan Busemann <typo3@in2code.de>
  *
  * Some scripts that use this class:	--
  * Depends on:		--
@@ -214,16 +214,24 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	 */
 	function wrapTitle($title,$row,$bank=0) {
 		$id = (int)t3lib_div::_GET('id');
-
 		$param_array = array (
 			'tx_damfrontend_pi1' => '', // ok, the t3lib_div::linkThisScript cant work with arrays
-			'tx_damfrontend_pi1[catPlus]' => $row['uid'],
+			'tx_damfrontend_pi1[catPlus]' => null,
 			'tx_damfrontend_pi1[catEquals]' => null,
 			'tx_damfrontend_pi1[catMinus]' => null,
 			'tx_damfrontend_pi1[catPlus_Rec]' => null,
 			'tx_damfrontend_pi1[catMinus_Rec]' => null,
 			'tx_damfrontend_pi1[treeID]' => $this->treeID
 		);
+		
+		if ($this->conf['categoryTree.']['categoryTitle.']['action']=='catEquals') {
+			$param_array['tx_damfrontend_pi1[catEquals]']=$row['uid'];
+		} 
+		else {
+			$param_array['tx_damfrontend_pi1[catPlus]']=$row['uid'];
+		}
+	
+		
 		if ($id > 0) { $param_array['tx_damfrontend_pi1[id]'] = $id; }
 		$this->conf['categoryTree.']['categoryTitle.']['parameter'] = $GLOBALS['TSFE']->id;
 		$this->conf['categoryTree.']['categoryTitle.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
@@ -353,9 +361,10 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 				$idAttr = htmlspecialchars($this->domIdPrefix.$this->getId($v['row']).'_'.$v['bank']);
 				$titleLen = $this->conf['categoryTree.']['categoryTitle.']['length'] ? $this->conf['categoryTree.']['categoryTitle.']['length']:30;
 				$title = $this->cObj->stdWrap ($this->getTitleStr($v['row'], $titleLen),$this->conf['categoryTree.']['catTitle.']);
-
-				$control = $this->getControl($title, $v['row'], $v['bank']);
-
+				
+				if ($this->conf['categoryTree.']['showCategoriesControl']==1) {
+					$control = $this->getControl($title, $v['row'], $v['bank']);
+				}
 				$line='
 					<tr class="'.$class.'">
 						<td id="'.$idAttr.'" class="'.$sel_class.'">'.
@@ -434,11 +443,11 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 				// Preparing rootRec for the mount
 			if ($uid)	{
 				$rootRec = $this->getRecord($uid);
-				$firstHtml.=$this->getIcon($rootRec);
+				$firstHtml.=$this->getIcon($rootRec,$isOpen);
 			} else {
 					// Artificial record for the tree root, id=0
 				$rootRec = $this->getRootRecord($uid);
-				$firstHtml.=$this->getRootIcon($rootRec);
+				$firstHtml.=$this->getRootIcon($rootRec,$isOpen);
 			}
 
 			if (is_array($rootRec))	{
@@ -538,7 +547,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 				// Set HTML-icons, if any:
 			if ($this->makeHTML)	{
 				$HTML = $depthData.$this->PMicon($row,$a,$c,$nextCount,$exp);
-				$HTML.=$this->wrapStop($this->getIcon($row),$row);
+				$HTML.=$this->wrapStop($this->getIcon($row,$exp),$row);
 			}
 
 				// Finally, add the row/HTML content to the ->tree array in the reserved key.
@@ -563,9 +572,14 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	 * @param	array		Record for root.
 	 * @return	string		Icon image tag.
 	 */
-	function getRootIcon($rec) {
+	function getRootIcon($rec,$isOpen) {
 		$this->rootIconIsSet=true;
-		return $this->wrapIcon($this->cObj->IMAGE($this->conf['categoryTree.']['treeRootIcon.']),$rec);
+		if ($isOpen) {
+			return $this->wrapIcon($this->cObj->IMAGE($this->conf['categoryTree.']['treeRootOpenIcon.']),$rec);
+		}
+		else {
+			return $this->wrapIcon($this->cObj->IMAGE($this->conf['categoryTree.']['treeRootIcon.']),$rec);
+		}
 	}
 
 		/**
@@ -575,9 +589,14 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
  * @param	array		Item row.
  * @return	string		Image tag.
  */
-	function getIcon($row) {
+	function getIcon($row,$isOpen) {
+		if ($isOpen) {
+			$icon = $this->cObj->IMAGE($this->conf['categoryTree.']['treeOpenCatIcon.']);
+		}
+		else {
 			$icon = $this->cObj->IMAGE($this->conf['categoryTree.']['treeCatIcon.']);
-			$icon = $this->wrapIcon($icon,$row);
+		}
+		$icon = $this->wrapIcon($icon,$row);
 
 		return $icon;
 	}
