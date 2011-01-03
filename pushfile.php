@@ -41,10 +41,12 @@ $GLOBALS['TSFE']->fe_user = $userObj;
 
 tslib_eidtools::connectDB();
 
-tslib_eidtools::initLanguage();
+if (t3lib_div::int_from_ver(TYPO3_version)>=4003000 ){
+	// use init Language only, if version is greater than 4.3
+	tslib_eidtools::initLanguage();
+}
 
 $docLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_documents');
-
 $docLogic->feuser = $userObj;
 
 $pid = intval(t3lib_div::GPvar('id'));
