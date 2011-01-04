@@ -709,7 +709,17 @@ require_once(PATH_tslib.'class.tslib_content.php');
 					$errors['error_to_date'] = 1;
 				}
 			}
-			if ($filterArray['filetype'] != '' && $filterArray['filetype'] != ' ') $this->additionalFilter .= ' AND '.$this->docTable.'.file_type = \''.$filterArray['filetype'].'\'' ;
+			
+				// if the filetype filter is a group of filetypes
+			if ($this->conf['filterView.']['filetypes.'][$filterArray['filetype'].'.']) {
+				foreach ($this->conf['filterView.']['filetypes.'][$filterArray['filetype'].'.'] as $ext =>$type) {
+					$types[]= $GLOBALS['TYPO3_DB']->fullQuoteStr($ext,'tx_dam');
+				}
+				 $this->additionalFilter .= ' AND ' . $this->docTable.'.file_type IN ('.implode( ',', $types) .') ';
+			}
+			else {
+				if ($filterArray['filetype'] != '' && $filterArray['filetype'] != ' ') $this->additionalFilter .= ' AND '.$this->docTable.'.file_type = \''.$filterArray['filetype'].'\'' ;
+			}
 			
 			if ($filterArray['searchword'] != '' && $filterArray['searchword'] != ' ') $this->additionalFilter .= $this->getSearchwordWhereString($filterArray['searchword']);
 			

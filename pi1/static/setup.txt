@@ -297,8 +297,17 @@ plugin.tx_damfrontend_pi1 {
 		searchCatsAsMounts = 1
 		
 		filetypes {
+			audio = audiofiles
+			audio {
+				mp3 = mp3file
+				oggvobis = oggvobis
+			}
+			documents = documentfiles
+			documents {
+				doc = wordfile				
+				docx = wordfilex
+			}
 			pdf = pdffile
-			word = wordfile
 			jpg = jpegfile
 			gif = giffile
 			zip = zipfile

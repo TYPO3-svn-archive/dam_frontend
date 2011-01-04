@@ -949,9 +949,12 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 		#$filetypeArray[$filetype]['set'] = 1;
 		$content = '<select name="filetype">';
 		foreach ($filetypeArray as $type => $arr) {
-			$filetype == $type ? $sel = ' selected="selected"': $sel='';
-			if ($type == 'noselection') $type = '';
- 			$content .= '<option value="'.$type.'"'.$sel.'>'.$this->pi_getLL($arr).'</option>';
+			# do only take ts options that are at root level
+			if (!is_array($arr)) {
+				$filetype == $type ? $sel = ' selected="selected"': $sel='';
+				if ($type == 'noselection') $type = '';
+ 				$content .= '<option value="'.$type.'"'.$sel.'>'.$this->pi_getLL($arr).'</option>';
+			}
 		}
 		$content .= '</select>';
 		return $content;
