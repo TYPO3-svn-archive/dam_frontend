@@ -209,10 +209,10 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	 *
 	 * @param	string		$title: ...
 	 * @param	resultset		$row: ...
-	 * @param	int		$bank: ...
+	 * @param	string		$cmd: Tree Control command (open or close the tree)
 	 * @return	string		html ...
 	 */
-	function wrapTitle($title,$row,$bank=0) {
+	function wrapTitle($title,$row,$bank=0,$cmd) {
 		$id = (int)t3lib_div::_GET('id');
 		$param_array = array (
 			'tx_damfrontend_pi1' => '', // ok, the t3lib_div::linkThisScript cant work with arrays
@@ -224,14 +224,22 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 			'tx_damfrontend_pi1[treeID]' => $this->treeID
 		);
 		
-		if ($this->conf['categoryTree.']['categoryTitle.']['action']=='catEquals') {
-			$param_array['tx_damfrontend_pi1[catEquals]']=$row['uid'];
-		} 
-		else {
-			$param_array['tx_damfrontend_pi1[catPlus]']=$row['uid'];
+		switch ($this->conf['categoryTree.']['catTitle.']['actions.']['selectCat']) {
+			case 'catEquals':
+				$param_array['tx_damfrontend_pi1[catEquals]']=$row['uid'];
+				break;
+			case 'catPlus':
+				$param_array['tx_damfrontend_pi1[catPlus]']=$row['uid'];
+				break;
+			case 'catPlus_Rec':
+				$param_array['tx_damfrontend_pi1[catPlus_Rec]']=$row['uid'];
+				break;
 		}
-	
 		
+		if ($this->conf['categoryTree.']['catTitle.']['actions.']['openTree']==1) {
+			$param_array['PM']=$cmd;
+		}
+
 		if ($id > 0) { $param_array['tx_damfrontend_pi1[id]'] = $id; }
 		$this->conf['categoryTree.']['categoryTitle.']['parameter'] = $GLOBALS['TSFE']->id;
 		$this->conf['categoryTree.']['categoryTitle.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
@@ -361,7 +369,6 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 				$idAttr = htmlspecialchars($this->domIdPrefix.$this->getId($v['row']).'_'.$v['bank']);
 				$titleLen = $this->conf['categoryTree.']['categoryTitle.']['length'] ? $this->conf['categoryTree.']['categoryTitle.']['length']:30;
 				$title = $this->cObj->stdWrap ($this->getTitleStr($v['row'], $titleLen),$this->conf['categoryTree.']['catTitle.']);
-				
 				if ($this->conf['categoryTree.']['showCategoriesControl']==1) {
 					$control = $this->getControl($title, $v['row'], $v['bank']);
 				}
@@ -369,7 +376,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 					<tr class="'.$class.'">
 						<td id="'.$idAttr.'" class="'.$sel_class.'">'.
 							$v['HTML'].
-							$this->wrapTitle($title, $v['row'], $v['bank']).
+							$this->wrapTitle($title, $v['row'], $v['bank'],$v['cmd']).
 						'</td>
 						<td  id="'.$idAttr.'Control" class="typo3-browsetree-control">'.
 							($control ? $control : '<span></span>').
@@ -557,7 +564,8 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 				'HTML_depthData' => $this->makeHTML==2 ? $HTML_depthData : '',
 				'invertedDepth'=>$depth,
 				'blankLineCode'=>$blankLineCode,
-				'bank' => $this->bank
+				'bank' => $this->bank,
+				'cmd' => $this->bank.'_'.($exp?'0_':'1_').$row['uid'].'_'.$this->treeName,
 			);
 		}
 

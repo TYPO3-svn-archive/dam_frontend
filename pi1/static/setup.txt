@@ -41,6 +41,11 @@ plugin.tx_damfrontend_pi1 {
 		catTitle.stdWrap.wrap = |
 		catTitle.no_access.wrap = |
 		
+		catTitle.actions {
+			#categoryTitle.action options are catPlus or catEquals or catPlus_Rec
+			selectCat = catEquals
+			openTree = 1
+		}
 		
 		# wrap for the whole category line
 		category.wrap = |
@@ -59,9 +64,6 @@ plugin.tx_damfrontend_pi1 {
 		categoryTitle.ATagParams = class="titlewrap"		
 		categoryTitle.wrap = |
 		categoryTitle.length = 30
-		
-		#categoryTitle.action options are catPlus or catEquals
-		categoryTitle.action = catEquals 
 		
 		#IMAGE Objects for rendering the cat tree
 		treePlusIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}plus.gif
