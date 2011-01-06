@@ -20,7 +20,13 @@ plugin.tx_damfrontend_pi1 {
 	forceDownloadForFiles=1
 	
 	categoryTree {
-		showCategoriesControl=1
+		showRootCategory=0
+		
+		showCategoriesControl {
+			plusIcon = 1
+			minusIcon = 0
+			equalsIcon = 0
+		}
 		preSelectChildCategories = 0
 		showHiddenCategories = 0
 		useLanguageOverlay = 1
@@ -35,7 +41,15 @@ plugin.tx_damfrontend_pi1 {
 			# additional parameters are added via extension
 			stdWrap.typolink.parameter.data = TSFE:id
 			stdWrap.typolink.additionalParams.insertData = 1
+			stdWrap.typolink.section  = treeroot
+			
 		}
+	
+		minusIcon < .plusIcon
+		minusIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}catminus.gif
+
+		equalsIcon < .plusIcon
+		equalsIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}catequals.gif	
 		
 		# wrap for the category title
 		catTitle.stdWrap.wrap = |
@@ -50,12 +64,8 @@ plugin.tx_damfrontend_pi1 {
 		# wrap for the whole category line
 		category.wrap = |
 			
-		expandTreeLevel = 0
-		minusIcon < .plusIcon
-		minusIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}catminus.gif
+		expandTreeLevel = 1
 
-		equalsIcon < .plusIcon
-		equalsIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}catequals.gif
 
 		stdWrap.wrap = <div class="cattree">|</div>
 		stdWrapControl.wrap = <div class="control" >|</div>
@@ -64,6 +74,8 @@ plugin.tx_damfrontend_pi1 {
 		categoryTitle.ATagParams = class="titlewrap"		
 		categoryTitle.wrap = |
 		categoryTitle.length = 30
+		categoryTitle.section =
+		
 		
 		#IMAGE Objects for rendering the cat tree
 		treePlusIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}plus.gif
