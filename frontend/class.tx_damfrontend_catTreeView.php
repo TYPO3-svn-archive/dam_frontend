@@ -134,8 +134,8 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
  		$this->treeID = $treeID;
  		$this->user =& $GLOBALS['TSFE']->fe_user;
  		$this->backPath = 'typo3/';
-		#$this->iconPath = $this->conf['categoryTree.']['iconPath'];
-		#$this->rootIcon = $this->conf['categoryTree.']['treeRootIcon'];
+
+ 		if ($this->conf['categoryTree.']['sorting']) $this->orderByFields = $this->conf['categoryTree.']['sorting'];
 	}
 
 	/**
