@@ -1033,7 +1033,7 @@ plugin.tx_damfrontend_pi1 {
 		tx_damfrontend_DAL_documents.getDocumentList.conf=0
 		tx_damfrontend_DAL_documents.getDocumentList.rows=0
 		tx_damfrontend_DAL_documents.getDocumentList.rowsAfterAccessCheck=0
-		tx_damfrontend_catlist.getCatSelection=0	
+		tx_damfrontend_catTreeView.printTree.showTreeArr=0
 	}
 }
 [globalVar = LIT:1 = {$plugin.tx_damfrontend_pi1.doNotUsePushFile}]

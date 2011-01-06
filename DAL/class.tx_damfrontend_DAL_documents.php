@@ -6,7 +6,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2006-2010 in2code.de (info@in2code.de)
+*  (c) 2006-2011 in2code.de (typo3@in2code.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is

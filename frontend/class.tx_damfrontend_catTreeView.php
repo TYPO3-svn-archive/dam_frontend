@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2006-2011 in2form.com (typo3@in2code.de)
+*  (c) 2006-2011 in2code.de (typo3@in2code.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -359,7 +359,10 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 				  TYPO3 tree structure.
 				-->
 				<table class="typo3-browsetree">';
-
+			if ($this->conf['enableDebug']==1) {
+				if ($this->conf['debug.']['tx_damfrontend_catTreeView.']['printTree.']['showTreeArr']==1) t3lib_div::debug($treeArr);
+			}
+			
 			foreach($treeArr as $k => $v)	{
 				if (is_array($this->selectedCats)) {
 					$test = array_search($v['row']['uid'], $this->selectedCats);
@@ -450,18 +453,18 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 				// Preparing rootRec for the mount
 			if ($uid)	{
 				$rootRec = $this->getRecord($uid);
-				$firstHtml.=$this->getIcon($rootRec,$isOpen);
+				$firstHtml.=$this->getIcon($rootRec,$isOpen,$cmd);
 			} else {
 					// Artificial record for the tree root, id=0
 				$rootRec = $this->getRootRecord($uid);
-				$firstHtml.=$this->getRootIcon($rootRec,$isOpen);
+				$firstHtml.=$this->getRootIcon($rootRec,$isOpen,$cmd);
 			}
 
 			if (is_array($rootRec))	{
 				$uid = $rootRec['uid'];		// In case it was swapped inside getRecord due to workspaces.
 
 					// Add the root of the mount to ->tree
-				$this->tree[]=array('HTML'=>$firstHtml, 'row'=>$rootRec, 'bank'=>$this->bank);
+				$this->tree[]=array('HTML'=>$firstHtml, 'row'=>$rootRec, 'bank'=>$this->bank,'cmd'=>$cmd);
 
 					// If the mount is expanded, go down:
 				if ($isOpen)	{
@@ -551,10 +554,12 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 				$exp=0;	// Clear "did expand" flag
 			}
 
+			$cmd = $this->bank.'_'.($exp?'0_':'1_').$row['uid'].'_'.$this->treeName;
+			
 				// Set HTML-icons, if any:
 			if ($this->makeHTML)	{
 				$HTML = $depthData.$this->PMicon($row,$a,$c,$nextCount,$exp);
-				$HTML.=$this->wrapStop($this->getIcon($row,$exp),$row);
+				$HTML.=$this->wrapStop($this->getIcon($row,$exp,$cmd),$row);
 			}
 
 				// Finally, add the row/HTML content to the ->tree array in the reserved key.
@@ -565,7 +570,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 				'invertedDepth'=>$depth,
 				'blankLineCode'=>$blankLineCode,
 				'bank' => $this->bank,
-				'cmd' => $this->bank.'_'.($exp?'0_':'1_').$row['uid'].'_'.$this->treeName,
+				'cmd' => $cmd,
 			);
 		}
 
@@ -580,13 +585,13 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	 * @param	array		Record for root.
 	 * @return	string		Icon image tag.
 	 */
-	function getRootIcon($rec,$isOpen) {
+	function getRootIcon($rec,$isOpen,$cmd) {
 		$this->rootIconIsSet=true;
 		if ($isOpen) {
-			return $this->wrapIcon($this->cObj->IMAGE($this->conf['categoryTree.']['treeRootOpenIcon.']),$rec);
+			return $this->wrapTitle($this->wrapIcon($this->cObj->IMAGE($this->conf['categoryTree.']['treeRootOpenIcon.']),$rec),$rec,0,$cmd);
 		}
 		else {
-			return $this->wrapIcon($this->cObj->IMAGE($this->conf['categoryTree.']['treeRootIcon.']),$rec);
+			return $this->wrapTitle($this->wrapIcon($this->cObj->IMAGE($this->conf['categoryTree.']['treeRootIcon.']),$rec),$rec,0,$cmd);
 		}
 	}
 
@@ -597,14 +602,14 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
  * @param	array		Item row.
  * @return	string		Image tag.
  */
-	function getIcon($row,$isOpen) {
+	function getIcon($row,$isOpen,$cmd) {
 		if ($isOpen) {
 			$icon = $this->cObj->IMAGE($this->conf['categoryTree.']['treeOpenCatIcon.']);
 		}
 		else {
 			$icon = $this->cObj->IMAGE($this->conf['categoryTree.']['treeCatIcon.']);
 		}
-		$icon = $this->wrapIcon($icon,$row);
+		$icon = $this->wrapTitle($this->wrapIcon($icon,$row),$row,0,$cmd) ;
 
 		return $icon;
 	}
