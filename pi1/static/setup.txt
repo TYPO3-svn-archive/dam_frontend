@@ -67,7 +67,7 @@ plugin.tx_damfrontend_pi1 {
 		expandTreeLevel = 1
 
 
-		stdWrap.wrap = <div class="cattree">|</div>
+		wrap = <div class="cattree">|</div>
 		stdWrapControl.wrap = <div class="control" >|</div>
 		
 		# TypoLink for categoryTitle
