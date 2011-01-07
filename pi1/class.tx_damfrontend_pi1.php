@@ -722,12 +722,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				}
 			}
 			else if ($this->internal['catPlus_Rec']) {
-				$catID = $this->internal['catPlus_Rec'];
-				if ($catID==-1 ) $catID=0;
-				$subs = $this->catLogic->getSubCategories($catID);
-				foreach ($subs as $sub) {
-					$this->catList->op_Plus($sub['uid'], $this->internal['incomingtreeID']);
-				}
+				$this->catList->op_PlusRec($sub['uid'], $this->internal['incomingtreeID']);
 			}
 
 			if ($this->internal['catClear']) {
@@ -816,7 +811,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			if (t3lib_div::_GP('categoryMount') AND t3lib_div::_GP('setFilter')) {
 				// if a category restriction is used in the search form
 				if ($this->internal['viewID']<>10 AND $this->internal['viewID']<>5 AND intval(t3lib_div::_GP('categoryMount'))>0) {
-					$this->catList->op_Equals(t3lib_div::_GP('categoryMount'), $this->internal['treeID']);
+					if ($this->conf['filterView.']['searchCatsAsMounts']==1) {
+						$this->catList->op_PlusRec(t3lib_div::_GP('categoryMount'), $this->internal['treeID']);
+					}
+					else {
+						$this->catList->op_Equals(t3lib_div::_GP('categoryMount'), $this->internal['treeID']);
+					}
 				}
 			}
 		}
