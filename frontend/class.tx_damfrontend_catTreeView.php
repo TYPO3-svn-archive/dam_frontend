@@ -290,9 +290,10 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	 * @param	string		$title: ...
 	 * @param	resultset		$row: ...
 	 * @param	string		$cmd: Tree Control command (open or close the tree)
+	 * @param	string		$scope: a unique string for the caller of the function, to create unique names
 	 * @return	string		html ...
 	 */
-	function wrapTitle($title,$row,$bank=0,$cmd) {
+	function wrapTitle($title,$row,$bank=0,$cmd,$scope='default') {
 		$id = (int)t3lib_div::_GET('id');
 		$param_array = array (
 			'tx_damfrontend_pi1' => '', // ok, the t3lib_div::linkThisScript cant work with arrays
@@ -323,10 +324,15 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 		
 		if ($id > 0) { $param_array['tx_damfrontend_pi1[id]'] = $id; }
 		$this->conf['categoryTree.']['categoryTitle.']['parameter'] = $GLOBALS['TSFE']->id;
-		$this->conf['categoryTree.']['categoryTitle.']['ATagParams'].= ' name="'.$cmd.'" ';
-		if (!$this->conf['categoryTree.']['categoryTitle.']['section'])	$this->conf['categoryTree.']['categoryTitle.']['section']=$cmd;
+		$linkConfOrg = $this->conf['categoryTree.']['categoryTitle.']['ATagParams'];
+		$this->conf['categoryTree.']['categoryTitle.']['ATagParams'].= ' name="'.$scope.$cmd.'" ';
+		
+#		if (!$this->conf['categoryTree.']['categoryTitle.']['section'])	$this->conf['categoryTree.']['categoryTitle.']['section']=$scope.$cmd;
+		$this->conf['categoryTree.']['categoryTitle.']['section']=$scope.$cmd;
 		$this->conf['categoryTree.']['categoryTitle.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
-		return $this->cObj->typoLink($title, $this->conf['categoryTree.']['categoryTitle.']);
+		$content = $this->cObj->typoLink($title, $this->conf['categoryTree.']['categoryTitle.']);
+		$this->conf['categoryTree.']['categoryTitle.']['ATagParams'] = $linkConfOrg;
+		return $content;
 	}
 
 
@@ -465,7 +471,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 					<tr class="'.$class.'">
 						<td id="'.$idAttr.'" class="'.$sel_class.'">'.
 							$v['HTML'].
-							$this->wrapTitle($title, $v['row'], $v['bank'],$v['cmd']).
+							$this->wrapTitle($title, $v['row'], $v['bank'],$v['cmd'],'control').
 						'</td>
 						<td  id="'.$idAttr.'Control" class="typo3-browsetree-control">'.
 							($control ? $control : '<span></span>').
@@ -681,10 +687,10 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	function getRootIcon($rec,$isOpen,$cmd) {
 		$this->rootIconIsSet=true;
 		if ($isOpen) {
-			return $this->wrapTitle($this->wrapIcon($this->cObj->IMAGE($this->conf['categoryTree.']['treeRootOpenIcon.']),$rec),$rec,0,$cmd);
+			return $this->wrapTitle($this->wrapIcon($this->cObj->IMAGE($this->conf['categoryTree.']['treeRootOpenIcon.']),$rec),$rec,0,$cmd,'treeRoot');
 		}
 		else {
-			return $this->wrapTitle($this->wrapIcon($this->cObj->IMAGE($this->conf['categoryTree.']['treeRootIcon.']),$rec),$rec,0,$cmd);
+			return $this->wrapTitle($this->wrapIcon($this->cObj->IMAGE($this->conf['categoryTree.']['treeRootIcon.']),$rec),$rec,0,$cmd,'treeRoot');
 		}
 	}
 
@@ -702,7 +708,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 		else {
 			$icon = $this->cObj->IMAGE($this->conf['categoryTree.']['treeCatIcon.']);
 		}
-		$icon = $this->wrapTitle($this->wrapIcon($icon,$row),$row,0,$cmd) ;
+		$icon = $this->wrapTitle($this->wrapIcon($icon,$row),$row,0,$cmd,'icon') ;
 
 		return $icon;
 	}
