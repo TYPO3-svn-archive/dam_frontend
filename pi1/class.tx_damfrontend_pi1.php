@@ -775,7 +775,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		 
 		if (t3lib_div::_GP('easySearchSetFilter') OR t3lib_div::_GP('setFilter')) {
 			//unset only if the current content element is the search box
-			if ($this->internal['viewID']==10 or (t3lib_div::_GP('setFilter') )) {
+			if ($this->internal['viewID']==10) {
 				$this->catList->unsetAllCategories();
 			}
 
@@ -795,7 +795,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			else {
 				// restrict for the given category, which is used in the selectorbox of the easysearch form
 				$catID = $this->internal['catPlus_Rec'];
-				if (intval(t3lib_div::_GP('categoryMount'))>0) {
+				if (intval(t3lib_div::_GP('categoryMount'))>0 AND $this->internal['viewID']==10) {
 					$this->catList->op_Plus(t3lib_div::_GP('categoryMount'), $this->internal['incomingtreeID']);
 					$catID = t3lib_div::_GP('categoryMount');
 					if ($this->conf['easySearch.']['selectAllChilds']==1) {
@@ -810,7 +810,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			
 			if (t3lib_div::_GP('categoryMount') AND t3lib_div::_GP('setFilter')) {
 				// if a category restriction is used in the search form
-				if ($this->internal['viewID']<>10 AND $this->internal['viewID']<>5 AND intval(t3lib_div::_GP('categoryMount'))>0) {
+				if ($this->internal['viewID']==2 AND intval(t3lib_div::_GP('categoryMount'))>0) {
+					$this->catList->clearCatSelection($this->internal['treeID']);
 					if ($this->conf['filterView.']['searchCatsAsMounts']==1) {
 						$this->catList->op_PlusRec(t3lib_div::_GP('categoryMount'), $this->internal['treeID']);
 					}
@@ -882,7 +883,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$tree->init($this->internal['treeID'], $this);
 		$tree->title = $this->internal['treeName'];
 		$selCats  = $this->catList->getCatSelection($this->internal['treeID']);
-
+t3lib_div::debug($selCats);
 		$tree->selectedCats = $selCats[$this->internal['treeID']];
 
 		if (is_array($this->internal['catMounts'])) {
@@ -1032,6 +1033,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 		$hasCats=false;
 		$cats = $this->catList->getCatSelection(0,$this->pid);
+		t3lib_div::debug($cats);
 		if (count($cats)) {
 			foreach($cats as $catList) {
 				if (count($catList)) $hasCats = true;

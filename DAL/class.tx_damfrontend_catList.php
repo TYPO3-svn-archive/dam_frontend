@@ -108,9 +108,8 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 	
 	function op_PlusRec($catID, $treeID){
 		$catLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_categories');
-		
 		if ($catID==-1 ) $catID=0;
-		$subs = $catLogic->getSubCategories($catID);
+		$subs = $catLogic->getSubCategories($catID); 
 		foreach ($subs as $sub) {
 			$this->op_Plus($sub['uid'],$treeID);
 		}
