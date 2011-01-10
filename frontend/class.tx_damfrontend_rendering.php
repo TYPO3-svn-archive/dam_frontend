@@ -938,15 +938,13 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 	 * @return	[type]		...
 	 */
 	function renderFileTypeList($filetype) {
-		if ($filetype == '') $filetype = 'noselection';
-
+		if (trim($filetype) == '') $filetype = 'noselection';
 		// TODO: use DAM - functions - there are much more file types possible
 		$this->pi_loadLL();
 		
 		$filetypeArray  = $this->conf['filterView.']['filetypes.'];
 		$filetypeArray['noselection']='noselection';
 		
-		#$filetypeArray[$filetype]['set'] = 1;
 		$content = '<select name="filetype">';
 		foreach ($filetypeArray as $type => $arr) {
 			# do only take ts options that are at root level
@@ -1716,6 +1714,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 	 * @return	[type]		...
 	 */
  	function renderCatgoryList($categories) {
+ 		
  		if (is_array($categories)) {
 			foreach ($categories as $category) {
 				if ($category['selected'] == 1) {

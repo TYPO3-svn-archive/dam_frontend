@@ -355,8 +355,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 			// load the current filter
 		$this->internal['filter'] = $this->filterState->getFilterFromSession();
-
-
 			//These filter must set regardless the filter is resetet, because this setting is independ of the normal filters or filter view
 		if (is_array($catArr)) $this->internal['filter']['searchAllCats_allowedCats'] =$catArr;
 		$this->internal['filter']['listOfOwners']=$this->get_FEUserList($this->conf['FilterUserGroup'],$this->internal['filter']['owner']);
@@ -1032,7 +1030,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 		$hasCats=false;
 		$cats = $this->catList->getCatSelection(0,$this->pid);
-		t3lib_div::debug($cats);
+		
+		if ($this->conf['enableDebug']==1) {
+			if ($this->conf['debug.']['class.tx_damfrontend_pi1.']['getDocumentList.']['showCatSelection']==1)		t3lib_div::debug($cats);
+		}
+		
 		if (count($cats)) {
 			foreach($cats as $catList) {
 				if (count($catList)) $hasCats = true;
@@ -1825,7 +1827,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$SELECT = '*';
 		$FROM = 'tx_dam_cat';
 		$WHERE = 'uid in ('. implode(',',$catMounts).')';
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE);
+		if ($this->conf['filterView.']['categoriesOrderBy']) {
+			$ORDERBY = $this->conf['filterView.']['categoriesOrderBy'];
+		}
+		else {
+			$ORDERBY = 'title';
+		}
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE,$ORDERBY);
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			if ($row['uid']==$currentCategory) {
 				$row['selected']=1;
