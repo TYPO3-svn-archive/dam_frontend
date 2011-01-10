@@ -722,7 +722,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				}
 			}
 			else if ($this->internal['catPlus_Rec']) {
-				$this->catList->op_PlusRec($sub['uid'], $this->internal['incomingtreeID']);
+				$this->catList->op_PlusRec($this->internal['catPlus_Rec'], $this->internal['incomingtreeID']);
 			}
 
 			if ($this->internal['catClear']) {
@@ -883,7 +883,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$tree->init($this->internal['treeID'], $this);
 		$tree->title = $this->internal['treeName'];
 		$selCats  = $this->catList->getCatSelection($this->internal['treeID']);
-t3lib_div::debug($selCats);
 		$tree->selectedCats = $selCats[$this->internal['treeID']];
 
 		if (is_array($this->internal['catMounts'])) {
