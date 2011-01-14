@@ -200,9 +200,9 @@ if (is_array($post) && count($post) > 0) {
 		require_once(PATH_t3lib.'class.t3lib_htmlmail.php');
 		$mailTemplate = str_replace( array("\r\n","\n","\r"), '<br>', $mailTemplate); // like nl2br() (sh 2010-03-28)
 		$mailTemplate = strip_tags($mailTemplate,'<table><tr><td><p><b><br>'); // allow b and br (sh 2010-03-28)
-		$maildata['htmlbody'] 	= 	str_replace( array("\r\n","\n","\r"), '<br>', $maildata['body'] ); // like nl2br() (sh 2010-03-28)
+		$maildata['htmlbody'] 	= 	strip_tags(str_replace( array("\r\n","\n","\r"), '<br>', $maildata['body'] ),'<br>'); // like nl2br() (sh 2010-03-28)
 		$maildata['htmlbody'] 	.=	$localCObj->cObjGetSingle($ts['filelist.']['mailOptions.']['signatures.'][$configuration['signature'].'.']['signature'], $ts['filelist.']['mailOptions.']['signatures.'][$configuration['signature'].'.']['signature'.'.']);
-		$mailTemplate = str_replace('###MAIL_COMMENT###',strip_tags($maildata['htmlbody'],'<br>'),$mailTemplate); // allow br (sh 2010-03-28)
+		$mailTemplate = str_replace('###MAIL_COMMENT###',$maildata['htmlbody'],$mailTemplate); // allow br (sh 2010-03-28)
 		$html_start='<html><head><title>Downloads</title></head><body>';
 		$html_end='</body></html>';
 		$htmlMail = t3lib_div::makeInstance('t3lib_htmlmail');
