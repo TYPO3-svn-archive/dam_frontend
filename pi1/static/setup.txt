@@ -41,6 +41,8 @@ plugin.tx_damfrontend_pi1 {
 			# additional parameters are added via extension
 			stdWrap.typolink.parameter.data = TSFE:id
 			stdWrap.typolink.additionalParams.insertData = 1
+			stdWrap.typolink.section  = treeroot
+			
 		}
 	
 		minusIcon < .plusIcon
@@ -72,7 +74,7 @@ plugin.tx_damfrontend_pi1 {
 		categoryTitle.ATagParams = class="titlewrap"		
 		categoryTitle.wrap = |
 		categoryTitle.length = 30
-		#categoryTitle.section is not available, due to automatic functions
+		categoryTitle.section =
 		
 		
 		#IMAGE Objects for rendering the cat tree
@@ -311,6 +313,11 @@ plugin.tx_damfrontend_pi1 {
 		categoriesOrderBy = title
 		
 		filetypes {
+			audio = audiofiles
+			audio {
+				mp3 = mp3file
+				oggvobis = oggvobis
+			}
 			documents = documentfiles
 			documents {
 				doc = wordfile				
