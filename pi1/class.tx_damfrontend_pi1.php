@@ -272,6 +272,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		if ($this->piVars['resetFilter']){
 			$this->filterState->resetFilter();
 		}
+		
 			//variables for setting filters for the current category selection
  		$this->internal['filter']['from_day'] = intval(t3lib_div::_GP('von_tag'));
  		$this->internal['filter']['from_month'] =intval(t3lib_div::_GP('von_monat'));

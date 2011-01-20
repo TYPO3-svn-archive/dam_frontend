@@ -22,6 +22,8 @@ plugin.tx_damfrontend_pi1 {
 	categoryTree {
 		showRootCategory=0
 		
+		resetFilterOnClick = 1
+		
 		showCategoriesControl {
 			plusIcon = 1
 			minusIcon = 0

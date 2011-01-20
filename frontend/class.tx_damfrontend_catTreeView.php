@@ -321,17 +321,26 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 			$param_array['PM']=$cmd;
 		}
 
+		if ($this->conf['categoryTree.']['resetFilterOnClick']==1) {
+			$param_array['tx_damfrontend_pi1[resetFilter]']=1;
+		}
+
+		
 		
 		if ($id > 0) { $param_array['tx_damfrontend_pi1[id]'] = $id; }
 		$this->conf['categoryTree.']['categoryTitle.']['parameter'] = $GLOBALS['TSFE']->id;
 		$linkConfOrg = $this->conf['categoryTree.']['categoryTitle.']['ATagParams'];
 		$this->conf['categoryTree.']['categoryTitle.']['ATagParams'].= ' name="'.$scope.$cmd.'" ';
-		
-#		if (!$this->conf['categoryTree.']['categoryTitle.']['section'])	$this->conf['categoryTree.']['categoryTitle.']['section']=$scope.$cmd;
-		$this->conf['categoryTree.']['categoryTitle.']['section']=$scope.$cmd;
+		$sectionConfOrg = $this->conf['categoryTree.']['categoryTitle.']['section'];
+		if (!$this->conf['categoryTree.']['categoryTitle.']['section']) {
+			
+			$this->conf['categoryTree.']['categoryTitle.']['section']=$scope.$cmd;
+		}
+		#$this->conf['categoryTree.']['categoryTitle.']['section']=$scope.$cmd;
 		$this->conf['categoryTree.']['categoryTitle.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
 		$content = $this->cObj->typoLink($title, $this->conf['categoryTree.']['categoryTitle.']);
 		$this->conf['categoryTree.']['categoryTitle.']['ATagParams'] = $linkConfOrg;
+		$this->conf['categoryTree.']['categoryTitle.']['section'] = $sectionConfOrg;
 		return $content;
 	}
 
@@ -396,26 +405,31 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 		$param_array = array();
 		$cObj = t3lib_div::makeInstance('tslib_cObj');
 		$cObj->start($row, 'tx_dam_cat');
-
+		
+		if ($this->conf['categoryTree.']['resetFilterOnClick']==1) {
+			$additionalParams='&tx_damfrontend_pi1[resetFilter]=1';
+		}
+		
 		if ($this->modeSelIcons
 			AND !($this->mode=='tceformsSelect')
 			AND ($row['uid'] OR ($row['uid'] == '0' AND $this->linkRootCat))) {
 
 			if ($this->conf['categoryTree.']['showCategoriesControl.']['plusIcon']==1) {
 				// genrating plus button
-				$this->conf['categoryTree.']['plusIcon.']['stdWrap.']['typolink.']['additionalParams'] .= '&tx_damfrontend_pi1[catPlus]=&tx_damfrontend_pi1[catEquals]=&tx_damfrontend_pi1[catMinus]=&tx_damfrontend_pi1[catPlus_Rec]='.$row['uid'].'&tx_damfrontend_pi1[catMinus_Rec]=&tx_damfrontend_pi1[treeID]='. $this->treeID;
+				$this->conf['categoryTree.']['plusIcon.']['stdWrap.']['typolink.']['additionalParams'] .= '&tx_damfrontend_pi1[catPlus]=&tx_damfrontend_pi1[catEquals]=&tx_damfrontend_pi1[catMinus]=&tx_damfrontend_pi1[catPlus_Rec]='.$row['uid'].'&tx_damfrontend_pi1[catMinus_Rec]=&tx_damfrontend_pi1[treeID]='. $this->treeID .$additionalParams;
+				
 				$control .= $cObj->cObjGetSingle($this->conf['categoryTree.']['plusIcon'], $this->conf['categoryTree.']['plusIcon.']);
 			}
 			
 			if ($this->conf['categoryTree.']['showCategoriesControl.']['equalsIcon']==1) {
 				// generating equals buttons
-				$this->conf['categoryTree.']['equalsIcon.']['stdWrap.']['typolink.']['additionalParams'] .= '&tx_damfrontend_pi1[catPlus]=&tx_damfrontend_pi1[catEquals]='.$row['uid'].'&tx_damfrontend_pi1[catMinus]=&tx_damfrontend_pi1[catPlus_Rec]=&tx_damfrontend_pi1[catMinus_Rec]=&tx_damfrontend_pi1[treeID]='. $this->treeID;
+				$this->conf['categoryTree.']['equalsIcon.']['stdWrap.']['typolink.']['additionalParams'] .= '&tx_damfrontend_pi1[catPlus]=&tx_damfrontend_pi1[catEquals]='.$row['uid'].'&tx_damfrontend_pi1[catMinus]=&tx_damfrontend_pi1[catPlus_Rec]=&tx_damfrontend_pi1[catMinus_Rec]=&tx_damfrontend_pi1[treeID]='. $this->treeID .$additionalParams;
 				$control .= $cObj->cObjGetSingle($this->conf['categoryTree.']['equalsIcon'], $this->conf['categoryTree.']['equalsIcon.']);
 			}
 			
 			if ($this->conf['categoryTree.']['showCategoriesControl.']['minusIcon']==1) {
 				// generate minus button
-				$this->conf['categoryTree.']['minusIcon.']['stdWrap.']['typolink.']['additionalParams'] .= '&tx_damfrontend_pi1[catPlus]=&tx_damfrontend_pi1[catEquals]=&tx_damfrontend_pi1[catMinus]='.$row['uid'].'&tx_damfrontend_pi1[catPlus_Rec]=&tx_damfrontend_pi1[catMinus_Rec]=&tx_damfrontend_pi1[treeID]='. $this->treeID;
+				$this->conf['categoryTree.']['minusIcon.']['stdWrap.']['typolink.']['additionalParams'] .= '&tx_damfrontend_pi1[catPlus]=&tx_damfrontend_pi1[catEquals]=&tx_damfrontend_pi1[catMinus]='.$row['uid'].'&tx_damfrontend_pi1[catPlus_Rec]=&tx_damfrontend_pi1[catMinus_Rec]=&tx_damfrontend_pi1[treeID]='. $this->treeID .$additionalParams;
 				$control .= $cObj->cObjGetSingle($this->conf['categoryTree.']['minusIcon'], $this->conf['categoryTree.']['minusIcon.']);
 			}
 		}
