@@ -333,8 +333,20 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 		$this->conf['categoryTree.']['categoryTitle.']['ATagParams'].= ' name="'.$scope.$cmd.'" ';
 		$sectionConfOrg = $this->conf['categoryTree.']['categoryTitle.']['section'];
 		if (!$this->conf['categoryTree.']['categoryTitle.']['section']) {
-			
-			$this->conf['categoryTree.']['categoryTitle.']['section']=$scope.$cmd;
+			$pos = strpos($cmd,'_');
+			if ($pos) {
+				//return left part
+				$section = substr($cmd,0,$pos+1);
+				$invert = substr($cmd,$pos+1,1);
+				$inverted = 0;
+				if ($invert==0)$inverted=1;
+				$sectionRight = substr($cmd,$pos+2);
+				$section = $section.$inverted.$sectionRight;
+			}
+			else {
+				$section =$cmd;
+			}
+			$this->conf['categoryTree.']['categoryTitle.']['section']=$scope.$section;
 		}
 		#$this->conf['categoryTree.']['categoryTitle.']['section']=$scope.$cmd;
 		$this->conf['categoryTree.']['categoryTitle.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
