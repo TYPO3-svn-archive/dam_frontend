@@ -983,11 +983,11 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 		$markerArray['###BUTTON_UPLOAD###'] = $this->cObj->stdWrap('<input name="upload_file" type="submit" value="'.$this->pi_getLL('BUTTON_UPLOAD').'" />',$this->conf['upload.']['renderUploadForm.']['button_upload.']);
 		$markerArray['###TITLE_FILEUPLOAD###'] = $this->pi_getLL('TITLE_FILEUPLOAD');
 		$markerArray['###LABEL_FILE###'] =  $this->pi_getLL('LABEL_FILE');
-		if (!isset($this->conf['renderUploadForm.']['form_url.']['parameter'])) {
+		if (!isset($this->conf['upload.']['renderUploadForm.']['form_url.']['parameter'])) {
 			$this->conf['upload.']['renderUploadForm.']['form_url.']['parameter'] = $GLOBALS['TSFE']->id;
 		}
-		$this->conf['upload.']['filterview.']['form_url.']['returnLast'] = 'url';
-		$markerArray['###FORM_URL###'] = $this->cObj->typolink('', $this->conf['upload.']['filterview.']['form_url.']);
+		$this->conf['upload.']['renderUploadForm.']['form_url.']['returnLast'] = 'url';
+		$markerArray['###FORM_URL###'] = $this->cObj->typolink('', $this->conf['upload.']['renderUploadForm.']['form_url.']);
 		$markerArray =$markerArray + $this->substituteLangMarkers($formCode);
 
 		return tslib_cObj::substituteMarkerArray($formCode, $markerArray);
