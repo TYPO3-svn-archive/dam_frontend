@@ -173,6 +173,10 @@ plugin.tx_damfrontend_pi1 {
 		useLanguageOverlay=1
 	}
 	
+	searchCategoryAttributes = 1
+    searchCategoryAttributes {
+    	fields = keywords,title
+    }
 	
 	renderFields {
 	# set stdWrap config for each field

@@ -209,7 +209,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			foreach($docgroups as $docgroup) {
 				if ((array_search($docgroup['uid'], $usergroups))) {
 					$valid=true;
-				} 
+				}
 			}
 			return $valid;
 		}
@@ -270,7 +270,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			if ($relID == null || !intval($relID)) {
 				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getDocumentFEGroups: for the relID only integer values are allowed. Given value was:' .$relID, 'dam_frontend',3);
 			}
-			
+
 			// first find all categories for the given document
 			if ($this->conf['filelist.']['security_options.']['checkCategoriesByRootline']==1) {
 				// if the rootline option is enabled, all categoris from the rootline are checked
@@ -279,10 +279,10 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			else {
 				$catlist = $this->getCategoriesByDoc($docID);
 			}
-			
+
 			// FIXME
 			// if relID ==1 check access field of cats instead
-			
+
 			// accumulates all groups
 			$grouparray = array();
 			foreach ($catlist as $category)
@@ -321,13 +321,13 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			$where = 'uid ='.$docID;
 			$from = $this->docTable;
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where);
-			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);	
+			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 			if ($this->conf['filelist.']['useLanguageOverlay']==1) {
 				$langConf['sys_language_uid'] = $GLOBALS['TSFE']->sys_language_uid;
 				$row['pid']=tx_dam_db::getPid();
-				$row = tx_dam_db::getRecordOverlay('tx_dam', $row, $conf);			
+				$row = tx_dam_db::getRecordOverlay('tx_dam', $row, $conf);
 			}
-			
+
 			return $row;
 		}
 
@@ -341,7 +341,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 	 */
 		function getDocumentByFilename($filename, $path) {
 			$select = '*';
-			$where = 'file_name like '. $GLOBALS['TYPO3_DB']->fullQuoteStr($filename,$this->docTable) . ' AND file_path like ' .$GLOBALS['TYPO3_DB']->fullQuoteStr($path,$this->docTable); 
+			$where = 'file_name like '. $GLOBALS['TYPO3_DB']->fullQuoteStr($filename,$this->docTable) . ' AND file_path like ' .$GLOBALS['TYPO3_DB']->fullQuoteStr($path,$this->docTable);
 			#﻿. $GLOBALS['TYPO3_DB']->fullQuoteStr($filename) . ' AND file_path = '. $GLOBALS['TYPO3_DB']->fullQuoteStr($path);
 			$from = $this->docTable;
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where);
@@ -359,12 +359,12 @@ require_once(PATH_tslib.'class.tslib_content.php');
 	 * @return	[array]		returns an array which contains all selected records
 	 */
 	function getDocumentList($userUID=0) {
-			
+
 		$filter =  tslib_cObj::enableFields('tx_dam');
 		if(!is_array($this->categories)) {
 			if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getDcoumentList: for the this->categories is no array. Given value was:' .$this->categories, 'dam_frontend',3);
 		}
-		
+
 		$hasCategories=false;
 		foreach ($this->categories as $cat) {
 			if (!empty($cat) ) $hasCategories=true;
@@ -379,6 +379,12 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			$from = $this->docTable.' INNER JOIN '.$this->mm_Table.' ON '.$this->mm_Table.'.uid_local  = '.$this->docTable.
 			'.uid INNER JOIN '.$this->catTable.' ON '.$this->mm_Table.'.uid_foreign = '.$this->catTable.'.uid';
 
+			if ($this->conf['searchCategoryAttributes'] == 1) {
+				foreach(explode(',',$this->conf['searchCategoryAttributes.']['fields']) as $field) {
+					$this->additionalFilter .= ' OR ('.$this->catTable.'.'.$field.' LIKE "%'.$GLOBALS['TYPO3_DB']->quoteStr(trim($filterArray['searchword']), $this->catTable).'%")';
+				}
+			}
+
 			$filter .= $this->additionalFilter;
 
 
@@ -391,17 +397,17 @@ require_once(PATH_tslib.'class.tslib_content.php');
 
 			$queryText = array();
 			$z = 0;
-			
+
 			/**
 			 * every element in the categories array stores a list of cats that are associated with an array
 			 */
 			foreach($this->categories as $number => $catList) {
-											
+
 					if ($this->searchAllCats === true) {
 						if ($this->conf['searchAllCats_allowedCats']) {
 								// limit the search in categories
 							$catString ='('.$this->catTable.'.uid IN ('. $this->conf['searchAllCats_allowedCats'] .'))';
-						} 
+						}
 						else {
 								// no limitation for category is set
 							$catString = "1=1";
@@ -442,14 +448,14 @@ require_once(PATH_tslib.'class.tslib_content.php');
 					}
 					$z++;
 				}
-				
+
 				if  ($this->conf['useTreeAndSelection'] == 0) {
 					$where = '('.$where.')'. $filter;
 				}
-				
+
 				// adding access information for categories
 				$where .=  tslib_cObj::enableFields($this->catTable);
-				
+
 				// limit the categories. Hide those categories, a use has not access to it
 				if ($this->conf['filelist.']['security_options.']['checkAllRelatedCategories']==1) {
 					$resctrictedUids = $this->getCategoriesWithNoAccess();
@@ -465,13 +471,13 @@ require_once(PATH_tslib.'class.tslib_content.php');
 					// limit the search in categories to only allowed categories
 					 $filter .='AND ('.$this->catTable.'.uid IN ('. $this->conf['searchAllCats_allowedCats'] .'))' . tslib_cObj::enableFields($this->catTable);
 					 $from = $this->docTable.' INNER JOIN '.$this->mm_Table.' ON '.$this->mm_Table.'.uid_local  = '.$this->docTable.'.uid INNER JOIN '.$this->catTable.' ON '.$this->mm_Table.'.uid_foreign = '.$this->catTable.'.uid';
-					
+
 					// limit the categories. Hide those categories, a use has not access to it
 					if ($this->conf['filelist.']['security_options.']['checkAllRelatedCategories']==1) {
 						$resctrictedUids = $this->getCategoriesWithNoAccess();
 						if ($resctrictedUids)	$filter .= ' AND NOT tx_dam_cat.uid IN ('.$resctrictedUids.')';
 					}
-				} 
+				}
 				$filter .= $this->additionalFilter;
 				$select='*';
 				$where.= ' 1=1 '.$filter;
@@ -482,49 +488,49 @@ require_once(PATH_tslib.'class.tslib_content.php');
 					if (intval($this->conf['latestDays'])>0) {
 						$d = intval($this->conf['latestDays']);
 						$dateLimit  = time() - (60*60*24*$d);
-						
+
 						$where.= ' AND '.$this->docTable.'.'.$this->conf['latestField'] .' > '.$dateLimit ;
 						$this->conf['latestLimit']=0;
-					}  
+					}
 					else {
 						if ($this->orderBy) {
 							$this->orderBy =$this->docTable.'.'.$this->conf['latestField'] . ' DESC, ' . $this->orderBy;
 						}
 						else {
-							$this->orderBy =$this->docTable.'.'.$this->conf['latestField'] . ' DESC'; 
+							$this->orderBy =$this->docTable.'.'.$this->conf['latestField'] . ' DESC';
 						}
 					}
 			}
-			
-			
+
+
 			if ($this->conf['useGroupedView']==1) {
-				$select .= ','. $this->catTable.'.title AS categoryTitle'; 
+				$select .= ','. $this->catTable.'.title AS categoryTitle';
 				$groupedOrderBy = 'ASC';
 				// check if as ts setting exists, and if it is correct
-				if 	($this->conf['filelist.']['groupedFileListCategorySorting'] AND 
+				if 	($this->conf['filelist.']['groupedFileListCategorySorting'] AND
 					($this->conf['filelist.']['groupedFileListCategorySorting']=='ASC' OR
 					 $this->conf['filelist.']['groupedFileListCategorySorting']=='DESC')) $groupedOrderBy = $this->conf['filelist.']['groupedFileListCategorySorting'];
-				
+
 				if ($this->orderBy) {
 					$this->orderBy = $this->catTable.'.title '.$groupedOrderBy.','. $this->orderBy;
-				} 
-				else {
-					$this->orderBy = $this->catTable.'.title '.$groupedOrderBy;	
 				}
-				
+				else {
+					$this->orderBy = $this->catTable.'.title '.$groupedOrderBy;
+				}
+
 			}
 
 		if ($this->conf['filelist.']['security_options.']['showOnlyFilesWithPermission']==1) {
 			$where .=  $this->getOnlyFilesWithPermissionSQL();
 		}
-			
+
 			// is defnied as: $this->internal['list']['limit'] = $this->internal['list']['pointer'].','. ($this->internal['list']['listLength']);
 			// limit = "pointer,counter"
 		list($pointer, $listLength) = explode (',',$this->limit);
 		$startRecord = $pointer * $listLength;
 		$endRecord = $startRecord + $listLength;
-		
-		
+
+
 			//Debug statements
 		if ($this->conf['enableDebug']==1) {
 			if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['SQL']==1)		t3lib_div::debug('SELECT ' . $select . ' FROM ' . $from . ' WHERE '. $where . ' ORDER BY '  .$this->orderBy . ' LIMIT '. $startRecord.','.$listLength);
@@ -536,23 +542,23 @@ require_once(PATH_tslib.'class.tslib_content.php');
 
 		// show only records of the live workspace
 		$where .= ' AND tx_dam.pid!=-1 AND tx_dam.t3ver_state!=1';
-				
+
 		// get result counter
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('DISTINCT tx_dam.uid', $from, $where,'',$this->orderBy);
-		
+
 			// TODO check why count does not work?
 		#$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('DISTINCT count(tx_dam.uid) AS counter', $from, $where);
-		
-		
-		$resultCounter = $GLOBALS['TYPO3_DB']->sql_num_rows($res); 
-	
-		
+
+
+		$resultCounter = $GLOBALS['TYPO3_DB']->sql_num_rows($res);
+
+
 			// if latest list is used and a fixed number of entries has to be shown
 		if ($this->conf['latestLimit']>0 ){
 			if ($endRecord > $this->conf['latestLimit']) $endRecord = $this->conf['latestLimit'] ;
 		}
-		
-	
+
+
 		$whereAccess =$where;
 			// get the download access list
 		$whereAccess =$where . ' AND ' .  $this->getDownloadAccessSQL();
@@ -565,12 +571,12 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			// executing the final query and convert the results into an array
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select, $from, $where,'',$this->orderBy,$startRecord.','.$listLength);
 		$result = array();
-		
+
 		if ($this->conf['filelist.']['useLanguageOverlay']==1) {
 				$langConf['sys_language_uid'] = $GLOBALS['TSFE']->sys_language_uid;
 				$damPID=tx_dam_db::getPid();
 		}
-		
+
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			if ($this->conf['enableDebug']==1) {
 				if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['rows']==1)		t3lib_div::debug($row);;
@@ -579,38 +585,38 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			if ($this->conf['enableDebug']==1) {
 				if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['rowsAfterAccessCheck']==1)		t3lib_div::debug($row);;
 			}
-		
+
 			$GLOBALS['TSFE']->sys_page->versionOL('tx_dam',&$row, FALSE);
-			
+
 			if ($this->conf['filelist.']['useLanguageOverlay']==1) {
 				$row['pid']=$damPID;
-				$row = tx_dam_db::getRecordOverlay('tx_dam', $row, $conf);			
+				$row = tx_dam_db::getRecordOverlay('tx_dam', $row, $conf);
 			}
-			
+
 			if ($checkCats) {
 				// check if user is allowed to download a file
 				if (in_array($row['uid'],$uidsAllowedForDownload)) {
-					$row['allowDownload']=1;	
+					$row['allowDownload']=1;
 				}
 				else {
-					$row['allowDownload']=0;	
+					$row['allowDownload']=0;
 				}
 			}
 			else {
-					$row['allowDownload']=1;				
+					$row['allowDownload']=1;
 			}
-				
+
 				//add a delete information
 			if ($this->checkEditRights($row)===TRUE){
 				$row['allowDeletion']=1;
 				$row['allowEdit']=1;
-			} 
-			
-			
+			}
+
+
 			$result[] = $row;
 
 		}
-		
+
 		$this->resultCount = $resultCounter;
 		#t3lib_div::debug($result);
 		return $result;
@@ -709,7 +715,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 					$errors['error_to_date'] = 1;
 				}
 			}
-			
+
 				// if the filetype filter is a group of filetypes
 			if ($this->conf['filterView.']['filetypes.'][$filterArray['filetype'].'.']) {
 				foreach ($this->conf['filterView.']['filetypes.'][$filterArray['filetype'].'.'] as $ext =>$type) {
@@ -720,17 +726,17 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			else {
 				if ($filterArray['filetype'] != '' && $filterArray['filetype'] != ' ') $this->additionalFilter .= ' AND '.$this->docTable.'.file_type = \''.$filterArray['filetype'].'\'' ;
 			}
-			
+
 			if ($filterArray['searchword'] != '' && $filterArray['searchword'] != ' ') $this->additionalFilter .= $this->getSearchwordWhereString($filterArray['searchword']);
-			
+
 			if ($filterArray['creator'] != '' && $filterArray['creator'] != ' ') $this->additionalFilter .= $this->getSearchwordWhereString($filterArray['creator'],'creator');
-			
+
 			if ($filterArray['owner'] > 0 ) $this->additionalFilter .=   ' AND '.$this->docTable.'.tx_damfrontend_feuser_upload  ='.$filterArray['owner'];
 
 			if (trim($filterArray['LanguageSelector']) != '' && $filterArray['LanguageSelector'] != 'nosel') $this->additionalFilter .=  ' AND '.$this->docTable.'.language = "'.trim($filterArray['LanguageSelector']).'"';
 
 			if ($filterArray['showOnlyFilesWithPermission'] == 1) $this->additionalFilter .=  ' AND '.$this->docTable.'.fe_group <>"" AND '.$this->docTable.'.fe_group <>"-1" AND '.$this->docTable.'.fe_group <>"-2" AND '.$this->docTable.'.fe_group <>"0"';
-			
+
 			if (is_array($filterArray['searchAllCats_allowedCats'])) $this->conf['searchAllCats_allowedCats'] = implode(',',$filterArray['searchAllCats_allowedCats']);
 				// looking for custom filters
 			if (is_array($filterArray['customFilters'])) {
@@ -742,6 +748,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 					}
 				}
 			}
+
 			return $errors;
 		}
 
@@ -751,7 +758,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 	 *
 	 * @param	string		$searchword: blank separated string
 	 * @param	string		$searchField: blank separated string (optional)
-	 * 
+	 *
 	 * @return	string		where clause, ready for adding it to the document array
 	 */
 		function getSearchwordWhereString($searchword,$searchField='') {
@@ -762,9 +769,9 @@ require_once(PATH_tslib.'class.tslib_content.php');
 				$searchFields = t3lib_div::trimExplode(',', $this->fullTextSearchFields, true);
 			}
 			if (0 == count($searchFields)) { return ''; }
-			
+
 			$queryPart = array();
-			
+
 			$sword_array = $this->get_searchWordArray($searchword);
 			if (is_array($sword_array))	{
 				foreach ($searchFields as $field) {
@@ -772,7 +779,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 					$searchSQL_OR='';
 					$searchStringAND=array();
 					$searchSQL_AND='';
-					
+
 					foreach ($sword_array as $key=>$word) {
 							switch ($word['oper']) {
 							case 'OR':
@@ -1006,11 +1013,11 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			list($purename,$type) = split('\.',$filename);
 			$newversion = $newDoc['tx_damfrontend_version'];
 			$new_filename = $purename.'_v'.$newversion.'.'.$filetype;
-			
+
 			if (!$this->moveFile(PATH_site.$newDoc['file_path'].$newDoc['file_name'],$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$new_filename)) {
 				return false;
 			}
-				// 
+				//
 
 				//copying the old data to the new id
 				// record with the old file
@@ -1177,7 +1184,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			if (!$docID >0 ) {
 				return false;
 			}
-			
+
 			if (!$GLOBALS['TSFE']->fe_user->getKey('ses','versioningOverrideID')>0) {
 				return false;
 			}
@@ -1186,24 +1193,24 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			if (is_file($GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName'))) {
 				//
 				$fileToDelete = $GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
-				
-				// rename it 
+
+				// rename it
 				rename($fileToDelete, $fileToDelete.'.delete');
 			}
-			
+
 			if (!$this->moveFile(PATH_site.$newDoc['file_path'].$newDoc['file_name'],$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName'))) {
 				// rename it again
 				rename($fileToDelete.'.delete', $fileToDelete);
 				return false;
-			} 
+			}
 			else {
 				unlink($fileToDelete.'.delete');
 			}
-			
+
 				// update the new file
 			$newDoc['file_name']=$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
 			$newDoc['file_path']=$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath');
-			
+
 				// set deleted to 1, that the new record (not yet saved thru the user) is not shown in the FE
 			$newDoc['deleted']=0;
 			$newDoc['uid']=$GLOBALS['TSFE']->fe_user->getKey('ses','versioningOverrideID');
@@ -1217,7 +1224,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 				// delete the temp dam record (in case of overwrite action, the record is not needed anymore)
 			$TABLE = 'tx_dam';
 			$WHERE = 'uid = '.$docID;
-			
+
 				// TODO insert error handling
 			$GLOBALS['TYPO3_DB']->exec_DELETEquery($TABLE,$WHERE);
 
@@ -1225,7 +1232,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 		}
 
 		/**
-		 * 
+		 *
 		 * @param	int		$uid: uid of the dam record
 		 * @return	[boolean]	true if successful		...
 		 * @author stefan
@@ -1234,7 +1241,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 				// set new filename
 			$newDoc = $this->getDocument($docID);
 				// set a new unique filename
-			
+
 			$newFilename= strftime('%Y%m%d_%H%M', time()).'_'.$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFileName');
 				// copy the new file from temp dir to destionation dir
 			copy(PATH_site.$newDoc['file_path'].$newDoc['file_name'],$GLOBALS['TSFE']->fe_user->getKey('ses','uploadFilePath').$newFilename);
@@ -1255,7 +1262,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 
 			return $docID;
 		}
-		
+
 		/**
 		 * @param	int		$uid: uid of the dam record
 		 * @param	int		$catID category which should be deleted
@@ -1361,7 +1368,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			$GLOBALS['TSFE']->fe_user->setKey('ses','uploadFileName','');
 			return $returnID;
 		}
-		
+
 	 /**
 	 * returns a searchword transfered to int
 	 *
@@ -1370,29 +1377,29 @@ require_once(PATH_tslib.'class.tslib_content.php');
 	 * @return	string		where clause, ready for adding it to the document array
 	 */
 	function getCustomWhereString($column, $value) {
-		if (trim($value) <>'') $result =' AND '. $this->docTable.'.'.$column.' LIKE "%'.$GLOBALS['TYPO3_DB']->quoteStr(trim($value), $this->docTable).'%" '; 
+		if (trim($value) <>'') $result =' AND '. $this->docTable.'.'.$column.' LIKE "%'.$GLOBALS['TYPO3_DB']->quoteStr(trim($value), $this->docTable).'%" ';
 		return $result;
 	}
 
-	
+
 	 /**
 	 * checks if a user has edit / delete rights
 	 *
-	 * @param	array		dam record 
+	 * @param	array		dam record
 	 * @return	boolean		true if the user has access
 	 */
 	function checkEditRights($document) {
 		// if the current user is the owner of the document return true
 		if ($GLOBALS['TSFE']->fe_user->user['uid']==$document['tx_damfrontend_feuser_upload']) return true;
-			
+
 			// get all usergroups of the fe_user
 		$feuserGroups=$GLOBALS['TSFE']->fe_user->groupData['uid'];
 			// if fe_user is not assigned to group return false, because a fe_user has to be at least member of one group
 		if (!is_array($feuserGroups)) return false;
-		$access = FALSE;	
-			// resolve groups of the document 
+		$access = FALSE;
+			// resolve groups of the document
 		$docFEGroups = explode(',',$document['tx_damfrontend_fegroup']);
-		
+
 			// adding groups of the current content elment (flexform)
 		if ($this->conf['feEditGroups']) {
 			$feEditGroups =  explode(',',$this->conf['feEditGroups']);
@@ -1400,13 +1407,13 @@ require_once(PATH_tslib.'class.tslib_content.php');
 		if (is_array($feEditGroups)) $docFEGroups=array_merge($docFEGroups,$feEditGroups);
 
 			// adding groups added via typoscript
-		if ($this->conf['filelist.']['fileEdit.']['uids_FEGroups'])	$uids_FEGroups =  explode(',',$this->conf['filelist.']['fileEdit.']['uids_FEGroups']);		
+		if ($this->conf['filelist.']['fileEdit.']['uids_FEGroups'])	$uids_FEGroups =  explode(',',$this->conf['filelist.']['fileEdit.']['uids_FEGroups']);
 		if (is_array($uids_FEGroups)) $docFEGroups=array_merge($docFEGroups,$uids_FEGroups);
 		$docFEGroups=array_unique($docFEGroups);
 			// check if at least one fe_group has access to file
 		foreach ($feuserGroups as $group ){
 			if (array_search($group,$docFEGroups, true)===false) {
-			} 
+			}
 			else {
 					//if the array search founds a value access is allowed
 					$access = TRUE;
@@ -1414,12 +1421,12 @@ require_once(PATH_tslib.'class.tslib_content.php');
 		}
 		return $access;
 	}
-	
+
 	 /**
 	 * returns a sql where statement, for each searchword
 	 *
 	 * @param	string		$searchWord: the search phrase a user is looking for e.g. "results 2010"
-	 * @return	array		an array with each search word and operator 
+	 * @return	array		an array with each search word and operator
 	 */
 	function get_searchWordArray ($searchWord) {
 		$operator_translate_table = Array (		// case-sensitive. Defines the words, which will be operators between words
@@ -1437,17 +1444,17 @@ require_once(PATH_tslib.'class.tslib_content.php');
 	/**
 	 * returns a sql where statement, for looking only for files with permission
 	 *
-	 * @return	string		String with a SQL Where statement 
+	 * @return	string		String with a SQL Where statement
 	 */
 	function getOnlyFilesWithPermissionSQL () {
-		return " AND NOT ((tx_dam.fe_group='' OR 	tx_dam.fe_group IS NULL	OR 	tx_dam.fe_group='0' 
+		return " AND NOT ((tx_dam.fe_group='' OR 	tx_dam.fe_group IS NULL	OR 	tx_dam.fe_group='0'
 	OR (
-			tx_dam.fe_group LIKE '%,0,%' OR tx_dam.fe_group LIKE '0,%' 
-		OR tx_dam.fe_group LIKE '%,0' OR tx_dam.fe_group='0') 
+			tx_dam.fe_group LIKE '%,0,%' OR tx_dam.fe_group LIKE '0,%'
+		OR tx_dam.fe_group LIKE '%,0' OR tx_dam.fe_group='0')
 		OR (
-				tx_dam.fe_group LIKE '%,-1,%' 
-			OR tx_dam.fe_group LIKE '-1,%' 
-			OR tx_dam.fe_group LIKE '%,-1' 
+				tx_dam.fe_group LIKE '%,-1,%'
+			OR tx_dam.fe_group LIKE '-1,%'
+			OR tx_dam.fe_group LIKE '%,-1'
 			OR tx_dam.fe_group='-1'
 			)
 		))";
@@ -1461,20 +1468,20 @@ require_once(PATH_tslib.'class.tslib_content.php');
 	function getCategoriesWithNoAccess () {
 		$select = 'uid';
 		$from	= 'tx_dam_cat';
-		$where="  NOT (tx_dam_cat.fe_group='' OR tx_dam_cat.fe_group IS NULL OR tx_dam_cat.fe_group='0') 
+		$where="  NOT (tx_dam_cat.fe_group='' OR tx_dam_cat.fe_group IS NULL OR tx_dam_cat.fe_group='0')
 				 AND NOT (tx_dam_cat.fe_group LIKE '%,-2,%' OR tx_dam_cat.fe_group LIKE '-2,%' OR tx_dam_cat.fe_group LIKE '%,-2' OR tx_dam_cat.fe_group='-2') ";
 
 		if (is_array($this->feuser->user)) {
 				// get the user groups of the current user
 			$usergroups = $this->feuser->groupData['uid'];
 			foreach ($usergroups as $group) {
-				$where.= 
+				$where.=
 				" AND NOT
-					(	tx_dam_cat.fe_group LIKE '%,".$group.",%' 
-					OR 	tx_dam_cat.fe_group LIKE '".$group.",%' 
-					OR 	tx_dam_cat.fe_group LIKE '%,".$group."' 
+					(	tx_dam_cat.fe_group LIKE '%,".$group.",%'
+					OR 	tx_dam_cat.fe_group LIKE '".$group.",%'
+					OR 	tx_dam_cat.fe_group LIKE '%,".$group."'
 					OR 	tx_dam_cat.fe_group='".$group."'
-					)";	
+					)";
 			}
 		}
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($select,$from,$where);
@@ -1488,67 +1495,67 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			return false;
 		}
 	}
-	
+
 	/**
 	 * returns a sql where statement, for looking only for files with permission
 	 *
-	 * @return	string		String with a SQL Where statement 
+	 * @return	string		String with a SQL Where statement
 	 */
 	function getDownloadAccessSQL () {
-		$where="(		tx_dam_cat.tx_damtree_fe_groups_downloadaccess='' 
-				OR 	tx_dam_cat.tx_damtree_fe_groups_downloadaccess IS NULL 
-				OR 	tx_dam_cat.tx_damtree_fe_groups_downloadaccess='0' 
+		$where="(		tx_dam_cat.tx_damtree_fe_groups_downloadaccess=''
+				OR 	tx_dam_cat.tx_damtree_fe_groups_downloadaccess IS NULL
+				OR 	tx_dam_cat.tx_damtree_fe_groups_downloadaccess='0'
 			OR (
-					tx_dam_cat.tx_damtree_fe_groups_downloadaccess LIKE '%,0,%' 
-				OR	tx_dam_cat.tx_damtree_fe_groups_downloadaccess LIKE '0,%' 
-				OR 	tx_dam_cat.tx_damtree_fe_groups_downloadaccess LIKE '%,0' 
-				OR	tx_dam_cat.tx_damtree_fe_groups_downloadaccess='0') 
+					tx_dam_cat.tx_damtree_fe_groups_downloadaccess LIKE '%,0,%'
+				OR	tx_dam_cat.tx_damtree_fe_groups_downloadaccess LIKE '0,%'
+				OR 	tx_dam_cat.tx_damtree_fe_groups_downloadaccess LIKE '%,0'
+				OR	tx_dam_cat.tx_damtree_fe_groups_downloadaccess='0')
 			";
-		
+
 		if (!is_array($this->feuser->user)) {
-				// no user is logged in 
+				// no user is logged in
 			$where.=
 			" OR
-				(	tx_dam_cat.tx_damtree_fe_groups_downloadaccess LIKE '%,-1,%' 
-				OR 	tx_dam_cat.tx_damtree_fe_groups_downloadaccess LIKE '-1,%' 
-				OR 	tx_dam_cat.tx_damtree_fe_groups_downloadaccess LIKE '%,-1' 
+				(	tx_dam_cat.tx_damtree_fe_groups_downloadaccess LIKE '%,-1,%'
+				OR 	tx_dam_cat.tx_damtree_fe_groups_downloadaccess LIKE '-1,%'
+				OR 	tx_dam_cat.tx_damtree_fe_groups_downloadaccess LIKE '%,-1'
 				OR 	tx_dam_cat.tx_damtree_fe_groups_downloadaccess='-1'
-				)";	
+				)";
 		}
 		else {
 				// get the user groups of the current user
 			$usergroups = $this->feuser->groupData['uid'];
 			foreach ($usergroups as $group) {
-				$where.= 
+				$where.=
 				" OR
-					(	tx_dam_cat.tx_damtree_fe_groups_downloadaccess LIKE '%,".$group.",%' 
-					OR 	tx_dam_cat.tx_damtree_fe_groups_downloadaccess LIKE '".$group.",%' 
-					OR 	tx_dam_cat.tx_damtree_fe_groups_downloadaccess LIKE '%,".$group."' 
+					(	tx_dam_cat.tx_damtree_fe_groups_downloadaccess LIKE '%,".$group.",%'
+					OR 	tx_dam_cat.tx_damtree_fe_groups_downloadaccess LIKE '".$group.",%'
+					OR 	tx_dam_cat.tx_damtree_fe_groups_downloadaccess LIKE '%,".$group."'
 					OR 	tx_dam_cat.tx_damtree_fe_groups_downloadaccess='".$group."'
-					)";	
+					)";
 			}
 		}
 		return $where.=')';
 	}
-	
+
 	/**
-	 * moves a file 
+	 * moves a file
 	 *
-	 * @return	boolean	true if success 
+	 * @return	boolean	true if success
 	 */
 	function moveFile ($source, $destination) {
 		t3lib_div::upload_copy_move($source,$destination);
-		
+
 		// check if movement was successful
 		if (!is_file($destination)) return false;
-		
+
 		// delete the temp file
 		unlink($source);
-		
+
 		return true;
 	}
-	
-	
+
+
 }
 
 

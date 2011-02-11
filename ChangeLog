@@ -1,5 +1,6 @@
 Version 0.7.x
-Fixed Bug #10732: Missing Marker ###FILE_SIZE_HEADER###
+fixed Bug #10732: Missing Marker ###FILE_SIZE_HEADER###
+fixed Bug #12533: Marker ###FORM_URL### doesn't work correct (thanks to  Pascal Hinz)
 Major Feature #6963: Explorer View
 Major Feature #8214: shopping cart
 Feature #2808: add Mail functionality to pushfile
@@ -17,6 +18,7 @@ Feature #10179: Language Overlay for pi2
 Feature #10543: Improve rendering of mimetypes
 Feature #10548: Integrate Easy Search in Searchform
 Feature #10550: Signatures for mail function
+_searchCategoryAttributes
 fixed Bug #6406: Redundant files when working with workspaces
 fixed Bug #7232: Check directory permissions and success during upload
 fixed Bug #7415: useTreeAndSelection does not work
