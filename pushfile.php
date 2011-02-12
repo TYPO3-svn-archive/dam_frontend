@@ -71,7 +71,7 @@ if (!$_REQUEST['docID']
 $post = t3lib_div::_POST($prefixId);
 if (is_array($post) && count($post) > 0) {
 	$filesToSend = array();
-		
+
 	foreach ($post as $docID => $configuration) {
 		if (!is_numeric($docID)) {
 			continue; // not a file-id
@@ -100,22 +100,22 @@ if (is_array($post) && count($post) > 0) {
 			noAccess('<h1>Error</h1><p>You have no access to download this file.',$docID);
 		}
 		$doc = $docLogic->getDocument($docID);
-		// 
+		//
 		$hash =  t3lib_div::GPvar('dfhash');
 		$valid =  intval(t3lib_div::GPvar('valid'));
 		$feUserID =  intval(t3lib_div::GPvar('feuid'));
-		
+
 		if (checkOutNecessary($doc['file_path'])){
 			if (!checkHash($docID,$valid,$feuserID, $hash)) {
 				die('<h1>Sorry</h1><p>You do not have the right to download this file.');
-			}	
+			}
 			else {
-				if ($valid>time()) {	
+				if ($valid>time()) {
 					die('<h1>Error</h1><p>This link is not valid anymore. Please request this download again.</p');
-				} 
+				}
 			}
 		}
-		
+
 		// 	check if a user has access to the dam record / file
 		if (!$docLogic->checkDocumentAccess($doc['fe_group'])) {
 			noAccess('<h1>Error</h1><p>You have no access to this file.',$docID);
@@ -145,16 +145,16 @@ if (is_array($post) && count($post) > 0) {
 		case 'sendAsMail':
 			if (sendMail($post['mail'],$archive,$post['mailTemplate'], $post)) {
             	redirect($post['pid'],'&tx_damfrontend_pi1[msg]=mail_success');
-            } 
+            }
             else {
 				echo '<h1>Mail sent</h1>';
 				echo '<p>Your mail was not successfully sent.</p>';
-            } 
-			
+            }
+
             exit();
 		break;
 		case 'sendZippedAsMail':
-			$filename='typo3temp/download'.date('_Ymd_his').'.zip'; 
+			$filename='typo3temp/download'.date('_Ymd_his').'.zip';
 			createZip($filename,$archive,0);
 			$file = array($filename);
 			sendMail($post['mail'],$file);
@@ -190,13 +190,13 @@ if (is_array($post) && count($post) > 0) {
         if (!$maildata['subject'] || $maildata['subject']=='') $maildata['err'].=' subject';//$maildata['from']='Downloads';
         if (!$maildata['body'] || $maildata['body']=='') $maildata['err'].=' content';//$maildata['body']='Your download:';
         if (!$maildata['to']) $maildata['err'].=' recipient';
-		
+
         $localCObj = t3lib_div::makeInstance('tslib_cObj');	// Local cObj.
 		$localCObj->start(array());
         $ts = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.'];
-		
+
         if ($maildata['err']) die('<h1>Please set fields '.$maildata['err'].'</h1><p>I\'m sorry, without <b>'.$maildata['err'].'</b> I can\'t send your mail</p>' );
-        
+
 		require_once(PATH_t3lib.'class.t3lib_htmlmail.php');
 		$mailTemplate = str_replace( array("\r\n","\n","\r"), '<br>', $mailTemplate); // like nl2br() (sh 2010-03-28)
 		$mailTemplate = strip_tags($mailTemplate,'<table><tr><td><p><b><br>'); // allow b and br (sh 2010-03-28)
@@ -214,9 +214,9 @@ if (is_array($post) && count($post) > 0) {
 		foreach($attachments as $file) {
 			$htmlMail->addAttachment($file);
 		}
-		
+
 		$htmlMail->setHTML($htmlMail->encodeMsg($html_start.$mailTemplate.$html_end));
-		
+
 		return $htmlMail->send();
 	}
 
@@ -226,15 +226,15 @@ if (is_array($post) && count($post) > 0) {
 	function createZip($filename,$files,$download=1) {
 		#t3lib_div::debug($filename);
 		require_once(t3lib_extMgm::extPath('dam_frontend').'archive.php');
-		
+
 		$zipfile = new zip_file($filename);
 		$zipfile->set_options(array('inmemory' => $download, 'recurse' => 0, 'storepaths' => 0));
 		$zipfile->add_files($files);
 		$zipfile->create_archive();
 		if ($download) $zipfile->download_file();
 	}
-	
-	
+
+
 	/**
 	 * Splits configuration
 	 * and returns array which could be used in sendFile
@@ -284,9 +284,10 @@ if (is_array($post) && count($post) > 0) {
 			header("Content-type: ".$contenttype);
 			header("Content-disposition: inline; filename=\"".$filename."\"");
 		}
+		header("Pragma: private");
 		header("Content-Transfer-Encoding: Binary");
 		header("Content-length: ".$filesize);
-		
+
 		// If it's a large file, readfile might not be able to do it in one go, so:
 		$chunksize = 1 * (1024 * 1024); // how many bytes per chunk
 		$handle = fopen($file, 'rb');
@@ -300,9 +301,9 @@ if (is_array($post) && count($post) > 0) {
 		fclose($handle);
 		exit();
 	}
-	
+
 	/**
-	 * This function sanitized the value for width/height 
+	 * This function sanitized the value for width/height
 	 * @param string $size the value of width/height f.e. "100c-40", "30", "100m"
 	 * @return string empty if it is not valid
 	 */
@@ -332,7 +333,7 @@ if (is_array($post) && count($post) > 0) {
 		$fileArray['import'] = $filePath;
 		// we need an "import." entry
 		$fileArray['import.'] = array();
-		
+
 		$fileArray = array(
 			// f.e. "jpg", "WEB" etc. - if it is not set, the filetype of the orignal file will be used
 			'ext' => htmlspecialchars($configuration['ext']),
@@ -357,7 +358,7 @@ if (is_array($post) && count($post) > 0) {
 
 	/**
 	 * Redirects to the given page
-	 * 
+	 *
 	 * @param	[int]		$pid: ID of the page to which should be redirected
 	 * @param	[string]	$params: string of additional parameters for the link
 	 * @return	[void]		...
@@ -367,32 +368,32 @@ if (is_array($post) && count($post) > 0) {
 		exit();
 	}
 
-	
+
 	/**
 	 * checks if a hash is valid
-	 * 
+	 *
 	 * @param	[int]		$ID: ID of the dam_record that should be downloaded
 	 * @param	[int]		$valid: string of additional parameters for the link
 	 * @param	[int]		$FEUID: string of additional parameters for the link
 	 * @param	[string]	$hash: string of additional parameters for the link
 	 * @return	[boolean]	true if checkHosh is true 	...
-	 */	
+	 */
 	function checkHash($ID,$valid,$FEUID,$hash) {
 		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dam_frontend']);
 		$key = $extConf['privateKey'];
-		return (md5($ID+$valid+$FEUID+$key)==$hash); 
+		return (md5($ID+$valid+$FEUID+$key)==$hash);
 	}
 
-	
+
 	/**
 	 * checks if a checkout / hash download is necessary
-	 * 
+	 *
 	 * @param	[path]		Path which should be cheeked
 	 * @param	[int]		$valid: string of additional parameters for the link
 	 * @param	[int]		$FEUID: string of additional parameters for the link
 	 * @param	[string]	$hash: string of additional parameters for the link
 	 * @return	[boolean]	true if checkHosh is true 	...
-	 */	
+	 */
 	function checkOutNecessary($path) {
 		$restrictedFolders = array();
 		$restrictedFolders = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.']['filelist.']['security_options.']['checkOutFolders.'];
@@ -405,14 +406,14 @@ if (is_array($post) && count($post) > 0) {
 			 }
 			}
 		}
-		return false; 
+		return false;
 	}
 
 	function noAccess($message,$docID) {
-		
+
 		$redirect=$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.']['filelist.']['security_options.']['redirectToLoginPage'];
 		$URL=$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.']['filelist.']['security_options.']['redirectToURL'];
-		
+
 		if ($redirect) {
 			$redirectURL = urlencode('?id=7&eID=dam_frontend_push&docID='.$docID);
 			header('Location: '. $URL.$redirectURL);
@@ -421,15 +422,15 @@ if (is_array($post) && count($post) > 0) {
 			die($message);
 		}
 	}
-	
-	
+
+
 	// test for access to a file
 	$docID = intval(t3lib_div::GPvar('docID'));
-	
+
 	if ($docID==0) {
 		die('<h1>Error</h1><p>You have no access to download a file. In this case no correct DocID was given!</p>');
 	}
-	
+
 	// get the data of the selected document
 	$doc = $docLogic->getDocument($docID);
 	if (checkOutNecessary($doc['file_path'])) {
@@ -438,32 +439,32 @@ if (is_array($post) && count($post) > 0) {
 		$feUserID =  intval(t3lib_div::GPvar('feuid'));
 		if (!checkHash($docID,$valid,$feuserID, $hash)) {
 			die('<h1>Sorry</h1><p>You do not have the right to download this file.');
-		}	
-		else {
-			if ($valid>time()) {	
-				die('<h1>Error</h1><p>This link is not valid anymore. Please request this download again.</p');
-			} 
 		}
-	} 
-	
+		else {
+			if ($valid>time()) {
+				die('<h1>Error</h1><p>This link is not valid anymore. Please request this download again.</p');
+			}
+		}
+	}
+
 	// check if a user has access to the selected categories (a user must have access to all categories that are selected)
 	if (!$docLogic->checkAccess($docID, 1)) {
 		noAccess('<h1>Sorry</h1><p>You do not have the right to download this file.',$docID);
 	}
-	
-	
+
+
 	// check if a user has access to the selected categories (a user must have access to all categories that are selected)
 	if (!$docLogic->checkAccess($docID, 2)) {
 		noAccess('<h1>Sorry</h1><p>You do not have the right to download this file.',$docID);
 	}
-	
+
 	// check if a user has access to the dam record / file
 	if (!$docLogic->checkDocumentAccess($doc['fe_group'])) {
 		noAccess('<h1>Error</h1><p>You have no access to this file.',$docID);
 	}
-	
+
 	$filePath = PATH_site.$doc['file_path'].$doc['file_name'];
-	
+
 	if (!sendFile($filePath, $doc['file_name'], $doc['file_mime_type'] . '/' . $doc['file_mime_subtype'])) {
 		die ('<h1>Sorry, file not found!</h1><p>The requested file was not found! Please contact the adminstrator and tell him that the id: '.$docID .' was not found');
 	}
