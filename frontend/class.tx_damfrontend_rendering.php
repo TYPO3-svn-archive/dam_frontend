@@ -1967,6 +1967,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  		/// END
  		
  		$markerArray['###FILEICON###'] = $this->cObj->cObjGetSingle($this->conf['filelist.']['categoryIcon'],$this->conf['filelist.']['categoryIcon.']);
+ 		$markerArray['###TITLE###'] = $this->cObj->stdWrap($markerArray['###TITLE###'],$this->conf['filelist.']['categoryIcon.']['stdWrap.']);
  		
  		$markerArray = array_merge($markerArray , $this->substituteLangMarkers($record_Code));
 		$templCode = tslib_cObj::substituteMarkerArray($record_Code, $markerArray);
