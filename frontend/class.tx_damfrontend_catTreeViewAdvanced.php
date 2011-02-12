@@ -190,11 +190,11 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 	 * @return	void
 	 */
 	function expandTreeLevel($levelDepth=0) {
- 		
+
  		// expand only if tree was not expanded yet and level > 0
 		if ($this->user->getKey("ses",$this->treeID.'expandTreeLevel')<>1 && $levelDepth > 0) {
 			$structure = $this->get_treeStructure();
-			
+
 			// remove "cat_" from "cat_22" in structure array
 			foreach($structure as $catNr => $parentID) {
 				$catNr = explode('_',$catNr);
@@ -206,16 +206,16 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				if($levelDepth > 1) {
 					// alls ids of categories up to the levelDepth
 					$idsWithinlevelDepth = array();
-					
+
 					// fill up $idsWithinlevelDepth
 					$this->getLevelsFromFlatTree($idsWithinlevelDepth, $structureNumeric, $ID, 0, ($levelDepth-2));
-					
+
 					foreach($idsWithinlevelDepth as $uid) {
 						$this->stored[$mount][$uid] = 1;
 					}
 				}
 			}
-			
+
 			$this->savePosition();
 			$this->user->setKey("ses",$this->treeID.'expandTreeLevel', 1);
 		}
@@ -224,7 +224,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
  	/**
  	 * Recursive expandation function
  	 * @author Jonas Dübi, Tizian Schmidlin <jd@cabag.ch>, <st@cabag.ch>
- 	 * 
+ 	 *
  	 * @param &$idsWithinlevelDepth
  	 * @param &$structure
  	 * @param $currentParentId
@@ -235,11 +235,11 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
  	 */
  	function getLevelsFromFlatTree(&$idsWithinlevelDepth, &$structure, $currentParentId, $currentLevel, $upToLevel) {
  		$parentIds = array();
- 		
+
  		foreach($structure as $uid => $parentId) {
  			if($parentId == $currentParentId) {
  				$idsWithinlevelDepth[] = $uid;
- 				
+
  				if($currentLevel < $upToLevel) {
  					$this->getLevelsFromFlatTree($idsWithinlevelDepth, $structure, $uid, ($currentLevel + 1), $upToLevel);
 				}
@@ -400,7 +400,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		return $this->cObj->typoLink($icon, $linkConf);
 	}
 
-	
+
 
 	/**
 	 * Generate a plus/minus navigation for the browsable tree.
@@ -480,10 +480,10 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 	function printTree($treeArr='')	{
 		// 0 - show root icon always
 		$i = 0; //counter to determine of a row is even or uneven
-			
+
 			// setup ts options for rendering
 		if ($this->additionalTreeConf['useExplorerView']==1) {
-			$scope='explorerView';						
+			$scope='explorerView';
 		}
 		else {
 			$scope='categoryTreeAdvanced';
@@ -503,7 +503,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				if (is_array($this->selectedCats) ) {
 
 					$sel_class = $this->get_selectionStatus($v['row']['uid'],$this->treeStructureArray, $this->selectedCats);
-					
+
 				}
 				if ($this->categorizationMode==true) {
 
@@ -527,7 +527,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				$control = $this->getControl($title, $v['row'], $v['bank']);
 				$v['select_cat'] = $this->wrapCatSelection('&nbsp;',$v['row'],$sel_class);
 				$idAttr = htmlspecialchars($this->domIdPrefix.$this->getId($v['row']).'_'.$v['bank']);
-				
+
 				if ($this->conf[$scope.'.']['category.']['useAlternatingSubpart']==1) {
 					$marker = $GLOBALS['TSFE']->tmpl->splitConfArray(array('cObjNum' => $this->conf[$scope.'.']['category.']['marker']), count($treeArr));
 					$marker  = $marker[$i]['cObjNum'];
@@ -536,7 +536,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 					$marker = $this->conf[$scope.'.']['category.']['marker_single'];
 				}
 				if ($this->conf[$scope.'.']['showRootCategory']==0 && $v['row']['uid']==0) {
-					
+
 				}
 				else {
 					$out['###TREE_ELEMENTS###'].= $this->renderer->renderCategoryTreeCategory($sel_class,$v,$title,$control,$marker,$scope);
@@ -593,7 +593,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			$this->bank=$idx;
 			$isOpen = $this->stored[$idx][$uid] || $this->expandFirst;
 			if ($this->conf['categoryTreeAdvanced.']['showRootCategory']==0 && !$uid) {
-				$isOpen =true;				
+				$isOpen =true;
 			}
 
 				// Save ids while resetting everything else.
@@ -630,11 +630,11 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			else {
 				$firstHtml = $this->PM_ATagWrap($this->getTitleStr($rootRec,$titleLen),$cmd,'',$rootRec);
 				if ($isOpen) {
-					
+
 					$firstHtml = $this->cObj->stdWrap($firstHtml,$this->conf['categoryTreeAdvanced.']['categoryTitle.']['treeMinus.']);
 				}
 				else {
-					
+
 					$firstHtml = $this->cObj->stdWrap($firstHtml,$this->conf['categoryTreeAdvanced.']['categoryTitle.']['treePlus.']);
 				}
 			}
@@ -702,17 +702,17 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				end($this->tree);
 				$treeKey = key($this->tree);	// Get the key for this space
 				$LN = ($a==$c)?'blank':'line';
-	
+
 					// If records should be accumulated, do so
 				if ($this->setRecs)	{
 					$this->recs[$row['uid']] = $row;
 				}
-	
+
 					// Accumulate the id of the element in the internal arrays
 				$this->ids[] = $idH[$row['uid']]['uid'] = $row['uid'];
 				$this->ids_hierarchy[$depth][] = $row['uid'];
 				$this->orig_ids_hierarchy[$depth][] = $row['_ORIG_uid'] ? $row['_ORIG_uid'] : $row['uid'];
-	
+
 					// Make a recursive call to the next level
 				$HTML_depthData = $depthData.$this->cObj->IMAGE($this->conf['categoryTreeAdvanced.']['treeNavIcons.'][$LN.'.']);
 				if ($depth>1 && $this->expandNext($newID) && !$row['php_tree_stop'])	{
@@ -730,7 +730,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 					$exp=0;	// Clear "did expand" flag
 				}
 				if ($this->additionalTreeConf['useExplorerView']==1) {
-					
+
 					$nextCount=1;
 				}
 					// Set HTML-icons, if any:
@@ -742,11 +742,11 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				$hasSubs=1;
 				$childs = $this->get_childCats($row['uid'], $this->treeStructureArray);
 				if (empty($childs)) $hasSubs=0;
-				
+
 				$treeDepth = 1000-$depth;
-	
+
 				$paddingLeft = $treeDepth * $this->conf['categoryTreeAdvanced.']['treeLevelCSS.']['paddingLeft'];
-	
+
 					// Finally, add the row/HTML content to the ->tree array in the reserved key.
 				$this->tree[$treeKey] = Array(
 					'row'=>$row,
@@ -815,7 +815,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 	 */
 	function getDataInit($parentId,$subCSSclass='') {
 		$this->clause =  ' AND sys_language_uid = 0' ;
- 		if ($this->conf['categoryTreeAdvanced.']['showHiddenCategories']==0) $this->clause .= ' AND hidden = 0';  
+ 		if ($this->conf['categoryTreeAdvanced.']['showHiddenCategories']==0) $this->clause .= ' AND hidden = 0';
 		if (is_array($this->data)) {
 			if (!is_array($this->dataLookup[$parentId][$this->subLevelID])) {
 				$parentId = -1;
@@ -841,7 +841,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 	/**
 	 * returns a list with child cats and their selection status
 	 *
-	 * @param	[array]		$treeArray $
+	 * @param	[int]		$catUID ID of the category
 	 * @param	[type]		$treeStructure: ...
 	 * @return	[array]		array with the tree $key = catID $value = parrentID
 	 */
@@ -934,7 +934,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 				}
 				#}
 			}
-			
+
 			if ($catSelected == false and  $catNotSelected==true) {
 					//	no cats are selected
 				$sel_class ='tree_selectedNoCats';
@@ -942,29 +942,29 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			else {
 
 				if ($catSelected == true and  $catNotSelected==false) {
-					
+
 					//	all cats are selected
 					$sel_class ='tree_selectedAllCats';
 				}
 				else {
-					
+
 					$sel_class ='tree_selectedPartlyCats';
 				}
 			}
 		}
 		return $sel_class;
 	}
-	
+
 	/**
 	 * returns an array of files belonging to the given category
 	 *
 	 * @param	[int]		$catID
 	 * @return	[int]		tree_selectedCats, tree_unselectedCats, tree_selectedPartlyCats
-	 */	
+	 */
 	function filelist($catID,$treeLevelCSS) {
 		$currentCat = array();
 		$currentCat[]=$catID;
-		
+
 		// initialization the document logic
 		$this->additionalTreeConf['docLogic']->categories = array();
 		$this->additionalTreeConf['docLogic']->categories[$this->cObj->data['uid']]=$currentCat;
@@ -1001,7 +1001,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		}
 		$content = $this->renderer->cObj->stdWrap($content,$this->renderer->conf['explorerView.']['filelist.']);
 		#t3lib_div::debug($content);
-		
+
 		return $content;
 	}
 }
