@@ -19,6 +19,7 @@ Feature #10543: Improve rendering of mimetypes
 Feature #10548: Integrate Easy Search in Searchform
 Feature #10550: Signatures for mail function
 _searchCategoryAttributes
+Feature: show Subcategories in Filelist
 fixed Bug #6406: Redundant files when working with workspaces
 fixed Bug #7232: Check directory permissions and success during upload
 fixed Bug #7415: useTreeAndSelection does not work

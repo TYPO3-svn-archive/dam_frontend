@@ -407,6 +407,9 @@ plugin.tx_damfrontend_pi1 {
 			filelist_record_alterning = ###FILELIST_RECORD_ODD### |*| ###FILELIST_RECORD_EVEN### || ###FILELIST_RECORD_ODD### |*|
 		}
 		
+		#shows the sub categories at top of the filelist
+		showSubCategoriesInFilelist = 1
+		
 		# comma separated list of dam columns, which should be searched (use only text columns)
 		searchwordFields = title, description
 

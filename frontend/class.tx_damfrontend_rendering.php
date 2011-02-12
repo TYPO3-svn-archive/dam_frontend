@@ -152,6 +152,8 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  			return $this->pi_getLL('noDocInCat');
  		}
 
+
+
  		if(!intval($resultcount) || $resultcount < 1) {
 			if (TYPO3_DLOG)	t3lib_div::devLog('tx_damfrontend_rendering.renderFileList: Invalid resultcount. Counter is less than 1 or null. Allowed values are integer >0','dam_frontend',2,$list);
  			return $this->pi_getLL('noDocInCat');
@@ -174,10 +176,18 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 		$rows = '';
 		$cObj = t3lib_div::makeInstance('tslib_cObj');
  		foreach ($list as $elem) {
- 			$record_Code = tsLib_CObj::getSubpart($this->fileContent,$filelist_record_marker[$countElement]['cObjNum']);
- 			$countElement++;
- 			$rows .= $this->renderDamRecordRow($elem,$countElement,$pointer,$listLength,'filelist',$record_Code,$cObj );
+	 		// check if in the list result are categories if yes, render first the catgories
+			if ($elem['catID']) {
+				$rows .= $this->renderDamSubCategories($elem['catID']);
+			}
+ 			else {
+	 			$record_Code = tsLib_CObj::getSubpart($this->fileContent,$filelist_record_marker[$countElement]['cObjNum']);
+	 			$countElement++;
+	 			$rows .= $this->renderDamRecordRow($elem,$countElement,$pointer,$listLength,'filelist',$record_Code,$cObj );
+ 			}
  		}
+
+ 		t3lib_div::debug($rows);
  		$content = tslib_cObj::substituteMarker($list_Code, '###FILELIST_RECORDS###', $rows);
  		$content = tslib_cObj::substituteMarker($content, '###DOWNLOAD_FORM_URL###', $this->cObj->typolink('', $this->conf['filelist.']['link_select_download.']['typolink.']));
 		$content = tslib_cObj::substituteMarker($content, '###LISTLENGTH###', $listLength);
@@ -196,7 +206,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 		$markerArray['###LANGUAGE_HEADER###'] = $this->pi_getLL('LANGUAGE_HEADER');
 		$markerArray['###OWNER_HEADER###'] = $this->pi_getLL('OWNER_HEADER');
 		$markerArray['###CREATOR_HEADER###'] = $this->pi_getLL('CREATOR_HEADER');
- 		
+
 		$sortlinks = array();
 
  			// substitute Links for Sorting
@@ -232,7 +242,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  		foreach (array('FILELIST_BATCH_SELECT', 'FILELIST_BATCH_GO', 'FILELIST_BATCH_CREATEZIPFILE', 'FILELIST_BATCH_SENDASMAIL', 'FILELIST_BATCH_SENDZIPPEDFILESASMAIL', 'FILELIST_BATCH_SENDFILELINK', 'FILELIST_BATCH_SENDZIPPEDFILELINK', 'FILENAME_HEADER', 'FILENAME_HEADER', 'FILETYPE_HEADER', 'CR_DATE_HEADER') as $label) {
  			$content = tsLib_CObj::substituteMarker($content, '###'.$label.'###', $this->pi_getLL($label, $label));
  		}
- 		
+
  		$markerArray['###FILELIST_BACK_PID###']=$GLOBALS['TSFE']->id;
  		$markerArray['###COMMENT_DEFAULT###']=$this->pi_getLL('COMMENT_DEFAULT');
  		$markerArray['###COMMENT###']=$this->pi_getLL('COMMENT');
@@ -241,7 +251,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  		$markerArray['###FROM###']=$this->pi_getLL('FROM');
  		$markerArray['###SUBJECT_DEFAULT###']=$this->pi_getLL('SUBJECT_DEFAULT');
  		$markerArray['###FROM_DEFAULT###']=$GLOBALS['TSFE']->fe_user->user['email'];
- 		
+
  		$options = array();
  		if ($this->conf['filelist.']['mailOptions.']['signatures.']) {
  			foreach ($this->conf['filelist.']['mailOptions.']['signatures.'] as $signatureID=>$value) {
@@ -249,7 +259,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  					$options[$signatureID] = $this->cObj->cObjGetSingle($this->conf['filelist.']['mailOptions.']['signatures.'][$signatureID], $this->conf['filelist.']['mailOptions.']['signatures.'][$signatureID.'.']);
  				}
  			}
- 			
+
  			$selektor = $this->renderSelector($options,'','tx_damfrontend_pi1[signature]',1,false,false);
  			$markerArray['###SIGNATURE###']=$this->cObj->cObjGetSingle($this->conf['filelist.']['mailOptions.']['label'], $this->conf['filelist.']['mailOptions.']['label.']);
  			$markerArray['###SIGNATURE###'].=$this->cObj->stdWrap($selektor, $this->conf['filelist.']['mailOptions.']['signaturesSelector.']);
@@ -258,9 +268,9 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  		else {
 	 		$markerArray['###SIGNATURE###']='';
  		}
- 		
+
  		$markerArray['###MESSAGE###']=$this->pi_getLL('MAIL_SUCCESS');
-		
+
  		# mail markers
  		$mailArray['###MAIL_SALUTATION###']=$this->pi_getLL('MAIL_SALUTATION');
  		#$mailArray['###MAIL_COMMENT###']=$this->pi_getLL('MAIL_SUCCESS');
@@ -404,12 +414,12 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 
 			// NEW Hook for additional fields
             if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_GROUPEDLIST_VIEW'])) {
-                foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_GROUPEDLIST_VIEW'] as $_classRef) { 
-                    $_procObj = &t3lib_div::getUserObj($_classRef); 
+                foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_GROUPEDLIST_VIEW'] as $_classRef) {
+                    $_procObj = &t3lib_div::getUserObj($_classRef);
                     $_procObj->renderListView(&$markerArray, $this, $elem);
                 }
             }
-			
+
  			$rows .= tslib_cObj::substituteMarkerArray($record_Code, $markerArray);
  			$sortlinks = array();
  		}
@@ -465,7 +475,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  			$content = tsLib_CObj::substituteMarker($content, '###'.$label.'###', $this->pi_getLL($label, $label));
  		}
 		$content = tslib_cObj::substituteMarkerArray($content, $markerArray);
-		
+
 		$markerArray['###FILELIST_BACK_PID###']=$GLOBALS['TSFE']->id;
  		$markerArray['###COMMENT_DEFAULT###']=$this->pi_getLL('COMMENT_DEFAULT');
  		$markerArray['###COMMENT###']=$this->pi_getLL('COMMENT');
@@ -475,7 +485,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  		$markerArray['###SUBJECT_DEFAULT###']=$this->pi_getLL('SUBJECT_DEFAULT');
  		$markerArray['###FROM_DEFAULT###']=$GLOBALS['TSFE']->fe_user->user['email'];
  		$markerArray['###MESSAGE###']=$this->pi_getLL('MAIL_SUCCESS');
-		
+
  		# mail markers
  		$mailArray['###MAIL_SALUTATION###']=$this->pi_getLL('MAIL_SALUTATION');
  		#$mailArray['###MAIL_COMMENT###']=$this->pi_getLL('MAIL_SUCCESS');
@@ -491,7 +501,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 		}
  		$markerArray['###CLOSE###']=$this->pi_getLL('CLOSE');
  		$content = tslib_cObj::substituteMarkerArray($content, $markerArray);
-		
+
  			// substitute static user defined markers
  		$this->pi_loadLL();
  		$staticMarkers['###SETROWSPERVIEW###'] = $this->pi_getLL('setRowsPerView');
@@ -546,12 +556,12 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 		foreach ((array) $this->piVars as $piVar =>$value) {
 			$param_array['tx_damfrontend_pi1['.$piVar.']']=$value;
 		}
-	
-		
+
+
 		$this->conf['filelist.']['browselink.']['typolink.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
-		
+
 		$cObj =  $this->cObj;
-		
+
 		if ($resultcount % $listLength==0) $noOfPages = $noOfPages-1+$limiter;
 
 			for ($z = 0; $z <= $noOfPages; $z++) {
@@ -576,7 +586,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 						else {
 							$param_array['tx_damfrontend_pi1[pointer]'] =  ($z+1);
 							$this->conf['filelist.']['browselinkNext.']['typolink.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
-							$listElemsNext .=  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $cObj->stdWrap ($z+1,$this->conf['filelist.']['browselinkNext.']));							
+							$listElemsNext .=  tslib_CObj::substituteMarker($listElem, '###BROWSELINK###', $cObj->stdWrap ($z+1,$this->conf['filelist.']['browselinkNext.']));
 						}
 					}
 				}
@@ -654,7 +664,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 			else {
 				$urlVars['tx_damfrontend_pi1[treeID]'] = $category['treeID'];
 			}
-				
+
 				// TODO implement TS Setting  & add stdWrap
 			$url = $this->cObj->getTypoLink_URL($GLOBALS['TSFE']->id,$urlVars);
 
@@ -693,7 +703,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  		$tsconf = $this->conf['singleView.']['link_download.'];
 	 	$tsconf['stdWrap.']['typolink.']['additionalParams'].=$this->makeDownloadHash($elem['uid']);
 	 	$markerArray['###LINK_DOWNLOAD_HASH###'] = $cObj->cObjGetSingle($this->conf['singleView.']['link_download'], $tsconf);
- 		
+
  		$markerArray['###BACK_LINK###'] = $this->cObj->typolink($cObj->cObjGetSingle($this->conf['singleView.']['backLink'], $this->conf['singleView.']['backLink.']), array('parameter' => $record['backPid']));
 		$markerArray['###TX_DAMFRONTEND_FEUSER_UPLOAD###']= $this->get_FEUserName($record['tx_damfrontend_feuser_upload']);
 		$markerArray['###FILEICON###'] = $cObj->stdWrap('<img src="'.$this->getFileIconHref($record['file_mime_type'],$record['file_mime_subtype'] ).'" title="'.$record['title'].'"  alt="'.$record['title'].'"/>',$this->conf['singleView.']['fileicon.']);
@@ -715,11 +725,11 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 		// adding static user definded markers
  		$markerArray =$markerArray + $this->substituteLangMarkers($single_Code);
  		if (!is_null($this->staticInfoObj)) { $markerArray['###LANGUAGE###'] 	= $this->staticInfoObj->getStaticInfoName('LANGUAGES', $record['language'], '', '', false);}
- 		
+
  		// Hook for additional fields
  		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_SINGLE_VIEW'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_SINGLE_VIEW'] as $_classRef) { 
-				$_procObj = &t3lib_div::getUserObj($_classRef); 
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_SINGLE_VIEW'] as $_classRef) {
+				$_procObj = &t3lib_div::getUserObj($_classRef);
 				$_procObj->renderSingleView(&$markerArray, $this, $record);
 			}
 		}
@@ -812,7 +822,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 
 		foreach ($record as $key=>$value) {
 			if ('' == $key) continue; // empty key
-			
+
 			// first try if $cObj->cObjGetSingle has a result, else do only a stdWrap
 			$markerArray['###'.strtoupper($key).'###'] = $cObj->cObjGetSingle($this->conf[$scope.'.'][$key], $this->conf[$scope.'.'][$key.'.']);
 			if (!$markerArray['###'.strtoupper($key).'###']) {
@@ -825,8 +835,8 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 			}
 		}
 
-		
-		
+
+
  		return $markerArray;
  	}
 
@@ -849,7 +859,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 	 		$markerArray['###TREEID###'] =  $this->cObj->data['uid'];
 	 		$markerArray['###DROPDOWN_CATEGORIES_HEADER###'] = $this->cObj->stdWrap($this->pi_getLL('DROPDOWN_CATEGORIES_HEADER'),$this->conf['filterview.']['dropdown_categories_header.']);
 			$markerArray['###DROPDOWN_CATEGORIES###'] = $this->renderCatgoryList($filterArray['categories']);
-		} 
+		}
 		else {
 			$markerArray['###DROPDOWN_CATEGORIES###']='';
 			$markerArray['###TREEID###'] =  '';
@@ -941,10 +951,10 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 		if (trim($filetype) == '') $filetype = 'noselection';
 		// TODO: use DAM - functions - there are much more file types possible
 		$this->pi_loadLL();
-		
+
 		$filetypeArray  = $this->conf['filterView.']['filetypes.'];
 		$filetypeArray['noselection']='noselection';
-		
+
 		$content = '<select name="filetype">';
 		foreach ($filetypeArray as $type => $arr) {
 			# do only take ts options that are at root level
@@ -1714,7 +1724,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 	 * @return	[type]		...
 	 */
  	function renderCatgoryList($categories) {
- 		
+
  		if (is_array($categories)) {
 			foreach ($categories as $category) {
 				if ($category['selected'] == 1) {
@@ -1749,7 +1759,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 	 * @param	[string]		$name: name of the element (also this is the post name)
 	 * @param	[int]			$size: the size of the element
 	 * @param	[boolean]		$no_selecetion: if true, an additional empty entry is rendered
-	 * @param	[boolean]		$multiple: if true, multiple entries a possible, then a selector list is rendered instead of a combobox 
+	 * @param	[boolean]		$multiple: if true, multiple entries a possible, then a selector list is rendered instead of a combobox
 	 * @return	[type]		...
 	 */
  	function renderSelector($options, $selected,$name,$size=1,$no_selecetion=true,$multiple=false, $additionalParams ='',$stdWrapConf = array(),$noSelectionLabel=''){
@@ -1785,7 +1795,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 		else {
 	 		return '<select name="'.$name.'" size="'.$size.'" '.$additionalParams.'>'.$content.'</select>';
 		}
-		
+
  	}
 	/**
 	 * Renders the drill down view
@@ -1795,10 +1805,10 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 	 */
  	function renderDrillDown($catArray, $selected){
    		$content = '
-   			
-   			<script type="text/javascript"> 
-   				function doSubmit() {	
-					document.frm.submit(); 
+
+   			<script type="text/javascript">
+   				function doSubmit() {
+					document.frm.submit();
    				}
 			</script>
 			<form action="" method="post" name="frm">
@@ -1811,27 +1821,27 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
    		else {
 	   		$noSelectionLabel=$this->conf['drillDown.']['selectorBox.']['displayAnEmptyOption.']['label'];
    		}
-   		
+
    		if ($this->conf['drillDown.']['selectorBox.']['css.']['class']) $CSSClass = ' class="'. $this->conf['drillDown.']['selectorBox.']['css.']['class'] .'" ';
    		foreach ($catArray as $key => $catLevel) {
 	   		if ($this->conf['drillDown.']['selectorBox.']['css.']['id']) $CSSID = ' id="'. $this->conf['drillDown.']['selectorBox.']['css.']['id'] .$key.'"';
 	   		if ($this->conf['drillDown.']['selectorBox.']['displayAnEmptyOption']==1) $displayAnEmptyOption=true ;
 	 		$box = $this->renderSelector($catLevel,$selected,$this->prefixId.'[level'.$key.']',0	,$displayAnEmptyOption,false,' onchange="doSubmit()" ' . $CSSClass. ' ' .$CSSID,$this->conf['drillDown.']['selectorBox.']['option.'],$noSelectionLabel);
 	 		$content.= $this->cObj->stdWrap($box,$this->conf['drillDown.']['selectorBox.']);
-	 	}	
+	 	}
 	 	$content.='</form>';
  		return $content;
  	}
- 	
+
  	function renderDamRecordRow($elem,$countElement,$pointer,$listLength,$scope='filelist',$record_Code,$cObj,$markerArray=array()) {
- 		
+
  		$cObj->start($elem, 'tx_dam');
- 		
+
  		$elem['count_id'] =$countElement;
  		if ($pointer>0) $elem['count_id'] = $countElement  + $pointer * $listLength;
 
  		$markerArray =$markerArray+ $this->recordToMarkerArray($elem, $scope,'tx_dam');
- 		
+
  		$markerArray =$markerArray + $this->substituteLangMarkers($record_Code);
 
  		$markerArray['###TX_DAMFRONTEND_FEUSER_UPLOAD###']	= $this->get_FEUserName($elem['tx_damfrontend_feuser_upload']);
@@ -1839,7 +1849,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 		$markerArray['###DATE_CR_AGE###']					= $cObj->stdWrap($elem['date_cr'], $this->conf[$scope.'.']['date_cr_age.']);
 		$markerArray['###CATEGORY###'] 						= $cObj->cObjGetSingle($this->conf['singleView.']['category.']['cObject'], $this->conf['singleView.']['category.']['cObject.']);
 		$markerArray['###TREELEVELCSS###'] 					= $elem['treeLevelCSS'];
-		
+
 		if (!is_null($this->staticInfoObj)) { $markerArray['###LANGUAGE###'] 	= $this->staticInfoObj->getStaticInfoName('LANGUAGES', $elem['language'], '', '', false); }
 
  			// adding Markers for links to download and single View
@@ -1851,12 +1861,12 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 		$markerArray['###LINK_SINGLE###'] = $cObj->cObjGetSingle($this->conf[$scope.'.']['link_single'], $this->conf[$scope.'.']['link_single.']);
 
  		$markerArray['###LINK_DOWNLOAD###'] = $cObj->cObjGetSingle($this->conf[$scope.'.']['link_download'], $this->conf[$scope.'.']['link_download.']);
- 			
+
  		$tsconf = $this->conf[$scope.'.']['link_download.'];
  		$tsconf['stdWrap.']['typolink.']['additionalParams'].=$this->makeDownloadHash($elem['uid']);
  		$markerArray['###LINK_DOWNLOAD_HASH###'] = $cObj->cObjGetSingle($this->conf[$scope.'.']['link_download'], $tsconf);
  		$markerArray['###LINK_SELECT_DOWNLOAD###'] = '';
-		
+
 		if (is_array($this->conf[$scope.'.']['link_select_download.'])) {
 			$markerArray['###LINK_SELECT_DOWNLOAD###'] .= '<select name="'.$this->prefixId.'['.$elem['uid'].'][convert]">';
 			$i = 1;
@@ -1886,18 +1896,18 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 
  		// Hook for additional fields
  		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_DAM_RECORD'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_DAM_RECORD'] as $_classRef) { 
-				$_procObj = &t3lib_div::getUserObj($_classRef); 
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_DAM_RECORD'] as $_classRef) {
+				$_procObj = &t3lib_div::getUserObj($_classRef);
 				$_procObj->render_dam_record(&$markerArray, $this, $elem);
 			}
 		}
  		return tslib_cObj::substituteMarkerArray($record_Code, $markerArray);
  	}
- 	
+
  	function get_LLLabel($label) {
  			return $this->pi_getLL($label);
  	}
- 	
+
  	function makeDownloadHash($ID) {
  		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dam_frontend']);
 		$key = $extConf['privateKey'];
@@ -1907,6 +1917,15 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 			$FEUID = $user->user['uid'];
 		}
 		return '&dfhash='.md5($ID+$valid+$FEUID+$key).'&valid='.$valid.'&feuid='.$FEUID;
+ 	}
+
+ 	/*
+ 	 *
+ 	 */
+ 	function renderDamSubCategories($category) {
+		require_once(t3lib_extMgm::extPath('dam_frontend') . '/frontend/class.tx_damfrontend_catTreeView.php');
+ 		$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeView');
+ 		return $tree->get_subCategories($category);
  	}
 }
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_rendering.php'])	{
