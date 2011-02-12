@@ -493,7 +493,20 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->internal['newFilter'] = strip_tags($this->piVars['newFilter']);
 
 			// getting the incoming treeID
-		$this->internal['incomingtreeID'] = intval($this->piVars['treeID']);
+		if ($this->piVars['treeID']=='ALL') {
+			// if the current content element is a tree view
+			// then set incommingtreeID to the current ID of the element
+			// so the commands to select or deselect a category are getting processed
+			if ($this->internal['viewID']==2) {
+				$this->internal['incomingtreeID'] = $this->cObj->data['uid'];
+			}
+			else {
+				$this->internal['incomingtreeID']=0;
+			}
+		}
+		else {
+			$this->internal['incomingtreeID'] = intval($this->piVars['treeID']);
+		}
 
 			// loading post values from the drilldown view
 		if ($this->piVars['level0']){
@@ -714,6 +727,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 			else if ($this->internal['catEquals']) {
 				$this->catList->op_Equals($this->internal['catEquals'], $this->internal['incomingtreeID']);
+				$GLOBALS['TSFE']->fe_user->setKey('ses','currentCategory',$this->internal['catEquals']);
 			}
 			else if ($this->internal['catMinus_Rec']) {
 				$catID = $this->internal['catMinus_Rec'];
@@ -1038,7 +1052,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		if ($this->conf['enableDebug']==1) {
 			if ($this->conf['debug.']['class.tx_damfrontend_pi1.']['getDocumentList.']['showCatSelection']==1)		t3lib_div::debug($cats);
 		}
-
 		if (count($cats)) {
 			foreach($cats as $catList) {
 				if (count($catList)) $hasCats = true;
@@ -1105,8 +1118,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					// add categories to the top of the filelist
 					require_once(t3lib_extMgm::extPath('dam_frontend') . '/frontend/class.tx_damfrontend_catTreeView.php');
  					$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeView');
-					$subCategories=  $tree->get_subCategories(1);
-					array_merge($subCategories,$files);
+ 					$tree->init();
+					$subCategories =  $tree->get_subCategories($this->getCurrentCategory());
+					// Merge files and categories to one result array, the categories will remain on top
+					$files = array_merge($subCategories,$files);
 				}
 
 				 //get the html from the renderer
@@ -2223,6 +2238,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		return  $this->cObj->stdWrap($tree->getBrowsableTree(), $this->conf['categoryTree.']['stdWrap.']);
 
 		return $content;
+	}
+	
+	function getCurrentCategory() {
+		return intval($GLOBALS['TSFE']->fe_user->getKey('ses','currentCategory'));
 	}
 
 }

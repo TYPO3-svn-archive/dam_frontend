@@ -177,17 +177,17 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 		$cObj = t3lib_div::makeInstance('tslib_cObj');
  		foreach ($list as $elem) {
 	 		// check if in the list result are categories if yes, render first the catgories
-			if ($elem['catID']) {
-				$rows .= $this->renderDamSubCategories($elem['catID']);
+ 			if ($elem['catID']) {
+ 				$rows .= $this->renderDamSubCategories($elem);
 			}
  			else {
 	 			$record_Code = tsLib_CObj::getSubpart($this->fileContent,$filelist_record_marker[$countElement]['cObjNum']);
 	 			$countElement++;
 	 			$rows .= $this->renderDamRecordRow($elem,$countElement,$pointer,$listLength,'filelist',$record_Code,$cObj );
+	 			$rowForSortlink = $elem;
  			}
  		}
 
- 		t3lib_div::debug($rows);
  		$content = tslib_cObj::substituteMarker($list_Code, '###FILELIST_RECORDS###', $rows);
  		$content = tslib_cObj::substituteMarker($content, '###DOWNLOAD_FORM_URL###', $this->cObj->typolink('', $this->conf['filelist.']['link_select_download.']['typolink.']));
 		$content = tslib_cObj::substituteMarker($content, '###LISTLENGTH###', $listLength);
@@ -210,7 +210,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 		$sortlinks = array();
 
  			// substitute Links for Sorting
- 		$record = $list[0];
+ 		$record = $rowForSortlink;
 
  		foreach ($record as $key=>$value) {
 			$content = tsLib_CObj::substituteMarker($content, '###SORTLINK_'.strtoupper($key).'###', $this->renderSortLink($key));
@@ -819,7 +819,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 	 	$cObj = t3lib_div::makeInstance('tslib_cObj');
 		$cObj->start($record, $table);
 		if (!is_array($this->conf[$scope.'.'])) { $this->conf[$scope.'.'] = array(); }
-
+		$markerArray = array();
 		foreach ($record as $key=>$value) {
 			if ('' == $key) continue; // empty key
 
@@ -1923,9 +1923,63 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  	 *
  	 */
  	function renderDamSubCategories($category) {
-		require_once(t3lib_extMgm::extPath('dam_frontend') . '/frontend/class.tx_damfrontend_catTreeView.php');
- 		$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeView');
- 		return $tree->get_subCategories($category);
+
+ 		$record_Code = tsLib_CObj::getSubpart($this->fileContent,'###CATLIST_RECORD###');
+ 		$markerArray = $this->recordToMarkerArray($category, 'tx_dam_cat','tx_dam_cat');
+
+ 		/// Start
+ 		
+ 		$id = (int)t3lib_div::_GET('id');
+		$param_array = array (
+			'tx_damfrontend_pi1' => '', // ok, the t3lib_div::linkThisScript cant work with arrays
+			'tx_damfrontend_pi1[catPlus]' => null,
+			'tx_damfrontend_pi1[catEquals]' => null,
+			'tx_damfrontend_pi1[catMinus]' => null,
+			'tx_damfrontend_pi1[catPlus_Rec]' => null,
+			'tx_damfrontend_pi1[catMinus_Rec]' => null,
+			'tx_damfrontend_pi1[treeID]' => 'ALL'
+		);
+
+		#switch ($this->conf['categoryTree.']['catTitle.']['actions.']['selectCat']) {
+		#	case 'catEquals':
+				$param_array['tx_damfrontend_pi1[catEquals]']=$category['uid'];
+		#		break;
+		#	case 'catPlus':
+		#		$param_array['tx_damfrontend_pi1[catPlus]']=$category['uid'];
+		#		break;
+		#	case 'catPlus_Rec':
+		#		$param_array['tx_damfrontend_pi1[catPlus_Rec]']=$category['uid'];
+		#		break;
+		#}
+		$cmd='0_1_'.$category['uid'].'_txdamCat';
+		if ($this->conf['categoryTree.']['catTitle.']['actions.']['openTree']==1) {
+			$param_array['PM']=$cmd;
+		}
+
+		if ($this->conf['categoryTree.']['resetFilterOnClick']==1) {
+			$param_array['tx_damfrontend_pi1[resetFilter]']=1;
+		}
+
+		if ($id > 0) { $param_array['tx_damfrontend_pi1[id]'] = $id; }
+		
+		$this->conf['filelist.']['categoryIcon.']['stdWrap.']['typolink.']['additionalParams']= t3lib_div::implodeArrayForUrl('',$param_array);
+ 		
+ 		/// END
+ 		
+ 		$markerArray['###FILEICON###'] = $this->cObj->cObjGetSingle($this->conf['filelist.']['categoryIcon'],$this->conf['filelist.']['categoryIcon.']);
+ 		
+ 		$markerArray = array_merge($markerArray , $this->substituteLangMarkers($record_Code));
+		$templCode = tslib_cObj::substituteMarkerArray($record_Code, $markerArray);
+		
+		// get all remaining markers
+ 		preg_match_all('/###.+?###/Ssm', $templCode, $aLLMarkerList);
+ 		$markerArray = array();
+ 		// set all remaining marker to an empty string
+ 		foreach ($aLLMarkerList[0] as $key=>$value) {
+	 		$markerArray[$value]='';
+ 			
+ 		}
+ 		return tslib_cObj::substituteMarkerArray($templCode, $markerArray);
  	}
 }
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_rendering.php'])	{

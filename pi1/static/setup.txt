@@ -253,6 +253,10 @@ plugin.tx_damfrontend_pi1 {
 			stdWrap.override.if.isFalse = {$plugin.tx_damfrontend_pi1.mediafolder}
 		}
 	}
+	
+	tx_dam_cat {
+		title.wrap = |
+	}
 	singleView < .renderFields
 	singleView {
 		file_name {
@@ -409,6 +413,10 @@ plugin.tx_damfrontend_pi1 {
 		
 		#shows the sub categories at top of the filelist
 		showSubCategoriesInFilelist = 1
+		
+		categoryIcon = IMAGE
+		categoryIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}cat.gif
+		categoryIcon.stdWrap.typolink.parameter.data = TSFE:id
 		
 		# comma separated list of dam columns, which should be searched (use only text columns)
 		searchwordFields = title, description

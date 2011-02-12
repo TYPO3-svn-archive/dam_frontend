@@ -740,19 +740,13 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	}
 
 	function get_subCategories($catID) {
-		$res = $this->getDataInit($uid,'subCSSclass');
+		$res = $this->getDataInit($catID,'subCSSclass');
 		$subCategories = array();
 		while ( $row = $this->getDataNext($res,$subCSSclass))	{
-			$subCategories[]= $row['uid'];
+			$row['catID']=$row['uid'];
+			$subCategories[]= $row;
 		}
 		return $subCategories;
-	}
-
-	function render_subCategories($categories) {
-		foreach ($categories as $category) {
-
-		}
-		return $content;
 	}
 }
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/frontend/class.tx_damfrontend_catTreeView.php'])	{
