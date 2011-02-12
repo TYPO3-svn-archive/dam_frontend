@@ -102,6 +102,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 		var $selectionMode = '';
 		var $searchAllCats;
 		var $fullTextSearchFields = 'title';
+		var $searchCatFields = false;
 
 		var $relations = array(
 			'1' => 'readaccess',
@@ -379,7 +380,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			$from = $this->docTable.' INNER JOIN '.$this->mm_Table.' ON '.$this->mm_Table.'.uid_local  = '.$this->docTable.
 			'.uid INNER JOIN '.$this->catTable.' ON '.$this->mm_Table.'.uid_foreign = '.$this->catTable.'.uid';
 
-			if ($this->conf['searchCategoryAttributes'] == 1) {
+			if ($this->conf['searchCategoryAttributes'] == 1 AND $this->searchCatFields == true) {
 				foreach(explode(',',$this->conf['searchCategoryAttributes.']['fields']) as $field) {
 					$this->additionalFilter .= ' OR ('.$this->catTable.'.'.$field.' LIKE "%'.$GLOBALS['TYPO3_DB']->quoteStr(trim($filterArray['searchword']), $this->catTable).'%")';
 				}
@@ -727,7 +728,13 @@ require_once(PATH_tslib.'class.tslib_content.php');
 				if ($filterArray['filetype'] != '' && $filterArray['filetype'] != ' ') $this->additionalFilter .= ' AND '.$this->docTable.'.file_type = \''.$filterArray['filetype'].'\'' ;
 			}
 
-			if ($filterArray['searchword'] != '' && $filterArray['searchword'] != ' ') $this->additionalFilter .= $this->getSearchwordWhereString($filterArray['searchword']);
+			if ($filterArray['searchword'] != '' && $filterArray['searchword'] != ' ') {
+				$this->searchCatFields = true;
+				$this->additionalFilter .= $this->getSearchwordWhereString($filterArray['searchword']);
+			}
+			else {
+				$this->searchCatFields = false;
+			}
 
 			if ($filterArray['creator'] != '' && $filterArray['creator'] != ' ') $this->additionalFilter .= $this->getSearchwordWhereString($filterArray['creator'],'creator');
 
