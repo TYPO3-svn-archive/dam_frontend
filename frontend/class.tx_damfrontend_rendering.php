@@ -135,6 +135,133 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  	}
 
 
+ 	/**
+	 * function renderes a list of all files, which are availible
+	 *
+	 * @param	array		$list: ...
+	 * @return	string		html code of the empty list
+	 */
+ 	function renderEmptyFileList($list) {
+		// TODO merge with renderFileList
+ 		$list_Code = tsLib_CObj::getSubpart($this->fileContent,'###FILELIST###');
+ 		foreach ($list as $elem) {
+	 		// check if in the list result are categories if yes, render first the catgories
+ 			if ($elem['catID']) {
+ 				$rows .= $this->renderDamSubCategories($elem);
+			}
+ 		}
+		$content = tslib_cObj::substituteMarker($list_Code, '###FILELIST_RECORDS###', $rows);
+		$markerArray = array();
+		$markerArray['###FILENAME_HEADER###'] = $this->pi_getLL('FILENAME_HEADER');
+		$markerArray['###FILETYPE_HEADER###'] = $this->pi_getLL('FILETYPE_HEADER');
+		$markerArray['###FILE_SIZE_HEADER###'] = $this->pi_getLL('FILE_SIZE_HEADER');
+		$markerArray['###CR_DATE_HEADER###']  = $this->pi_getLL('CR_DATE_HEADER');
+		$markerArray['###LANGUAGE_HEADER###'] = $this->pi_getLL('LANGUAGE_HEADER');
+		$markerArray['###OWNER_HEADER###'] = $this->pi_getLL('OWNER_HEADER');
+		$markerArray['###CREATOR_HEADER###'] = $this->pi_getLL('CREATOR_HEADER');
+
+		$sortlinks = array();
+
+ 			// substitute Links for Sorting
+
+		// get dummy record
+		$rowForSortlink = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow	('*','tx_dam');
+ 		$record = $rowForSortlink;
+
+ 		foreach ($record as $key=>$value) {
+			$content = tsLib_CObj::substituteMarker($content, '###SORTLINK_'.strtoupper($key).'###', $this->renderSortLink($key));
+			$tmpPiVars = $this->piVars;
+			unset ($this->piVars);
+			if ($this->conf['filelist.']['sortLinksForTitles']==1) {
+ 				if ($tmpPiVars['sort_'.$key]) {
+					if ($this->piVars['sort_'.$key]=='DESC') {
+						$this->piVars['sort_'.$key] = 'ASC';
+						$tsWrap = 'asc';
+					}
+					else {
+						$this->piVars['sort_'.$key] = 'DESC';
+						$tsWrap = 'desc';
+					}
+				}
+				else {
+					$this->piVars['sort_'.$key] = 'ASC';
+					$tsWrap = 'no_sort';
+				}
+				// check if current header is allready sorted
+				$markerArray['###'.strtoupper($key).'_HEADER###'] = $this->cObj->stdWrap($this->pi_linkTP_keepPiVars($this->cObj->cObjGetSingle($this->conf['filelist.']['sortlinks.'][$key], $this->conf['filelist.']['sortlinks.'][$key.'.'])),$this->conf['filelist.']['sortlinks.'][$key.'.'][$tsWrap.'.']);
+					// todo unset kills the whole piVars need to find a more elegant way to deal with it
+				unset ($this->piVars);
+			}
+			$this->piVars = $tmpPiVars;
+ 		}
+
+ 		foreach (array('FILELIST_BATCH_SELECT', 'FILELIST_BATCH_GO', 'FILELIST_BATCH_CREATEZIPFILE', 'FILELIST_BATCH_SENDASMAIL', 'FILELIST_BATCH_SENDZIPPEDFILESASMAIL', 'FILELIST_BATCH_SENDFILELINK', 'FILELIST_BATCH_SENDZIPPEDFILELINK', 'FILENAME_HEADER', 'FILENAME_HEADER', 'FILETYPE_HEADER', 'CR_DATE_HEADER') as $label) {
+ 			$content = tsLib_CObj::substituteMarker($content, '###'.$label.'###', $this->pi_getLL($label, $label));
+ 		}
+
+ 		$markerArray['###FILELIST_BACK_PID###']=$GLOBALS['TSFE']->id;
+ 		$markerArray['###COMMENT_DEFAULT###']=$this->pi_getLL('COMMENT_DEFAULT');
+ 		$markerArray['###COMMENT###']=$this->pi_getLL('COMMENT');
+ 		$markerArray['###SUBJECT###']=$this->pi_getLL('SUBJECT');
+ 		$markerArray['###TO###']=$this->pi_getLL('TO');
+ 		$markerArray['###FROM###']=$this->pi_getLL('FROM');
+ 		$markerArray['###SUBJECT_DEFAULT###']=$this->pi_getLL('SUBJECT_DEFAULT');
+ 		$markerArray['###FROM_DEFAULT###']=$GLOBALS['TSFE']->fe_user->user['email'];
+
+ 		$options = array();
+ 		if ($this->conf['filelist.']['mailOptions.']['signatures.']) {
+ 			foreach ($this->conf['filelist.']['mailOptions.']['signatures.'] as $signatureID=>$value) {
+ 				if ('.' <> substr($signatureID, -1)){
+ 					$options[$signatureID] = $this->cObj->cObjGetSingle($this->conf['filelist.']['mailOptions.']['signatures.'][$signatureID], $this->conf['filelist.']['mailOptions.']['signatures.'][$signatureID.'.']);
+ 				}
+ 			}
+
+ 			$selektor = $this->renderSelector($options,'','tx_damfrontend_pi1[signature]',1,false,false);
+ 			$markerArray['###SIGNATURE###']=$this->cObj->cObjGetSingle($this->conf['filelist.']['mailOptions.']['label'], $this->conf['filelist.']['mailOptions.']['label.']);
+ 			$markerArray['###SIGNATURE###'].=$this->cObj->stdWrap($selektor, $this->conf['filelist.']['mailOptions.']['signaturesSelector.']);
+ 			$markerArray['###SIGNATURE###']=$this->cObj->stdWrap($markerArray['###SIGNATURE###'], $this->conf['filelist.']['mailOptions.']);
+ 		}
+ 		else {
+	 		$markerArray['###SIGNATURE###']='';
+ 		}
+
+ 		$markerArray['###MESSAGE###']=$this->pi_getLL('MAIL_SUCCESS');
+
+ 		# mail markers
+ 		$mailArray['###MAIL_SALUTATION###']=$this->pi_getLL('MAIL_SALUTATION');
+ 		#$mailArray['###MAIL_COMMENT###']=$this->pi_getLL('MAIL_SUCCESS');
+ 		$mailArray['###MAIL_FOOTER###']=$this->pi_getLL('MAIL_FOOTER');
+ 		$mailCode = tsLib_CObj::getSubpart($this->fileContent,'###MAIL_MESSAGE###');
+ 		$mailCode =	tslib_cObj::substituteMarkerArray($mailCode, $mailArray);
+ 		$markerArray['###MAIL_TEMPLATE###']=htmlspecialchars($mailCode);
+		if ($listConf['MESSAGE_VISIBILTY']=="mail_success") {
+	 		$markerArray['###MESSAGE_VISIBILTY###']='visible';
+		}
+		else {
+	 		$markerArray['###MESSAGE_VISIBILTY###']='hidden';
+		}
+ 		$markerArray['###CLOSE###']=$this->pi_getLL('CLOSE');
+ 		$content = tslib_cObj::substituteMarkerArray($content, $markerArray);
+ 			// substitute static user defined markers
+ 		$this->pi_loadLL();
+
+		$staticMarkers['###SETROWSPERVIEW###'] = $this->pi_getLL('setRowsPerView');
+ 		$staticMarkers['###LABEL_COUNT###'] = $this->pi_getLL('label_Count');
+		$staticMarkers =$staticMarkers + $this->substituteLangMarkers($list_Code);
+ 		$content = tslib_cObj::substituteMarkerArray($content, $staticMarkers);
+		$content = tslib_cObj::substituteMarker($content, '###LISTLENGTH###', 10);
+		$content = tslib_cObj::substituteMarker($content, '###TOTALCOUNT###', 0);
+		$content = tslib_cObj::substituteMarker($content, '###BROWSERESULTS###', '');
+			// substitute Links for Browseresult
+		$browseresults = $this->renderBrowseResults(0, 0, 10);
+		#$browseresults = $this->renderBrowseResults($resultcount, $pointer, $listLength);
+
+ 		return $content;
+
+ 	}
+
+
+
 	/**
 	 * function renderes a list of all files, which are availible
 	 *
@@ -1928,7 +2055,7 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  		$markerArray = $this->recordToMarkerArray($category, 'tx_dam_cat','tx_dam_cat');
 
  		/// Start
- 		
+
  		$id = (int)t3lib_div::_GET('id');
 		$param_array = array (
 			'tx_damfrontend_pi1' => '', // ok, the t3lib_div::linkThisScript cant work with arrays
@@ -1951,7 +2078,9 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 		#		$param_array['tx_damfrontend_pi1[catPlus_Rec]']=$category['uid'];
 		#		break;
 		#}
-		$cmd='0_1_'.$category['uid'].'_txdamCat';
+
+
+		$cmd='0_1_'.$category['parent_id'].'_txdamCat';
 		if ($this->conf['categoryTree.']['catTitle.']['actions.']['openTree']==1) {
 			$param_array['PM']=$cmd;
 		}
@@ -1961,24 +2090,24 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 		}
 
 		if ($id > 0) { $param_array['tx_damfrontend_pi1[id]'] = $id; }
-		
+
 		$this->conf['filelist.']['categoryIcon.']['stdWrap.']['typolink.']['additionalParams']= t3lib_div::implodeArrayForUrl('',$param_array);
- 		
+
  		/// END
- 		
+
  		$markerArray['###FILEICON###'] = $this->cObj->cObjGetSingle($this->conf['filelist.']['categoryIcon'],$this->conf['filelist.']['categoryIcon.']);
  		$markerArray['###TITLE###'] = $this->cObj->stdWrap($markerArray['###TITLE###'],$this->conf['filelist.']['categoryIcon.']['stdWrap.']);
- 		
+
  		$markerArray = array_merge($markerArray , $this->substituteLangMarkers($record_Code));
 		$templCode = tslib_cObj::substituteMarkerArray($record_Code, $markerArray);
-		
+
 		// get all remaining markers
  		preg_match_all('/###.+?###/Ssm', $templCode, $aLLMarkerList);
  		$markerArray = array();
  		// set all remaining marker to an empty string
  		foreach ($aLLMarkerList[0] as $key=>$value) {
 	 		$markerArray[$value]='';
- 			
+
  		}
  		return tslib_cObj::substituteMarkerArray($templCode, $markerArray);
  	}
