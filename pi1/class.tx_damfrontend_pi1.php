@@ -1093,7 +1093,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$files = $this->docLogic->getDocumentList($this->userUID);
 			}
 
-			if (is_array($files)) {
+			if (count($files)>0) {
 
 				$rescount = $this->docLogic->resultCount;
 					// check if pointer is ok
@@ -1115,13 +1115,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				}
 
 				if ($this->conf['filelist.']['showSubCategoriesInFilelist']==1) {
-					// add categories to the top of the filelist
-					require_once(t3lib_extMgm::extPath('dam_frontend') . '/frontend/class.tx_damfrontend_catTreeView.php');
- 					$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeView');
- 					$tree->init();
-					$subCategories =  $tree->get_subCategories($this->getCurrentCategory());
 					// Merge files and categories to one result array, the categories will remain on top
-					$files = array_merge($subCategories,$files);
+					$files = array_merge($this->getCategoriesForFileList(),$files);
 				}
 
 				 //get the html from the renderer
@@ -1134,7 +1129,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 			else {
 				// render message
-				$content = $this->renderer->renderError('noDocInCat');
+					if ($this->conf['filelist.']['showSubCategoriesInFilelist']==1) {
+					$content = $this->renderer->renderEmptyFileList($this->getCategoriesForFileList() );
+				}
+				else {
+					$content = $this->renderer->renderError('noDocInCat');
+				}
 			}
 		}
 		else {
@@ -2239,9 +2239,17 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		return $content;
 	}
-	
+
 	function getCurrentCategory() {
 		return intval($GLOBALS['TSFE']->fe_user->getKey('ses','currentCategory'));
+	}
+
+	function getCategoriesForFileList () {
+		// add categories to the top of the filelist
+		require_once(t3lib_extMgm::extPath('dam_frontend') . '/frontend/class.tx_damfrontend_catTreeView.php');
+ 		$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeView');
+ 		$tree->init();
+		return  $tree->get_subCategories($this->getCurrentCategory());
 	}
 
 }
