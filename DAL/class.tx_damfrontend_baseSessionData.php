@@ -67,7 +67,7 @@ class tx_damfrontend_baseSessionData {
 	 * @return	void
 	 */
 	function getArrayFromUser() {
-		$sesarray = $this->user->getKey('ses', $this->sessionVar);
+		$sesarray = $this->user->getKey('ses', $this->sessionVar . $GLOBALS['TSFE']->config['config']['language']);
 		if (is_array($sesarray)) return $sesarray;
 	}
 
@@ -78,7 +78,7 @@ class tx_damfrontend_baseSessionData {
 	 * @return	void
 	 */
 	function setArrayToUser($array) {
-		$this->user->setKey('ses', $this->sessionVar, $array);
+		$this->user->setKey('ses', $this->sessionVar . $GLOBALS['TSFE']->config['config']['language'], $array);
 	}
 
 	/**
