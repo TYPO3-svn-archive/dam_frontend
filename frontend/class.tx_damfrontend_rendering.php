@@ -165,8 +165,9 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
  			// substitute Links for Sorting
 
 		// get dummy record
-		$rowForSortlink = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow	('*','tx_dam');
- 		$record = $rowForSortlink;
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery ('*','tx_dam','1=1', '', '', '1');
+ 		$rowForSortlink = $GLOBALS['TYPO3_DB']->sql_fetch_assoc ($res);
+		$record = $rowForSortlink;
 
  		foreach ($record as $key=>$value) {
 			$content = tsLib_CObj::substituteMarker($content, '###SORTLINK_'.strtoupper($key).'###', $this->renderSortLink($key));
@@ -254,7 +255,6 @@ require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
 		$content = tslib_cObj::substituteMarker($content, '###BROWSERESULTS###', '');
 			// substitute Links for Browseresult
 		$browseresults = $this->renderBrowseResults(0, 0, 10);
-		#$browseresults = $this->renderBrowseResults($resultcount, $pointer, $listLength);
 
  		return $content;
 

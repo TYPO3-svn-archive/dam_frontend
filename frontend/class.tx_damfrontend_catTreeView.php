@@ -460,7 +460,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 		if(!$this->rootIconIsSet AND count($treeArr)) {
 				// Artificial record for the tree root, id=0
 			$rootRec = $this->getRootRecord(0);
-			$firstHtml =$this->getRootIcon($rootRec);
+			$firstHtml =$this->getRootIcon($rootRec,1,'0_0_0');
 			$treeArr = array_merge(array(array('HTML' => $firstHtml,'row' => $rootRec,'bank'=>0)), $treeArr);
 		}
 		$class="treeelem";
@@ -746,6 +746,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 			$row['catID']=$row['uid'];
 			$subCategories[]= $row;
 		}
+		// Order subcategories by title
 		return $subCategories;
 	}
 }
