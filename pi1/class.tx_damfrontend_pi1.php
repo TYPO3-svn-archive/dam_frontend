@@ -2249,7 +2249,16 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		require_once(t3lib_extMgm::extPath('dam_frontend') . '/frontend/class.tx_damfrontend_catTreeView.php');
  		$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeView');
  		$tree->init();
-		return  $tree->get_subCategories($this->getCurrentCategory());
+ 		$cats = $tree->get_subCategories($this->getCurrentCategory());
+ 		if (empty($cats)) return $cats;
+		foreach ($cats as $cat=>$catRow) {
+	 		$sortArr[$cat] = $catRow['title'];
+		}
+		asort($sortArr);
+		foreach ($sortArr as $key=>$value) {
+			$catsSorted[] =$cats[$key];
+		}
+		return $catsSorted;
 	}
 
 }
