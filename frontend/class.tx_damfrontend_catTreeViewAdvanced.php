@@ -509,6 +509,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 					$sel_class = $this->get_selectionStatus($v['row']['uid'], $this->treeStructureArray, $this->selectedCats);
 
 				}
+				
 				if ($this->categorizationMode == true) {
 
 					if (!$this->catLogic->checkCategoryUploadAccess($GLOBALS['TSFE']->fe_user->user['uid'], $v['row']['uid'])) {

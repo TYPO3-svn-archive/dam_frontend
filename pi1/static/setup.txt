@@ -18,6 +18,10 @@ plugin.tx_damfrontend_pi1 {
 	
 		# force download or display in file in the browser
 	forceDownloadForFiles=1
+
+		# Ralf Merz: New Option: do not allow to not select a category on upload
+	doNotAllowUploadEmptyCategorySelection = 1
+	errorNoCat.stdWrap = <span class="error">|</span>
 	
 	categoryTree {
 		showRootCategory=0

@@ -143,7 +143,9 @@
 			<label index="SEARCH">Search ...</label>
 			<label index="DROPDOWN_CATEGORIES_HEADER">Limit search to:</label>	
 			<label index="ERROR_STORE_FILE">Sorry, the uploaded file could not be stored. Please try it again or inform your administrator.</label>	
-			<label index="LABEL_SIGNATURE">Please choose your signatur</label>	
+			<label index="LABEL_SIGNATURE">Please choose your signatur</label>
+
+			<label index="ERROR_NO_CAT">Sorry, you must select a category.</label>
 					
 		</languageKey>
 		<languageKey index="de" type="array">
@@ -269,7 +271,9 @@
 			<label index="BROWSELINK_NEXT">nächste</label>
 			<label index="SEARCH">suchen ...</label>
 			<label index="DROPDOWN_CATEGORIES_HEADER">Suche eingrenzen auf:</label>
-			<label index="ERROR_STORE_FILE">Entschuldigung, aber die hochgeladene Datei konnte nicht gespeichert werden. Bitte versuchen Sie es erneut oder informieren Sie den Administrator. Vielen Dank.</label>		
+			<label index="ERROR_STORE_FILE">Entschuldigung, aber die hochgeladene Datei konnte nicht gespeichert werden. Bitte versuchen Sie es erneut oder informieren Sie den Administrator. Vielen Dank.</label>
+
+			<label index="ERROR_NO_CAT">Sie müssen eine Kategorie auswählen.</label>
 		</languageKey>
 		<languageKey index="nl" type="array">
 			<label index="list_mode_1">Mode 1</label>
@@ -382,6 +386,8 @@
 			<label index="upload_path_error">Foutmelding: controleer de instellingen voor uw upload pad! [DAM Frontend: upload]</label>
 			<label index="BROWSELINK_PREV">vorige</label>
 			<label index="BROWSELINK_NEXT">volgende</label>
+
+			<label index="ERROR_NO_CAT">Sorry, you must select a category.</label>
 		</languageKey>
 		
 		﻿<languageKey index="ru" type="array">
@@ -491,6 +497,8 @@
 			<label index="upload_path_error">Ошибка: проверьте настройки пути для загрузки! [DAM внешнего интерфейса: загрузка]</label>
 			<label index="BROWSELINK_PREV">предыдущее</label>
 			<label index="BROWSELINK_NEXT">следующее</label>
+
+			<label index="ERROR_NO_CAT">Sorry, you must select a category.</label>
 		</languageKey>
 	</data>
 </T3locallang>

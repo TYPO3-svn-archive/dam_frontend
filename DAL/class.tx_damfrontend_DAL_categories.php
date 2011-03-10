@@ -311,6 +311,10 @@ class tx_damfrontend_DAL_categories {
 		function checkCategoryUploadAccess($userID, $catID) {
 
 			$catRow = $this->getCategory($catID);
+			// Ralf Merz: $catRow may be empty (because of enableFields) so check this!
+			if(empty($catRow)) {
+				return false;
+			}
 			// check first, if no usergroup has been assigned to the given category
 			if ($catRow['tx_damtree_fe_groups_uploadaccess'] == 0) {
 				if ($this->debug ==1) {
@@ -372,21 +376,24 @@ class tx_damfrontend_DAL_categories {
 					die('no rel ID given!');
 			}
 
-			$usergroups = implode(',',$GLOBALS['TSFE']->fe_user->groupData['uid']) ;
+			$usergroups = explode(',',$GLOBALS['TSFE']->fe_user->user['usergroup']) ;
 
 			if ($usergroups) {
 				$catRow = $this->getCategory($catID);
 				// check first, if no usergroup has been assigned to the given category
 				if ($relID==1) {
+					if (empty($catRow)) return false;
 					if ($catRow['fe_group'] == -1) return false;
 					if ($catRow['fe_group'] == -2) return true;
 
 					$groups =  explode(',',$catRow['fe_group']);
-
+					if(empty($groups[0])) {
+						return true;
+					}
 					foreach($groups as $group) {
 						if (in_array($group,$usergroups)) {
 							return true;
-						}
+						} 
 					}
 				}
 				else {
