@@ -1,4 +1,5 @@
 Version 0.7.x
+Feature #13677: Ralf Merz: new TypoScript option added to hide categories with no access
 fixed Bug #10732: Missing Marker ###FILE_SIZE_HEADER###
 fixed Bug #12533: Marker ###FORM_URL### doesn't work correct (thanks to  Pascal Hinz)
 Major Feature #6963: Explorer View
