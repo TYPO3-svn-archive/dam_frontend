@@ -371,61 +371,78 @@ class tx_damfrontend_DAL_categories {
 				default:
 					die('no rel ID given!');
 			}
-			$catRow = $this->getCategory($catID);
-			// check first, if no usergroup has been assigned to the given category
-			if ($catRow[$relCheck] == 0) {
-				if ($this->debug ==1) {
-					t3lib_div::debug('checkCategoryAccess = true (no group selected) catID: '.$catID);
-				}
-				return true;
-			}
-			else {
-					// get all usergroups a fe_user belongs to
-				$usergroups = implode(',',$GLOBALS['TSFE']->fe_user->groupData['uid']) ;
-				if ($usergroups) {
-						// TODO add error handling
-					$mm_table = 'tx_dam_cat_'.$this->relations[$relID].'_mm';
-						// executing database search: should return a row with the usergroup(s)
-					$local_table = $this->catTable;
-					$foreign_table = 'fe_groups';
-					$where = 'AND '. $foreign_table.'.uid in ('.$usergroups.') AND ' .$local_table .'.uid = '.$catID ;
-					$select = $local_table.'.*';
-					$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query($select,$local_table, $mm_table, $foreign_table, $where);
 
-					while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-						$resultlist[] = $row;
-					}
-					if ($resultlist) {
-						return true;
-					}
-					else {
-						return false;
+			$usergroups = implode(',',$GLOBALS['TSFE']->fe_user->groupData['uid']) ;
+
+			if ($usergroups) {
+				$catRow = $this->getCategory($catID);
+				// check first, if no usergroup has been assigned to the given category
+				if ($relID==1) {
+					if ($catRow['fe_group'] == -1) return false;
+					if ($catRow['fe_group'] == -2) return true;
+
+					$groups =  explode(',',$catRow['fe_group']);
+
+					foreach($groups as $group) {
+						if (in_array($group,$usergroups)) {
+							return true;
+						}
 					}
 				}
 				else {
-					return false;
+					if ($catRow[$relCheck] == 0) {
+						if ($this->debug ==1) {
+							t3lib_div::debug('checkCategoryAccess = true (no group selected) catID: '.$catID);
+						}
+						return true;
+					}
+					else {
+							// TODO add error handling
+						$mm_table = 'tx_dam_cat_'.$this->relations[$relID].'_mm';
+							// executing database search: should return a row with the usergroup(s)
+						$local_table = $this->catTable;
+						$foreign_table = 'fe_groups';
+						$where = 'AND '. $foreign_table.'.uid in ('.$usergroups.') AND ' .$local_table .'.uid = '.$catID ;
+						$select = $local_table.'.*';
+						$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query($select,$local_table, $mm_table, $foreign_table, $where);
+
+						while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+							$resultlist[] = $row;
+						}
+						if ($resultlist) {
+							return true;
+						}
+						else {
+							return false;
+						}
+
+					}
 				}
 			}
+			else {
+				return false;
+			}
+
 		}
-		
+
 		function getCategoryTitleLocalized($row,$titleLen=30) {
-			
+
 			$conf['sys_language_uid'] = $GLOBALS['TSFE']->sys_language_uid;
-			
+
 			$row['pid']=tx_dam_db::getPid(); // @todo add to init of class
-			 
+
 			$rowLocalized = tx_dam_db::getRecordOverlay('tx_dam_cat', $row, $conf);
 			// @todo edit ts value for titleLen and add a crop
 			$title =  trim($row['title']);
 			if ($rowLocalized===False) {
 				return $row['title'];
-			} 
+			}
 			else {
 				return $rowLocalized['title'];
 			}
 		}
-		
-		
+
+
 	/**
 	 * gets all child categories of an existing category
 	 *
