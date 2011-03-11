@@ -1,4 +1,6 @@
 Version 0.7.x
+Ralf Merz: added Feature #13085: Using language markers in renderVersioningForm()
+Ralf Merz: added Feature #13788: Do not show categories in lowest tree-level if there are no files in it
 Feature #13677: Ralf Merz: new TypoScript option added to hide categories with no access
 fixed Bug #10732: Missing Marker ###FILE_SIZE_HEADER###
 fixed Bug #12533: Marker ###FORM_URL### doesn't work correct (thanks to  Pascal Hinz)
