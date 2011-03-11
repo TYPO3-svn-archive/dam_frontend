@@ -134,8 +134,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	var $pid; //Page ID
 	var $fileListConf; //stores configuration for the filelist view
 
-	var $noCategorySelected = false; // boolean to set if we have an "no cat selected error"
-
 	/**
 	 * Inits this class and instanceates all nescessary classes
 	 *
@@ -1396,9 +1394,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				}
 			}
 
-			// rfm: do not go on if no category is selected
-			// TODO: maybe make this an optional typoscript setting
-			if($this->conf['doNotAllowUploadEmptyCategorySelection'] == 1) {
+			// Ralf Merz: do not go on if no category is selected and step is submitted
+			if($this->conf['doNotAllowUploadEmptyCategorySelection'] == 1 && t3lib_div::_GP('catOK')) {
 				$catArrayUser = $this->catList->getCatSelection(-1, 0);
 			} else {
 				// generate a dummy array
@@ -1415,9 +1412,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					$this->categorise = false;
 					$step = 4;
 				}
-			} elseif (empty($catArrayUser)) {
-				$this->noCategorySelected = true;
-			}
+			} 
+
 		}
 		else {
 			// no user currently logged in - upload feature is disabled

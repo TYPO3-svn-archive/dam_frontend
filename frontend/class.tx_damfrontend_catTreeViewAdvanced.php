@@ -509,7 +509,7 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 					$sel_class = $this->get_selectionStatus($v['row']['uid'], $this->treeStructureArray, $this->selectedCats);
 
 				}
-				
+
 				if ($this->categorizationMode == true) {
 
 					if (!$this->catLogic->checkCategoryUploadAccess($GLOBALS['TSFE']->fe_user->user['uid'], $v['row']['uid'])) {
@@ -522,6 +522,13 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 					}
 				}
 				else {
+					// Ralf Merz: new condition: if category has no files, do not show it
+					// looks for files in lowest tree-level (if category has no child)
+					if ($this->conf['doNotShowEmptyCategories'] == 1) {
+						if (!$this->catLogic->checkCategoryForFiles($v['row']['uid'])) {
+							continue;
+						}
+					}
 
 					if ($this->conf['categoryTreeAdvanced.']['markNotAllowedCategories'] == 1) {
 						if (!$this->catLogic->checkCategoryAccess($GLOBALS['TSFE']->fe_user->user['uid'], $v['row']['uid'], 1)) {

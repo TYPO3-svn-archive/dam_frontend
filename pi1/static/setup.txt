@@ -21,7 +21,12 @@ plugin.tx_damfrontend_pi1 {
 
 		# Ralf Merz: New Option: do not allow to not select a category on upload
 	doNotAllowUploadEmptyCategorySelection = 1
-	errorNoCat.stdWrap = <span class="error">|</span>
+
+	#errorNoCat = TEXT
+	errorNoCat.wrap = <span class="error">|</span>
+
+		# Ralf Merz: New option: flag to disable to show empty categories
+	doNotShowEmptyCategories = 0
 	
 	categoryTree {
 		showRootCategory=0

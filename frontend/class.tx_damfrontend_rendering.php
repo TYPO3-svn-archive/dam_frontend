@@ -1381,7 +1381,7 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		$markerArray = $this->recordToMarkerArray($docData);
 
 		// Ralf Merz: Show error if no category is selected
-		if($this->conf['doNotAllowUploadEmptyCategorySelection'] == 1 && $this->noCategorySelected === true) {
+		if ($this->conf['doNotAllowUploadEmptyCategorySelection'] == 1 && $this->noCategorySelected === true) {
 			#t3lib_div::debug($this->conf, 'TS on line '.__LINE__.' in file '.__FILE__);
 			$markerArray['###ERROR_NO_CAT###'] = $this->cObj->stdWrap($this->pi_getLL('ERROR_NO_CAT'), $this->conf['errorNoCat']);
 		} else {
@@ -1418,6 +1418,8 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		}
 		else {
 			$catCode = $this->renderError('noCatSelected');
+			// Ralf: new marker
+			$markerArray['###ERROR_NO_CAT###'] = $this->cObj->stdWrap($this->pi_getLL('ERROR_NO_CAT'), $this->conf['errorNoCat.']);
 			#$markerArray['###CANCEL###'] = '';
 		}
 
@@ -1449,6 +1451,8 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		$markerArray['###LABEL_MESSAGE###'] = $this->pi_getLL('LABEL_MESSAGE');
 		$markerArray['###MESSAGE_TEXT###'] = $this->pi_getLL('UPLOAD_SUCCESS');
 		$markerArray['###BUTTON_NEXT###'] = '<input name="ok" type="submit" value="' . $this->pi_getLL('BUTTON_NEXT') . '">';
+		// Ralf Merz: all language markers:
+		$markerArray =$markerArray + $this->substituteLangMarkers($subpart);
 		$content = tslib_cObj::substituteMarkerArray($subpart, $markerArray);
 		return $content;
 	}
@@ -1629,6 +1633,9 @@ class tx_damfrontend_rendering extends tslib_pibase {
 
 		$markerArray['###CANCEL###'] = $this->pi_getLL('back');
 		$markerArray['###OK###'] = $this->pi_getLL('BUTTON_NEXT');
+
+		// Ralf: all language markers:
+		$markerArray =$markerArray + $this->substituteLangMarkers($subpart);
 
 		$content = tslib_cObj::substituteMarkerArray($content, $markerArray);
 		return $content;
@@ -1988,7 +1995,7 @@ class tx_damfrontend_rendering extends tslib_pibase {
 	/**
 	 * TODO: write function description
 	 * renders all markers of an row
-	 * 
+	 *
 	 * @param  $elem
 	 * @param  $countElement
 	 * @param  $pointer
