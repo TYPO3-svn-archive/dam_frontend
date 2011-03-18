@@ -370,7 +370,11 @@ class tx_damfrontend_DAL_categories {
 				die('no rel ID given!');
 		}
 
-		$usergroups = explode(',', $GLOBALS['TSFE']->fe_user->user['usergroup']);
+		// TODO: do we need an array with indexes from 0 on?
+		// Or can we just use the groupData['uid'] array?
+		$usergroups = implode(',', $GLOBALS['TSFE']->fe_user->groupData['uid']);
+		$usergroups = explode(',', $usergroups);
+		#$usergroups = $GLOBALS['TSFE']->fe_user->groupData['uid'];
 
 		if ($usergroups) {
 			$catRow = $this->getCategory($catID);

@@ -1,4 +1,5 @@
 Version 0.7.x
+2011-03-18 Ralf Merz: fix in tx_damfrontend_DAL_categories: checkCategoryAccess() now checks fe_user groups recursively
 Ralf Merz: added Feature #13085: Using language markers in renderVersioningForm()
 Ralf Merz: added Feature #13788: Do not show categories in lowest tree-level if there are no files in it
 Feature #13677: Ralf Merz: new TypoScript option added to hide categories with no access
