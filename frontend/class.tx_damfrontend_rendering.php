@@ -2014,8 +2014,6 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		if ($pointer > 0) $elem['count_id'] = $countElement + $pointer * $listLength;
 
 		$markerArray = $markerArray + $this->recordToMarkerArray($elem, $scope, 'tx_dam');
-		#t3lib_div::debug($markerArray, '$markerArray on line '.__LINE__.' in file '.__FILE__);
-
 		$markerArray = $markerArray + $this->substituteLangMarkers($record_Code);
 
 		$markerArray['###TX_DAMFRONTEND_FEUSER_UPLOAD###'] = $this->get_FEUserName($elem['tx_damfrontend_feuser_upload']);
@@ -2035,9 +2033,6 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		}
 
 		$markerArray['###LINK_SINGLE###'] = $cObj->cObjGetSingle($this->conf[$scope . '.']['link_single'], $this->conf[$scope . '.']['link_single.']);
-
-		#t3lib_div::debug($scope, '$scope on line '.__LINE__.' in file '.__FILE__);
-		#t3lib_div::debug($this->conf['filelist.'], 'TS configuration on line '.__LINE__.' in file '.__FILE__);
 		$markerArray['###LINK_DOWNLOAD###'] = $cObj->cObjGetSingle($this->conf[$scope . '.']['link_download'], $this->conf[$scope . '.']['link_download.']);
 
 		$tsconf = $this->conf[$scope . '.']['link_download.'];
@@ -2057,7 +2052,7 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		}
 		// $this->conf['renderFields.']['fileicon.']
 		$markerArray['###FILEICON###'] = $cObj->stdWrap('<img src="' . $this->getFileIconHref($elem['file_mime_type'], $elem['file_mime_subtype']) . '" title="' . $elem['title'] . '"  alt="' . $elem['title'] . '"/>', $this->conf[$scope . '.']['fileicon.']);
-		#$markerArray['###FILEICON###'] = $cObj->stdWrap('<img src="' . $this->getFileIconHref($elem['file_mime_type'], $elem['file_mime_subtype']) . '" title="' . $elem['title'] . '"  alt="' . $elem['title'] . '"/>', $this->conf['renderFields.']['fileicon.']);
+
 
 		//render deletion button
 		if ($elem['allowDeletion'] == 1 AND $this->conf['enableDeletions'] == 1) {
@@ -2081,7 +2076,6 @@ class tx_damfrontend_rendering extends tslib_pibase {
 				$_procObj->render_dam_record(&$markerArray, $this, $elem);
 			}
 		}
-		#t3lib_div::debug($markerArray, '$markerArray on line '.__LINE__.' in file '.__FILE__);
 		return tslib_cObj::substituteMarkerArray($record_Code, $markerArray);
 	}
 

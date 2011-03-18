@@ -614,7 +614,6 @@ require_once(PATH_tslib.'class.tslib_content.php');
 		}
 
 		$this->resultCount = $resultCounter;
-		#t3lib_div::debug($result);
 		return $result;
 	}
 
