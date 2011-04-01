@@ -863,7 +863,7 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_SINGLE_VIEW'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_SINGLE_VIEW'] as $_classRef) {
 				$_procObj = &t3lib_div::getUserObj($_classRef);
-				$_procObj->renderSingleView(&$markerArray, $this, $record);
+				$_procObj->renderSingleView($markerArray, $this, $record);
 			}
 		}
 		$content = tslib_cObj::substituteMarkerArray($single_Code, $markerArray);

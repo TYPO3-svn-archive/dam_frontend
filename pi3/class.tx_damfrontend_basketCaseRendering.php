@@ -49,7 +49,7 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 	var $prefixId = 'tx_damfrontend_basketCaseRendering';		// Same as class name
 	var $scriptRelPath = 'pi3/class.tx_damfrontend_basketCaseRendering.php';	// Path to this script relative to the extension dir.
 	var $extKey = 'dam_frontend';	// The extension key.
-	
+
 	function tx_damfrontend_basketCaseRendering() {
 		$this->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi3.'];
 		$this->pi_loadLL();
@@ -62,44 +62,44 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 	 */
 	function renderCheckOutForm($items, $errors = array(), $data= array()) {
 		$this->pi_loadLL();
-		
+
 		/*
-		 * 
+		 *
 		 *  switch to read in the new flexform-value "templateFile" if it exists
 		 *  FMEY: 04.11.2010
-		 *  
+		 *
 		 *  */
-		
+
 		if ($this->pi_getFFvalue($flexform, 'templateFile', 'sOptions'))	{
 			$htmlTemplate = tsLib_CObj::getSubpart(tsLib_CObj::fileResource($this->pi_getFFvalue($flexform, 'templateFile', 'sOptions')));
 		}	else	{
-			
+
 			$htmlTemplate = tsLib_CObj::getSubpart(tsLib_CObj::fileResource($this->conf['templateFile']),'###BASKET_CASE###');
-		
+
 		}
-		
-		$markerArray= array();	 
+
+		$markerArray= array();
 		if (empty($items)) {
 			return $this->renderError($this->pi_getLL('error_no_items'));
-		} 
+		}
 		else {
 				// text how many items are in the basket
 			count($items)==1 ? $markerArray['###ITEMS###']='1 ' . $this->pi_getLL('item'):$markerArray['###ITEMS###']=count($items). ' ' .$this->pi_getLL('items');;
 			$markerArray['###ITEMSTEXT###']=$this->pi_getLL('itemstext');
-			
+
 				// usage text area
 			$markerArray['###LABEL_USAGE###']=$this->pi_getLL('label_usage');
 			if ($errors['usageMissing']) $markerArray['###LABEL_USAGE###']=$this->cObj->stdWrap($this->pi_getLL('missing_data'),$this->conf['marker.']['missingData.'])  . $markerArray['###LABEL_USAGE###'];
 			$markerArray['###USAGE###']= $data['usage'];
-			
+
 				// checkbox accept usage conditions
 			$markerArray['###LABEL_ACCEPT###']=$this->pi_getLL('label_accept');
 			if ($errors['notAccepted']) $markerArray['###LABEL_ACCEPT###']=$this->cObj->stdWrap($this->pi_getLL('missing_data'),$this->conf['marker.']['missingData.'])  . $markerArray['###LABEL_ACCEPT###'];
-			$data['accept']=='accept' ? $markerArray['###CHECKED###']='checked':$markerArray['###CHECKED###']=''; 
-			
+			$data['accept']=='accept' ? $markerArray['###CHECKED###']='checked':$markerArray['###CHECKED###']='';
+
 			$markerArray['###LABEL_SUBMIT###']=$this->pi_getLL('label_submit');
 			$markerArray['###TARGET###']= $this->cObj->typolink('', $this->conf['marker.']['CheckOutFormTarget.']);
-			
+
 				// render details of the basket
 			$damRendering = t3lib_div::makeInstance('tx_damfrontend_rendering');
 			$damRendering->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.'];
@@ -122,14 +122,14 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 	 		}
 	 		$markerArray['###RECORDS###']=$rows;
 		}
-		
+
 			//Debug statements
 		if ($this->conf['enableDebug']==1) {
 			if ($this->conf['debug.']['renderCheckOutForm.']['markerArray']==1)		t3lib_div::debug($markerArray);
 			if ($this->conf['debug.']['renderCheckOutForm.']['conf']==1)			t3lib_div::debug($this->conf);
 			if ($this->conf['debug.']['renderCheckOutForm.']['items']==1)			t3lib_div::debug($items);
 		}
-		
+
 		return tslib_cObj::substituteMarkerArray($htmlTemplate, $markerArray);
 	}
 
@@ -142,10 +142,10 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 	function renderMail($items) {
 		$this->pi_loadLL();
 		$htmlTemplate = tsLib_CObj::getSubpart(tsLib_CObj::fileResource($this->conf['templateFile']),'###MAIL###');
-		$markerArray= array();	 
+		$markerArray= array();
 		if (empty($items)) {
 			return $this->renderError($this->pi_getLL('error_no_items'));
-		} 
+		}
 		else {
 			$markerArray['###SALUTATION###']	= $this->pi_getLL('SALUTATION');
 			$markerArray['###FE_USER_NAME###']	= $GLOBALS['TSFE']->fe_user->user['name'];
@@ -159,7 +159,7 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 			$rows = '';
 			$cObj = t3lib_div::makeInstance('tslib_cObj');
 	 		$record_Code = tsLib_CObj::getSubpart(tsLib_CObj::fileResource($this->conf['templateFile']),'###MAIL_RECORD###');
-	 		
+
 	 		foreach ($items as $item) {
 	 			$countElement++;
 	 			$cObj->start($item, 'tx_dam');
@@ -167,18 +167,18 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 	 		}
 	 		$markerArray['###RECORDS###']=$rows;
 		}
-		
+
 			//Debug statements
 		if ($this->conf['enableDebug']==1) {
 			if ($this->conf['debug.']['renderMail.']['markerArray']==1)		t3lib_div::debug($markerArray);
 			if ($this->conf['debug.']['renderMail.']['conf']==1)			t3lib_div::debug($this->conf);
 			if ($this->conf['debug.']['renderMail.']['items']==1)			t3lib_div::debug($items);
 		}
-		
+
 		return tslib_cObj::substituteMarkerArray($htmlTemplate, $markerArray);
 	}
 
-	
+
 	/**
 	 * Inits this class and instanceates all nescessary classes
 	 *
@@ -191,7 +191,7 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 		return  tslib_cObj::substituteMarkerArray($htmlTemplate, $markerArray);
 	}
 
-	
+
 	/**
 	 * Inits this class and instanceates all nescessary classes
 	 *
@@ -201,10 +201,10 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 	function renderCheckOutResult($items) {
 		$this->pi_loadLL();
 		$htmlTemplate = tsLib_CObj::getSubpart(tsLib_CObj::fileResource($this->conf['templateFile']),'###RESULT###');
-		$markerArray= array();	 
+		$markerArray= array();
 		if (empty($items)) {
 			return $this->renderError($this->pi_getLL('error_no_items'));
-		} 
+		}
 		else {
 			$markerArray['###SALUTATION###']	= $this->pi_getLL('SALUTATION');
 			$markerArray['###FE_USER_NAME###']	= $GLOBALS['TSFE']->fe_user->user['name'];
@@ -218,7 +218,7 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 			$rows = '';
 			$cObj = t3lib_div::makeInstance('tslib_cObj');
 	 		$record_Code = tsLib_CObj::getSubpart(tsLib_CObj::fileResource($this->conf['templateFile']),'###MAIL_RECORD###');
-	 		
+
 	 		foreach ($items as $item) {
 	 			$countElement++;
 	 			$cObj->start($item, 'tx_dam');
@@ -226,7 +226,7 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 	 		}
 	 		$markerArray['###RECORDS###']=$rows;
 		}
-		
+
 			//Debug statements
 		if ($this->conf['enableDebug']==1) {
 			if ($this->conf['debug.']['renderCheckOutResult.']['markerArray']==1)		t3lib_div::debug($markerArray);
@@ -235,12 +235,12 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 		}
 		return tslib_cObj::substituteMarkerArray($htmlTemplate, $markerArray);
 	}
-	
-	/** 
-	 * Hook 
-	 * 
+
+	/**
+	 * Hook
+	 *
 	 */
-	function renderSingleView($markerArray,$plugin, $elem) {
+	function renderSingleView(&$markerArray,$plugin, $elem) {
 	$cObj = t3lib_div::makeInstance('tslib_cObj');
 		$cObj->start($elem, 'tx_dam');
 		if ($elem['tx_damfrontendavailability_agency']==1) {
@@ -251,9 +251,9 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 		}
 	}
 
-	/** 
-	 * Using the dam_frontend_rending hook to add the basket case button 
-	 * 
+	/**
+	 * Using the dam_frontend_rending hook to add the basket case button
+	 *
 	 */
 	function render_dam_record($markerArray,$plugin, $elem){
 		$cObj = t3lib_div::makeInstance('tslib_cObj');
@@ -265,29 +265,29 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 			$markerArray['###ADD_TO_BASKET###']= $cObj->cObjGetSingle($this->conf['marker.']['add_to_basket'], $this->conf['marker.']['add_to_basket.']);
 		}
 	}
-	
+
 	function renderPreview($items) {
 		$this->pi_loadLL();
 		$htmlTemplate = tsLib_CObj::getSubpart(tsLib_CObj::fileResource($this->conf['templateFile']),'###BASKET_CASE_PREVIEW###');
-		$markerArray= array();	 
+		$markerArray= array();
 		if (count($items)==0) {
 			$markerArray['###ITEMS###']='';
 			$markerArray['###ITEMSTEXT###']=$this->pi_getLL('no_itemstext');
 			$markerArray['###CHECKOUT###']='';
-		} 
+		}
 		else {
 			count($items)==1 ? $markerArray['###ITEMS###']='1 ' . $this->pi_getLL('item'):$markerArray['###ITEMS###']=count($items). ' ' .$this->pi_getLL('items');;
 			$markerArray['###ITEMSTEXT### ']=$this->pi_getLL('itemstext');
 			$markerArray['###CHECKOUT###']=$this->cObj->cObjGetSingle($this->conf['marker.']['checkout'], $this->conf['marker.']['checkout.']);
 		}
-		
+
 		//Debug statements
 		if ($this->conf['enableDebug']==1) {
 			if ($this->conf['debug.']['renderPreview.']['markerArray']==1)	t3lib_div::debug($markerArray);
 			if ($this->conf['debug.']['renderPreview.']['conf']==1)			t3lib_div::debug($this->conf);
 			if ($this->conf['debug.']['renderPreview.']['items']==1)			t3lib_div::debug($items);
 		}
-			
+
 		return tslib_cObj::substituteMarkerArray($htmlTemplate, $markerArray);
 	}
 }
