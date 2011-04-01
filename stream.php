@@ -1,36 +1,28 @@
 <?php
-echo curl($_SERVER['HTTP_REFERER']);
+curl();
 
-function curl($url){
+function curl(){
 
-	// check if host is same as Server
-	if (strpos($url, $_SERVER['HTTP_HOST'])) {
+	// check Document ID for integer
+	$docID = intval($_GET['docID']);
 
-		// check Document ID for integer
-		$docID = intval($_GET['docID']);
+	if ($docID) {
+		$url = $_SERVER['HTTP_REFERER'].'&eID=dam_frontend_push&docID=' . $docID . '&stream=1';
 
-		if ($docID) {
-			$url .= '&eID=dam_frontend_push&docID=' . $docID . '&stream=1';
+		// create curl resource
+		$ch = curl_init();
 
-			// create curl resource
-			$ch = curl_init();
+		// set url
+		curl_setopt($ch, CURLOPT_URL, $url);
 
-			// set url
-			curl_setopt($ch, CURLOPT_URL, $url);
+		//return the transfer as a string
 
-			//return the transfer as a string
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_HEADER, 0);
 
-			// $output contains the output string
-			$output = curl_exec($ch);
-			// close curl resource to free up system resources
-			curl_close($ch);
+		curl_exec($ch);
 
-		    return $output;
-		}
-	}
-	else {
-		die ('Error: Request of a different Host is not allowed!');
+		// close curl resource to free up system resources
+		curl_close($ch);
 	}
 }
 ?>
