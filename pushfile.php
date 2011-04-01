@@ -276,13 +276,15 @@ if (is_array($post) && count($post) > 0) {
 			return false;
 		}
 		$download = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.']['forceDownloadForFiles'];
-		if ($download==1) {
-			header("Content-type: application/force-download");
-			header("Content-disposition: attachment; filename=\"".rawurlencode($filename)."\"");
-		}
-		else {
+		$stream = 0;
+		$stream =  intval($_GET['stream']);
+		if ($download==0 OR $stream==1) {
 			header("Content-type: ".$contenttype);
 			header("Content-disposition: inline; filename=\"".$filename."\"");
+		}
+		else {
+			header("Content-type: application/force-download");
+			header("Content-disposition: attachment; filename=\"".rawurlencode($filename)."\"");
 		}
 		header("Pragma: private");
 		header("Content-Transfer-Encoding: Binary");
