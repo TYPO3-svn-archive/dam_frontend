@@ -338,6 +338,9 @@ plugin.tx_damfrontend_pi1 {
 		# if searchAllCats are filtered by allowedCats, then you can define, if the selected cats used as mounts or as normal cats
 		searchCatsAsMounts = 1
 		
+		# if no category is given to the filelist, you can enable the automatic search in all allowed categories (these categories must be set in the filelist plugin)
+		searchAutomaticallyInAllowedCategories = 1
+		
 		categoriesOrderBy = title
 		
 		filetypes {
@@ -1086,6 +1089,7 @@ plugin.tx_damfrontend_pi1 {
 		tx_damfrontend_DAL_documents.getDocumentList.rowsAfterAccessCheck=0
 		tx_damfrontend_catTreeView.printTree.showTreeArr=0
 		tx_damfrontend_pi1.fileList.showCatSelection =0
+		tx_damfrontend_pi1.fileList.showFilter =0
 	}
 }
 [globalVar = LIT:1 = {$plugin.tx_damfrontend_pi1.doNotUsePushFile}]

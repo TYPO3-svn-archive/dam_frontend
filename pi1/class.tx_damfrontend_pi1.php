@@ -517,10 +517,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 
 		// loading post values from the drilldown view
+		
 		if ($this->piVars['level0']) {
+			if ($this->piVars['level0']=='noselection') $this->internal['drilldown']['level0']=0;
 			do {
 				if (intval($this->piVars['level' . intval($i)]) == 0) {
-					#$this->internal['drilldown']['level'.intval($i)]=0;
 					break;
 				}
 				$this->internal['drilldown']['level' . intval($i)] = intval($this->piVars['level' . intval($i)]);
@@ -931,7 +932,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @author stefan
 	 */
 	function fileListBasicFuncionality() {
-		$hasCats = false; // true if any category has been selected yet
+		
 		if ($this->conf['enableDeletions'] == 1) {
 			if ($this->userLoggedIn == true) {
 
@@ -1055,16 +1056,23 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 		$hasCats = false;
 		$cats = $this->catList->getCatSelection(0, $this->pid);
+		
 
 		if ($this->conf['enableDebug'] == 1) {
-			if ($this->conf['debug.']['class.tx_damfrontend_pi1.']['getDocumentList.']['showCatSelection'] == 1) t3lib_div::debug($cats);
+			if ($this->conf['debug.']['tx_damfrontend_pi1.']['fileList.']['showCatSelection'] == 1) t3lib_div::debug($cats);
+			if ($this->conf['debug.']['tx_damfrontend_pi1.']['fileList.']['showFilter'] == 1) t3lib_div::debug($this->internal['filter']);
 		}
 		if (count($cats)) {
 			foreach ($cats as $catList) {
 				if (count($catList)) $hasCats = true;
 			}
 		}
-
+		
+		if ($this->conf['filterView.']['searchAutomaticallyInAllowedCategories']==1) {
+			if ($this->internal['filter']['searchAllCats_allowedCats'] AND $this->internal['filter']['searchword']) {
+				$hasCats= true;
+			}
+		}
 		if ($hasCats === true || $this->internal['filter']['searchAllCats'] === true || $this->internal['viewID'] == 9) {
 
 			/***************************
@@ -2198,7 +2206,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	function drillDown_getCategories($cats, $selected) {
 
 		foreach ($cats as $catID) {
-			$returnCats[$catID] = $this->catLogic->getCategoryTitleLocalized($this->catLogic->getCategory($catID));
+			$categoryTitle = $this->catLogic->getCategoryTitleLocalized($this->catLogic->getCategory($catID));
+			if ($categoryTitle)	$returnCats[$catID] = $categoryTitle;
 		}
 
 		// order categories
