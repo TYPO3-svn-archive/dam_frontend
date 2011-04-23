@@ -542,8 +542,8 @@ require_once(PATH_tslib.'class.tslib_content.php');
 
 			//Debug statements
 		if ($this->conf['enableDebug']==1) {
-			if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['SQL']==1)		t3lib_div::debug('SELECT ' . $select . ' FROM ' . $from . ' WHERE '. $where . ' ORDER BY '  .$this->orderBy . ' LIMIT '. $startRecord.','.$listLength);
-			if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['conf']==1)			t3lib_div::debug($this->conf);
+			if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['SQL']==1)		t3lib_div::debug('SELECT ' . $select . ' FROM ' . $from . ' WHERE '. $where . ' ORDER BY '  .$this->orderBy . ' LIMIT '. $startRecord.','.$listLength,'SQL Statement');
+			if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['conf']==1)			t3lib_div::debug($this->conf,'Configuration');
 		}
 
 		// do not select missing files
