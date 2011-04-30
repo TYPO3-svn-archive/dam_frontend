@@ -7,7 +7,7 @@ require_once(PATH_txdam . 'components/class.tx_dam_selectionCategory.php');
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2006-2010 in2form.com (typo3@in2form.com)
+ *  (c) 2006-2011 in2form.com (typo3@in2code.de)
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -992,16 +992,41 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		// filling fields with url - vars
 		$markerArray = $this->recordToMarkerArray($filterArray);
 		$markerArray = $markerArray + $this->substituteLangMarkers($formCode);
-
-		if (is_array($filterArray['categories'])) {
-			$markerArray['###TREEID###'] = $this->cObj->data['uid'];
-			$markerArray['###DROPDOWN_CATEGORIES_HEADER###'] = $this->cObj->stdWrap($this->pi_getLL('DROPDOWN_CATEGORIES_HEADER'), $this->conf['filterview.']['dropdown_categories_header.']);
-			$markerArray['###DROPDOWN_CATEGORIES###'] = $this->renderCatgoryList($filterArray['categories']);
+		#t3lib_div::debug($filterArray);
+		$markerArray['###DROPDOWN_CATEGORIES###'] = '';
+		$markerArray['###TREEID###'] = '';
+		$markerArray['###DROPDOWN_CATEGORIES_HEADER###'] = '';
+		if ($this->conf['filterView.']['use_category_groups']==1){
+			$mounts = explode(',',$this->conf['catMounts']); 
+			foreach ($filterArray['categories'] as $mount=>$mountData) {
+				#t3lib_div::debug($mountData, $mount);
+				$groupContent = tslib_cObj::getSubpart($formCode,'###CATEGORY_GROUP###');
+				$groupContent = tslib_cObj::substituteMarker ($groupContent, '###CATEGORY_GROUP_LABEL###',$mountData['title'] );
+				$groupContent = tslib_cObj::substituteMarker ($groupContent, '###CATEGORY_GROUP_NAME###','tx_dam_frontend_catgrouplabel'.$mountData['uid'] );
+				$childContent='';
+				$childMarkerArray= array();
+				foreach ($mountData['childs'] as $child=>$childData) {
+					$childContent .= tslib_cObj::getSubpart($groupContent,'###CATEGORY_CHECKBOXES###');
+					$childMarkerArray['###CATEGORY_CHECKBOX_NAME###']='tx_damfrontend_pi1[catgroup]['.$mount.']['.$childData['uid'].']';
+					$childMarkerArray['###CATEGORY_CHECKBOX_VALUE###']=$childData['uid'];
+					$childMarkerArray['###CATEGORY_CHECKBOX_ID###']='tx_dam_frontend_cat_'.$childData['uid'];
+					$childMarkerArray['###CATEGORY_CHECKBOX_LABEL###']=$childData['title'];
+					$childContent = tslib_cObj::substituteMarkerArray ($childContent, $childMarkerArray);
+				}
+				$groupContent = tslib_cObj::substituteSubpart ($groupContent, '###CATEGORY_CHECKBOXES###', $childContent,1);
+				$category_groups .=  $groupContent;
+				
+			}
+			$formCode = tslib_cObj::substituteSubpartArray($formCode,array('###CATEGORY_GROUP###'=>$category_groups));
+			// delete category dropdown selection
 		}
 		else {
-			$markerArray['###DROPDOWN_CATEGORIES###'] = '';
-			$markerArray['###TREEID###'] = '';
-			$markerArray['###DROPDOWN_CATEGORIES_HEADER###'] = '';
+			$formCode = tslib_cObj::substituteSubpartArray($formCode,array('###CATEGORY_GROUP###'=>''));
+			if (is_array($filterArray['categories'])) {
+				$markerArray['###TREEID###'] = $this->cObj->data['uid'];
+				$markerArray['###DROPDOWN_CATEGORIES_HEADER###'] = $this->cObj->stdWrap($this->pi_getLL('DROPDOWN_CATEGORIES_HEADER'), $this->conf['filterview.']['dropdown_categories_header.']);
+				$markerArray['###DROPDOWN_CATEGORIES###'] = $this->renderCatgoryList($filterArray['categories']);
+			}
 		}
 
 		$markerArray['###DROPDOWN_LANGUAGE###'] = $this->renderLanguageSelector($filterArray['LanguageSelector']);
@@ -1042,7 +1067,8 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		} else {
 			$markerArray['###DROPDOWN_OWNER###'] = '';
 		}
-
+		
+		
 		$markerArray['###DROPDOWN_LANGUAGE###'] = $this->renderLanguageSelector($filterArray['LanguageSelector']);
 		if (!isset($this->conf['filterview.']['form_url.']['parameter'])) {
 			$this->conf['filterview.']['form_url.']['parameter'] = $GLOBALS['TSFE']->id;
@@ -2095,8 +2121,8 @@ class tx_damfrontend_rendering extends tslib_pibase {
 	}
 
 	/*
-		  *
-		  */
+	  *
+	  */
 	function renderDamSubCategories($category) {
 
 		$record_Code = tsLib_CObj::getSubpart($this->fileContent, '###CATLIST_RECORD###');

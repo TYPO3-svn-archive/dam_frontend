@@ -17,7 +17,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend') . '/frontend/class.tx_damfron
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2006-2010 in2code.de (dam_frontend@in2code.de)
+ *  (c) 2006-2011 in2code.de (dam_frontend@in2code.de)
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -111,6 +111,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 	// references to the DAL
 	var $docLogic; // handling of documents
+	/**
+	 * Category Logic object
+	 *
+	 * @var	tx_damfrontend_DAL_categories
+	 */
 	var $catLogic; // handling of categories
 
 	// references to various helpers
@@ -357,6 +362,17 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->internal['filter']['creator'] = strip_tags(t3lib_div::_GP('creator'));
 		$this->internal['filter']['owner'] = strip_tags(t3lib_div::_GP('owner'));
 		$this->internal['filter']['categoryMount'] = strip_tags(t3lib_div::_GP('categoryMount'));
+		
+		// check for incomming values for grouped categories
+		if ($this->piVars['catgroup']) {
+			foreach ($this->piVars['catgroup'] as $key=>$value) {
+				foreach ($value as $catID) {
+					$this->internal['filter']['catgroups'][intval($key)][]=intval($catID);
+				}
+				
+			}
+			#t3lib_div::debug($this->internal['filter']['catgroups']);
+		}
 
 		// delete all filters, if no filter is present
 		if (!count($this->filterState->getFilterFromSession())) {
@@ -528,6 +544,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$i++;
 			} while ($this->piVars['level' . intval($i)]);
 		}
+		
 		// Selection Mode
 		$this->internal['selectionMode'] = intval($this->piVars['selectionMode']);
 
@@ -1166,6 +1183,32 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 */
 	function filterView() {
 		$this->internal['filter']['categories'] = $this->get_CategoryList($this->internal['catMounts'], $this->internal['filter']['categoryMount']);
+		
+		if ($this->conf['filterView.']['use_category_groups']==1){
+			// delete category settings: it is only possible to use one kind of category selection
+			unset($this->internal['filter']['categories']);
+			
+			$mounts = explode(',',$this->conf['catMounts']); 
+			foreach ($mounts as $mount) {
+				// check if the current mount has childs, if not, the category is not taken to the selection
+				$childs = $this->catLogic->getChildCategories($mount);
+				if ($childs) {
+					$childCats = array();
+					foreach ($childs as $child) {
+						// if in current selection, checkit
+						$child['selected']=0;
+						if ($selected==true) {
+							$child['selected']=1;
+						}
+						$childCats[] = $child;
+					}
+					// get the category information for the parent category
+					$categories[$mount] =  $this->catLogic->getCategory($mount);
+					$categories[$mount]['childs'] =  $childCats;
+				}
+			}
+			$this->internal['filter']['categories']=$categories;
+		}
 		$content = $this->renderer->renderFilterView($this->internal['filter'], $this->internal['filterError']);
 		if ($this->internal['filter']['searchAllCats'] == true) {
 			$content = str_replace("name=\"dam_fe_allCats\"", "name=\"dam_fe_allCats\" checked", $content);

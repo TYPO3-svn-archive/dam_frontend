@@ -300,13 +300,13 @@ Template for displaying a single document in a list
 						<label for="###CATEGORY_GROUP_NAME###">###CATEGORY_GROUP_LABEL###</label>
 						
 					<!-- ###CATEGORY_CHECKBOXES### begin-->
-						<input type="checkbox" name="###CATEGORY_CHECKBOX_NAME###" value="###CATEGORY_CHECKBOX_VALUE###" /><label for="###CATEGORY_CHECKBOX_NAME###">###CATEGORY_CHECKBOX_LABEL###</label>
+						<input type="checkbox" name="###CATEGORY_CHECKBOX_NAME###" id="###CATEGORY_CHECKBOX_ID###" value="###CATEGORY_CHECKBOX_VALUE###" /><label for="###CATEGORY_CHECKBOX_ID###">###CATEGORY_CHECKBOX_LABEL###</label>
 					<!-- ###CATEGORY_CHECKBOXES### begin-->
 					
 					</fieldset> 
 				<!-- ###CATEGORY_GROUP### end-->
 				<input type="hidden" value="0" name="tx_damfrontend_pi1[pointer]" />
-				<input type="checkbox" name="dam_fe_allCats" value="true" /> ###LABEL_NO_CAT###
+				<!-- <input type="checkbox" name="dam_fe_allCats" value="true" /> ###LABEL_NO_CAT### -->
 				<input type="hidden" value="###TREEID###" name="tx_damfrontend_pi1[treeID]" />
 				<input type="submit" value="###RESET_FILTER###" name="resetFilter" class="button"></input> &nbsp; &nbsp; &nbsp;
 				<input type="submit" value="###SET_FILTER###" name="setFilter" class="button"></input>
