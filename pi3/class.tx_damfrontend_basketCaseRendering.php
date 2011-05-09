@@ -255,7 +255,7 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 	 * Using the dam_frontend_rending hook to add the basket case button
 	 *
 	 */
-	function render_dam_record($markerArray,$plugin, $elem){
+	function render_dam_record(&$markerArray,$plugin, $elem){
 		$cObj = t3lib_div::makeInstance('tslib_cObj');
 		$cObj->start($elem, 'tx_dam');
 		if ($elem['tx_damfrontendavailability_agency']==1) {
