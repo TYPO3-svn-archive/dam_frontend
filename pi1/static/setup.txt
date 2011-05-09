@@ -35,8 +35,8 @@ plugin.tx_damfrontend_pi1 {
 		
 		showCategoriesControl {
 			plusIcon = 1
-			minusIcon = 0
-			equalsIcon = 0
+			minusIcon = 1
+			equalsIcon = 1
 		}
 		preSelectChildCategories = 0
 		showHiddenCategories = 0
@@ -433,7 +433,7 @@ plugin.tx_damfrontend_pi1 {
 		}
 		
 		#shows the sub categories at top of the filelist
-		showSubCategoriesInFilelist = 1
+		showSubCategoriesInFilelist = 0
 		
 		categoryIcon = IMAGE
 		categoryIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}cat.gif
@@ -1090,6 +1090,8 @@ plugin.tx_damfrontend_pi1 {
 		tx_damfrontend_catTreeView.printTree.showTreeArr=0
 		tx_damfrontend_pi1.fileList.showCatSelection =0
 		tx_damfrontend_pi1.fileList.showFilter =0
+		tx_damfrontend_catlist.getCatSelection.getArrayFromUser=0
+		tx_damfrontend_catlist.getCatSelection=0
 	}
 }
 [globalVar = LIT:1 = {$plugin.tx_damfrontend_pi1.doNotUsePushFile}]

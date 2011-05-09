@@ -119,6 +119,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	var $catLogic; // handling of categories
 
 	// references to various helpers
+	/**
+	 * Category Logic object
+	 *
+	 * @var	tx_damfrontend_catList
+	 */
 	var $catList; // stores the category selection in the session
 	var $renderer; // handeles the frontend rendering
 	var $filterState; // stores the current filter state in the session, provides synchronisation with the $internal['filter'] array
@@ -362,16 +367,15 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->internal['filter']['creator'] = strip_tags(t3lib_div::_GP('creator'));
 		$this->internal['filter']['owner'] = strip_tags(t3lib_div::_GP('owner'));
 		$this->internal['filter']['categoryMount'] = strip_tags(t3lib_div::_GP('categoryMount'));
-		
+
 		// check for incomming values for grouped categories
 		if ($this->piVars['catgroup']) {
 			foreach ($this->piVars['catgroup'] as $key=>$value) {
 				foreach ($value as $catID) {
 					$this->internal['filter']['catgroups'][intval($key)][]=intval($catID);
 				}
-				
+
 			}
-			#t3lib_div::debug($this->internal['filter']['catgroups']);
 		}
 
 		// delete all filters, if no filter is present
@@ -533,7 +537,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 
 		// loading post values from the drilldown view
-		
+
 		if ($this->piVars['level0']) {
 			if ($this->piVars['level0']=='noselection') $this->internal['drilldown']['level0']=0;
 			do {
@@ -544,7 +548,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$i++;
 			} while ($this->piVars['level' . intval($i)]);
 		}
-		
+
 		// Selection Mode
 		$this->internal['selectionMode'] = intval($this->piVars['selectionMode']);
 
@@ -810,16 +814,17 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 		}
 
-		// easySearch
 		if (t3lib_div::_GP('resetFilter')) {
 			$this->catList->unsetAllCategories();
 		}
 
+		// easySearch
 		if (t3lib_div::_GP('easySearchSetFilter') OR t3lib_div::_GP('setFilter')) {
 			//unset only if the current content element is the search box
 			if ($this->internal['viewID'] == 10) {
 				$this->catList->unsetAllCategories();
 			}
+
 
 
 			if ($this->internal['filter']['categoryMount'] == 'noselection' && ($this->internal['incomingtreeID'] <> $this->internal['treeID']) AND $this->internal['viewID'] == 10) {
@@ -835,6 +840,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$this->addAllCategories($this->internal['catMounts'], $this->internal['incomingtreeID'], true);
 			}
 			else {
+
 				// restrict for the given category, which is used in the selectorbox of the easysearch form
 				$catID = $this->internal['catPlus_Rec'];
 				if (intval(t3lib_div::_GP('categoryMount')) > 0 AND $this->internal['viewID'] == 10) {
@@ -849,7 +855,16 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					}
 				}
 			}
+			if ($this->internal['filter']['catgroups']) {
+				$this->catList->unsetAllCategories();
+				foreach ($this->internal['filter']['catgroups'] as $catgroupID => $cats) {
+					foreach($cats as $cat) {
+						#t3lib_div::debug($cat, 'Category ' . $cat . ' in ' . __LINE__ . ' in ' . __FILE__);
+						$this->catList->op_Plus($cat, $catgroupID*-1);
+					}
+				}
 
+			}
 			if (t3lib_div::_GP('categoryMount') AND t3lib_div::_GP('setFilter')) {
 				// if a category restriction is used in the search form
 				if ($this->internal['viewID'] == 2 AND intval(t3lib_div::_GP('categoryMount')) > 0) {
@@ -949,7 +964,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @author stefan
 	 */
 	function fileListBasicFuncionality() {
-		
+
 		if ($this->conf['enableDeletions'] == 1) {
 			if ($this->userLoggedIn == true) {
 
@@ -1072,8 +1087,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			return $result;
 		}
 		$hasCats = false;
+
 		$cats = $this->catList->getCatSelection(0, $this->pid);
-		
+		#$this->catList->getCatSelection();
+
 
 		if ($this->conf['enableDebug'] == 1) {
 			if ($this->conf['debug.']['tx_damfrontend_pi1.']['fileList.']['showCatSelection'] == 1) t3lib_div::debug($cats);
@@ -1084,7 +1101,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				if (count($catList)) $hasCats = true;
 			}
 		}
-		
+
 		if ($this->conf['filterView.']['searchAutomaticallyInAllowedCategories']==1) {
 			if ($this->internal['filter']['searchAllCats_allowedCats'] AND $this->internal['filter']['searchword']) {
 				$hasCats= true;
@@ -1183,12 +1200,18 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 */
 	function filterView() {
 		$this->internal['filter']['categories'] = $this->get_CategoryList($this->internal['catMounts'], $this->internal['filter']['categoryMount']);
-		
+
 		if ($this->conf['filterView.']['use_category_groups']==1){
 			// delete category settings: it is only possible to use one kind of category selection
 			unset($this->internal['filter']['categories']);
-			
-			$mounts = explode(',',$this->conf['catMounts']); 
+
+			// prepare cats which where send via post
+			foreach($this->internal['filter']['catgroups'] as $key =>$value ) {
+				foreach($value as $cat) {
+					$selectedCats[] = $cat;
+				}
+			}
+			$mounts = explode(',',$this->conf['catMounts']);
 			foreach ($mounts as $mount) {
 				// check if the current mount has childs, if not, the category is not taken to the selection
 				$childs = $this->catLogic->getChildCategories($mount);
@@ -1197,7 +1220,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					foreach ($childs as $child) {
 						// if in current selection, checkit
 						$child['selected']=0;
-						if ($selected==true) {
+						if (in_array($child['uid'], $selectedCats) ) {
 							$child['selected']=1;
 						}
 						$childCats[] = $child;
@@ -1452,7 +1475,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				// generate a dummy array
 				$catArrayUser = array('1');
 			}
-			
+
 			if ($this->saveCategorisation == 1 && !empty($catArrayUser)) {
 				$docID = intval($GLOBALS['TSFE']->fe_user->getKey('ses', 'categoriseID'));
 				$this->saveCategories($docID);
@@ -1463,7 +1486,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					$this->categorise = false;
 					$step = 4;
 				}
-			} 
+			}
 
 		}
 		else {

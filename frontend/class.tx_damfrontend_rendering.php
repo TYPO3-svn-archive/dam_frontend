@@ -616,7 +616,21 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		$markerArray['###SUBJECT_DEFAULT###'] = $this->pi_getLL('SUBJECT_DEFAULT');
 		$markerArray['###FROM_DEFAULT###'] = $GLOBALS['TSFE']->fe_user->user['email'];
 		$markerArray['###MESSAGE###'] = $this->pi_getLL('MAIL_SUCCESS');
+		if ($this->conf['filelist.']['mailOptions.']['signatures.']) {
+			foreach ($this->conf['filelist.']['mailOptions.']['signatures.'] as $signatureID => $value) {
+				if ('.' <> substr($signatureID, -1)) {
+					$options[$signatureID] = $this->cObj->cObjGetSingle($this->conf['filelist.']['mailOptions.']['signatures.'][$signatureID], $this->conf['filelist.']['mailOptions.']['signatures.'][$signatureID . '.']);
+				}
+			}
 
+			$selektor = $this->renderSelector($options, '', 'tx_damfrontend_pi1[signature]', 1, false, false);
+			$markerArray['###SIGNATURE###'] = $this->cObj->cObjGetSingle($this->conf['filelist.']['mailOptions.']['label'], $this->conf['filelist.']['mailOptions.']['label.']);
+			$markerArray['###SIGNATURE###'] .= $this->cObj->stdWrap($selektor, $this->conf['filelist.']['mailOptions.']['signaturesSelector.']);
+			$markerArray['###SIGNATURE###'] = $this->cObj->stdWrap($markerArray['###SIGNATURE###'], $this->conf['filelist.']['mailOptions.']);
+		}
+		else {
+			$markerArray['###SIGNATURE###'] = '';
+		}
 		# mail markers
 		$mailArray['###MAIL_SALUTATION###'] = $this->pi_getLL('MAIL_SALUTATION');
 		#$mailArray['###MAIL_COMMENT###']=$this->pi_getLL('MAIL_SUCCESS');
@@ -989,6 +1003,7 @@ class tx_damfrontend_rendering extends tslib_pibase {
 	function renderFilterView($filterArray, $errorArray = '') {
 		$formCode = tslib_CObj::getSubpart($this->fileContent, '###FILTERVIEW###');
 
+#t3lib_div::debug($filterArray);
 		// filling fields with url - vars
 		$markerArray = $this->recordToMarkerArray($filterArray);
 		$markerArray = $markerArray + $this->substituteLangMarkers($formCode);
@@ -997,7 +1012,7 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		$markerArray['###TREEID###'] = '';
 		$markerArray['###DROPDOWN_CATEGORIES_HEADER###'] = '';
 		if ($this->conf['filterView.']['use_category_groups']==1){
-			$mounts = explode(',',$this->conf['catMounts']); 
+			$mounts = explode(',',$this->conf['catMounts']);
 			foreach ($filterArray['categories'] as $mount=>$mountData) {
 				#t3lib_div::debug($mountData, $mount);
 				$groupContent = tslib_cObj::getSubpart($formCode,'###CATEGORY_GROUP###');
@@ -1011,11 +1026,17 @@ class tx_damfrontend_rendering extends tslib_pibase {
 					$childMarkerArray['###CATEGORY_CHECKBOX_VALUE###']=$childData['uid'];
 					$childMarkerArray['###CATEGORY_CHECKBOX_ID###']='tx_dam_frontend_cat_'.$childData['uid'];
 					$childMarkerArray['###CATEGORY_CHECKBOX_LABEL###']=$childData['title'];
+					if ($childData['selected']==1) {
+						$childMarkerArray['###CHECKED###']=' checked="checked"';
+					}
+					else {
+						$childMarkerArray['###CHECKED###']='';
+					}
 					$childContent = tslib_cObj::substituteMarkerArray ($childContent, $childMarkerArray);
 				}
 				$groupContent = tslib_cObj::substituteSubpart ($groupContent, '###CATEGORY_CHECKBOXES###', $childContent,1);
 				$category_groups .=  $groupContent;
-				
+
 			}
 			$formCode = tslib_cObj::substituteSubpartArray($formCode,array('###CATEGORY_GROUP###'=>$category_groups));
 			// delete category dropdown selection
@@ -1067,8 +1088,8 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		} else {
 			$markerArray['###DROPDOWN_OWNER###'] = '';
 		}
-		
-		
+
+
 		$markerArray['###DROPDOWN_LANGUAGE###'] = $this->renderLanguageSelector($filterArray['LanguageSelector']);
 		if (!isset($this->conf['filterview.']['form_url.']['parameter'])) {
 			$this->conf['filterview.']['form_url.']['parameter'] = $GLOBALS['TSFE']->id;
@@ -2099,7 +2120,7 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_DAM_RECORD'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_DAM_RECORD'] as $_classRef) {
 				$_procObj = &t3lib_div::getUserObj($_classRef);
-				$_procObj->render_dam_record(&$markerArray, $this, $elem);
+				$_procObj->render_dam_record($markerArray, $this, $elem);
 			}
 		}
 		return tslib_cObj::substituteMarkerArray($record_Code, $markerArray);

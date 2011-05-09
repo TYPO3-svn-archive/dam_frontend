@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2006-2008 in2form.com (typo3@in2form.com)
+*  (c) 2006-2011 in2code (typo3@in2code.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -32,7 +32,7 @@
  *
  * @package typo3
  * @subpackage tx_dam_frontend
- * @author Martin Baum <typo3@in2form.com>
+ * @author Martin Baum <typo3@in2code.de>
  *
  * Some scripts that use this class:	--
  * Depends on:		---
@@ -92,24 +92,23 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 		$catarray = $this->getArrayFromUser();
 		if (!is_array($catarray)) $catarray = array();
 
-		$treeArray = is_array($catarray[$treeID]) ? array_unique($catarray[$treeID]) : array();
+		$treeArray = is_array($catarray[$GLOBALS['TSFE']->id][$treeID]) ? $catarray[$GLOBALS['TSFE']->id][$treeID] : array();
 		if ($treeID==-1 ) {
 			$catLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_categories');
 			if (!$catLogic->checkCategoryUploadAccess($GLOBALS['TSFE']->fe_user->user['uid'],$catID)) {
 				return false;
 			}
 		}
-		if (!array_search($catID, $treeArray)) {
-			$treeArray[] = $catID;
-			$catarray[$treeID] = $treeArray;
- 			$this->setArrayToUser($catarray);
-		}
+
+		$treeArray[] = $catID;
+		$catarray[$GLOBALS['TSFE']->id][$treeID] = array_unique($treeArray) ;
+ 		$this->setArrayToUser($catarray);
 	}
-	
+
 	function op_PlusRec($catID, $treeID){
 		$catLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_categories');
 		if ($catID==-1 ) $catID=0;
-		$subs = $catLogic->getSubCategories($catID); 
+		$subs = $catLogic->getSubCategories($catID);
 		foreach ($subs as $sub) {
 			$this->op_Plus($sub['uid'],$treeID);
 		}
@@ -132,8 +131,8 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 
 		$catarray = $this->getArrayFromUser();
 
-		if (!empty($catarray) && $catarray[$treeID]) {
-			$treeCats = $catarray[$treeID];
+		if (!empty($catarray) && $catarray[$GLOBALS['TSFE']->id][$treeID]) {
+			$treeCats = $catarray[$GLOBALS['TSFE']->id][$treeID];
 			foreach ($treeCats as $key=>$cat) {
 				if ($cat ==$catID) {
 					unset($catarray[$treeID][$key]);
@@ -171,7 +170,7 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 		}
 		$catarray = $this->getArrayFromUser();
 
-		$catarray[$treeID] = array($catID);
+		$catarray[$GLOBALS['TSFE']->id][$treeID] = array($catID);
 		$this->setArrayToUser($catarray);
 	}
 
@@ -184,6 +183,11 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 	 */
 	function getCatSelection($treeID = 0,$pageID=0) {
 		$ar = $this->getArrayFromUser();
+		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dam_frontend']);
+		if ($extConf['enableDebug']==1) {
+			$conf =$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.'];
+			if ($conf['debug.']['tx_damfrontend_catlist.']['getCatSelection.']['getArrayFromUser']==1)		t3lib_div::debug($ar);
+		}
 		if ($treeID <> 0) {
 			//returns the selected categories for a specified treeID
 			if ($treeID==-1){
@@ -211,26 +215,26 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 			}
 			else {
 				$returnArr=array();
-				foreach ($ar as $key=>$value) {
-					$FIELDS = 'pid';
-					$TABLE = 'tt_content';
-					$WHERE = 'uid = '.$key ;
-					$WHERE .= tslib_cObj::enableFields('tt_content');
-					$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($FIELDS,$TABLE,$WHERE);
-					while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-						// TODO check for language overlay
-						if ($row['pid']==$pageID ) {
-							$returnArr[$key] = array();
-							$returnArr[$key] = array_unique($ar[$key]);
-						}
-					}
-				}
-				$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dam_frontend']);
+//				foreach ($ar as $key=>$value) {
+//					$FIELDS = 'pid';
+//					$TABLE = 'tt_content';
+//					$WHERE = 'uid = '.$key ;
+//					$WHERE .= tslib_cObj::enableFields('tt_content');
+//					$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($FIELDS,$TABLE,$WHERE);
+//					while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+//						// TODO check for language overlay
+//						if ($row['pid']==$pageID ) {
+//							$returnArr[$key] = array();
+//							$returnArr[$key] = array_unique($ar[$key]);
+//						}
+//					}
+//				}
+
 				if ($extConf['enableDebug']==1) {
 					$conf =$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.'];
 					if ($conf['debug.']['tx_damfrontend_catlist.']['getCatSelection']==1)		t3lib_div::debug($returnArr);
 				}
-				return is_array($returnArr) ? $returnArr: null;
+				return is_array($ar[$GLOBALS['TSFE']->id]) ? $ar[$GLOBALS['TSFE']->id]: null;
 			}
 		}
 	}
@@ -243,8 +247,8 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 	 */
 	function clearCatSelection($treeID) {
 		$ar = $this->getArrayFromUser();
-		
-		unset($ar[$treeID]);
+
+		unset($ar[$GLOBALS['TSFE']->id][$treeID]);
 		$this->setArrayToUser($ar);
 	}
 }
