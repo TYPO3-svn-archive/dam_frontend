@@ -1,5 +1,3 @@
-DEVELOPMENT VERSION for trunk (currently 0.7)
-
 DAM Frontend is providing a powerful possibilty to select files out of the dam.
 
 Main features:
@@ -22,4 +20,4 @@ XSS-Issues without htmlSpecialChars = 1!
 Development Plattform:
 http://forge.typo3.org/projects/show/extension-dam_frontend
 
-release 0.7.7 / nn
+release 0.8.0 / Stefan Busemann

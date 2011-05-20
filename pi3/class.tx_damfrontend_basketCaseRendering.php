@@ -6,7 +6,7 @@ require_once(PATH_tslib.'class.tslib_pibase.php');
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2006-2010 in2form.com (typo3@in2form.com)
+*  (c) 2006-2011 in2code.de (typo3@in2code.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -41,7 +41,7 @@ require_once('class.tx_damfrontend_basketCase.php');
  *
  * @package typo3
  * @subpackage tx_dam_frontend
- * @author Stefan Busemann <typo3@in2form.com>
+ * @author Stefan Busemann <typo3@in2code.de>
  *
  * Depends on:		--
  */

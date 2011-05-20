@@ -19,14 +19,14 @@ plugin.tx_damfrontend_pi3 {
 				typolink.additionalParams.insertData = 1
 			}
 			altText = [ + ]
-			titleText = LLL:EXT:dam_frontend/pi3/locallang.xml:add_to_basket
+			titleText.data = LLL:EXT:dam_frontend/pi3/locallang.xml:add_to_basket
 		}
 		delete_from_basket < .add_to_basket
 		delete_from_basket {
 			file=EXT:dam_frontend/pi3/gfx/basket_remove.png
 			imageLinkWrap.typolink.additionalParams =&tx_damfrontend_pi3[delete]={field:uid}
 			altText = [ - ]
-			titleText = LLL:EXT:dam_frontend/pi3/locallang.xml:delete_from_basket
+			titleText.data = LLL:EXT:dam_frontend/pi3/locallang.xml:delete_from_basket
 		}
 		thumb = IMAGE
 		thumb {

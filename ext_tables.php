@@ -116,20 +116,20 @@ $TCA["tx_damfrontend_filterStates"] = Array (
 // FIXME Label for that field
 $TCA['tx_damfrontend_usage'] = array (
 	'ctrl' => array (
-		'title'     => 'Usage (Frantend)',		
-		'label'     => 'uid',	
+		'title'     => 'Usage (Frantend)',
+		'label'     => 'uid',
 		'tstamp'    => 'tstamp',
 		'crdate'    => 'crdate',
 		'cruser_id' => 'cruser_id',
-		'languageField'            => 'sys_language_uid',	
-		'transOrigPointerField'    => 'l10n_parent',	
-		'transOrigDiffSourceField' => 'l10n_diffsource',	
-		'sortby' => 'sorting',	
-		'delete' => 'deleted',	
-		'enablecolumns' => array (		
-			'disabled' => 'hidden',	
-			'starttime' => 'starttime',	
-			'endtime' => 'endtime',	
+		'languageField'            => 'sys_language_uid',
+		'transOrigPointerField'    => 'l10n_parent',
+		'transOrigDiffSourceField' => 'l10n_diffsource',
+		'sortby' => 'sorting',
+		'delete' => 'deleted',
+		'enablecolumns' => array (
+			'disabled' => 'hidden',
+			'starttime' => 'starttime',
+			'endtime' => 'endtime',
 			'fe_group' => 'fe_group',
 		),
 		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'tca.php',
@@ -191,7 +191,7 @@ $tempColumns = Array (
 			"items" => Array(
 					Array("LLL:EXT:dam_frontend/locallang_db.php:tx_damfrontend_feuser_upload", null)
 			),
-			"type" => "select",
+			"type" => "group",
 			"internal_type" => "db",
 			"foreign_table" => "fe_users",
 			"size" => 1,

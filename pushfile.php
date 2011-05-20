@@ -198,7 +198,7 @@ if (is_array($post) && count($post) > 0) {
         if ($maildata['err']) die('<h1>Please set fields '.$maildata['err'].'</h1><p>I\'m sorry, without <b>'.$maildata['err'].'</b> I can\'t send your mail</p>' );
 
 		require_once(PATH_t3lib.'class.t3lib_htmlmail.php');
-		
+
 		// TODO load mailtemplate via configuration
 		$mailTemplate = str_replace( array("\r\n","\n","\r"), '<br>', $mailTemplate); // like nl2br() (sh 2010-03-28)
 		$mailTemplate = strip_tags($mailTemplate,'<table><tr><td><p><b><br>'); // allow b and br (sh 2010-03-28)
@@ -277,7 +277,9 @@ if (is_array($post) && count($post) > 0) {
 		if (!$filesize) {
 			return false;
 		}
+
 		$download = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.']['forceDownloadForFiles'];
+
 		$stream = 0;
 		$stream =  intval($_GET['stream']);
 		if ($download==0 OR $stream==1) {

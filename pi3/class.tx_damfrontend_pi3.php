@@ -6,7 +6,7 @@ require_once(PATH_tslib.'class.tslib_pibase.php');
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2006-2010 in2form.com (typo3@in2form.com)
+*  (c) 2006-2011 in2code.de (typo3@in2code.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -40,7 +40,7 @@ require_once('class.tx_damfrontend_basketCaseRendering.php');
  *
  * @package typo3
  * @subpackage tx_dam_frontend
- * @author Stefan Busemann <typo3@in2form.com>
+ * @author Stefan Busemann <typo3@in2code.de>
  *
  * Depends on:		--
  */
@@ -59,10 +59,10 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 	 * @return	[void]		...
 	 */
 	function init($conf) {
-	    
+
 			// Init FlexForm configuration for plugin
-		$this->pi_initPIflexForm(); 
-	
+		$this->pi_initPIflexForm();
+
 	    	// Read extension configuration
 	    $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
 	    if (is_array($extConf)) {
@@ -73,7 +73,7 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 	      if (is_array($varsConf)) {
 	       $conf = t3lib_div::array_merge($varsConf, $conf);
 	    }
-	    
+
 	          // Read FlexForm configuration
 	    if ($this->cObj->data['pi_flexform']['data']) {
 	          foreach ($this->cObj->data['pi_flexform']['data'] as $sheetName => $sheet) {
@@ -98,7 +98,7 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 	                $this->conf[$key] = $conf[$key];
 	        }
 	  }
-	  
+
 		$this->basketCase = new tx_damfrontend_basketCase;
 		$this->renderer = new tx_damfrontend_basketCaseRendering;
 		$this->renderer->cObj = $this->cObj;
@@ -106,7 +106,7 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 		#$this->basketCase = new tx_damfrontend_basketCase;
 	}
 
-	
+
 
 	/**
 	 * reads the incoming piVars from the request and copies them to the internal array
@@ -127,7 +127,7 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 		if ($this->piVars['accept']) {
 			$this->data['accept']=strip_tags($this->piVars['accept']);
 		}
-		
+
  	}
 
 	/**
@@ -146,14 +146,14 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 		$this->init($conf);
 		$this->convertPiVars();
 		if (!$GLOBALS['TSFE']->fe_user->user['uid']) return $this->pi_wrapInBaseClass($this->renderer->renderError($this->pi_getLL('noUser')));
-		
+
 		switch ($this->conf['viewID']) {
 			case 1:
 				$content .= $this->basketCase_Checkout();
 				// mini basket case
 				break;
 			case 2:
-				$content .=	$this->basketCase_Preview();	
+				$content .=	$this->basketCase_Preview();
 				break;
 			default:
 				$content .= 'no view selected - nothing is displayed';
@@ -168,11 +168,11 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 	 * Prepares the basketCase_Preview View
 	 *
 	 * @param	array		$conf: The PlugIn configuration
-	 * 
+	 *
 	 * @return	string		The html content that is displayed on the website
 	 */
 	function basketCase_Checkout() {
-		
+
 		if ($this->checkOutPossible()) {
 				if ($this->doCheckOut()) {
 					$content = $this->renderer->renderCheckOutResult($this->basketCase->listItems());
@@ -189,39 +189,39 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 			return $this->renderer->renderCheckOutForm($this->basketCase->listItems(),$this->errors,$this->data);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Prepares the basketCase_Preview View
 	 *
 	 * @param	array		$conf: The PlugIn configuration
-	 * 
+	 *
 	 * @return	string		The html content that is displayed on the website
 	 */
 	function basketCase_Preview() {
 		return $this->renderer->renderPreview($this->basketCase->listItems());
 	}
-	
+
 	function doCheckOut(){
 			if (!$this->basketCase->writeUsage($this->data)) {
 				$this->errors['noUsage']=$this->pi_getLL('noUsage');
 				return false;
 			}
-			
+
 			// create mail
 			if ($this->conf['sendMailAfterCheckout']==1) {
 				$this->sendMail($this->basketCase->listItems());
 			}
 		return true;
 	}
-	
+
 	/**
 	 * Inits this class and instanceates all nescessary classes
 	 *
 	 * @return	[void]		...
 	 */
 	function sendMail() {
-		
+
 		require_once(PATH_t3lib.'class.t3lib_htmlmail.php');
 		// get FE_USER data
 		if (!$GLOBALS['TSFE']->fe_user->user['email']) {
@@ -232,8 +232,8 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 		else {
 			$recipient_email = $GLOBALS['TSFE']->fe_user->user['email'];
 		}
-		
-		
+
+
 		if (!$this->conf['mail.']['from']) {
 			$maildata['from']='noreply@'.t3lib_div::getIndpEnv('HTTP_HOST');
 		}
@@ -251,7 +251,7 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 		$htmlMail->setHTML($htmlMail->encodeMsg($maildata['htmlbody']));
 		return $htmlMail->send();
 	}
-	
+
 	function checkOutPossible() {
 		if ($this->piVars['accept']=='accept' AND $this->piVars['usage']<>'') {
 			return true;
@@ -260,9 +260,9 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 			if (!$this->piVars['accept']) 		$this->errors['notAccepted']=1;
 			if (empty($this->piVars['usage'])) 	$this->errors['usageMissing']=1;
 			return false;
-		} 
+		}
 	}
-	
+
 }
 
 

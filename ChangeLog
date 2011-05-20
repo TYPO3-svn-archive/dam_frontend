@@ -1,4 +1,4 @@
-Version 0.7.x
+Version 0.8.0
 2011-03-18 Ralf Merz: fix in tx_damfrontend_DAL_categories: checkCategoryAccess() now checks fe_user groups recursively
 Ralf Merz: added Feature #13085: Using language markers in renderVersioningForm()
 Ralf Merz: added Feature #13788: Do not show categories in lowest tree-level if there are no files in it
@@ -33,6 +33,7 @@ fixed Bug #9009: Drilldown Interface should only show Categories which are allow
 fixed Bug #9088: Category edit doesn't work in frontend
 fixed Bug #9466: tx_damfrontend_DAL_documents::getDocumentList show also deleted dam records
 fixed Bug #9952: Drilldown Problem with IE
+fixed Bug #13482: BE gets unusable, if there are to many FE_Users
 
 Version 0.6.5
 fixed bug 6670 another pointer error in conjunction with drilldown filter

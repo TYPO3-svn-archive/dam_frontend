@@ -12,10 +12,10 @@
 
 $EM_CONF[$_EXTKEY] = array(
 	'title' => 'DAM Frontend',
-	'description' => 'Performance Patch: Download, upload and edit DAM files via frontend. Shows the dam category tree in frontend, so users can select files by combining dam categories. Files are delivered by a pushfile, so that the fileadmin directory can be secured by a .htaccess file. A second plugin shows selected (by an author) dam files. Please read the manual for more informations.',
+	'description' => 'Download, upload and edit DAM files via frontend. Shows the dam category tree in frontend, so users can select files by combining dam categories. Files are delivered by a pushfile, so that the fileadmin directory can be secured by a .htaccess file.',
 	'category' => 'plugin',
 	'shy' => 0,
-	'version' => '0.7.0.44677',
+	'version' => '0.7.1',
 	'dependencies' => 'static_info_tables,dam,dam_catedit,dam_index,fileupload',
 	'conflicts' => '',
 	'priority' => '',
