@@ -439,9 +439,6 @@ plugin.tx_damfrontend_pi1 {
 		categoryIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}cat.gif
 		categoryIcon.stdWrap.typolink.parameter.data = TSFE:id
 		
-		# comma separated list of dam columns, which should be searched (use only text columns)
-		searchwordFields = title, description
-
 		#pre defined sorting
 		usePreDefinedSorting=1
 		orderBy = crdate DESC
