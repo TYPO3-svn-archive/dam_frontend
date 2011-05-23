@@ -297,13 +297,14 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 
 		//variables for setting filters for the current category selection
-		$this->internal['filter']['from_day'] = intval(t3lib_div::_GP('von_tag'));
-		$this->internal['filter']['from_month'] = intval(t3lib_div::_GP('von_monat'));
-		$this->internal['filter']['from_year'] = intval(t3lib_div::_GP('von_jahr'));
 
-		$this->internal['filter']['to_day'] = intval(t3lib_div::_GP('bis_tag'));
-		$this->internal['filter']['to_month'] = intval(t3lib_div::_GP('bis_monat'));
-		$this->internal['filter']['to_year'] = intval(t3lib_div::_GP('bis_jahr'));
+		$this->internal['filter']['from_day'] = intval(trim(t3lib_div::_GP('von_tag')));
+		$this->internal['filter']['from_month'] =intval(trim(t3lib_div::_GP('von_monat')));
+		$this->internal['filter']['from_year'] = intval(trim(t3lib_div::_GP('von_jahr')));
+		
+		$this->internal['filter']['to_day'] = intval(trim(t3lib_div::_GP('bis_tag')));
+		$this->internal['filter']['to_month'] = intval(trim(t3lib_div::_GP('bis_monat')));
+		$this->internal['filter']['to_year'] = intval(trim(t3lib_div::_GP('bis_jahr')));
 
 		// adding custom filters
 		if ($this->conf['filterView.']['customFilters.']) {
@@ -381,7 +382,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		// delete all filters, if no filter is present
 		if (!count($this->filterState->getFilterFromSession())) {
 			$emptyArray = $this->internal['filter'];
-			foreach ($emptyArray as $key => $value) $emptyArray[$key] = ' ';
+			foreach ($emptyArray as $key => $value) $emptyArray[$key] = '';
 			$this->filterState->setFilter($emptyArray);
 		}
 
