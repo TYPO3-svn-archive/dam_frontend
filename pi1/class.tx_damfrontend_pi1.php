@@ -1139,6 +1139,25 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				}
 			}
 			else {
+				if ($this->conf['filelist.']['groupedFileListGroupByTreeID']) {
+					// check if a category is selected of this tree. If not, take all cats.
+					if ($cats[$this->conf['filelist.']['groupedFileListGroupByTreeID']]) {
+						// re-arrange the category array, because the cattitles (that are needed for the grouped filelist) are fetched from the last and criteria
+						$tempCats = $cats[$this->conf['filelist.']['groupedFileListGroupByTreeID']];
+						unset($cats[$this->conf['filelist.']['groupedFileListGroupByTreeID']]);
+						$cats[$this->conf['filelist.']['groupedFileListGroupByTreeID']]=$tempCats;
+					}
+					else {
+						// add all subcategories to the selection
+						$subs = $this->catLogic->getSubCategories(abs($this->conf['filelist.']['groupedFileListGroupByTreeID']));
+						if (is_array($subs)) {
+							foreach ($subs as $sub) {
+								$cats[$this->conf['filelist.']['groupedFileListGroupByTreeID']][]=$sub['uid'];
+							}
+						}
+					}
+				}
+
 				$this->docLogic->categories = $cats;
 				$files = $this->docLogic->getDocumentList($this->userUID);
 			}

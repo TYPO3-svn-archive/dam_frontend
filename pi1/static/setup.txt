@@ -452,6 +452,8 @@ plugin.tx_damfrontend_pi1 {
 		#sorting for the categories in the grouped filelist (allowed values: ASC, DESC) (works only if the setting groupedFileListUseBackEndSorting = 0)
 		groupedFileListCategorySorting = ASC
 		
+		groupedFileListGroupByTreeID = 
+		
 		# make column titles sortable
 		sortLinksForTitles = 0
 		
