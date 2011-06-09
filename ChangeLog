@@ -1,5 +1,6 @@
 Version 0.8.0
 2011-06-09 Stefan Busemann: added ts option filelist.groupedFileListGroupByTreeID – can be set to a tree ID so that the search result is grouped by the selected categories of this category selection
+2011-06-09 Stefan Busemann: added ts option filterview.showOnlyFilesOfAllowedCategories - if set, the result is always filtered for the given category
 2011-03-18 Ralf Merz: fix in tx_damfrontend_DAL_categories: checkCategoryAccess() now checks fe_user groups recursively
 Ralf Merz: added Feature #13085: Using language markers in renderVersioningForm()
 Ralf Merz: added Feature #13788: Do not show categories in lowest tree-level if there are no files in it

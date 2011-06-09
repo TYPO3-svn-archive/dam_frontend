@@ -341,6 +341,9 @@ plugin.tx_damfrontend_pi1 {
 		# if no category is given to the filelist, you can enable the automatic search in all allowed categories (these categories must be set in the filelist plugin)
 		searchAutomaticallyInAllowedCategories = 1
 		
+		# restrict the result always (works only if useTreeAndSelection = 1  and is to 1)
+		showOnlyFilesOfAllowedCategories=1
+		
 		categoriesOrderBy = title
 		
 		filetypes {

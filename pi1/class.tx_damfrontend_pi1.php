@@ -1126,8 +1126,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			if ($this->internal['viewID'] == 8) {
 				$this->docLogic->conf['useGroupedView'] = 1;
 			}
-
+			if ($this->conf['filterView.']['showOnlyFilesOfAllowedCategories']==1 AND $this->conf['useTreeAndSelection'] == 1) {
+				$cats[$this->internal['treeID']]= $this->internal['filter']['searchAllCats_allowedCats'];
+			}
+				
 			if ($this->internal['viewID'] == 8 AND $this->conf['filelist.']['groupedFileListUseBackEndSorting'] == 1) {
+				// prepare grouped filelist
 				foreach ($cats as $catSelection) {
 					foreach ($catSelection as $catID) {
 						$currentCat = array();
@@ -1224,13 +1228,15 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		if ($this->conf['filterView.']['use_category_groups']==1){
 			// delete category settings: it is only possible to use one kind of category selection
 			unset($this->internal['filter']['categories']);
-
+			$selectedCats = array();
 			// prepare cats which where send via post
-			foreach($this->internal['filter']['catgroups'] as $key =>$value ) {
-				foreach($value as $cat) {
-					$selectedCats[] = $cat;
+			if (is_array($this->internal['filter']['catgroups'])) {
+				foreach($this->internal['filter']['catgroups'] as $key =>$value ) {
+					foreach($value as $cat) {
+						$selectedCats[] = $cat;
+					}
 				}
-			}
+			}	
 			$mounts = explode(',',$this->conf['catMounts']);
 			foreach ($mounts as $mount) {
 				// check if the current mount has childs, if not, the category is not taken to the selection
