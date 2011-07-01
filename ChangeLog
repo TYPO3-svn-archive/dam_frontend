@@ -1,4 +1,5 @@
 Version 0.8.0
+2011-07-01 Stefan Busemann: fixed bug #27804: latestView.limit does not work
 2011-06-09 Stefan Busemann: added ts option filelist.groupedFileListGroupByTreeID – can be set to a tree ID so that the search result is grouped by the selected categories of this category selection
 2011-06-09 Stefan Busemann: added ts option filterview.showOnlyFilesOfAllowedCategories - if set, the result is always filtered for the given category
 2011-03-18 Ralf Merz: fix in tx_damfrontend_DAL_categories: checkCategoryAccess() now checks fe_user groups recursively

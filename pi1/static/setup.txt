@@ -188,7 +188,7 @@ plugin.tx_damfrontend_pi1 {
 		useLanguageOverlay=1
 	}
 	
-	searchCategoryAttributes = 1
+	searchCategoryAttributes = 0
     searchCategoryAttributes {
     	fields = keywords,title
     }
@@ -484,7 +484,7 @@ plugin.tx_damfrontend_pi1 {
 		
 		latestView {
 			#shows only the last days
-			latestDays = 30
+			latestDays = 0
 			# Categories which are selected in the flexform are used as mounts, if set to 0 they are used as single cats
 			useCatsAsMounts = 1
 			#latestField must be date field

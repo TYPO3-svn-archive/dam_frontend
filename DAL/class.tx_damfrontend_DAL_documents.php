@@ -566,7 +566,9 @@ require_once(PATH_tslib.'class.tslib_content.php');
 
 			// if latest list is used and a fixed number of entries has to be shown
 		if ($this->conf['latestLimit']>0 ){
-			if ($endRecord > $this->conf['latestLimit']) $endRecord = $this->conf['latestLimit'] ;
+			$startRecord=0;
+			$listLength = $this->conf['latestLimit'] ;
+			$resultCounter =  $this->conf['latestLimit'] ;
 		}
 
 
