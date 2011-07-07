@@ -1003,7 +1003,6 @@ class tx_damfrontend_rendering extends tslib_pibase {
 	function renderFilterView($filterArray, $errorArray = '') {
 		$formCode = tslib_CObj::getSubpart($this->fileContent, '###FILTERVIEW###');
 
-#t3lib_div::debug($filterArray);
 		// filling fields with url - vars
 		$markerArray = $this->recordToMarkerArray($filterArray);
 		$markerArray = $markerArray + $this->substituteLangMarkers($formCode);
@@ -1012,11 +1011,12 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		$markerArray['###TREEID###'] = '';
 		$markerArray['###DROPDOWN_CATEGORIES_HEADER###'] = '';
 		if ($this->conf['filterView.']['use_category_groups']==1){
+			require_once(t3lib_extMgm::extPath('dam_frontend') . '/DAL/class.tx_damfrontend_DAL_categories.php');
+			$catLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_categories');
 			$mounts = explode(',',$this->conf['catMounts']);
 			foreach ($filterArray['categories'] as $mount=>$mountData) {
-				#t3lib_div::debug($mountData, $mount);
 				$groupContent = tslib_cObj::getSubpart($formCode,'###CATEGORY_GROUP###');
-				$groupContent = tslib_cObj::substituteMarker ($groupContent, '###CATEGORY_GROUP_LABEL###',$mountData['title'] );
+				$groupContent = tslib_cObj::substituteMarker ($groupContent, '###CATEGORY_GROUP_LABEL###',$catLogic->getCategoryTitleLocalized($mountData,50));
 				$groupContent = tslib_cObj::substituteMarker ($groupContent, '###CATEGORY_GROUP_NAME###','tx_dam_frontend_catgrouplabel'.$mountData['uid'] );
 				$childContent='';
 				$childMarkerArray= array();
@@ -1025,7 +1025,7 @@ class tx_damfrontend_rendering extends tslib_pibase {
 					$childMarkerArray['###CATEGORY_CHECKBOX_NAME###']='tx_damfrontend_pi1[catgroup]['.$mount.']['.$childData['uid'].']';
 					$childMarkerArray['###CATEGORY_CHECKBOX_VALUE###']=$childData['uid'];
 					$childMarkerArray['###CATEGORY_CHECKBOX_ID###']='tx_dam_frontend_cat_'.$childData['uid'];
-					$childMarkerArray['###CATEGORY_CHECKBOX_LABEL###']=$childData['title'];
+					$childMarkerArray['###CATEGORY_CHECKBOX_LABEL###']= $catLogic->getCategoryTitleLocalized($childData,50);
 					if ($childData['selected']==1) {
 						$childMarkerArray['###CHECKED###']=' checked="checked"';
 					}
