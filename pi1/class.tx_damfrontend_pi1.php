@@ -301,7 +301,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->internal['filter']['from_day'] = intval(trim(t3lib_div::_GP('von_tag')));
 		$this->internal['filter']['from_month'] =intval(trim(t3lib_div::_GP('von_monat')));
 		$this->internal['filter']['from_year'] = intval(trim(t3lib_div::_GP('von_jahr')));
-		
+
 		$this->internal['filter']['to_day'] = intval(trim(t3lib_div::_GP('bis_tag')));
 		$this->internal['filter']['to_month'] = intval(trim(t3lib_div::_GP('bis_monat')));
 		$this->internal['filter']['to_year'] = intval(trim(t3lib_div::_GP('bis_jahr')));
@@ -444,15 +444,19 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			if ($this->internal['list']['listLength'] == 0) $this->internal['list']['listLength'] = 10;
 		}
 
+		// LOAD TCA to get all allowed fields for sorting	
+		t3lib_div::loadTCA("tx_dam");
 
 		// setting the internal values for sorting
 		foreach ($this->piVars as $postvar => $postvalue) {
-			// clearing SQL Injection
-			if ($postvalue == 'DESC' || $postvalue == 'ASC') {
-				if (substr($postvar, 0, 5) == 'sort_') {
-					$this->internal['list']['sorting'] = strip_tags(substr($postvar, 5) . ' ' . $postvalue);
-				}
-			}
+ 			// allow only fields that are exist in the TCA
+			if (array_key_exists(substr($postvar, 5),$GLOBALS['TCA']['tx_dam']['columns'])) {
+	 			if ($postvalue == 'DESC' || $postvalue == 'ASC') {
+	 				if (substr($postvar, 0, 5) == 'sort_') {
+	 					$this->internal['list']['sorting'] = substr($postvar, 5).' '.$postvalue;
+	 				}
+	 			}
+ 			}
 		}
 		#pre defined sorting is only used, as long a user did not sort by himself
 		if (!$this->internal['list']['sorting']) {
@@ -1129,7 +1133,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			if ($this->conf['filterView.']['showOnlyFilesOfAllowedCategories']==1 AND $this->conf['useTreeAndSelection'] == 1) {
 				$cats[$this->internal['treeID']]= $this->internal['filter']['searchAllCats_allowedCats'];
 			}
-				
+
 			if ($this->internal['viewID'] == 8 AND $this->conf['filelist.']['groupedFileListUseBackEndSorting'] == 1) {
 				// prepare grouped filelist
 				foreach ($cats as $catSelection) {
@@ -1236,7 +1240,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 						$selectedCats[] = $cat;
 					}
 				}
-			}	
+			}
 			$mounts = explode(',',$this->conf['catMounts']);
 			foreach ($mounts as $mount) {
 				// check if the current mount has childs, if not, the category is not taken to the selection
