@@ -19,13 +19,13 @@ plugin.tx_damfrontend_pi1 {
 		# force download or display in file in the browser
 	forceDownloadForFiles=1
 
-		# Ralf Merz: New Option: do not allow to not select a category on upload
+		# Do not allow to not select a category on upload
 	doNotAllowUploadEmptyCategorySelection = 1
 
 	#errorNoCat = TEXT
 	errorNoCat.wrap = <span class="error">|</span>
 
-		# Ralf Merz: New option: flag to disable to show empty categories
+		# flag to disable to show empty categories
 	doNotShowEmptyCategories = 0
 	
 	categoryTree {
@@ -333,7 +333,7 @@ plugin.tx_damfrontend_pi1 {
 		filterUserGroup = 
 		dropdown_categories_header.wrap = <label>|</label>
 		
-		use_category_groups=1
+		use_category_groups=0
 		
 		# if searchAllCats are filtered by allowedCats, then you can define, if the selected cats used as mounts or as normal cats
 		searchCatsAsMounts = 1
