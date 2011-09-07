@@ -15,7 +15,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend') . '/frontend/class.tx_damfron
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2006-2009 in2form.com (typo3@in2form.com)
+*  (c) 2006-2011 in2form.com (typo3@in2code.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -45,7 +45,7 @@ require_once(t3lib_extMgm::extPath('dam_frontend') . '/frontend/class.tx_damfron
  *
  * @package typo3
  * @subpackage tx_dam_frontend
- * @author Martin Baum, Stefan Busemann, Martin Holtz <typo3@in2form.com>
+ * @author Martin Baum, Stefan Busemann, Martin Holtz <typo3@in2code.de>
  *
  * @todo add stdWrap functions
  * Some scripts that use this class:	--
@@ -391,15 +391,21 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 
 
+		// LOAD TCA to get all allowed fields for sorting	
+		t3lib_div::loadTCA("tx_dam");
+
 		// setting the internal values for sorting
 		foreach ($this->piVars as $postvar => $postvalue) {
- 			// clearing SQL Injection
- 			if ($postvalue == 'DESC' || $postvalue == 'ASC') {
- 				if (substr($postvar, 0, 5) == 'sort_') {
- 					$this->internal['list']['sorting'] = strip_tags(substr($postvar, 5).' '.$postvalue);
- 				}
+ 			// allow only fields that are exist in the TCA
+			if (array_key_exists(substr($postvar, 5),$GLOBALS['TCA']['tx_dam']['columns'])) {
+	 			if ($postvalue == 'DESC' || $postvalue == 'ASC') {
+	 				if (substr($postvar, 0, 5) == 'sort_') {
+	 					$this->internal['list']['sorting'] = substr($postvar, 5).' '.$postvalue;
+	 				}
+	 			}
  			}
 		}
+
 		#pre defined sorting is only used, as long a user did not sort by himself
 		if (!$this->internal['list']['sorting'] ) {
 			// CAB:SS - 23.04.10 change orderBy for the latest view (viewID 9)
@@ -1370,7 +1376,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				// check if the temp folder exists
 				if (!is_dir($uploaddir.$uploadTempDir)){
 					$uploadTempDir='';
-					t3lib_div::syslog('﻿Upload temp path is not configured correctly. The path does not exist: '.$uploaddir.$uploadTempDir. ' Please set the value uploadTempDir in plugin.dam_frontend.upload.conf ','dam_frontend',3);
+					t3lib_div::syslog('ÔªøUpload temp path is not configured correctly. The path does not exist: '.$uploaddir.$uploadTempDir. ' Please set the value uploadTempDir in plugin.dam_frontend.upload.conf ','dam_frontend',3);
 				}
 
 				if($fileUploadTS['FEuserHomePath']==1){
