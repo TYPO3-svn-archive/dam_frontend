@@ -2,7 +2,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2006-2009 in2form.com (typo3@in2form.com)
+ *  (c) 2006-2011 in2code.de (typo3@in2code.de)
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -36,7 +36,7 @@
  *
  * @package typo3
  * @subpackage tx_dam_frontend
- * @author Martin Baum <typo3@in2form.com>
+ * @author Martin Baum <typo3@in2code.de>
  *
  * Some scripts that use this class:	--
  * Depends on:		---
