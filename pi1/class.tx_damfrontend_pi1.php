@@ -1711,6 +1711,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			// adding the uploaded file to the DAM System, if no error occured
 
 			if (is_file($uploadfile)) {
+				// initialize a BE_USER object
+				if (empty($GLOBALS['BE_USER'])) {
+					$GLOBALS['BE_USER'] = t3lib_div::makeInstance('t3lib_tsfeBeUserAuth');
+					$GLOBALS['BE_USER']->start();
+				}
 				$newID = $this->docLogic->addDocument($uploadfile, $this->documentData);
 				// add predefined category setting: TODO discuss: should there only categories passible the fe user has access to?
 				if ($this->conf['upload.']['enableCategoryPreSelection'] == 1) {
