@@ -38,7 +38,7 @@
  * Depends on:		--
  */
 require_once(PATH_txdam.'components/class.tx_dam_selectionCategory.php');
-
+require_once(t3lib_extMgm::extPath('dam_frontend') . '/DAL/class.tx_damfrontend_DAL_categories.php');
 
 /**
  * [CLASS/FUNCTION INDEX of SCRIPT]
@@ -136,6 +136,9 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
  		$this->backPath = 'typo3/';
 
  		if ($this->conf['categoryTree.']['sorting']) $this->orderByFields = $this->conf['categoryTree.']['sorting'];
+ 		if ($this->conf['categoryTreeAdvanced.']['doNotShowNotAllowedCategories'] == 1) {
+ 			$this->catLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_categories');
+ 		}
 	}
 
 	/**
@@ -487,6 +490,11 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 					$test = array_search($v['row']['uid'], $this->selectedCats);
 					if ($test == 0 ) $test++;
 					$sel_class = $test ? "tree_selectedCats" : "tree_unselectedCats";
+				}
+				if ($this->conf['categoryTree.']['doNotShowNotAllowedCategories'] == 1) {
+					if (!$this->catLogic->checkCategoryAccess($GLOBALS['TSFE']->fe_user->user['uid'], $v['row']['uid'], 1)) {
+						continue;
+					}
 				}
 				$idAttr = htmlspecialchars($this->domIdPrefix.$this->getId($v['row']).'_'.$v['bank']);
 				$titleLen = $this->conf['categoryTree.']['categoryTitle.']['length'] ? $this->conf['categoryTree.']['categoryTitle.']['length']:30;

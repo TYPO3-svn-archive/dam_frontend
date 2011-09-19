@@ -38,6 +38,7 @@ plugin.tx_damfrontend_pi1 {
 			minusIcon = 1
 			equalsIcon = 1
 		}
+		
 		preSelectChildCategories = 0
 		showHiddenCategories = 0
 		useLanguageOverlay = 1
@@ -113,6 +114,8 @@ plugin.tx_damfrontend_pi1 {
 		fileicon.wrap = |
 		
 		sorting = title
+		
+		doNotShowNotAllowedCategories = 0
 	}
 	
 	categorisationTree < .categoryTree
