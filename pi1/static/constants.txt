@@ -8,7 +8,7 @@
 plugin.tx_damfrontend_pi1.templateFile = EXT:dam_frontend/pi1/template.html
 
 # cat=tx_damfrontend_pi1//20; type=int; label= single id
-plugin.tx_damfrontend_pi1.singleID = 
+plugin.tx_damfrontend_pi1.singleID = 0
 
 # cat=tx_damfrontend_pi1//30; type=text; label= wrap for errors
 plugin.tx_damfrontend_pi1.filter.errorWrap = <span style="color: red; font-weight: bold">|</span>

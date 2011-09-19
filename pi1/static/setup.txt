@@ -218,7 +218,6 @@ plugin.tx_damfrontend_pi1 {
 		date_cr < .crdate
 		#title.typolink.target= _blank
 		title.typolink.parameter.data = TSFE:id
-		
 		title.typolink.parameter.if.value=1
 		title.typolink.parameter.if.equals.field=allowDownload
   		title.typolink.additionalParams = &eID=dam_frontend_push&docID={field:uid}
@@ -236,7 +235,10 @@ plugin.tx_damfrontend_pi1 {
 		
 
 		link_single.typolink {
-			#parameter.data = TSFE:id
+			parameter.data = TSFE:id
+			parameter.overwrite = {$plugin.tx_damfrontend_pi1.singleID}
+			parameter.overwrite.if.value = {$plugin.tx_damfrontend_pi1.singleID}
+			parameter.overwrite.if.isGreaterThan = 0
 			additionalParams = &tx_damfrontend_pi1[showUid]={field:uid}&tx_damfrontend_pi1[confirmDeleteUID]=&tx_damfrontend_pi1[editUID]=&tx_damfrontend_pi1[catEditUID]=
 			additionalParams.insertData = 1
 			addQueryString = 1
@@ -1096,6 +1098,21 @@ plugin.tx_damfrontend_pi1 {
 		tx_damfrontend_catlist.getCatSelection=0
 	}
 }
+
+[globalVar = LIT:0 < {$plugin.tx_damfrontend_pi1.singleID}]
+plugin.tx_damfrontend_pi1 {
+	renderFields.link_single.typolink { 
+		parameter.data >
+		parameter = {$plugin.tx_damfrontend_pi1.singleID}
+	}
+	filelist.link_single.stdWrap.typolink {
+		parameter.data >
+		parameter = {$plugin.tx_damfrontend_pi1.singleID}
+	}
+}
+[end]
+
+
 [globalVar = LIT:1 = {$plugin.tx_damfrontend_pi1.doNotUsePushFile}]
 # for using advanced download features with resizing we cannot use an direct link
 plugin.tx_damfrontend_pi1 {
