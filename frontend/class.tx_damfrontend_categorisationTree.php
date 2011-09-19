@@ -213,7 +213,6 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 		if ($this->catLogic->checkCategoryUploadAccess($GLOBALS['TSFE']->fe_user->user['uid'],$row['uid'])) {
 			$id = t3lib_div::_GET('id');
 			$param_array = array (
-				'tx_damfrontend_pi1' => '', // ok, the t3lib_div::linkThisScript cant work with arrays
 				'tx_damfrontend_pi1[catPlus]' => $row['uid'],
 				'tx_damfrontend_pi1[catEquals]' => null,
 				'tx_damfrontend_pi1[catMinus]' => null,

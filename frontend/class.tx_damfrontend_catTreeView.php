@@ -296,7 +296,6 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	function wrapTitle($title,$row,$bank=0,$cmd,$scope='default') {
 		$id = (int)t3lib_div::_GET('id');
 		$param_array = array (
-			'tx_damfrontend_pi1' => '', // ok, the t3lib_div::linkThisScript cant work with arrays
 			'tx_damfrontend_pi1[catPlus]' => null,
 			'tx_damfrontend_pi1[catEquals]' => null,
 			'tx_damfrontend_pi1[catMinus]' => null,
