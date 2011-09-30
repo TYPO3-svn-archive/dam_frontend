@@ -568,7 +568,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 		if ($this->conf['latestLimit']>0 ){
 			$startRecord=0;
 			$listLength = $this->conf['latestLimit'] ;
-			$resultCounter =  $this->conf['latestLimit'] ;
+			if ($resultCounter>$this->conf['latestLimit'])	$resultCounter =  $this->conf['latestLimit'] ;
 		}
 
 
