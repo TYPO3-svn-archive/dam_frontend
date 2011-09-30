@@ -753,7 +753,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			return true;
 		}
 
-
 		if ($this->internal['catPlus']) {
 			$this->catList->op_Plus($this->internal['catPlus'], $this->internal['incomingtreeID']);
 		}
@@ -824,12 +823,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 
 		// easySearch
+		xdebug_break();
 		if (t3lib_div::_GP('easySearchSetFilter') OR t3lib_div::_GP('setFilter')) {
 			//unset only if the current content element is the search box
 			if ($this->internal['viewID'] == 10) {
 				$this->catList->unsetAllCategories();
 			}
-
 
 
 			if ($this->internal['filter']['categoryMount'] == 'noselection' && ($this->internal['incomingtreeID'] <> $this->internal['treeID']) AND $this->internal['viewID'] == 10) {
@@ -845,7 +844,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$this->addAllCategories($this->internal['catMounts'], $this->internal['incomingtreeID'], true);
 			}
 			else {
-
 				// restrict for the given category, which is used in the selectorbox of the easysearch form
 				$catID = $this->internal['catPlus_Rec'];
 				if (intval(t3lib_div::_GP('categoryMount')) > 0 AND $this->internal['viewID'] == 10) {
@@ -872,7 +870,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 			if (t3lib_div::_GP('categoryMount') AND t3lib_div::_GP('setFilter')) {
 				// if a category restriction is used in the search form
-				if ($this->internal['viewID'] == 2 AND intval(t3lib_div::_GP('categoryMount')) > 0) {
+				
+				if (($this->internal['viewID'] == 2 OR ($this->conf['filterView.']['allow_category_restriction_by_filterView'] == 1 AND $this->internal['viewID'] == 5)) 
+					AND intval(t3lib_div::_GP('categoryMount')) > 0) {
+					// add the restriction to all category tree content elements
 					$this->catList->clearCatSelection($this->internal['treeID']);
 					if ($this->conf['filterView.']['searchCatsAsMounts'] == 1) {
 						$this->catList->op_PlusRec(t3lib_div::_GP('categoryMount'), $this->internal['treeID']);
@@ -881,6 +882,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 						$this->catList->op_Equals(t3lib_div::_GP('categoryMount'), $this->internal['treeID']);
 					}
 				}
+				
+				
 			}
 		}
 
