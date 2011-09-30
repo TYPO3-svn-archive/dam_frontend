@@ -823,7 +823,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 
 		// easySearch
-		xdebug_break();
 		if (t3lib_div::_GP('easySearchSetFilter') OR t3lib_div::_GP('setFilter')) {
 			//unset only if the current content element is the search box
 			if ($this->internal['viewID'] == 10) {
