@@ -49,7 +49,7 @@ if (t3lib_div::int_from_ver(TYPO3_version)>=4003000 ){
 $docLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_documents');
 $docLogic->feuser = $userObj;
 
-$pid = intval(t3lib_div._GP('id'));
+$pid = intval(t3lib_div::_GP('id'));
 // initialize TSFE
 require_once(PATH_tslib.'class.tslib_fe.php');
 require_once(PATH_t3lib.'class.t3lib_page.php');
