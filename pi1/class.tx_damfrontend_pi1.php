@@ -2390,6 +2390,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 			$sortArr[$cat] = $catRow['title'];
 		}
+		$catsSorted = array();
 		asort($sortArr);
 		foreach ($sortArr as $key => $value) {
 			$catsSorted[] = $cats[$key];
