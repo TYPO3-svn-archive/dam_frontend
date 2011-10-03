@@ -486,12 +486,15 @@ class tx_damfrontend_DAL_categories {
 			'parent_id=' . $catUid
 		);
 		if (!empty($catWithChild)) {
+			// TODO not a clean way to check. Not permissions for that cat are checked
 			return true;
+			
 		}
 
 		// TODO: language field is not used at the moment, maybe should
 		$sysLanguageUid = strtoupper($GLOBALS['TSFE']->conf['']);
 
+		// TODO not a clean way to check. Not permissions for that cat are checked
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
 			'tx_dam.uid',
 			'tx_dam',
