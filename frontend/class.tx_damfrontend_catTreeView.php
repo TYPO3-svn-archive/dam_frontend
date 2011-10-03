@@ -355,6 +355,11 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 		$content = $this->cObj->typoLink($title, $this->conf['categoryTree.']['categoryTitle.']);
 		$this->conf['categoryTree.']['categoryTitle.']['ATagParams'] = $linkConfOrg;
 		$this->conf['categoryTree.']['categoryTitle.']['section'] = $sectionConfOrg;
+		
+		if (intval($GLOBALS['TSFE']->fe_user->getKey('ses', 'currentCategory'))==$row['uid']) {
+			$content = $this->cObj->stdWrap($content, $this->conf['categoryTree.']['currentCatWrap.']);
+		}
+		
 		return $content;
 	}
 
@@ -491,11 +496,20 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 					if ($test == 0 ) $test++;
 					$sel_class = $test ? "tree_selectedCats" : "tree_unselectedCats";
 				}
+				
 				if ($this->conf['categoryTree.']['doNotShowNotAllowedCategories'] == 1) {
 					if (!$this->catLogic->checkCategoryAccess($GLOBALS['TSFE']->fe_user->user['uid'], $v['row']['uid'], 1)) {
 						continue;
 					}
 				}
+				
+				
+				if ($this->conf['doNotShowEmptyCategories'] == 1) {
+					if (!$this->catLogic->checkCategoryForFiles($v['row']['uid'])) {
+						continue;
+					}
+				}
+				
 				$idAttr = htmlspecialchars($this->domIdPrefix.$this->getId($v['row']).'_'.$v['bank']);
 				$titleLen = $this->conf['categoryTree.']['categoryTitle.']['length'] ? $this->conf['categoryTree.']['categoryTitle.']['length']:30;
 				$title = $this->cObj->stdWrap ($this->getTitleStr($v['row'], $titleLen),$this->conf['categoryTree.']['catTitle.']);
