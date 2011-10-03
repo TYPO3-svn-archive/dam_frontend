@@ -2145,7 +2145,7 @@ class tx_damfrontend_rendering extends tslib_pibase {
 	  *
 	  */
 	function renderDamSubCategories($category) {
-
+		
 		$record_Code = tsLib_CObj::getSubpart($this->fileContent, '###CATLIST_RECORD###');
 		$markerArray = $this->recordToMarkerArray($category, 'tx_dam_cat', 'tx_dam_cat');
 

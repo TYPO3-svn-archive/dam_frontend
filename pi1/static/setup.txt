@@ -75,7 +75,7 @@ plugin.tx_damfrontend_pi1 {
 		
 		# wrap for the whole category line
 		category.wrap = |
-			
+		currentCatWrap.wrap = |
 		expandTreeLevel = 1
 
 
