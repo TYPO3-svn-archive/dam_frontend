@@ -13,8 +13,9 @@ plugin.tx_damfrontend_pi1 {
 		errorWrap = {$plugin.tx_damfrontend_pi1.filter.errorWrap}
 	}
 	useAdvancedCategoryTree = 0
+	
 		#if more than one tree element at a page is use, then a AND selection is used between the trees
-	useTreeAndSelection = 1 
+	useTreeAndSelection = 0 
 	
 		# force download or display in file in the browser
 	forceDownloadForFiles=1
@@ -115,7 +116,7 @@ plugin.tx_damfrontend_pi1 {
 		
 		sorting = title
 		
-		doNotShowNotAllowedCategories = 0
+		doNotShowNotAllowedCategories = 1
 	}
 	
 	categorisationTree < .categoryTree
