@@ -2375,9 +2375,19 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		require_once(t3lib_extMgm::extPath('dam_frontend') . '/frontend/class.tx_damfrontend_catTreeView.php');
 		$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeView');
 		$tree->init();
+			// get all subcategories of the current category
 		$cats = $tree->get_subCategories($this->getCurrentCategory());
 		if (empty($cats)) return $cats;
+		
+		// get only the titles from the categories, also sort them
 		foreach ($cats as $cat => $catRow) {
+			
+			// show only the catgories, if the user has access to.
+			if ($this->conf['categoryTree.']['doNotShowNotAllowedCategories'] == 1) {
+				if (!$this->catLogic->checkCategoryAccess($GLOBALS['TSFE']->fe_user->user['uid'],$catRow['uid'], 1)) {
+					continue;
+				}
+			}
 			$sortArr[$cat] = $catRow['title'];
 		}
 		asort($sortArr);
