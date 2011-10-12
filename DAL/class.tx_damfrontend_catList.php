@@ -194,10 +194,13 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 				return is_array($ar[$treeID]) ? array_unique($ar[$treeID]) : null;
 			}
 			else {
-				if (is_array($ar[$treeID])) {
-					$returnArr[$treeID]= array_unique($ar[$treeID]);
-				} else {
-					$returnArr =  null;
+				$returnArr =  null;
+				// the cat selections are stored by pages. The array is like this: [PageID][TreeID][ID=>catID]
+				foreach ($ar as $key => $value) {
+					// check if the  treeID exists at the current page array
+					if (is_array($value[$treeID])) {
+						$returnArr[$treeID]= array_unique($value[$treeID]);
+					}
 				}
 				//Debug statements
 				$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dam_frontend']);

@@ -146,7 +146,6 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	 *
 	 * @param	[int]		$id: ...
 	 * @return	[type]		...
-	 * @todo check if this function is used?
 	 */
  	function expandNext($id)
  	{
