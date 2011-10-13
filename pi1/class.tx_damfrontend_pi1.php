@@ -491,6 +491,17 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 		$this->internal['list']['limit'] = $this->internal['list']['pointer'] . ',' . ($this->internal['list']['listLength']);
 		$this->listState->setListState($this->internal['list']);
+		
+		
+		if (t3lib_div::_GP('PM')) {
+			// PM is the command to open or close a tree
+			// we have to store the first element of the command for the later use in the filelist
+			$a = explode('_', t3lib_div::_GP('PM'));
+			if (array_key_exists(0, $a)) {
+				$GLOBALS['TSFE']->fe_user->setKey('ses','dam_fe_PM', intval($a[0]) );
+			}
+			
+		}
 	}
 
 	/**

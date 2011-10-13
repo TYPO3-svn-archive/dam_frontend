@@ -2152,6 +2152,7 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		/// Start
 
 		$id = (int)t3lib_div::_GET('id');
+		
 		$param_array = array(
 			'tx_damfrontend_pi1' => '', // ok, the t3lib_div::linkThisScript cant work with arrays
 			'tx_damfrontend_pi1[catPlus]' => null,
@@ -2174,8 +2175,9 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		#		break;
 		#}
 
-
-		$cmd = '0_1_' . $category['parent_id'] . '_txdamCat';
+		$bank = intval($GLOBALS['TSFE']->fe_user->getKey('ses','dam_fe_PM')) ;
+		
+		$cmd = $bank.'_1_' . $category['parent_id'] . '_txdamCat';
 		if ($this->conf['categoryTree.']['catTitle.']['actions.']['openTree'] == 1) {
 			$param_array['PM'] = $cmd;
 		}

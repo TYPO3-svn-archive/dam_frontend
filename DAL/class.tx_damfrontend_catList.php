@@ -237,7 +237,19 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 					$conf =$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.'];
 					if ($conf['debug.']['tx_damfrontend_catlist.']['getCatSelection']==1)		t3lib_div::debug($returnArr);
 				}
-				return is_array($ar[$GLOBALS['TSFE']->id]) ? $ar[$GLOBALS['TSFE']->id]: null;
+				
+				if (is_array($ar[$GLOBALS['TSFE']->id])) {
+					foreach ($ar[$GLOBALS['TSFE']->id] as $key => $value) {
+						// eliminate selections that have no treeID
+						if ($key) {
+							$return[$key] = $value;
+						}
+					}
+					return $return;
+				}
+				else {
+					return null;
+				}
 			}
 		}
 	}
