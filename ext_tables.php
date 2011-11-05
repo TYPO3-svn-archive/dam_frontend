@@ -177,7 +177,7 @@ $TCA["tt_content"]["types"]["list"]["subtypes_addlist"][$_EXTKEY."_pi2"]="tx_dam
 
 $tempColumns = Array (
 	"tx_damfrontend_use_request_form" => Array (
-		"exclude" => 0,
+		"exclude" => 1,
 		"label" => "LLL:EXT:dam_frontend/locallang_tca.php:tx_damfrontend_use_request_form",
 		"config" => Array (
 			'type' => 'check',
@@ -185,7 +185,7 @@ $tempColumns = Array (
 		),
 	),
 	"tx_damfrontend_feuser_upload" => Array (
-		"exclude" => 0,
+		"exclude" => 1,
 		"label" => "LLL:EXT:dam_frontend/locallang_tca.php:tx_damfrontend_feuser_upload",
 		"config" => Array (
 			"items" => Array(
@@ -200,7 +200,7 @@ $tempColumns = Array (
 		),
 	),
 	"tx_damfrontend_fegroup" => Array (
-		"exclude" => 0,
+		"exclude" => 1,
 		"label" => "LLL:EXT:dam_frontend/locallang_tca.php:tx_damfrontend_fegroup",
 		"config" => Array (
 			"type" => "select",
@@ -209,6 +209,13 @@ $tempColumns = Array (
 			"size" => 8,
 			"minitems" => 0,
 			"maxitems" => 50,
+		),
+	),
+	"tx_damfrontend_version" => Array (
+		"exclude" => 1,
+		"label" => "LLL:EXT:dam_frontend/locallang_tca.php:tx_damfrontend_fegroup",
+		"config" => Array (
+			"type" => "none",
 		),
 	),
 );
