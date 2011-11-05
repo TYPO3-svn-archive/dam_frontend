@@ -592,8 +592,12 @@ require_once(PATH_tslib.'class.tslib_content.php');
 				if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['rowsAfterAccessCheck']==1)		t3lib_div::debug($row);;
 			}
 
-			$GLOBALS['TSFE']->sys_page->versionOL('tx_dam',&$row, FALSE);
-
+			
+			// do version overlay only if be_user is active
+			if($GLOBALS['TSFE']->beUserLogin) {
+				$GLOBALS['TSFE']->sys_page->versionOL('tx_dam',$row, FALSE);
+			}
+			
 			if ($this->conf['filelist.']['useLanguageOverlay']==1) {
 				$row['pid']=$damPID;
 				$row = tx_dam_db::getRecordOverlay('tx_dam', $row, $conf);

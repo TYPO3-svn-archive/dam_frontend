@@ -547,7 +547,7 @@ class tx_damfrontend_rendering extends tslib_pibase {
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_GROUPEDLIST_VIEW'])) {
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_GROUPEDLIST_VIEW'] as $_classRef) {
 					$_procObj = &t3lib_div::getUserObj($_classRef);
-					$_procObj->renderListView(&$markerArray, $this, $elem);
+					$_procObj->renderListView($markerArray, $this, $elem);
 				}
 			}
 
