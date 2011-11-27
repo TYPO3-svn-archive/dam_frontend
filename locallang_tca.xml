@@ -42,6 +42,7 @@
 			<label index="flexform_DrillDown">drilldown filter</label>
 			<label index="flexform_Explorer">Explorer view (combined category tree with filelist)</label>		
 			<label index="tx_damfrontend_fegroup">File edit / delete rights for this groups</label>		
+			<label index="flexform_templateFile">Template file</label>		
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="flexform_display_title">Was soll angezeigt werden</label>
@@ -80,7 +81,8 @@
 			<label index="flexform_easySearch">Einfaches Suchformular</label>
 			<label index="flexform_DrillDown">gestufte Suche über Kategorien</label>		
 			<label index="flexform_Explorer">Explorer Ansicht (kombinierter Kategorienbaum mit Dateiliste</label>		
-			<label index="tx_damfrontend_fegroup">Datei editieren / löschen erlaubt für folgende Gruppen</label>		
+			<label index="tx_damfrontend_fegroup">Datei editieren / löschen erlaubt für folgende Gruppen</label>	
+			<label index="flexform_templateFile">Vorlage</label>			
 		</languageKey>
 		﻿<languageKey index="ru" type="array">
 			<label index="flexform_display_title">Что показать?</label>
