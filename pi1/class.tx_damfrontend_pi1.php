@@ -737,7 +737,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				break;
 		}
 		// select the view to be created
-		return $this->pi_wrapInBaseClass($content);
+		
+		if($this->conf['noBCWrap']==1) {
+			$returnvalue = $content;
+		} else {
+			$returnvalue = $this->pi_wrapInBaseClass($content);
+		}
+		return $returnvalue;
 	}
 
 	/**

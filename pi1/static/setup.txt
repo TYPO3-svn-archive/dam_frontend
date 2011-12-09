@@ -2,7 +2,8 @@ plugin.tx_damfrontend_pi1 = USER_INT
 plugin.tx_damfrontend_pi1 {
 	_LOCAL_LANG.default.EXAMPLEMARKER = Hallo Welt2
 	_LOCAL_LANG.de.EXAMPLEMARKER = Hallo Welt3
-	
+	#disables the pi_wrapInBaseClass
+	noBCWrap=0
 	userFunc = tx_damfrontend_pi1->main
 	templateFile = {$plugin.tx_damfrontend_pi1.templateFile}
 	iconBaseAddress = 
