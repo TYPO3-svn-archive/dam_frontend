@@ -480,7 +480,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		if (t3lib_div::_GP('setFilter') ||
 			t3lib_div::_GP('easySearchSetFilter') ||
 			!empty($this->internal['catPlus']) ||
-			!empty($this->internal['catPlus']) ||
+			!empty($this->internal['catClear']) ||
+			!empty($this->internal['catAll']) ||
 			!empty($this->internal['catMinus']) ||
 			!empty($this->internal['catEquals']) ||
 			!empty($this->internal['catPlus_Rec']) ||
