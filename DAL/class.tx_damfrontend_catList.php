@@ -92,16 +92,22 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 		$catarray = $this->getArrayFromUser();
 		if (!is_array($catarray)) $catarray = array();
 
-		$treeArray = is_array($catarray[$GLOBALS['TSFE']->id][$treeID]) ? $catarray[$GLOBALS['TSFE']->id][$treeID] : array();
-		if ($treeID==-1 ) {
+		if ($treeID>=0) {
+			$treeArray = is_array($catarray[$GLOBALS['TSFE']->id][$treeID]) ? $catarray[$GLOBALS['TSFE']->id][$treeID] : array();
+			$treeArray[] = $catID;
+			$catarray[$GLOBALS['TSFE']->id][$treeID] = array_unique($treeArray) ;
+		}
+		else {
+			// if a file is getting categorized  the tree id -1 is used without the use of the page ID in the array key of the category array
 			$catLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_categories');
 			if (!$catLogic->checkCategoryUploadAccess($GLOBALS['TSFE']->fe_user->user['uid'],$catID)) {
 				return false;
 			}
+			$treeArray = is_array($catarray[$treeID]) ? $catarray[$treeID] : array();
+			$treeArray[] = $catID;
+			$catarray[$treeID] = array_unique($treeArray) ;
 		}
 
-		$treeArray[] = $catID;
-		$catarray[$GLOBALS['TSFE']->id][$treeID] = array_unique($treeArray) ;
  		$this->setArrayToUser($catarray);
 	}
 
@@ -130,16 +136,24 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 		}
 
 		$catarray = $this->getArrayFromUser();
-
-		if (!empty($catarray) && $catarray[$GLOBALS['TSFE']->id][$treeID]) {
-			$treeCats = $catarray[$GLOBALS['TSFE']->id][$treeID];
+		if ($treeID>=0) {
+			if (!empty($catarray) && $catarray[$GLOBALS['TSFE']->id][$treeID]) {	
+				$treeCats = $catarray[$GLOBALS['TSFE']->id][$treeID];
+				foreach ($treeCats as $key=>$cat) {
+					if ($cat == $catID) {
+						unset($catarray[$GLOBALS['TSFE']->id][$treeID][$key]);
+					}
+				}
+			}
+		}
+		else {
+			// removing cats in categorization mode (treeid = -1)
+			$treeCats = $catarray[$treeID];
 			foreach ($treeCats as $key=>$cat) {
-				if ($cat ==$catID) {
+				if ($cat == $catID) {
 					unset($catarray[$treeID][$key]);
 				}
 			}
-			$test = array_search($catID,$catarray[$treeID]);
-
 		}
 		$this->setArrayToUser($catarray);
 	}
@@ -169,8 +183,12 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 			if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function op_Equals: for the treeID only integer values are allowed. Given value was:' .$treeID, 'dam_frontend',3);
 		}
 		$catarray = $this->getArrayFromUser();
-
-		$catarray[$GLOBALS['TSFE']->id][$treeID] = array($catID);
+		if ($treeID>=0) {
+			$catarray[$GLOBALS['TSFE']->id][$treeID] = array($catID);
+		}
+		else {
+			$catarray[$treeID] = array($catID);
+		}
 		$this->setArrayToUser($catarray);
 	}
 
