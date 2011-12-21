@@ -1727,6 +1727,8 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		if ($this->conf['fileList.']['fileEdit.']['pid_FEGroups'] > 0) $whereOptions[] = '(pid = ' . $this->conf['fileList.']['fileEdit.']['pid_FEGroups'] . ')';
 		if ($this->conf['fileList.']['fileEdit.']['uids_FEGroups']) $whereOptions[] = '(uid in (' . $this->conf['fileList.']['fileEdit.']['uids_FEGroups'] . '))';
 		$WHERE = implode(' OR ', $whereOptions);
+		// add enable fields
+		$WHERE = $WHERE ? $WHERE . ' ' . tslib_cObj::enableFields('fe_groups') : '1=1 ' . tslib_cObj::enableFields('fe_groups') ;
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE);
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			$groups[$row['uid']] = $row['title'];
