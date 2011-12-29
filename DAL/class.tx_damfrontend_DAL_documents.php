@@ -280,25 +280,32 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			else {
 				$catlist = $this->getCategoriesByDoc($docID);
 			}
-
 			$grouparray = array();
-			foreach ($catlist as $category)
-			{
-				if ($category['uid']>0) {
-					if ($relID==1) {
-						$groups =  explode(',',$category['fe_group']);
-						foreach($groups as $group) {
-							if ($group)	{
-								#$row = $GLOABLS['TYPO_3']->exec_SELECTgetSingleRow ('*', 'fe_groups', 'uid = ' . $group);
-								$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery ('*', 'fe_groups', 'uid = ' . $group);
-
-								$row =  $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-
-								$grouparray[] = $row;
+			if ($relID==1) {
+				foreach ($catlist as $category){
+					$groups =  explode(',',$category['fe_group']);
+					foreach($groups as $group) {
+						if ($group)	{
+							#$row = $GLOABLS['TYPO_3']->exec_SELECTgetSingleRow ('*', 'fe_groups', 'uid = ' . $group);
+							$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery ('*', 'fe_groups', 'uid = ' . $group);
+				
+							$row =  $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+				
+						$grouparray[] = $row;
+						}
+						else {
+							if ($this->conf['filelist.']['security_options.']['checkAllAsignedCategories']==0) {
+								// if no group is asigned, gain access
+								return array();
 							}
 						}
 					}
-					else {
+				}
+				
+			}
+			else {
+				foreach ($catlist as $category){
+					if ($category['uid']>0) {
 						$mm_table = 'tx_dam_cat_'.$this->relations[$relID].'_mm';
 						// executing database search
 						$local_table = $this->catTable;

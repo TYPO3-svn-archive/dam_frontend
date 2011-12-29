@@ -378,8 +378,8 @@ class tx_damfrontend_DAL_categories {
 
 		if ($usergroups) {
 			$catRow = $this->getCategory($catID);
-			// check first, if no usergroup has been assigned to the given category
 			if ($relID == 1) {
+				// check first, if no usergroup has been assigned to the given category
 				if (empty($catRow)) return false;
 				if ($catRow['fe_group'] == -1) return false;
 				if ($catRow['fe_group'] == -2) return true;

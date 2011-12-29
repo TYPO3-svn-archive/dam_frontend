@@ -46,8 +46,10 @@ if (t3lib_div::int_from_ver(TYPO3_version)>=4003000 ){
 	tslib_eidtools::initLanguage();
 }
 
+
 $docLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_documents');
 $docLogic->feuser = $userObj;
+
 
 $pid = intval(t3lib_div::_GP('id'));
 // initialize TSFE
@@ -61,6 +63,10 @@ $GLOBALS['TSFE']->determineId();
 $GLOBALS['TSFE']->getCompressedTCarray();
 $GLOBALS['TSFE']->initTemplate();
 $GLOBALS['TSFE']->getConfigArray();
+$docLogic->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.'];
+if (count($docLogic->conf)< 3) {
+	die('no ts template found');
+}
 
 $prefixId = 'tx_damfrontend_pi1';
 if (!$_REQUEST['docID']
@@ -191,14 +197,14 @@ if (is_array($post) && count($post) > 0) {
         if (!$maildata['body'] || $maildata['body']=='') $maildata['err'].=' content';//$maildata['body']='Your download:';
         if (!$maildata['to']) $maildata['err'].=' recipient';
 
-        $localCObj = t3lib_div::makeInstance('tslib_cObj');	// Local cObj.
-		$localCObj->start(array());
         $ts = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.'];
 
         if ($maildata['err']) die('<h1>Please set fields '.$maildata['err'].'</h1><p>I\'m sorry, without <b>'.$maildata['err'].'</b> I can\'t send your mail</p>' );
 
 		require_once(PATH_t3lib.'class.t3lib_htmlmail.php');
-
+		$localCObj = t3lib_div::makeInstance('tslib_cObj');	// Local cObj.
+		$localCObj->start(array());
+		
 		// TODO load mailtemplate via configuration
 		$mailTemplate = str_replace( array("\r\n","\n","\r"), '<br>', $mailTemplate); // like nl2br() (sh 2010-03-28)
 		$mailTemplate = strip_tags($mailTemplate,'<table><tr><td><p><b><br>'); // allow b and br (sh 2010-03-28)

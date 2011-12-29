@@ -590,7 +590,8 @@ plugin.tx_damfrontend_pi1 {
 
 		security_options {
 			redirectToLoginPage=0
-			redirectToURL = http://localhost:8888/dam_test/index.php?id=11&redirect_url=
+			checkAllAsignedCategories=0
+			redirectToURL = http://localhost:8888/index.php?id=11&redirect_url=
 			showOnlyFilesWithPermission=0
 			deleteFilesOfDeletedRecords = 1
 			# how long is link with a hash valid (in seconds)
