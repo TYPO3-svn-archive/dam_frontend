@@ -1,3 +1,6 @@
+Version 0.8.4
+2011-12-29 Stefan Busemann: Bug #32838 (Resolved): Call to undefined method t3lib_div::GPvar() in /html/typo3/typo3conf/ext/d...
+
 Version 0.8.2
 2011-12-21 Stefan Busemann: Bug #32426 (Resolved): Deleted FE_groups are visible
 2011-12-21 Stefan Busemann: Revision 55767: Bug #32711 (Resolved): Call to deprecated function in pushfile.php
