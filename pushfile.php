@@ -53,7 +53,7 @@ $pid = intval(t3lib_div::_GP('id'));
 // initialize TSFE
 require_once(PATH_tslib.'class.tslib_fe.php');
 require_once(PATH_t3lib.'class.t3lib_page.php');
-$temp_TSFEclassName = t3lib_div::makeInstanceClassName('tslib_fe');
+$temp_TSFEclassName = t3lib_div::makeInstance('tslib_fe');
 $GLOBALS['TSFE'] = new $temp_TSFEclassName($TYPO3_CONF_VARS, $pid, 0, true);
 $GLOBALS['TSFE']->connectToDB();
 $GLOBALS['TSFE']->initFEuser();
@@ -101,9 +101,9 @@ if (is_array($post) && count($post) > 0) {
 		}
 		$doc = $docLogic->getDocument($docID);
 		//
-		$hash =  t3lib_div::GPvar('dfhash');
-		$valid =  intval(t3lib_div::GPvar('valid'));
-		$feUserID =  intval(t3lib_div::GPvar('feuid'));
+		$hash =  t3lib_div::_GP('dfhash');
+		$valid =  intval(t3lib_div::_GP('valid'));
+		$feUserID =  intval(t3lib_div::_GP('feuid'));
 
 		if (checkOutNecessary($doc['file_path'])){
 			if (!checkHash($docID,$valid,$feuserID, $hash)) {
@@ -430,7 +430,7 @@ if (is_array($post) && count($post) > 0) {
 
 
 	// test for access to a file
-	$docID = intval(t3lib_div::GPvar('docID'));
+	$docID = intval(t3lib_div::_GP('docID'));
 
 	if ($docID==0) {
 		die('<h1>Error</h1><p>You have no access to download a file. In this case no correct DocID was given!</p>');
@@ -439,9 +439,9 @@ if (is_array($post) && count($post) > 0) {
 	// get the data of the selected document
 	$doc = $docLogic->getDocument($docID);
 	if (checkOutNecessary($doc['file_path'])) {
-		$hash =  t3lib_div::GPvar('dfhash');
-		$valid =  intval(t3lib_div::GPvar('valid'));
-		$feUserID =  intval(t3lib_div::GPvar('feuid'));
+		$hash =  t3lib_div::_GP('dfhash');
+		$valid =  intval(t3lib_div::_GP('valid'));
+		$feUserID =  intval(t3lib_div::_GP('feuid'));
 		if (!checkHash($docID,$valid,$feuserID, $hash)) {
 			die('<h1>Sorry</h1><p>You do not have the right to download this file.');
 		}
