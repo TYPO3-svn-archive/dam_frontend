@@ -1,3 +1,15 @@
+Version 1.0.0
+2011-12-29 Stefan Busemannn: Bug #32620 (Resolved): TCA configuration of tx_damfrontend_feuser_upload add allowed
+
+
+Version 0.8.4
+2011-12-29 Stefan Busemann: Bug #32838 (Resolved): Call to undefined method t3lib_div::GPvar() in /html/typo3/typo3conf/ext/d...
+
+Version 0.8.2
+2011-12-21 Stefan Busemann: Bug #32426 (Resolved): Deleted FE_groups are visible
+2011-12-21 Stefan Busemann: Revision 55767: Bug #32711 (Resolved): Call to deprecated function in pushfile.php
+
+
 Version 0.8.0
 2011-07-01 Stefan Busemann: fixed bug #27804: latestView.limit does not work
 2011-06-09 Stefan Busemann: added ts option filelist.groupedFileListGroupByTreeID – can be set to a tree ID so that the search result is grouped by the selected categories of this category selection

@@ -192,8 +192,8 @@ $tempColumns = Array (
 					Array("LLL:EXT:dam_frontend/locallang_db.php:tx_damfrontend_feuser_upload", null)
 			),
 			"type" => "group",
+			"allowed" => "fe_users",
 			"internal_type" => "db",
-			"foreign_table" => "fe_users",
 			"size" => 1,
 			"minitems" => 0,
 			"maxitems" => 1,
