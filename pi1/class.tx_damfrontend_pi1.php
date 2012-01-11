@@ -1113,6 +1113,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 		$hasCats = false;
 
+		// to do add static selection
 		$cats = $this->catList->getCatSelection(0, $this->pid);
 		#$this->catList->getCatSelection();
 
@@ -1894,6 +1895,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 			// store cat selection in the user array
 			if (is_array($cats)) {
+				t3lib_div::debug($cats);
 				$catarray[-1] = $cats;
 				$this->catList->setArrayToUser($catarray);
 				$cats = $this->catList->getCatSelection(-1, 0);

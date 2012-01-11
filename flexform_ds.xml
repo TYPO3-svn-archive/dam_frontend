@@ -278,7 +278,7 @@
      <catPreSelection type="array">
       <TCEforms type="array">
        <label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_catPreSelection</label>
-       <displayCond>FIELD:viewID:IN:2</displayCond>
+       <!--displayCond>FIELD:viewID:IN:8,2</displayCond-->
        <config type="array">
         <type>select</type>
         <form_type>user</form_type>

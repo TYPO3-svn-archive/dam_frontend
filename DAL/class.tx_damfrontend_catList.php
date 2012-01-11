@@ -127,33 +127,36 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 	 * @param	int		$treeID: tree id of the used category mount point
 	 * @return	void
 	 */
-	function op_Minus($catID, $treeID) {
+function op_Minus($catID, $treeID) {
 		if (!intval($catID)) {
 			if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function op_Minus: for the catID only integer values are allowed. Given value was:' .$catID, 'dam_frontend',3);
 		}
 		if (!intval($treeID)){
 			if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function op_Minus: for the treeID only integer values are allowed. Given value was:' .$treeID, 'dam_frontend',3);
 		}
-
 		$catarray = $this->getArrayFromUser();
-		if ($treeID>=0) {
-			if (!empty($catarray) && $catarray[$GLOBALS['TSFE']->id][$treeID]) {	
+		if ($treeID < 0 OR (!empty($catarray) && $catarray[$GLOBALS['TSFE']->id][$treeID] )) {
+			
+			if ($treeID>=0) {
 				$treeCats = $catarray[$GLOBALS['TSFE']->id][$treeID];
-				foreach ($treeCats as $key=>$cat) {
-					if ($cat == $catID) {
-						unset($catarray[$GLOBALS['TSFE']->id][$treeID][$key]);
-					}
-				}
+			} 
+			else {
+				$treeCats = $catarray[$treeID];
 			}
-		}
-		else {
-			// removing cats in categorization mode (treeid = -1)
-			$treeCats = $catarray[$treeID];
-			foreach ($treeCats as $key=>$cat) {
-				if ($cat == $catID) {
-					unset($catarray[$treeID][$key]);
+			foreach ($treeCats as $key=>$cat) {							
+				if ($cat ==$catID) {
+					unset($treeCats[$key]);
 				}
+				
 			}
+			if ($treeID>=0) { 
+				$catarray[$GLOBALS['TSFE']->id][$treeID] = $treeCats;
+			}
+			else {
+				
+				$catarray[$treeID] = $treeCats;
+			}
+
 		}
 		$this->setArrayToUser($catarray);
 	}
