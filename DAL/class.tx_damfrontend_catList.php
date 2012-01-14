@@ -283,8 +283,11 @@ function op_Minus($catID, $treeID) {
 	 */
 	function clearCatSelection($treeID) {
 		$ar = $this->getArrayFromUser();
-
-		unset($ar[$GLOBALS['TSFE']->id][$treeID]);
+		if 	($treeID<0) {
+			unset($ar[$treeID]);
+		} else {
+			unset($ar[$GLOBALS['TSFE']->id][$treeID]);
+		}
 		$this->setArrayToUser($ar);
 	}
 }
