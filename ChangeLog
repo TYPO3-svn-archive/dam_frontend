@@ -1,3 +1,7 @@
+Version 0.8.5
+2012-1-19 Stefan Busemann: Bug #33178 (Resolved): Class 't3lib_utility_Math' not found
+
+
 Version 0.8.4
 2011-12-29 Stefan Busemann: Bug #32838 (Resolved): Call to undefined method t3lib_div::GPvar() in /html/typo3/typo3conf/ext/d...
 
