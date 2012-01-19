@@ -128,17 +128,28 @@ class tx_damfrontend_catList extends tx_damfrontend_baseSessionData {
 		if (!intval($treeID)){
 			if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function op_Minus: for the treeID only integer values are allowed. Given value was:' .$treeID, 'dam_frontend',3);
 		}
-
 		$catarray = $this->getArrayFromUser();
-
-		if (!empty($catarray) && $catarray[$GLOBALS['TSFE']->id][$treeID]) {
-			$treeCats = $catarray[$GLOBALS['TSFE']->id][$treeID];
-			foreach ($treeCats as $key=>$cat) {
-				if ($cat ==$catID) {
-					unset($catarray[$treeID][$key]);
-				}
+		if ($treeID < 0 OR (!empty($catarray) && $catarray[$GLOBALS['TSFE']->id][$treeID] )) {
+			
+			if ($treeID>=0) {
+				$treeCats = $catarray[$GLOBALS['TSFE']->id][$treeID];
+			} 
+			else {
+				$treeCats = $catarray[$treeID];
 			}
-			$test = array_search($catID,$catarray[$treeID]);
+			foreach ($treeCats as $key=>$cat) {							
+				if ($cat ==$catID) {
+					unset($treeCats[$key]);
+				}
+				
+			}
+			if ($treeID>=0) { 
+				$catarray[$GLOBALS['TSFE']->id][$treeID] = $treeCats;
+			}
+			else {
+				
+				$catarray[$treeID] = $treeCats;
+			}
 
 		}
 		$this->setArrayToUser($catarray);
