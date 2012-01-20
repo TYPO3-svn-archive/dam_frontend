@@ -315,14 +315,13 @@ require_once(PATH_tslib.'class.tslib_content.php');
 						$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query($select,$local_table, $mm_table, $foreign_table, $where);
 
 						// adding groups from the database to the GroupArray - check if group is already in list
-						while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))
-						{
+						while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)){
 							if (!is_array($this->catLogic->findUidinList($grouparray, $row['uid'])))
 							{
 								$grouparray[] = $row;
 							}
-
 						}
+						$GLOBALS['TYPO3_DB']->sql_free_result($res);
 					}
 				}
 			}
@@ -346,7 +345,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 				$row['pid']=tx_dam_db::getPid();
 				$row = tx_dam_db::getRecordOverlay('tx_dam', $row, $conf);
 			}
-
+			$GLOBALS['TYPO3_DB']->sql_free_result($res);
 			return $row;
 		}
 
@@ -629,6 +628,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 		}
 
 		$this->resultCount = $resultCounter;
+		$GLOBALS['TYPO3_DB']->sql_free_result($res);
 		return $result;
 	}
 

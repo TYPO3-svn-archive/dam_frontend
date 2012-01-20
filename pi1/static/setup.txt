@@ -144,7 +144,7 @@ plugin.tx_damfrontend_pi1 {
 		# set this to 1: categories will not be displayed
 		# set to 0: categories are shown but cannot be "clicked" or "activated"
 		# This option works on up- AND download
-		doNotShowNotAllowedCategories = 1
+		doNotShowNotAllowedCategories = 0
 		
 		# mark categories which a user has no download right (set visual stylse via selectionStatus.no_access)
 		markNotAllowedCategories = 1 

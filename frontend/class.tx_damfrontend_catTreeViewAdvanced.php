@@ -524,7 +524,6 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 							continue;
 						}
 					}
-
 					if ($this->conf['categoryTreeAdvanced.']['markNotAllowedCategories'] == 1) {
 						if (!$this->catLogic->checkCategoryAccess($GLOBALS['TSFE']->fe_user->user['uid'], $v['row']['uid'], 1)) {
 							// Ralf Merz: do not show category if not allowed to

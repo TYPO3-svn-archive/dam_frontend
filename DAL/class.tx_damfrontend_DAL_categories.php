@@ -105,6 +105,7 @@ class tx_damfrontend_DAL_categories {
 			$WHERE .= tslib_cObj::enableFields('tx_dam_cat');
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE);
 			$record = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+			$GLOBALS['TYPO3_DB']->sql_free_result($res);
 			return $record;
 		}
 	}
@@ -173,6 +174,7 @@ class tx_damfrontend_DAL_categories {
 					}
 				}
 			}
+			$GLOBALS['TYPO3_DB']->sql_free_result($res);
 			return $recArray;
 		}
 	}
@@ -245,6 +247,7 @@ class tx_damfrontend_DAL_categories {
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			$resultlist[] = $row;
 		}
+		$GLOBALS['TYPO3_DB']->sql_free_result($res);
 		return $resultlist;
 	}
 
@@ -331,6 +334,7 @@ class tx_damfrontend_DAL_categories {
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				$resultlist[] = $row;
 			}
+			$GLOBALS['TYPO3_DB']->sql_free_result($res);
 			if ($resultlist) {
 				return true;
 			}
@@ -414,6 +418,7 @@ class tx_damfrontend_DAL_categories {
 					while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 						$resultlist[] = $row;
 					}
+					$GLOBALS['TYPO3_DB']->sql_free_result($res);
 					if ($resultlist) {
 						return true;
 					}
@@ -469,6 +474,7 @@ class tx_damfrontend_DAL_categories {
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				$records[] = $row;
 			}
+			$GLOBALS['TYPO3_DB']->sql_free_result($res);
 			return $records;
 		}
 	}
@@ -512,7 +518,7 @@ class tx_damfrontend_DAL_categories {
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			$damUidArray[] = $row;
 		}
-
+		$GLOBALS['TYPO3_DB']->sql_free_result($res);
 		if (empty($damUidArray)) {
 			return false;
 		} else {
