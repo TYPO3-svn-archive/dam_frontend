@@ -51,7 +51,8 @@ CREATE TABLE tx_dam (
     tx_damfrontend_use_request_form int(11) DEFAULT '0' NOT NULL,
     tx_damfrontend_feuser_upload int(11) DEFAULT '0' NOT NULL,
     tx_damfrontend_fegroup  varchar(100) DEFAULT '0' NOT NULL,
-    tx_damfrontend_version int(11) DEFAULT '0' NOT NULL
+    tx_damfrontend_version int(11) DEFAULT '0' NOT NULL,
+    tx_damfrontend_nonew tinyint(1) unsigned DEFAULT '0' NOT NULL,
 );
 
 #

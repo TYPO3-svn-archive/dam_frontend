@@ -20,6 +20,7 @@
 			<label index="flexform_uploadForm">Upload Form</label>
 			<label index="flexform_requstForm">Request Form</label>
 			<label index="tx_damfrontend_use_request_form">Use a request form for this file</label>
+			<label index="tx_damfrontend_nonew">Mark file not as changed in the frontend, if it is was in the backend changed</label>
 			<label index="flexform_useStaticCatSelection">use static Category Selection</label>
 			<label index="flexform_option_title">Options</label>			
 			<label index="flexform_enableDeletions">enable deletion option for fe_users</label>
@@ -60,6 +61,7 @@
 			<label index="flexform_uploadForm">Upload Formular</label>
 			<label index="flexform_requstForm">Anforderung Formular</label>
 			<label index="tx_damfrontend_use_request_form">Use a request form for this file</label>
+			<label index="tx_damfrontend_nonew">Datei im Frontend nicht als geändert markieren, wenn sie geändert wurde</label>
 			<label index="flexform_useStaticCatSelection">Kategorieauswahl als Standard verwenden</label>
 			<label index="flexform_option_title">Optionen</label>		
 			<label index="flexform_enableDeletions">erlaube Löschungen durch Frontend User</label>
