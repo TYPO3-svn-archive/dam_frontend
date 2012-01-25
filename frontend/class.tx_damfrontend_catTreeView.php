@@ -136,7 +136,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
  		$this->backPath = 'typo3/';
 
  		if ($this->conf['categoryTree.']['sorting']) $this->orderByFields = $this->conf['categoryTree.']['sorting'];
- 		if ($this->conf['categoryTreeAdvanced.']['doNotShowNotAllowedCategories'] == 1) {
+ 		if ($this->conf['categoryTree.']['doNotShowNotAllowedCategories'] == 1) {
  			$this->catLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_categories');
  		}
 	}

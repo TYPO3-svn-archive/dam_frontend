@@ -210,14 +210,19 @@ plugin.tx_damfrontend_pi1 {
 		tstamp.strftime =  %Y/%m/%d
 		# stdWrap : Creation Timestamp of file
 		crdate.strftime =  %Y/%m/%d
-		crdate.prepend = TEXT
-		crdate.prepend {
-			value = (new)
-			lang.de = (neu)
-			if.isLessThan.data = date:U
-			if.value.field = crdate
-			if.value.stdWrap.wrap = |+ {$plugin.tx_damfrontend_pi1.newUntilSeconds}
-			if.value.prioriCalc = 1
+		crdate.prepend =CASE
+		crdate.prepend.key.field = tx_damfrontend_nonew
+		crdate.prepend.default = TEXT
+		crdate.prepend.default{
+		  value = (new)
+		  lang.de = (neu)
+		  if.isLessThan.data = date:U
+		  if.value.field = crdate
+		  if.value.stdWrap.wrap = |+ {$plugin.tx_damfrontend_pi1.newUntilSeconds}
+		  if.value.prioriCalc = 1
+		} 
+		crdate.prepend.1 {
+			value = 
 		}
 		crdate_age.stdWrap.age = 1
 		date_cr < .crdate
