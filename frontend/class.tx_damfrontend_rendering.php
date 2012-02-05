@@ -319,6 +319,7 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		$content = tslib_cObj::substituteMarker($content, '###DOWNLOAD_FORM_URL###', $this->cObj->typolink('', $this->conf['filelist.']['link_select_download.']['typolink.']));
 		$content = tslib_cObj::substituteMarker($content, '###LISTLENGTH###', $listLength);
 		$content = tslib_cObj::substituteMarker($content, '###TOTALCOUNT###', $resultcount);
+		$content = tslib_cObj::substituteMarker($content, '###LANGUAGE_SELECTOR###', $this->languageFilter('de'));
 
 		if (!isset($this->conf['filelist.']['form_url.']['parameter'])) {
 			$this->conf['filelist.']['form_url.']['parameter'] = $GLOBALS['TSFE']->id;
@@ -2211,6 +2212,23 @@ class tx_damfrontend_rendering extends tslib_pibase {
 
 		}
 		return tslib_cObj::substituteMarkerArray($templCode, $markerArray);
+	}
+	
+	function languageFilter() {
+		$current = $this->piVars['language'];
+		
+		foreach ($this->conf['languageFilter.']['elements.'] as $key => $languageSetting ) {
+			if (stripos($key,'.')===FALSE){
+				if ($current == $key) {
+					t3lib_utility_debug::debug('halllo');
+					$this->conf['languageFilter.']['elements.'][$key.'.']['wrap'] = $this->conf['languageFilter.']['currentWrap'];
+				}
+				$content .= $this->cObj->cObjGetSingle($languageSetting, $this->conf['languageFilter.']['elements.'][$key.'.']);
+					
+			}
+		}
+		
+		return   $this->cObj->stdWrap($content, $this->conf['languageFilter.']); 
 	}
 }
 

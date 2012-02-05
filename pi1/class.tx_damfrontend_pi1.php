@@ -364,7 +364,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$this->internal['filter']['searchAllCats_allowedCats'] = $catArr;
 		}
 		$this->internal['filter']['LanguageSelector'] = strip_tags(t3lib_div::_GP('LanguageSelector'));
-
+		if ($this->piVars['language']) {
+			$this->internal['filter']['LanguageSelector'] = $this->piVars['language'];
+			$this->filterState->setFilter($this->internal['filter']);
+		}
 		$this->internal['filter']['creator'] = strip_tags(t3lib_div::_GP('creator'));
 		$this->internal['filter']['owner'] = strip_tags(t3lib_div::_GP('owner'));
 		$this->internal['filter']['categoryMount'] = strip_tags(t3lib_div::_GP('categoryMount'));
@@ -1139,7 +1142,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			 *	search and sorting values are transfered to the user
 			 *
 			 ***************************/
-
+			t3lib_div::debug($this->internal['filter'],'filter');
 			if (is_array($this->internal['filter'])) {
 				$this->internal['filterError'] = $this->docLogic->setFilter($this->internal['filter']);
 			}

@@ -682,7 +682,23 @@ plugin.tx_damfrontend_pi1 {
 			}
 		}
 	}
-
+	languageFilter {
+		elements {
+			de = TEXT
+			de.value = Deutsch
+			de.wrap = <li>|</li>
+			de.typolink.parameter.data = TSFE:id
+			de.typolink.additionalParams = &tx_damfrontend_pi1[language]=de
+			de.typolink.addQueryString = 1 
+			en < .de
+			en {
+				value = Englisch
+				typolink.additionalParams = &tx_damfrontend_pi1[language]=en
+			}
+		}
+		wrap = <ul>|</ul>
+		currentWrap = <li class="currentLang">|</li>
+	}
 	explorerView < .categoryTreeAdvanced
 	explorerView {
 		# how many items should be default in the filelist
