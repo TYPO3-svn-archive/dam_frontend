@@ -439,7 +439,7 @@ plugin.tx_damfrontend_pi1 {
 	filelist < .renderFields
 	filelist {
 		useLanguageOverlay = 0
-		
+		showErrorIfListIsEmpty=1
 		# typolink : formurl action
 		form_url.parameter.data = TSFE:id
 		form_url.addQueryString = 1
@@ -696,6 +696,15 @@ plugin.tx_damfrontend_pi1 {
 				typolink.additionalParams = &tx_damfrontend_pi1[language]=en
 			}
 		}
+		removeFilter = TEXT
+		removeFilter {
+			value = show all Languages
+			wrap = <li>|</li>
+			typolink.parameter.data = TSFE:id
+			typolink.additionalParams = &tx_damfrontend_pi1[language]=
+			typolink.addQueryString = 1 
+		}
+		
 		wrap = <ul>|</ul>
 		currentWrap = <li class="currentLang">|</li>
 	}

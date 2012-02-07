@@ -159,7 +159,7 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		$markerArray['###LANGUAGE_HEADER###'] = $this->pi_getLL('LANGUAGE_HEADER');
 		$markerArray['###OWNER_HEADER###'] = $this->pi_getLL('OWNER_HEADER');
 		$markerArray['###CREATOR_HEADER###'] = $this->pi_getLL('CREATOR_HEADER');
-
+		$markerArray['###LANGUAGE_SELECTOR###'] =  $this->languageFilter('de');
 		$sortlinks = array();
 
 		// substitute Links for Sorting
@@ -2227,7 +2227,9 @@ class tx_damfrontend_rendering extends tslib_pibase {
 					
 			}
 		}
-		
+		if ($current) {
+			$content .= $this->cObj->cObjGetSingle($this->conf['languageFilter.']['removeFilter'], $this->conf['languageFilter.']['removeFilter.']);
+		}
 		return   $this->cObj->stdWrap($content, $this->conf['languageFilter.']); 
 	}
 }

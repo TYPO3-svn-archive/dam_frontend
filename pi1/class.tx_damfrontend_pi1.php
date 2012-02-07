@@ -1142,7 +1142,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			 *	search and sorting values are transfered to the user
 			 *
 			 ***************************/
-			t3lib_div::debug($this->internal['filter'],'filter');
 			if (is_array($this->internal['filter'])) {
 				$this->internal['filterError'] = $this->docLogic->setFilter($this->internal['filter']);
 			}
@@ -1233,13 +1232,23 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					$content = $this->renderer->renderEmptyFileList($this->getCategoriesForFileList());
 				}
 				else {
-					$content = $this->renderer->renderError('noDocInCat');
+					if ($this->conf['filelist.']['showErrorIfListIsEmpty']==1) {
+						$content = $this->renderer->renderError('noDocInCat');
+					}
+					else {
+						$content = $this->renderer->renderEmptyFileList();
+					}
 				}
 			}
 		}
 		else {
 			//render error
-			$content = $this->renderer->renderError('noCatSelected');
+			if ($this->conf['filelist.']['showErrorIfListIsEmpty']==1) {
+				$content = $this->renderer->renderError('noCatSelected');
+			}
+			else {
+				$content = $this->renderer->renderEmptyFileList();
+			}	
 		}
 		return $content;
 	}
