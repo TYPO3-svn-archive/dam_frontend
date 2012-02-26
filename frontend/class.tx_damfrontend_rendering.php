@@ -2071,8 +2071,9 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		$markerArray['###DATE_CR_AGE###'] = $cObj->stdWrap($elem['date_cr'], $this->conf[$scope . '.']['date_cr_age.']);
 		$markerArray['###CATEGORY###'] = $cObj->cObjGetSingle($this->conf['singleView.']['category.']['cObject'], $this->conf['singleView.']['category.']['cObject.']);
 		$markerArray['###TREELEVELCSS###'] = $elem['treeLevelCSS'];
-
+        $markerArray['###CONTENTLANG###'] = $markerArray['###LANGUAGE###'];
 		if (!is_null($this->staticInfoObj)) {
+
 			$markerArray['###LANGUAGE###'] = $this->staticInfoObj->getStaticInfoName('LANGUAGES', $elem['language'], '', '', false);
 		}
 
@@ -2220,16 +2221,15 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		foreach ($this->conf['languageFilter.']['elements.'] as $key => $languageSetting ) {
 			if (stripos($key,'.')===FALSE){
 				if ($current == $key) {
-					t3lib_utility_debug::debug('halllo');
 					$this->conf['languageFilter.']['elements.'][$key.'.']['wrap'] = $this->conf['languageFilter.']['currentWrap'];
 				}
 				$content .= $this->cObj->cObjGetSingle($languageSetting, $this->conf['languageFilter.']['elements.'][$key.'.']);
 					
 			}
 		}
-		if ($current) {
-			$content .= $this->cObj->cObjGetSingle($this->conf['languageFilter.']['removeFilter'], $this->conf['languageFilter.']['removeFilter.']);
-		}
+		#if ($current) {
+        $content = $this->cObj->cObjGetSingle($this->conf['languageFilter.']['removeFilter'], $this->conf['languageFilter.']['removeFilter.']) . $content ;
+		#}
 		return   $this->cObj->stdWrap($content, $this->conf['languageFilter.']); 
 	}
 }

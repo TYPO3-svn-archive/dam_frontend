@@ -686,13 +686,14 @@ plugin.tx_damfrontend_pi1 {
 		elements {
 			de = TEXT
 			de.value = Deutsch
-			de.wrap = <li>|</li>
+			de.wrap = <li class="tx_dam_fe_LANG_DE">|</li>
 			de.typolink.parameter.data = TSFE:id
 			de.typolink.additionalParams = &tx_damfrontend_pi1[language]=de
 			de.typolink.addQueryString = 1 
 			en < .de
 			en {
 				value = Englisch
+				wrap = <li class="tx_dam_fe_LANG_EN">|</li>
 				typolink.additionalParams = &tx_damfrontend_pi1[language]=en
 			}
 		}
@@ -705,7 +706,7 @@ plugin.tx_damfrontend_pi1 {
 			typolink.addQueryString = 1 
 		}
 		
-		wrap = <ul>|</ul>
+		wrap = <ul class="tx_dam_fe_LANGSELECTOR">|</ul>
 		currentWrap = <li class="currentLang">|</li>
 	}
 	explorerView < .categoryTreeAdvanced
