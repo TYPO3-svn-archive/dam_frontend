@@ -135,7 +135,16 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 		}
 		
 		$content = $this->cObj->substituteSubpart($this->template, "###TEMPLATE_LIST_ITEM###", $content);
-		
+
+		// render static langmarkers
+
+
+
+		// render userDefined TS Markers
+
+
+		// eliminate remaining markers
+
 		return $content;
 	}
 
@@ -420,8 +429,38 @@ class tx_damfrontend_pi2 extends tslib_pibase {
  		$markerArray['###MESSAGE_TEXT###']=$this->cObj->stdWrap($message,$this->conf['renderMessage.']['message_text.']);
  		$markerArray['###BUTTON_NEXT###']= '<input name="ok" type="submit" value="'.$this->pi_getLL('BUTTON_NEXT').'">';
  		$content=tslib_cObj::substituteMarkerArray($subpart, $markerArray);
+ 		$content=$this->substituteLangMarkers($content);
+
 		return $content;
 	}
+
+	/**
+		 * finds markers (###LLL:[markername]###) in given template Code
+		 *
+		 * @param	string		$templCode		the template code in which the markers should be searched for
+		 * @return	array		the found language markers with translation text
+		 */
+		function substituteLangMarkers($templCode) {
+			global $LANG;
+			$langMarkers = array();
+
+			if ($this->conf['langFile']!= '') {
+				$aLLMarkerList = array();
+				preg_match_all('/###LLL:.+?###/Ssm', $templCode, $aLLMarkerList);
+
+				if ($this->conf['debug'] == 1) {
+					t3lib_div::debug('in class.tx_damfrontend_rendering.php / Found language markers: //');
+					t3lib_div::debug($aLLMarkerList);
+				}
+
+				foreach ($aLLMarkerList[0] as $LLMarker) {
+					$llKey = strtoupper(substr($LLMarker, 7, strlen($LLMarker) - 10));
+					$marker = $llKey;
+					$langMarkers['###LLL:' . strtoupper($marker) . '###'] = $this->cObj->stdWrap(trim($GLOBALS['TSFE']->sL('LLL:' . $this->conf['langFile'] . ':' . $llKey)), $this->conf['renderFields.'][$marker . '.']);
+				}
+			}
+			return $langMarkers;
+		}
 
 
 }

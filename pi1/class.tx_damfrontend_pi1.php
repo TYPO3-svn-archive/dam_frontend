@@ -175,6 +175,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 						$flexFormConf[$key] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], $key, $sheetName, $langName);
 						if (!$flexFormConf[$key]) {
 							unset($flexFormConf[$key]);
+
 						}
 					}
 				}
@@ -255,7 +256,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->catList = t3lib_div::makeInstance('tx_damfrontend_catList');
 		$this->renderer = t3lib_div::makeInstance('tx_damfrontend_rendering');
 
-		/*
+
+				/*
 		 *
 		 *  switch to read in the new flexform-value "templateFile" if it exists
 		 *  FMEY: 04.11.2010
@@ -2371,10 +2373,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	}
 
 
-	/**
-	 * shows the explorerView
-	 *
-	 * @return	[string] html of the content
+    /**
+     * shows the explorerView
+     *
+     * @return	[string] html of the content
 	 */
 	function explorerView() {
 		$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeViewAdvanced');

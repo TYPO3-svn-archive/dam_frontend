@@ -1,7 +1,9 @@
 ## DAM Frontend Filelist
 #plugin.tx_damfrontend_pi2 = USER_INT
 plugin.tx_damfrontend_pi2 {
-  template =  EXT:dam_frontend/res/tmpl_list.html
+  template = EXT:dam_frontend/res/tmpl_list.html
+  # path to additional langfile for static markers
+  langFile =
   checkIfFileExist = 1
   # set stdWrap config for each field
   renderFields {
