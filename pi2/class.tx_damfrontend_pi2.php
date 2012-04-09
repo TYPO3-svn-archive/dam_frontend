@@ -137,6 +137,7 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 		$content = $this->cObj->substituteSubpart($this->template, "###TEMPLATE_LIST_ITEM###", $content);
 
 		// render static langmarkers
+		$content = tslib_cObj::substituteMarkerArray($content, $this->substituteLangMarkers($content));
 
 
 
@@ -429,7 +430,8 @@ class tx_damfrontend_pi2 extends tslib_pibase {
  		$markerArray['###MESSAGE_TEXT###']=$this->cObj->stdWrap($message,$this->conf['renderMessage.']['message_text.']);
  		$markerArray['###BUTTON_NEXT###']= '<input name="ok" type="submit" value="'.$this->pi_getLL('BUTTON_NEXT').'">';
  		$content=tslib_cObj::substituteMarkerArray($subpart, $markerArray);
- 		$content=$this->substituteLangMarkers($content);
+		$content=tslib_cObj::substituteMarkerArray($content, $this->substituteLangMarkers($content));
+ 		#$content=;
 
 		return $content;
 	}

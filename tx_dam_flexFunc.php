@@ -14,6 +14,7 @@ class tx_dam_flexFunc extends tx_dam_tceFunc{
 		********************************************/
 
 		$PA['fieldConf']['config']['treeViewClass'] = 'EXT:dam/components/class.tx_dam_selectionCategory.php:&tx_dam_selectionCategory';
+		$PA['fieldConf']['config']['itemListStyle']= 'width: 750px;';
 		$PA['fieldConf']['config']['userFunc'] = 'EXT:dam/lib/class.tx_dam_tcefunc.php:&tx_dam_tceFunc->getSingleField_selectTree';
 		return parent::getSingleField_selectTree($PA, $fObj);
 

@@ -91,10 +91,11 @@
         <treeViewClass>EXT:dam/components/class.tx_dam_selectionCategory.php:tx_dam_selectionCategory</treeViewClass>
         <foreign_table>tx_dam_cat</foreign_table>
         <size>5</size>
-        <autoSizeMax>25</autoSizeMax>
+        <autoSizeMax>99</autoSizeMax>
         <minitems>0</minitems>
         <maxitems>99</maxitems>
         <default></default>
+        <itemListStyle>heigth:400px;</itemListStyle>
        </config>
       </TCEforms>
      </catMounts>
