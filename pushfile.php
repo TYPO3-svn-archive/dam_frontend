@@ -103,7 +103,7 @@ if (is_array($post) && count($post) > 0) {
 			noAccess('<h1>Error</h1><p>You have no access to download a file. In this case no correct DocID was given!</p>',$docID);
 		}
 		if (!$docLogic->checkAccess($docID, 2)) {
-			noAccess('<h1>Error</h1><p>You have no access to download this file.',$docID);
+			noAccess('<h1>Error</h1><p>You have no access to download this file.</p>',$docID);
 		}
 		$doc = $docLogic->getDocument($docID);
 		//
@@ -112,19 +112,19 @@ if (is_array($post) && count($post) > 0) {
 		$feUserID =  intval(t3lib_div::_GP('feuid'));
 
 		if (checkOutNecessary($doc['file_path'])){
-			if (!checkHash($docID,$valid,$feuserID, $hash)) {
-				die('<h1>Sorry</h1><p>You do not have the right to download this file.');
+			if (!checkHash($docID,$valid,$feUserID, $hash)) {
+				die('<h1>Sorry</h1><p>You do not have the right to download this file.</p>');
 			}
 			else {
-				if ($valid>time()) {
-					die('<h1>Error</h1><p>This link is not valid anymore. Please request this download again.</p');
+				if ($valid<time()) {
+					die('<h1>Error</h1><p>This link is not valid anymore. Please request this download again.</p>');
 				}
 			}
 		}
 
 		// 	check if a user has access to the dam record / file
 		if (!$docLogic->checkDocumentAccess($doc['fe_group'])) {
-			noAccess('<h1>Error</h1><p>You have no access to this file.',$docID);
+			noAccess('<h1>Error</h1><p>You have no access to this file.</p>',$docID);
 		}
 		$filePath = PATH_site.$doc['file_path'].$doc['file_name'];
 		if ($tmp = createFile($filePath, configuration2Array($configuration['convert']))) {
@@ -136,7 +136,7 @@ if (is_array($post) && count($post) > 0) {
 	}
 
 	if (0 == count($filesToSend)) {
-		die ('<h1>Error</h1><p>There was no file requested.</p>');
+		die('<h1>Error</h1><p>There was no file requested.</p>');
 	}
 
 	switch ($post['modus']) {
@@ -181,7 +181,7 @@ if (is_array($post) && count($post) > 0) {
 				die('<h1>Error</h1><p>There should only one file selected.</p>');
 			}
 			if (!sendFile($filesToSend[0]['file'], $filesToSend[0]['filename'], $filesToSend[0]['contenttype'])) {
-				die ('<h1>Error</h1><p>The requested file was not found! Please contact the adminstrator and tell him that the id: '.$docID .' was not found');
+				die ('<h1>Error</h1><p>The requested file was not found! Please contact the adminstrator and tell him that the id: '.$docID .' was not found.</p>');
 			}
 		break;
 	}
@@ -448,11 +448,11 @@ if (is_array($post) && count($post) > 0) {
 		$hash =  t3lib_div::_GP('dfhash');
 		$valid =  intval(t3lib_div::_GP('valid'));
 		$feUserID =  intval(t3lib_div::_GP('feuid'));
-		if (!checkHash($docID,$valid,$feuserID, $hash)) {
-			die('<h1>Sorry</h1><p>You do not have the right to download this file.');
+		if (!checkHash($docID,$valid,$feUserID, $hash)) {
+			die('<h1>Sorry</h1><p>You do not have the right to download this file.</p>');
 		}
 		else {
-			if ($valid>time()) {
+			if ($valid<time()) {
 				die('<h1>Error</h1><p>This link is not valid anymore. Please request this download again.</p');
 			}
 		}
@@ -460,24 +460,24 @@ if (is_array($post) && count($post) > 0) {
 
 	// check if a user has access to the selected categories (a user must have access to all categories that are selected)
 	if (!$docLogic->checkAccess($docID, 1)) {
-		noAccess('<h1>Sorry</h1><p>You do not have the right to download this file.',$docID);
+		noAccess('<h1>Sorry</h1><p>You do not have the right to download this file.</p>',$docID);
 	}
 
 
 	// check if a user has access to the selected categories (a user must have access to all categories that are selected)
 	if (!$docLogic->checkAccess($docID, 2)) {
-		noAccess('<h1>Sorry</h1><p>You do not have the right to download this file.',$docID);
+		noAccess('<h1>Sorry</h1><p>You do not have the right to download this file.</p>',$docID);
 	}
 
 	// check if a user has access to the dam record / file
 	if (!$docLogic->checkDocumentAccess($doc['fe_group'])) {
-		noAccess('<h1>Error</h1><p>You have no access to this file.',$docID);
+		noAccess('<h1>Error</h1><p>You have no access to this file.</p>',$docID);
 	}
 
 	$filePath = PATH_site.$doc['file_path'].$doc['file_name'];
 
 	if (!sendFile($filePath, $doc['file_name'], $doc['file_mime_type'] . '/' . $doc['file_mime_subtype'])) {
-		die ('<h1>Sorry, file not found!</h1><p>The requested file was not found! Please contact the adminstrator and tell him that the id: '.$docID .' was not found');
+		die ('<h1>Sorry, file not found!</h1><p>The requested file was not found! Please contact the adminstrator and tell him that the id: '.$docID .' was not found.</p>');
 	}
 
 ?>
