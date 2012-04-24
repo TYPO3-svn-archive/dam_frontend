@@ -10,40 +10,40 @@
 			<label index="flexform_selection_title">Select your categories</label>
 			<label index="flexform_catTree">Category Tree</label>
 			<label index="flexform_fileList">Filelist</label>
-			<label index="flexform_catSelection">Category Selection</label>
+			<label index="flexform_catSelection">Category selection</label>
 			<label index="flexform_singleView">Single View</label>
 			<label index="flexform_filterView">Search box</label>
 			<label index="flexform_filterList">Filter List</label>
-			<label index="flexform_selection_cats">Category Selection</label>
+			<label index="flexform_selection_cats">Category selection</label>
 			<label index="flexform_treeName">Tree Name</label>
 			<label index="flexform_treeID">Tree ID</label>
 			<label index="flexform_uploadForm">Upload Form</label>
 			<label index="flexform_requstForm">Request Form</label>
 			<label index="tx_damfrontend_use_request_form">Use a request form for this file</label>
 			<label index="tx_damfrontend_nonew">Mark file not as changed in the frontend, if it is was in the backend changed</label>
-			<label index="flexform_useStaticCatSelection">use static Category Selection</label>
+			<label index="flexform_useStaticCatSelection">Use static category selection</label>
 			<label index="flexform_option_title">Options</label>			
-			<label index="flexform_enableDeletions">enable deletion option for fe_users</label>
+			<label index="flexform_enableDeletions">Enable deletion option for fe_users</label>
 			<label index="flexform_FilterUserGroup">Shows all members of this group in the filter view, to select a filter "author"</label>
-			<label index="flexform_myFiles">my files</label>
-			<label index="flexform_enableEdits">enable edits of meta data</label>
+			<label index="flexform_myFiles">My files</label>
+			<label index="flexform_enableEdits">Enable edits of meta data</label>
 			<label index="flexform_dropDown">Dropdown Catmenu</label>
-			<label index="tx_damfrontend_feuser_upload">belongs to this frontend user</label>
-			<label index="flexform_catPreSelection">category preselection</label>
-			<label index="flexform_display_form">display this view</label>
-			<label index="upload_settings">allowed categories for upload</label>
+			<label index="tx_damfrontend_feuser_upload">Belongs to this frontend User</label>
+			<label index="flexform_catPreSelection">Category preselection</label>
+			<label index="flexform_display_form">Display this view</label>
+			<label index="upload_settings">Allowed categories for upload</label>
 			<label index="flexform_feEditGroups">These FE Groups are allowed to edit / delete dam records (only listview / latestview)</label>
-			<label index="flexform_useLatestList">recently added / changed files</label>
+			<label index="flexform_useLatestList">Recently added / changed files</label>
 			﻿<label index="pi1_title">DAM Frontend</label>
 			<label index="pi1_plus_wiz_description">Display files of the DAM (filelist, categories). Upload or edit files via Frontend</label>
 			﻿<label index="pi2_title">DAM Frontend Filelist</label>
 			<label index="pi2_plus_wiz_description">Select files for downloading </label>
 			<label index="flexform_groupedCategories">Filelist (grouped categories)</label>		
-			<label index="flexform_easySearch">Easysearch</label>		
-			<label index="flexform_DrillDown">drilldown filter</label>
+			<label index="flexform_easySearch">Easy search</label>		
+			<label index="flexform_DrillDown">Drill-down filter</label>
 			<label index="flexform_Explorer">Explorer view (combined category tree with filelist)</label>		
 			<label index="tx_damfrontend_fegroup">File edit / delete rights for this groups</label>		
-			<label index="flexform_templateFile">Template file</label>		
+			<label index="flexform_templateFile">Template file</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="flexform_display_title">Was soll angezeigt werden</label>
@@ -85,6 +85,7 @@
 			<label index="flexform_Explorer">Explorer Ansicht (kombinierter Kategorienbaum mit Dateiliste</label>		
 			<label index="tx_damfrontend_fegroup">Datei editieren / löschen erlaubt für folgende Gruppen</label>	
 			<label index="flexform_templateFile">Vorlage</label>			
+			<label index="tx_damfrontend_s3">Amazon S3 Linken</label>		
 		</languageKey>
 		﻿<languageKey index="ru" type="array">
 			<label index="flexform_display_title">Что показать?</label>
