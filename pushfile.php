@@ -176,6 +176,18 @@ if (is_array($post) && count($post) > 0) {
 			die('sorry, not implemented yet');
 		break;
 		default:
+            // hook returns file( path / name), file in an array
+            if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['pushfile_modus']) {
+                foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['pushfile_modus'] as $_funcRef) {
+                    if ($_funcRef) {
+                        $params['filename']=$filename;
+                        $params['file']=$file;
+                        t3lib_div::callUserFunction($_funcRef,$params );
+                    }
+                }
+            }
+
+
 			// no modus select, should be than only one file
 			if (1 != count($filesToSend)) {
 				die('<h1>Error</h1><p>There should only one file selected.</p>');
@@ -409,7 +421,9 @@ if (is_array($post) && count($post) > 0) {
 		$restrictedFolders = array();
 		$restrictedFolders = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.']['filelist.']['security_options.']['checkOutFolders.'];
 		if (empty($restrictedFolders)) return false;
-
+        t3lib_div::debug($path);
+        t3lib_div::debug($restrictedFolders);
+        die();
 		foreach ($restrictedFolders as $folder) {
 			if (strlen($path)>=strlen($folder)) {
 			 if ($path==substr($folder,0,strlen($path))) {

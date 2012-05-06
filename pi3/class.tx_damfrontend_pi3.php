@@ -98,7 +98,6 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 	                $this->conf[$key] = $conf[$key];
 	        }
 	  }
-
 		$this->basketCase = new tx_damfrontend_basketCase;
 		$this->renderer = new tx_damfrontend_basketCaseRendering;
 		$this->renderer->cObj = $this->cObj;

@@ -38,11 +38,11 @@ plugin.tx_damfrontend_pi3 {
 		checkout {
 			data =LLL:EXT:dam_frontend/pi3/locallang.xml:checkout
 			typolink {
-				parameter = {$plugin.tx_damfrontend_pi3.checkOutID}
+				parameter = {$plugin.tx_damfrontend_pi3.checkOutPageID}
 				parameter.insertData = 1
 			}
-			stdWrap.override = Please set constant "plugin.tx_damfrontend_pi3.checkOutID".
-			stdWrap.override.if.isFalse = {$plugin.tx_damfrontend_pi3.checkOutID}
+			stdWrap.override = Please set constant "plugin.tx_damfrontend_pi3.checkOutPageID".
+			stdWrap.override.if.isFalse = {$plugin.tx_damfrontend_pi3.checkOutPageID}
 		}
 		CheckOutFormTarget {
 			parameter.data = TSFE:id

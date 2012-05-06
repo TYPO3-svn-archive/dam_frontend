@@ -230,6 +230,7 @@ $tempColumns = Array (
 
 /*   for upload user */
 t3lib_div::loadTCA("tx_dam");
+$TCA['tx_dam']['columns']['category']['config']['itemListStyle'] = 'width: 750px;';
 t3lib_extMgm::addTCAcolumns("tx_dam",$tempColumns,1);
 t3lib_extMgm::addToAllTCAtypes("tx_dam","tx_damfrontend_feuser_upload;;;;1-1-1,tx_damfrontend_fegroup, tx_damfrontend_nonew",'','after:category');
 

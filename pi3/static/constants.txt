@@ -5,9 +5,9 @@
   }
 
 # cat=tx_damfrontend_pi3//10; type=text; label= Template File
-plugin.tx_damfrontend_pi3.templateFile = EXT:dam_frontend/pi1/template.html
+plugin.tx_damfrontend_pi3.templateFile = EXT:dam_frontend/pi3/template.html
 
 # cat=tx_damfrontend_pi3//20; type=int; label= checkout id
-plugin.tx_damfrontend_pi3.checkOutID = 
+plugin.tx_damfrontend_pi3.checkOutPageID =
 
 # tx_damfrontend_pi1 Constants End

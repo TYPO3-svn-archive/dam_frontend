@@ -6,7 +6,7 @@ require_once(PATH_tslib.'class.tslib_pibase.php');
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2006-2011 in2code.de (typo3@in2code.de)
+*  (c) 2006-2012 in2code.de (typo3@in2code.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -269,7 +269,7 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 	function renderPreview($items) {
 		$this->pi_loadLL();
 		$htmlTemplate = tsLib_CObj::getSubpart(tsLib_CObj::fileResource($this->conf['templateFile']),'###BASKET_CASE_PREVIEW###');
-		$markerArray= array();
+        $markerArray= array();
 		if (count($items)==0) {
 			$markerArray['###ITEMS###']='';
 			$markerArray['###ITEMSTEXT###']=$this->pi_getLL('no_itemstext');
@@ -295,8 +295,8 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/pi1/class.tx_damfrontend_pi1.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/pi1/class.tx_damfrontend_pi1.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/pi3/class.tx_damfrontend_pi3.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/pi3/class.tx_damfrontend_pi3.php']);
 }
 
 ?>
