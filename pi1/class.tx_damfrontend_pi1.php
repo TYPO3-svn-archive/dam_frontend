@@ -1147,7 +1147,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			if (is_array($this->internal['filter'])) {
 				$this->internal['filterError'] = $this->docLogic->setFilter($this->internal['filter']);
 			}
-			if ($this->internal['list']['sorting']) $this->docLogic->orderBy = 'tx_dam.' . $this->internal['list']['sorting'];
+			if ($this->internal['list']['sorting']) $this->docLogic->orderBy = $this->internal['list']['sorting'];
 			$this->docLogic->limit = $this->internal['list']['limit'];
 			$this->docLogic->selectionMode = $this->internal['selectionMode'];
 			$files = array();
