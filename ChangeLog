@@ -1,7 +1,10 @@
 Version 1.0.0
 2011-12-29 Stefan Busemannn:  Bug #32585 (Resolved): tx_dam_cat read_access not merged for a document with many categories
 2011-12-29 Stefan Busemannn: Bug #32620 (Resolved): TCA configuration of tx_damfrontend_feuser_upload add allowed
-
+Typoscript change:
+The setting filelist.orderBy needs now a table name prefix.
+Example
+filelist.orderBy = tx_dam.crdate DESC
 
 Version 0.8.4
 2011-12-29 Stefan Busemann: Bug #32838 (Resolved): Call to undefined method t3lib_div::GPvar() in /html/typo3/typo3conf/ext/d...
