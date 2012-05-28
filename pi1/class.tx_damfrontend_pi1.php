@@ -2379,6 +2379,20 @@ class tx_damfrontend_pi1 extends tslib_pibase {
      * @return	[string] html of the content
 	 */
 	function explorerView() {
+		
+		// 2012-05-21 Esteban Marin
+		// added edit / deletion features in explorer view
+		$result = $this->fileListBasicFuncionality();
+		if ($result != 1) {
+			return $result;
+		}
+		
+		// 2012-05-21 Esteban Marin
+		// renderer->piVars gets checked instead of internal in class.tx_damfrontend_catTreeViewAdvanced.php:wrapCatSelection()
+		$this->renderer->piVars['catEditUID'] = $this->internal['catEditUID'];
+		
+		
+		
 		$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeViewAdvanced');
 		$tree->renderer = $this->renderer;
 		$tree->catLogic = $this->catLogic;
