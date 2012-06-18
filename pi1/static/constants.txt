@@ -28,4 +28,18 @@ plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath = EXT:dam_frontend/res/ico
 # cat=tx_damfrontend_pi1//80; type=int; label= define how many seconds to mark a file as new since crdate (86400 = 60*60*24 = 1 day)
 plugin.tx_damfrontend_pi1.newUntilSeconds = 86400
 
+plugin.tx_damfrontend_pi1 {
+	# cat=tx_dams3_pi1/10; type=boolean; label= Use AWS For Downloads
+	enableAWSDownloads = 0
+
+	# cat=tx_dams3_pi1/20; type=string; label= AWS Access Key
+	accessKey =
+
+	# cat=tx_dams3_pi1/30; type=string; label= AWS Secret Key
+	secretKey =
+
+	# cat=tx_dams3_pi1/40; type=int+; label= AWS Link Expiration: In minutes
+	expires = 5
+}
+
 # tx_damfrontend_pi1 Constants End

@@ -1170,6 +1170,19 @@ plugin.tx_damfrontend_pi1 {
 		link_download.typolink.parameter.data = >
 		link_download.typolink.additionalParams >
 	}
+
+	filelist {
+		title.typolink.parameter = {field:file_path}{field:file_name}
+		title.typolink.parameter.insertData = 1
+		title.typolink.parameter.data > 
+		title.typolink.additionalParams >
+		
+		link_download.typolink.parameter = {field:file_path}{field:file_name}
+		link_download.typolink.parameter.insertData = 1
+		link_download.typolink.parameter.data = >
+		link_download.typolink.additionalParams >
+	}
+
 	singleView {
 		file_name {
 			typolink.parameter = {field:file_path}{field:file_name}
@@ -1189,6 +1202,73 @@ plugin.tx_damfrontend_pi1 {
 		title.typolink.additionalParams >
 	}
 }
+[end]
 
+[globalVar = LIT:1 = {$plugin.tx_damfrontend_pi1.enableAWSDownloads}]
+temp.typolink {
+	additionalParams >
 
+	parameter = {field:file_path}{field:file_name}
+	parameter {
+		data > 
+		insertData = 1
+
+		if {
+			value = 1
+			equals.field = allowDownload
+		}
+	}
+
+	userFunc = tx_damfrontend_pi1->getS3Link
+	userFunc {
+		includeLibs = EXT:dam_frontend/pi1/class.tx_damfrontend_pi1.php
+		accessKey = {$plugin.tx_damfrontend_pi1.accessKey}
+		secretKey = {$plugin.tx_damfrontend_pi1.secretKey}
+		expires = {$plugin.tx_damfrontend_pi1.expires}
+		path.dataWrap = {field:tx_damfrontend_s3}
+	}
+}
+
+plugin.tx_damfrontend_pi1 {
+	renderFields {
+		title {
+			typolink >
+			typolink < temp.typolink
+		}
+		
+		link_download {
+			typolink >
+			typolink < temp.typolink
+		}
+	}
+
+	filelist {
+		title {
+			typolink >
+			typolink < temp.typolink
+		}
+		
+		link_download {
+			typolink >
+			typolink < temp.typolink
+		}
+	}
+
+	singleView {
+		file_name {
+			typolink >
+			typolink < temp.typolink
+		}
+
+		link_download {
+			typolink >
+			typolink < temp.typolink
+		}
+		
+		title {
+			typolink >
+			typolink < temp.typolink
+		}
+	}
+}
 [end]

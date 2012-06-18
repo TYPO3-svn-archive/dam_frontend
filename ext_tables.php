@@ -226,6 +226,14 @@ $tempColumns = Array (
 			"type" => "none",
 		),
 	),
+	"tx_damfrontend_s3" => Array (
+		"exclude" => 1,
+		"label" => "LLL:EXT:dam_frontend/locallang_tca.php:tx_damfrontend_s3",
+		"config" => Array (
+			"type" => "input",
+			"size" => 60,
+		),
+	),
 );
 
 /*   for upload user */
@@ -233,6 +241,7 @@ t3lib_div::loadTCA("tx_dam");
 $TCA['tx_dam']['columns']['category']['config']['itemListStyle'] = 'width: 750px;';
 t3lib_extMgm::addTCAcolumns("tx_dam",$tempColumns,1);
 t3lib_extMgm::addToAllTCAtypes("tx_dam","tx_damfrontend_feuser_upload;;;;1-1-1,tx_damfrontend_fegroup, tx_damfrontend_nonew",'','after:category');
+t3lib_extMgm::addToAllTCAtypes("tx_dam","tx_damfrontend_s3",'','after:meta');
 
 /*
 $tempColumns = Array (
