@@ -2479,8 +2479,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 */
 
 	function el_s3_getTemporaryLink($accessKey, $secretKey, $bucket, $path, $expires = 5) {
-		error_log( __LINE__ . ':' . basename( __FILE__ ) );	
-		t3lib_div::devLog( true, __FUNCTION__, 0, false );	
 		// Calculate expiry time
 		$expires = time() + intval(floatval($expires) * 60);
 		// Fix the path; encode and sanitize
@@ -2504,14 +2502,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	}
 
 	function getS3Link( $content, $conf ) {
-		error_log( __LINE__ . ':' . basename( __FILE__ ) );	
-		t3lib_div::devLog( true, __FUNCTION__, 0, $conf );	
 		$tag					= $content['TAG'];
-		t3lib_div::devLog( $tag, __FUNCTION__, 0, false );	
-		$path					= $this->cObj->stdWrap($conf['path'], $conf['path.']);
-		t3lib_div::devLog( $path, __FUNCTION__, 0, false );	
 
-		if ( '' == $path )
+		$path					= $this->cObj->stdWrap($conf['path'], $conf['path.']);
+
+		if ( empty( $path ) )
 			return $tag;
 
 		$pathParts				= parse_url( $path );
@@ -2522,6 +2517,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$bucket					= array_shift( $filePathArray );
 		$file					= implode( '/', $filePathArray );
 		$newUrl					= $this->el_s3_getTemporaryLink($conf['accessKey'], $conf['secretKey'], $bucket, $file, $conf['expires']);
+
+		$this->cObj->lastTypoLinkUrl	= $newUrl;
+
 		$newTag					= str_replace( $content['url'], $newUrl, $tag );
 		return $newTag;
 	}

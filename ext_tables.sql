@@ -40,7 +40,7 @@ CREATE TABLE tx_dam_cat_uploadaccess_mm (
 
 CREATE TABLE tx_dam_cat (
 	tx_damtree_fe_groups_readaccess int(11) DEFAULT '0' NOT NULL,
-	tx_damtree_fe_groups_downloadaccess int(11) DEFAULT '0' NOT NULL
+	tx_damtree_fe_groups_downloadaccess int(11) DEFAULT '0' NOT NULL,
 	tx_damtree_fe_groups_uploadaccess int(11) DEFAULT '0' NOT NULL
 );
 

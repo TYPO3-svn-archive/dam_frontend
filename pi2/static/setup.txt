@@ -202,8 +202,9 @@ plugin.tx_damfrontend_pi2 {
 	renderFields {
 		file_href >
 		file_href < temp.typolink
-		file_href.returnLast = url
-		file_href.additionalParams = &abba-rocks
+		file_href {
+			returnLast = url
+		}
 		
 		link_download {
 			typolink >

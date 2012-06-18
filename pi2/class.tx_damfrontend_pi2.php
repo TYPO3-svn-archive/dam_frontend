@@ -214,7 +214,7 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 		// fetch DAM UIDs from tt_content -
 		$this->damUidList = t3lib_div::intExplode(',', $this->cObj->data[$this->fieldDamUidList]);
 
-		$fieldList = array('t3ver_id', 't3ver_state', 't3ver_wsid', 't3ver_count', 'ident', 'description', 'keywords', 'alt_text', 'abstract', 'language', 'publisher', 'copyright', 'date_cr', 'date_mod', 'tx_damfrontend_feuser_upload');
+		$fieldList = array('t3ver_id', 't3ver_state', 't3ver_wsid', 't3ver_count', 'ident', 'description', 'keywords', 'alt_text', 'abstract', 'language', 'publisher', 'copyright', 'date_cr', 'date_mod', 'tx_damfrontend_feuser_upload', 'tx_damfrontend_s3');
 		
 		$damTableName = 'tx_dam';
 		$whereClause = 'uid IN (' . implode(', ', $this->damUidList) . ')' .
