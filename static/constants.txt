@@ -1,0 +1,13 @@
+plugin.tx_damfrontend {
+	# cat=tx_dams3_pi1/10; type=boolean; label= Use AWS For Downloads
+	enableAWSDownloads = 0
+
+	# cat=tx_dams3_pi1/20; type=string; label= AWS Access Key
+	accessKey =
+
+	# cat=tx_dams3_pi1/30; type=string; label= AWS Secret Key
+	secretKey =
+
+	# cat=tx_dams3_pi1/40; type=int+; label= AWS Link Expiration: In minutes
+	expires = 5
+}
