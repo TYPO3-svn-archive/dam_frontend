@@ -170,9 +170,51 @@ plugin.tx_damfrontend_pi2 {
 plugin.tx_damfrontend_pi2 {
 	renderFields {
 	  	file_href.parameter = {field:file_path}{field:file_name}
+	  	file_href.parameter.insertData = 1
 	  	file_href.parameter.data >
 	  	file_href.additionalParams >
 		file_href.returnLast = url
 	}
 }
+[end]
+
+[globalVar = LIT:1 = {$plugin.tx_damfrontend.enableAWSDownloads}]
+temp.typolink {
+	additionalParams >
+
+	parameter = {field:file_path}{field:file_name}
+	parameter {
+		data > 
+		insertData = 1
+	}
+
+	userFunc = tx_damfrontend_pi1->getS3Link
+	userFunc {
+		includeLibs = EXT:dam_frontend/pi1/class.tx_damfrontend_pi1.php
+		accessKey = {$plugin.tx_damfrontend.accessKey}
+		secretKey = {$plugin.tx_damfrontend.secretKey}
+		expires = {$plugin.tx_damfrontend.expires}
+		path.dataWrap = {field:tx_damfrontend_s3}
+	}
+}
+
+plugin.tx_damfrontend_pi2 {
+	renderFields {
+		file_href >
+		file_href < temp.typolink
+		file_href.returnLast = url
+		file_href.additionalParams = &abba-rocks
+		
+		link_download {
+			typolink >
+			typolink < temp.typolink
+		}
+  	
+		title {
+			typolink >
+			typolink < temp.typolink
+		}
+	}
+}
+
 [end]

@@ -1204,7 +1204,7 @@ plugin.tx_damfrontend_pi1 {
 }
 [end]
 
-[globalVar = LIT:1 = {$plugin.tx_damfrontend_pi1.enableAWSDownloads}]
+[globalVar = LIT:1 = {$plugin.tx_damfrontend.enableAWSDownloads}]
 temp.typolink {
 	additionalParams >
 
@@ -1222,9 +1222,9 @@ temp.typolink {
 	userFunc = tx_damfrontend_pi1->getS3Link
 	userFunc {
 		includeLibs = EXT:dam_frontend/pi1/class.tx_damfrontend_pi1.php
-		accessKey = {$plugin.tx_damfrontend_pi1.accessKey}
-		secretKey = {$plugin.tx_damfrontend_pi1.secretKey}
-		expires = {$plugin.tx_damfrontend_pi1.expires}
+		accessKey = {$plugin.tx_damfrontend.accessKey}
+		secretKey = {$plugin.tx_damfrontend.secretKey}
+		expires = {$plugin.tx_damfrontend.expires}
 		path.dataWrap = {field:tx_damfrontend_s3}
 	}
 }
