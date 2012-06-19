@@ -464,7 +464,7 @@ plugin.tx_damfrontend_pi1 {
 		orderBy = tx_dam.crdate DESC
 		
 		#oder by clause for the lastestView
-		newFilesViewOrderBy = crdate DESC
+		newFilesViewOrderBy = tx_dam.crdate DESC
 		
 		#groupedFileListUseBackEndSorting: Shows the Categories sorted like set in the flexform in the backend (set to 0, to improove performance)
 		groupedFileListUseBackEndSorting = 0
@@ -1189,6 +1189,5 @@ plugin.tx_damfrontend_pi1 {
 		title.typolink.additionalParams >
 	}
 }
-
 
 [end]
