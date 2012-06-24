@@ -681,7 +681,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->filterState->filterTable = 'tx_damfrontend_filterStates';
 		#$this->overRide();
 
-		// check if an user is logged in or not
+		// check if an user is logged in or notØ
 		$user = $GLOBALS['TSFE']->fe_user;
 		if (is_array($user->user)) {
 			$this->userLoggedIn = true;
@@ -1138,7 +1138,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 		}
 		if ($hasCats === true || $this->internal['filter']['searchAllCats'] === true || $this->internal['viewID'] == 9) {
-
 			/***************************
 			 *
 			 *	search and sorting values are transfered to the user
@@ -1170,30 +1169,31 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					}
 				}
 			}
+		else {
+			if ($this->conf['filelist.']['groupedFileListGroupByTreeID']) {
+				// check if a category is selected of this tree. If not, take all cats.
+				if ($cats[$this->conf['filelist.']['groupedFileListGroupByTreeID']]) {
+					// re-arrange the category array, because the cattitles (that are needed for the grouped filelist) are fetched from the last and criteria
+					$tempCats = $cats[$this->conf['filelist.']['groupedFileListGroupByTreeID']];
+					unset($cats[$this->conf['filelist.']['groupedFileListGroupByTreeID']]);
+					$cats[$this->conf['filelist.']['groupedFileListGroupByTreeID']]=$tempCats;
+				}
 			else {
-				if ($this->conf['filelist.']['groupedFileListGroupByTreeID']) {
-					// check if a category is selected of this tree. If not, take all cats.
-					if ($cats[$this->conf['filelist.']['groupedFileListGroupByTreeID']]) {
-						// re-arrange the category array, because the cattitles (that are needed for the grouped filelist) are fetched from the last and criteria
-						$tempCats = $cats[$this->conf['filelist.']['groupedFileListGroupByTreeID']];
-						unset($cats[$this->conf['filelist.']['groupedFileListGroupByTreeID']]);
-						$cats[$this->conf['filelist.']['groupedFileListGroupByTreeID']]=$tempCats;
-					}
-					else {
-						// add all subcategories to the selection
-						$subs = $this->catLogic->getSubCategories(abs($this->conf['filelist.']['groupedFileListGroupByTreeID']));
-						if (is_array($subs)) {
-							foreach ($subs as $sub) {
-								$cats[$this->conf['filelist.']['groupedFileListGroupByTreeID']][]=$sub['uid'];
-							}
-						}
+				// add all subcategories to the selection
+				$subs = $this->catLogic->getSubCategories(abs($this->conf['filelist.']['groupedFileListGroupByTreeID']));
+				if (is_array($subs)) {
+					foreach ($subs as $sub) {
+						$cats[$this->conf['filelist.']['groupedFileListGroupByTreeID']][]=$sub['uid'];
 					}
 				}
-
-				$this->docLogic->categories = $cats;
-				$files = $this->docLogic->getDocumentList($this->userUID);
+			}
 			}
 
+			$this->docLogic->categories = $cats;
+			$files = $this->docLogic->getDocumentList($this->userUID);
+		}
+
+			t3lib_utility_Debug::debug($this->docLogic->conf['useGroupedView'],'1hascats');
 			if (count($files) > 0) {
 
 				$rescount = $this->docLogic->resultCount;
@@ -1221,7 +1221,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				}
 
 				//get the html from the renderer
-				if ($this->internal['viewID'] == 8) {
+				if ($this->internal['viewID'] == 8 OR $this->conf['filelist.']['latestView.']['useGroupedFileList']==1) {
 					$content = $this->renderer->renderFileGroupedList($files, $rescount, $this->internal['list']['pointer'], $this->internal['list']['listLength'], false, $this->fileListConf);
 				}
 				else {
@@ -2243,6 +2243,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 		else {
 			$this->docLogic->conf['latestLimit'] = 20;
+		}
+
+		if ($this->conf['filelist.']['latestView.']['useGroupedFileList']==1) {
+			$this->docLogic->conf['useGroupedView'] = 1;
 		}
 
 		// CAB:SS 23.4.10 - fixed bug - dont set latestDays to 30 per default because then the limit doesn't work anymore - both options aren't possible together

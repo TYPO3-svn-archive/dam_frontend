@@ -569,7 +569,6 @@ require_once(PATH_tslib.'class.tslib_content.php');
 
 		$resultCounter = $GLOBALS['TYPO3_DB']->sql_num_rows($res);
 
-
 			// if latest list is used and a fixed number of entries has to be shown
 		if ($this->conf['latestLimit']>0 ){
 			$startRecord=0;

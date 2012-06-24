@@ -509,6 +509,9 @@ plugin.tx_damfrontend_pi1 {
 			field = crdate
 			# shows only the last nr. of items, only used if latestDays are set to 0
 			limit = 20
+
+			# show grouped filelist
+			useGroupedFileList = 0
 		}
 
 		# if turned on, all childs of a selected category are selected too (cats are selected statically in the BE)
