@@ -318,7 +318,17 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 		}
 
-
+		// static filters
+		foreach ($this->conf['staticFilters.'] as $filter => $value){
+			if ($value) {
+				$this->internal['filter']['staticFilters.'][$filter] = $value;
+			}
+		}
+		if ($this->conf['staticFilters.']){
+			// save the current filter in the session if a static filter is defined
+			$this->filterState->setFilter($this->internal['filter']);
+		}
+		
 		// clear all 0 - values - now they are not shown in the frontend form
 		foreach ($this->internal['filter'] as $key => $value) {
 			if ($value == '0') {
@@ -1178,22 +1188,21 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					unset($cats[$this->conf['filelist.']['groupedFileListGroupByTreeID']]);
 					$cats[$this->conf['filelist.']['groupedFileListGroupByTreeID']]=$tempCats;
 				}
-			else {
-				// add all subcategories to the selection
-				$subs = $this->catLogic->getSubCategories(abs($this->conf['filelist.']['groupedFileListGroupByTreeID']));
-				if (is_array($subs)) {
-					foreach ($subs as $sub) {
-						$cats[$this->conf['filelist.']['groupedFileListGroupByTreeID']][]=$sub['uid'];
+				else {
+					// add all subcategories to the selection
+					$subs = $this->catLogic->getSubCategories(abs($this->conf['filelist.']['groupedFileListGroupByTreeID']));
+					if (is_array($subs)) {
+						foreach ($subs as $sub) {
+							$cats[$this->conf['filelist.']['groupedFileListGroupByTreeID']][]=$sub['uid'];
+						}
 					}
 				}
-			}
 			}
 
 			$this->docLogic->categories = $cats;
 			$files = $this->docLogic->getDocumentList($this->userUID);
 		}
 
-			t3lib_utility_Debug::debug($this->docLogic->conf['useGroupedView'],'1hascats');
 			if (count($files) > 0) {
 
 				$rescount = $this->docLogic->resultCount;

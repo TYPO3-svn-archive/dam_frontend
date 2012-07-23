@@ -764,6 +764,16 @@ require_once(PATH_tslib.'class.tslib_content.php');
 				}
 			}
 
+			if (is_array($filterArray['staticFilters.'])) {
+				foreach ($filterArray['staticFilters.'] as $filter=>$value) {
+					switch ($value['type']) {
+						case 'TEXT':
+							$this->additionalFilter .= $this->getCustomWhereString($value['field'],isset($value['value'])?$value['value']:$filterArray[$filter]);
+							break;
+					}
+				}
+			}
+
 			return $errors;
 		}
 

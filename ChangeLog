@@ -1,4 +1,5 @@
 Version 1.0.0
+2012-07-23 Stefan Busemannn: Feature staticFilters - Filters can be defined via TS
 2012-06-22 Stefan Busemannn: new TS Option filelist.latestView.useGroupedFileList = 1 shows the latest view as a grouped file list
 2011-12-29 Stefan Busemannn: Bug #32585 (Resolved): tx_dam_cat read_access not merged for a document with many categories
 2011-12-29 Stefan Busemannn: Bug #32620 (Resolved): TCA configuration of tx_damfrontend_feuser_upload add allowed Typoscript change: The setting filelist.orderBy needs now a table name prefix. Example filelist.orderBy = tx_dam.crdate DESC

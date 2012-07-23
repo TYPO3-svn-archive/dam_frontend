@@ -434,7 +434,16 @@ plugin.tx_damfrontend_pi1 {
 	categorySelection {
 		useLanguageOverlay =1
 	}
-	
+
+	# static filters:
+    staticFilters {
+        language {
+            type = TEXT
+            value = de
+            field = language
+        }
+	}
+
 	# configuration for subpart ###FILELIST###
 	filelist < .renderFields
 	filelist {
