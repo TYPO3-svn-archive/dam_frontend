@@ -472,20 +472,33 @@ if (is_array($post) && count($post) > 0) {
 		}
 	}
 
-	// check if a user has access to the selected categories (a user must have access to all categories that are selected)
-	if (!$docLogic->checkAccess($docID, 1)) {
-		noAccess('<h1>Sorry</h1><p>You do not have the right to download this file.</p>',$docID);
-	}
+	$conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.'];
 
+	// check all access information
+	if ($conf['filelist.']['security_options.']['allowServerRequest']==1) {
+		// if a direct server access is allowed (f.e. for curl usage)
+		if ($_SERVER['SERVER_ADDR']<>$_SERVER['REMOTE_ADDR']){
+			// allow access only, if the request is of the localhost
+			noAccess('<h1>Error</h1><p>You have no access to this file.',$docID);
+		}
+	} else {
 
-	// check if a user has access to the selected categories (a user must have access to all categories that are selected)
-	if (!$docLogic->checkAccess($docID, 2)) {
-		noAccess('<h1>Sorry</h1><p>You do not have the right to download this file.</p>',$docID);
-	}
+		// security checks for normal download process
 
-	// check if a user has access to the dam record / file
-	if (!$docLogic->checkDocumentAccess($doc['fe_group'])) {
-		noAccess('<h1>Error</h1><p>You have no access to this file.</p>',$docID);
+		// check if a user has access to the selected categories (a user must have access to all categories that are selected)
+		if (!$docLogic->checkAccess($docID, 1)) {
+			noAccess('<h1>Sorry</h1><p>You do not have the right to download this file.',$docID);
+		}
+
+		// check if a user has access to the selected categories (a user must have access to all categories that are selected)
+		if (!$docLogic->checkAccess($docID, 2)) {
+			noAccess('<h1>Sorry</h1><p>You do not have the right to download this file.',$docID);
+		}
+
+		// check if a user has access to the dam record / file
+		if (!$docLogic->checkDocumentAccess($doc['fe_group'])) {
+			noAccess('<h1>Error</h1><p>You have no access to this file.',$docID);
+		}
 	}
 
 	$filePath = PATH_site.$doc['file_path'].$doc['file_name'];

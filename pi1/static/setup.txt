@@ -618,6 +618,7 @@ plugin.tx_damfrontend_pi1 {
 				#1 = fileadmin/
 				#2 = fileadmin/user4
 			}
+			allowServerRequest=0
 		}
 		
 		browselink {
