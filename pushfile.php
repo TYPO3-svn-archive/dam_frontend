@@ -475,7 +475,7 @@ if (is_array($post) && count($post) > 0) {
 	$conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.'];
 
 	// check all access information
-	if ($conf['filelist.']['security_options.']['allowServerRequest']==1) {
+	if ($conf['filelist.']['security_options.']['allowServerRequest']==1 AND intval($_GET['stream'])) {
 		// if a direct server access is allowed (f.e. for curl usage)
 		if ($_SERVER['SERVER_ADDR']<>$_SERVER['REMOTE_ADDR']){
 			// allow access only, if the request is of the localhost
