@@ -33,18 +33,18 @@
  */
 class tx_damfrontend_uploader extends tx_scheduler_Task {
 
-	public $storagePid			= -1;
-	public $importLimit			= null;
-
-	// local and remote db connections
 	public $db					= null;
 	public $uploaderLog			= 'tx_damfrontend_uploader_log';
 	public $logUid				= null;
+	public $s3					= null;
 
-	public $importArticles		= null;
-	public $importArticleFluff	= null;
-	public $importContacts		= null;
-	public $importProjects		= null;
+	// additional fields
+	public $uploadS3			= null;
+	public $storagePid			= null;
+	public $importLimit			= null;
+	public $s3AccessKey			= null;
+	public $s3SecretKey			= null;
+	public $s3Bucket			= null;
 
 	/**
 	 * Function executed from the Scheduler.
@@ -84,7 +84,84 @@ class tx_damfrontend_uploader extends tx_scheduler_Task {
 	}
 
 	public function uploadS3() {
+		$this->connectS3();
+
+		// get media records
+		$medias					= $this->getMediaRecords();
+
+		foreach ( $medias as $media ) {
+			$url						= $this->push2s3( $media );
+			$media['tx_damfrontend_s3']	= $url;
+			t3lib_div::devLog( true, __FUNCTION__, 0, $media );	
+			// update media record with S3 address
+			// $this->updateMediaRecord( $media );
+		}
+
 		return true;
+	}
+
+	private function connectS3() {
+		$success				= false;
+
+		// making S3 instance
+		if ( t3lib_extMgm::isLoaded('amazon_s3_api') ) {
+			require_once( t3lib_extMgm::extPath('amazon_s3_api') . 'class.tx_amazon_s3_api.php' );
+			$s3ClassName		= t3lib_div::makeInstance( 'tx_amazon_s3_api' );
+			$this->s3			= new $s3ClassName( $this->s3AccessKey, $this->s3SecretKey );
+			$success			= true;
+		}
+
+		return $success;
+	}
+
+	private function getMediaRecords() {
+		$select					= "
+			m.uid,
+			m.file_name,
+			CONCAT(m.file_path, m.file_name) file_path
+		";
+		$from					= 'tx_dam m';
+		$where					= 'NOT m.deleted
+			AND NOT m.hidden
+			AND NOT m.hidden
+			AND m.tx_damfrontend_uses3
+		';
+		$where					.= ' AND m.pid = ' . $this->storagePid;
+		$group					= '';
+		$order					= '';
+		$limit					= $this->importLimit;
+
+		$records				= $this->db->exec_SELECTgetRows( $select, $from, $where, $group, $order, $limit );
+		// $query					= $this->db->SELECTquery( $select, $from, $where, $group, $order, $limit );
+		// t3lib_div::devLog( $query, __FUNCTION__, 0, $records );	
+
+		if ( empty( $records ) )
+			return false;
+
+		return $records;
+	}
+
+	private function push2s3( $media ) {
+		$file_path				= PATH_site . $media['file_path'];
+		t3lib_div::devLog( $file_path, __FUNCTION__, 0, false );	
+		$success				= $this->s3->putObjectFile( $media['file_path'], $this->s3Bucket, $media['file_name'] );
+
+		return $success;
+	}
+
+	private function updateMediaRecord( $media ) {
+		$dataWhere				= 'uid = ' . $media['uid'];
+		$dataRecord				= array(
+			'tx_damfrontend_s3'		=> $media['tx_damfrontend_s3']
+		);
+
+		$dataUpdate				= $this->db->exec_UPDATEquery(
+			'tx_dam',
+			$dataWhere,
+			$dataRecord
+		);
+
+		return $dataUpdate;
 	}
 
 	public function logUploaderRelate( $relateUid, $relateTable ) {

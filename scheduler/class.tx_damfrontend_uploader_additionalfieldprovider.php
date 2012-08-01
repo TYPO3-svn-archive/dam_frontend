@@ -51,6 +51,83 @@ class tx_damfrontend_uploader_AdditionalFieldProvider implements tx_scheduler_Ad
 	public function getAdditionalFields(array &$taskInfo, $task, tx_scheduler_Module $parentObject) {
 		$additionalFields		= array();
 
+		if (empty($taskInfo['damfrontend_uploadS3'])) {
+			if ($parentObject->CMD == 'add') {
+				$taskInfo['damfrontend_uploadS3'] = '';
+			} elseif ($parentObject->CMD == 'edit') {
+				$taskInfo['damfrontend_uploadS3'] = $task->uploadS3;
+			} else {
+				$taskInfo['damfrontend_uploadS3'] = '';
+			}
+		}
+
+		$fieldID				= 'damfrontend_uploadS3';
+		$checked				= $taskInfo['damfrontend_uploadS3'] ?				'checked="checked"' : '';
+		$fieldCode				= '<input type="checkbox" name="tx_scheduler[damfrontend_uploadS3]" id="' . $fieldID . '" value="1" ' . $checked . '" size="4" />';
+		$additionalFields[$fieldID]	= array(
+			'code'				=> $fieldCode,
+			'label'				=> 'Upload to S3?',
+			'cshKey'			=> '_MOD_tools_txschedulerM1',
+			'cshLabel'			=> $fieldID
+		);
+
+		if (empty($taskInfo['damfrontend_s3AccessKey'])) {
+			if ($parentObject->CMD == 'add') {
+				$taskInfo['damfrontend_s3AccessKey'] = '';
+			} elseif ($parentObject->CMD == 'edit') {
+				$taskInfo['damfrontend_s3AccessKey'] = $task->s3AccessKey;
+			} else {
+				$taskInfo['damfrontend_s3AccessKey'] = '';
+			}
+		}
+
+		$fieldID				= 'damfrontend_s3AccessKey';
+		$fieldCode				= '<input type="text" name="tx_scheduler[damfrontend_s3AccessKey]" id="' . $fieldID . '" value="' . $taskInfo['damfrontend_s3AccessKey'] . '" size="30" />';
+		$additionalFields[$fieldID]	= array(
+			'code'				=> $fieldCode,
+			'label'				=> 'S3 Access Key',
+			'cshKey'			=> '_MOD_tools_txschedulerM1',
+			'cshLabel'			=> $fieldID
+		);
+
+		if (empty($taskInfo['damfrontend_s3SecretKey'])) {
+			if ($parentObject->CMD == 'add') {
+				$taskInfo['damfrontend_s3SecretKey'] = '';
+			} elseif ($parentObject->CMD == 'edit') {
+				$taskInfo['damfrontend_s3SecretKey'] = $task->s3SecretKey;
+			} else {
+				$taskInfo['damfrontend_s3SecretKey'] = '';
+			}
+		}
+
+		$fieldID				= 'damfrontend_s3SecretKey';
+		$fieldCode				= '<input type="text" name="tx_scheduler[damfrontend_s3SecretKey]" id="' . $fieldID . '" value="' . $taskInfo['damfrontend_s3SecretKey'] . '" size="30" />';
+		$additionalFields[$fieldID]	= array(
+			'code'				=> $fieldCode,
+			'label'				=> 'S3 Secret Key',
+			'cshKey'			=> '_MOD_tools_txschedulerM1',
+			'cshLabel'			=> $fieldID
+		);
+
+		if (empty($taskInfo['damfrontend_s3Bucket'])) {
+			if ($parentObject->CMD == 'add') {
+				$taskInfo['damfrontend_s3Bucket'] = '';
+			} elseif ($parentObject->CMD == 'edit') {
+				$taskInfo['damfrontend_s3Bucket'] = $task->s3Bucket;
+			} else {
+				$taskInfo['damfrontend_s3Bucket'] = '';
+			}
+		}
+
+		$fieldID				= 'damfrontend_s3Bucket';
+		$fieldCode				= '<input type="text" name="tx_scheduler[damfrontend_s3Bucket]" id="' . $fieldID . '" value="' . $taskInfo['damfrontend_s3Bucket'] . '" size="30" />';
+		$additionalFields[$fieldID]	= array(
+			'code'				=> $fieldCode,
+			'label'				=> 'S3 Bucket',
+			'cshKey'			=> '_MOD_tools_txschedulerM1',
+			'cshLabel'			=> $fieldID
+		);
+
 		if (empty($taskInfo['damfrontend_storagePid'])) {
 			if ($parentObject->CMD == 'add') {
 				// In case of new task and if field is empty, set default storagePid address
@@ -112,6 +189,29 @@ class tx_damfrontend_uploader_AdditionalFieldProvider implements tx_scheduler_Ad
 		// t3lib_div::devLog('submittedData ' . print_r( $submittedData, true ) , 'damfrontend', 0);
 		$result					= true;
 
+		$submittedData['damfrontend_uploadS3'] = is_numeric( $submittedData['damfrontend_uploadS3'] ) ? intval( $submittedData['damfrontend_uploadS3'] ) : '';
+
+		$submittedData['damfrontend_s3AccessKey'] = ! empty( $submittedData['damfrontend_s3AccessKey'] ) ? $submittedData['damfrontend_s3AccessKey'] : '';
+
+		if ( empty( $submittedData['damfrontend_s3AccessKey'] ) ) {
+			$parentObject->addMessage('What\'s the S3 Access Key?', t3lib_FlashMessage::ERROR);
+			$result				= false;
+		}
+	   
+		$submittedData['damfrontend_s3SecretKey'] = ! empty( $submittedData['damfrontend_s3SecretKey'] ) ? $submittedData['damfrontend_s3SecretKey'] : '';
+
+		if ( empty( $submittedData['damfrontend_s3SecretKey'] ) ) {
+			$parentObject->addMessage('What\'s the S3 Secret Key?', t3lib_FlashMessage::ERROR);
+			$result				= false;
+		}
+	   
+		$submittedData['damfrontend_s3Bucket'] = ! empty( $submittedData['damfrontend_s3Bucket'] ) ? $submittedData['damfrontend_s3Bucket'] : '';
+
+		if ( empty( $submittedData['damfrontend_s3Bucket'] ) ) {
+			$parentObject->addMessage('What\'s the S3 Bucket?', t3lib_FlashMessage::ERROR);
+			$result				= false;
+		}
+	   
 		$submittedData['damfrontend_storagePid'] = is_numeric( $submittedData['damfrontend_storagePid'] ) ? intval( $submittedData['damfrontend_storagePid'] ) : '';
 		$submittedData['damfrontend_importLimit'] = is_numeric( $submittedData['damfrontend_importLimit'] ) ? intval( $submittedData['damfrontend_importLimit'] ) : '';
 
@@ -136,6 +236,11 @@ class tx_damfrontend_uploader_AdditionalFieldProvider implements tx_scheduler_Ad
 	 * @return	void
 	 */
 	public function saveAdditionalFields(array $submittedData, tx_scheduler_Task $task) {
+		$task->uploadS3			= $submittedData['damfrontend_uploadS3'];
+		$task->s3AccessKey		= $submittedData['damfrontend_s3AccessKey'];
+		$task->s3SecretKey		= $submittedData['damfrontend_s3SecretKey'];
+		$task->s3Bucket			= $submittedData['damfrontend_s3Bucket'];
+
 		$task->storagePid		= $submittedData['damfrontend_storagePid'];
 		$task->importLimit		= $submittedData['damfrontend_importLimit'];
 	}
