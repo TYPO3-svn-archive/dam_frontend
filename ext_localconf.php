@@ -28,4 +28,13 @@ $TYPO3_CONF_VARS['FE']['eID_include']['dam_frontend_push'] = t3lib_extMgm::extPa
 // add hook for pi3
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_DAM_RECORD'][]  = 'EXT:dam_frontend/pi3/class.tx_damfrontend_basketCaseRendering.php:tx_damfrontend_basketCaseRendering';
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_SINGLE_VIEW'][] = 'EXT:dam_frontend/pi3/class.tx_damfrontend_basketCaseRendering.php:tx_damfrontend_basketCaseRendering'; 
+
+// register uploader for scheduler
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_damfrontend_uploader'] = array(
+	'extension'			=> $_EXTKEY,
+	'title'				=> 'Dam Frontend Uploader',
+	'description'		=> 'Upload media record files to Amazon S3',
+	'additionalFields'	=> 'tx_damfrontend_uploader_AdditionalFieldProvider'
+);
+
 ?>
