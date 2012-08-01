@@ -55,7 +55,7 @@ class tx_damfrontend_uploader_AdditionalFieldProvider implements tx_scheduler_Ad
 			if ($parentObject->CMD == 'add') {
 				// In case of new task and if field is empty, set default storagePid address
 				// $taskInfo['damfrontend_storagePid'] = $GLOBALS['BE_USER']->user['damfrontend_storagePid'];
-				$taskInfo['damfrontend_storagePid'] = '358';
+				$taskInfo['damfrontend_storagePid'] = '';
 			} elseif ($parentObject->CMD == 'edit') {
 				// In case of edit, and editing a test task, set to internal value if not data was submitted already
 				$taskInfo['damfrontend_storagePid'] = $task->storagePid;
@@ -78,7 +78,7 @@ class tx_damfrontend_uploader_AdditionalFieldProvider implements tx_scheduler_Ad
 			if ($parentObject->CMD == 'add') {
 				// In case of new task and if field is empty, set default importLimit address
 				// $taskInfo['damfrontend_importLimit'] = $GLOBALS['BE_USER']->user['damfrontend_importLimit'];
-				$taskInfo['damfrontend_importLimit'] = '10';
+				$taskInfo['damfrontend_importLimit'] = '';
 			} elseif ($parentObject->CMD == 'edit') {
 				// In case of edit, and editing a test task, set to internal value if not data was submitted already
 				$taskInfo['damfrontend_importLimit'] = $task->importLimit;
