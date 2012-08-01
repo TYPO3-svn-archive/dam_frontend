@@ -34,7 +34,6 @@
 class tx_damfrontend_uploader extends tx_scheduler_Task {
 
 	public $db					= null;
-	public $uploaderLog			= 'tx_damfrontend_uploader_log';
 	public $logUid				= null;
 	public $s3					= null;
 
@@ -62,8 +61,6 @@ class tx_damfrontend_uploader extends tx_scheduler_Task {
 			return $success;
 		}
 
-		$this->uploadS3			= true;
-
 		try {
 			if ( ! $this->connectDbs() )
 				return $success;
@@ -84,31 +81,45 @@ class tx_damfrontend_uploader extends tx_scheduler_Task {
 	}
 
 	public function uploadS3() {
-		$this->connectS3();
+		if ( ! $this->connectS3() ) {
+			return false;
+		}
 
 		// get media records
 		$medias					= $this->getMediaRecords();
 
 		foreach ( $medias as $media ) {
-			$url						= $this->push2s3( $media );
-			$media['tx_damfrontend_s3']	= $url;
-			t3lib_div::devLog( true, __FUNCTION__, 0, $media );	
-			// update media record with S3 address
-			// $this->updateMediaRecord( $media );
+			if ( $this->push2s3( $media ) ) {
+				$url						= $this->getS3Link( $media );
+				$media['tx_damfrontend_s3']	= $url;
+				t3lib_div::devLog( true, __FUNCTION__, 0, $media );	
+				// update media record with S3 address
+				// $this->updateMediaRecord( $media );
+			}
 		}
 
 		return true;
+	}
+
+	// looks like
+	// https://s3-eu-west-1.amazonaws.com/cubeware/Lizenzverfahren_von_MIS_Alea_4.1.pdf
+	private function getS3Link( $media ) {
+		t3lib_div::devLog( true, __FUNCTION__, 0, func_get_args() );
+		$info					= $this->s3->getObjectInfo( $this->s3Bucket, $media['file_name'] );
+		t3lib_div::devLog( true, __FUNCTION__, 0, array($info) );	
+
+		// TODO return real link like https://s3-eu-west-1.amazonaws.com/cubeware/Lizenzverfahren_von_MIS_Alea_4.1.pdf
+		return $info->link;
 	}
 
 	private function connectS3() {
 		$success				= false;
 
 		// making S3 instance
-		if ( t3lib_extMgm::isLoaded('amazon_s3_api') ) {
-			require_once( t3lib_extMgm::extPath('amazon_s3_api') . 'class.tx_amazon_s3_api.php' );
-			$s3ClassName		= t3lib_div::makeInstance( 'tx_amazon_s3_api' );
-			$this->s3			= new $s3ClassName( $this->s3AccessKey, $this->s3SecretKey );
-			$success			= true;
+		if ( is_readable( t3lib_extMgm::extPath('dam_frontend') . 'lib/S3.php' ) ) {
+			require_once( t3lib_extMgm::extPath('dam_frontend') . 'lib/S3.php' );
+			$this->s3			= t3lib_div::makeInstance( 'S3', $this->s3AccessKey, $this->s3SecretKey );
+			$success			= is_object( $this->s3 );
 		}
 
 		return $success;
@@ -143,8 +154,11 @@ class tx_damfrontend_uploader extends tx_scheduler_Task {
 
 	private function push2s3( $media ) {
 		$file_path				= PATH_site . $media['file_path'];
-		t3lib_div::devLog( $file_path, __FUNCTION__, 0, false );	
-		$success				= $this->s3->putObjectFile( $media['file_path'], $this->s3Bucket, $media['file_name'] );
+		$result					= $this->s3->putObjectFile( $file_path, $this->s3Bucket, $media['file_name'] );
+
+		// TODO fixme
+		// $success				= $result ? true : false;
+		$success				= true;
 
 		return $success;
 	}
@@ -162,157 +176,6 @@ class tx_damfrontend_uploader extends tx_scheduler_Task {
 		);
 
 		return $dataUpdate;
-	}
-
-	public function logUploaderRelate( $relateUid, $relateTable ) {
-		if ( empty( $this->logUid ) && is_numeric( $this->logUid ) )
-			return;
-
-		$table					= $this->uploaderLog;
-		$dataRecord				= array(
-			'old_uid'			=> $relateUid,
-			'old_table'			=> $relateTable,
-		);
-
-		$updateWhere			= 'uid = ' . $this->logUid;
-
-		$dataUpdate				= $this->db->exec_UPDATEquery(
-			$table,
-			$updateWhere,
-			$dataRecord
-		);
-
-		if ( ! $dataUpdate ) {
-			$dataUpdate			= $this->db->UPDATEquery(
-				$table,
-				$updateWhere,
-				$dataRecord
-			);
-			t3lib_div::devLog($dataUpdate, __FUNCTION__, 0);
-			t3lib_div::devLog($this->db->sql_error(), __FUNCTION__, 0);
-		}
-	}
-
-	public function logUploaderInsert( $importUid, $importTable ) {
-		$table					= $this->uploaderLog;
-		$dataRecord				= array(
-			'new_uid'			=> $importUid,
-			'new_table'			=> $importTable,
-		);
-
-		$dataInsert				= $this->db->exec_INSERTquery(
-			$table,
-			$dataRecord
-		);
-
-		if ( $dataInsert ) {
-			$dataUid			= $this->db->sql_insert_id();
-		} else {
-			$dataInsert			= $this->db->INSERTquery(
-				$table,
-				$dataRecord
-			);
-			t3lib_div::devLog($dataInsert, __FUNCTION__, 0);
-			t3lib_div::devLog($this->db->sql_error(), __FUNCTION__, 0);
-			$dataUid			= false;
-		}
-
-		$this->logUid	= $dataUid;
-	}
-
-	public function insertOrUpdateQuery( $table, $updateWhere, $dataRecord ) {
-		$dataSelect				= $this->db->exec_SELECTgetSingleRow(
-			'uid',
-			$table,
-			$updateWhere
-		);
-
-		if ( ! is_null( $dataSelect ) ) {
-			// insert
-			$dataInsert			= $this->db->exec_INSERTquery(
-				$table,
-				$dataRecord
-			);
-
-			if ( $dataInsert ) {
-				$dataUid		= $this->db->sql_insert_id();
-				$this->logUploaderInsert( $dataUid, $table );
-			} else {
-				$dataInsert		= $this->db->INSERTquery(
-					$table,
-					$dataRecord
-				);
-				t3lib_div::devLog($dataInsert, __FUNCTION__, 0);
-				t3lib_div::devLog($this->db->sql_error(), __FUNCTION__, 0);
-				$dataUid		= false;
-			}
-		} else {
-			// update
-			$dataUpdate			= $this->db->exec_UPDATEquery(
-				$table,
-				$updateWhere,
-				$dataRecord
-			);
-			$dataUid			= $dataSelect['uid'];
-			$this->logUploaderUid( $dataUid, $table );
-		}
-
-		return $dataUid;
-	}
-
-	public function logUploaderUid( $importUid, $importTable ) {
-		$table					= $this->uploaderLog;
-		$select					= 'uid';
-		$from					= $table;
-		$where					= "new_uid = {$importUid} AND new_table LIKE '{$importTable}'";
-
-		$dataSelect				= $this->db->exec_SELECTgetSingleRow(
-			$select,
-			$from,
-			$where
-		);
-
-		if ( $dataSelect ) {
-			$dataUid			= $dataSelect['uid'];
-		} else {
-			$dataSelect			= $this->db->SELECTquery(
-				$select,
-				$from,
-				$where
-			);
-
-			t3lib_div::devLog($dataSelect, __FUNCTION__, 0);
-			t3lib_div::devLog($this->db->sql_error(), __FUNCTION__, 0);
-			$dataUid			= false;
-		}
-
-		$this->logUid	= $dataUid;
-	}
-
-	public function uploaderLookup( $uid, $table, $lookupNew = true, $type = false ) {
-		// t3lib_div::devLog( true, __FUNCTION__, 0, false );	
-		if ( $lookupNew ) {
-			$select				= 'new_uid';
-			$where				= "old_uid = {$uid} AND old_table = '{$table}'";
-		} else {
-			$select				= 'olduid';
-			$where				= "new_uid = {$uid} AND new_table = '{$table}'";
-		}
-
-		if ( $type ) {
-			$where				.= " AND new_table = '{$type}'";
-		}
-
-		$from					= $this->uploaderLog;
-		$result					= $this->db->exec_SELECTgetRows( $select, $from, $where );
-		// $query					= $this->db->SELECTquery( $select, $from, $where );
-		// t3lib_div::devLog( $query, __FUNCTION__, 0, false );	
-
-		// nothing to relate
-		if ( ! count( $result ) )
-			return false;
-
-		return $result[0][$select];
 	}
 
 	public function connectDbs() {
