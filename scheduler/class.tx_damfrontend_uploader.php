@@ -36,6 +36,7 @@ class tx_damfrontend_uploader extends tx_scheduler_Task {
 	public $db					= null;
 	public $logUid				= null;
 	public $s3					= null;
+	private $debug				= false;
 
 	// additional fields
 	public $uploadS3			= null;
@@ -82,6 +83,8 @@ class tx_damfrontend_uploader extends tx_scheduler_Task {
 
 	public function uploadS3() {
 		if ( ! $this->connectS3() ) {
+			if ( $this->debug )
+				t3lib_div::devLog( 'connectS3 failure', __FUNCTION__, 0, false );	
 			return false;
 		}
 
@@ -89,12 +92,16 @@ class tx_damfrontend_uploader extends tx_scheduler_Task {
 		$medias					= $this->getMediaRecords();
 
 		foreach ( $medias as $media ) {
-			if ( $this->push2s3( $media ) ) {
+			if ( $this->debug )
+				t3lib_div::devLog( true, __FUNCTION__, 0, $media );	
+			$success			= $this->push2s3( $media );
+			if ( $this->debug )
+				t3lib_div::devLog( var_export( $success, true ), __FUNCTION__, 0, false );	
+			if ( $success ) {
 				$url						= $this->getS3Link( $media );
 				$media['tx_damfrontend_s3']	= $url;
-				t3lib_div::devLog( true, __FUNCTION__, 0, $media );	
 				// update media record with S3 address
-				// $this->updateMediaRecord( $media );
+				$this->updateMediaRecord( $media );
 			}
 		}
 
@@ -104,22 +111,30 @@ class tx_damfrontend_uploader extends tx_scheduler_Task {
 	// looks like
 	// https://s3-eu-west-1.amazonaws.com/cubeware/Lizenzverfahren_von_MIS_Alea_4.1.pdf
 	private function getS3Link( $media ) {
-		t3lib_div::devLog( true, __FUNCTION__, 0, func_get_args() );
-		$info					= $this->s3->getObjectInfo( $this->s3Bucket, $media['file_name'] );
-		t3lib_div::devLog( true, __FUNCTION__, 0, array($info) );	
+		$uri					= str_replace( '%2F', '/', rawurlencode( $media['file_name'] ) );
+		$link					= sprintf(
+			'https://%s/%s',
+			$this->s3Bucket.'.s3.amazonaws.com',
+			$uri
+		);
 
-		// TODO return real link like https://s3-eu-west-1.amazonaws.com/cubeware/Lizenzverfahren_von_MIS_Alea_4.1.pdf
-		return $info->link;
+		return $link;
 	}
 
 	private function connectS3() {
 		$success				= false;
 
 		// making S3 instance
-		if ( is_readable( t3lib_extMgm::extPath('dam_frontend') . 'lib/S3.php' ) ) {
-			require_once( t3lib_extMgm::extPath('dam_frontend') . 'lib/S3.php' );
-			$this->s3			= t3lib_div::makeInstance( 'S3', $this->s3AccessKey, $this->s3SecretKey );
+		if ( t3lib_extMgm::isLoaded('amazon_s3_api') ) {
+			require_once( t3lib_extMgm::extPath('amazon_s3_api').'class.tx_amazon_s3_api.php' );
+			$this->s3			= new tx_amazon_s3_api( $this->s3AccessKey, $this->s3SecretKey );
 			$success			= is_object( $this->s3 );
+
+			if ( ! $success ) {
+				t3lib_div::devLog( '$this->s3 object not created', __FUNCTION__, 0, false );	
+			}
+		} else {
+			t3lib_div::devLog( 'lib/S3.php not found', __FUNCTION__, 0, false );	
 		}
 
 		return $success;
@@ -134,8 +149,8 @@ class tx_damfrontend_uploader extends tx_scheduler_Task {
 		$from					= 'tx_dam m';
 		$where					= 'NOT m.deleted
 			AND NOT m.hidden
-			AND NOT m.hidden
 			AND m.tx_damfrontend_uses3
+			AND ( m.tx_damfrontend_s3 LIKE "" OR m.tx_damfrontend_s3 IS NULL )
 		';
 		$where					.= ' AND m.pid = ' . $this->storagePid;
 		$group					= '';
@@ -154,16 +169,19 @@ class tx_damfrontend_uploader extends tx_scheduler_Task {
 
 	private function push2s3( $media ) {
 		$file_path				= PATH_site . $media['file_path'];
-		$result					= $this->s3->putObjectFile( $file_path, $this->s3Bucket, $media['file_name'] );
-
-		// TODO fixme
-		// $success				= $result ? true : false;
-		$success				= true;
+		if ( $this->debug )
+			t3lib_div::devLog( $file_path, __FUNCTION__, 0, false );	
+		$success				= $this->s3->putObjectFile( $file_path, $this->s3Bucket, $media['file_name'] );
+		if ( $this->debug )
+			t3lib_div::devLog( var_export( $success, true ), __FUNCTION__, 0, false );	
 
 		return $success;
 	}
 
 	private function updateMediaRecord( $media ) {
+		if ( empty( $media['tx_damfrontend_s3'] ) )
+			return false;
+
 		$dataWhere				= 'uid = ' . $media['uid'];
 		$dataRecord				= array(
 			'tx_damfrontend_s3'		=> $media['tx_damfrontend_s3']
