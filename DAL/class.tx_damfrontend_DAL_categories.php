@@ -315,7 +315,7 @@ class tx_damfrontend_DAL_categories {
 		// check first, if no usergroup has been assigned to the given category
 		if ($catRow['tx_damtree_fe_groups_uploadaccess'] == 0) {
 			if ($this->debug == 1) {
-				t3lib_div::debug('checkCategoryAccess = true (no group selected) catID: ' . $catID);
+				t3lib_utility_Debug::debug('checkCategoryAccess = true (no group selected) catID: ' . $catID,__LINE__ . ':' . __FILE__);
 			}
 			return true;
 		}
@@ -401,7 +401,7 @@ class tx_damfrontend_DAL_categories {
 			else {
 				if ($catRow[$relCheck] == 0) {
 					if ($this->debug == 1) {
-						t3lib_div::debug('checkCategoryAccess = true (no group selected) catID: ' . $catID);
+						t3lib_utility_Debug::debug('checkCategoryAccess = true (no group selected) catID: ' . $catID,__LINE__ . ':' . __FILE__);
 					}
 					return true;
 				}

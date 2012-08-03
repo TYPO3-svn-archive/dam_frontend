@@ -125,9 +125,9 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 
 			//Debug statements
 		if ($this->conf['enableDebug']==1) {
-			if ($this->conf['debug.']['renderCheckOutForm.']['markerArray']==1)		t3lib_div::debug($markerArray);
-			if ($this->conf['debug.']['renderCheckOutForm.']['conf']==1)			t3lib_div::debug($this->conf);
-			if ($this->conf['debug.']['renderCheckOutForm.']['items']==1)			t3lib_div::debug($items);
+			if ($this->conf['debug.']['renderCheckOutForm.']['markerArray']==1)		t3lib_utility_Debug::debug($markerArray);
+			if ($this->conf['debug.']['renderCheckOutForm.']['conf']==1)			t3lib_utility_Debug::debug($this->conf);
+			if ($this->conf['debug.']['renderCheckOutForm.']['items']==1)			t3lib_utility_Debug::debug($items);
 		}
 
 		return tslib_cObj::substituteMarkerArray($htmlTemplate, $markerArray);
@@ -170,9 +170,9 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 
 			//Debug statements
 		if ($this->conf['enableDebug']==1) {
-			if ($this->conf['debug.']['renderMail.']['markerArray']==1)		t3lib_div::debug($markerArray);
-			if ($this->conf['debug.']['renderMail.']['conf']==1)			t3lib_div::debug($this->conf);
-			if ($this->conf['debug.']['renderMail.']['items']==1)			t3lib_div::debug($items);
+			if ($this->conf['debug.']['renderMail.']['markerArray']==1)		t3lib_utility_Debug::debug($markerArray);
+			if ($this->conf['debug.']['renderMail.']['conf']==1)			t3lib_utility_Debug::debug($this->conf);
+			if ($this->conf['debug.']['renderMail.']['items']==1)			t3lib_utility_Debug::debug($items);
 		}
 
 		return tslib_cObj::substituteMarkerArray($htmlTemplate, $markerArray);
@@ -229,9 +229,9 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 
 			//Debug statements
 		if ($this->conf['enableDebug']==1) {
-			if ($this->conf['debug.']['renderCheckOutResult.']['markerArray']==1)		t3lib_div::debug($markerArray);
-			if ($this->conf['debug.']['renderCheckOutResult.']['conf']==1)			t3lib_div::debug($this->conf);
-			if ($this->conf['debug.']['renderCheckOutResult.']['items']==1)			t3lib_div::debug($items);
+			if ($this->conf['debug.']['renderCheckOutResult.']['markerArray']==1)		t3lib_utility_Debug::debug($markerArray);
+			if ($this->conf['debug.']['renderCheckOutResult.']['conf']==1)			t3lib_utility_Debug::debug($this->conf);
+			if ($this->conf['debug.']['renderCheckOutResult.']['items']==1)			t3lib_utility_Debug::debug($items);
 		}
 		return tslib_cObj::substituteMarkerArray($htmlTemplate, $markerArray);
 	}
@@ -283,9 +283,9 @@ class tx_damfrontend_basketCaseRendering extends tslib_pibase {
 
 		//Debug statements
 		if ($this->conf['enableDebug']==1) {
-			if ($this->conf['debug.']['renderPreview.']['markerArray']==1)	t3lib_div::debug($markerArray);
-			if ($this->conf['debug.']['renderPreview.']['conf']==1)			t3lib_div::debug($this->conf);
-			if ($this->conf['debug.']['renderPreview.']['items']==1)			t3lib_div::debug($items);
+			if ($this->conf['debug.']['renderPreview.']['markerArray']==1)	t3lib_utility_Debug::debug($markerArray);
+			if ($this->conf['debug.']['renderPreview.']['conf']==1)			t3lib_utility_Debug::debug($this->conf);
+			if ($this->conf['debug.']['renderPreview.']['items']==1)			t3lib_utility_Debug::debug($items);
 		}
 
 		return tslib_cObj::substituteMarkerArray($htmlTemplate, $markerArray);

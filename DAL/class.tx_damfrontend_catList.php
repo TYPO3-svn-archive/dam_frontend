@@ -207,7 +207,7 @@ function op_Minus($catID, $treeID) {
 		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dam_frontend']);
 		if ($extConf['enableDebug']==1) {
 			$conf =$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.'];
-			if ($conf['debug.']['tx_damfrontend_catlist.']['getCatSelection.']['getArrayFromUser']==1)		t3lib_div::debug($ar);
+			if ($conf['debug.']['tx_damfrontend_catlist.']['getCatSelection.']['getArrayFromUser']==1)	t3lib_utility_Debug::debug($ar,__LINE__ . ':' . __FILE__);
 		}
 		if ($treeID <> 0) {
 			//returns the selected categories for a specified treeID
@@ -227,7 +227,7 @@ function op_Minus($catID, $treeID) {
 				$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['dam_frontend']);
 				if ($extConf['enableDebug']==1) {
 					$conf =$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.'];
-					if ($conf['debug.']['tx_damfrontend_catlist.']['getCatSelection']==1)		t3lib_div::debug($returnArr);
+					if ($conf['debug.']['tx_damfrontend_catlist.']['getCatSelection']==1)	t3lib_utility_Debug::debug($returnArr,__LINE__ . ':' . __FILE__);
 				}
 				return $returnArr;
 			}
@@ -256,7 +256,7 @@ function op_Minus($catID, $treeID) {
 
 				if ($extConf['enableDebug']==1) {
 					$conf =$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.'];
-					if ($conf['debug.']['tx_damfrontend_catlist.']['getCatSelection']==1)		t3lib_div::debug($returnArr);
+					if ($conf['debug.']['tx_damfrontend_catlist.']['getCatSelection']==1)		t3lib_utility_Debug::debug($returnArr,__LINE__ . ':' . __FILE__);
 				}
 				
 				if (is_array($ar[$GLOBALS['TSFE']->id])) {

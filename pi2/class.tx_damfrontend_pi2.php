@@ -451,8 +451,8 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 				preg_match_all('/###LLL:.+?###/Ssm', $templCode, $aLLMarkerList);
 
 				if ($this->conf['debug'] == 1) {
-					t3lib_div::debug('in class.tx_damfrontend_rendering.php / Found language markers: //');
-					t3lib_div::debug($aLLMarkerList);
+					t3lib_utility_Debug::debug('in class.tx_damfrontend_rendering.php / Found language markers: //');
+					t3lib_utility_Debug::debug($aLLMarkerList);
 				}
 
 				foreach ($aLLMarkerList[0] as $LLMarker) {

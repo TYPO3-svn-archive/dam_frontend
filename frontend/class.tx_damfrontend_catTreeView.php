@@ -486,7 +486,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 				-->
 				<table class="typo3-browsetree">';
 			if ($this->conf['enableDebug']==1) {
-				if ($this->conf['debug.']['tx_damfrontend_catTreeView.']['printTree.']['showTreeArr']==1) t3lib_div::debug($treeArr);
+				if ($this->conf['debug.']['tx_damfrontend_catTreeView.']['printTree.']['showTreeArr']==1) t3lib_utility_Debug::debug($treeArr);
 			}
 
 			foreach($treeArr as $k => $v)	{

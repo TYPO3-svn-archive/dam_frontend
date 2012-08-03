@@ -1007,7 +1007,7 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		// filling fields with url - vars
 		$markerArray = $this->recordToMarkerArray($filterArray);
 		$markerArray = $markerArray + $this->substituteLangMarkers($formCode);
-		#t3lib_div::debug($filterArray);
+		#t3lib_utility_Debug::debug($filterArray);
 		$markerArray['###DROPDOWN_CATEGORIES###'] = '';
 		$markerArray['###TREEID###'] = '';
 		$markerArray['###DROPDOWN_CATEGORIES_HEADER###'] = '';
@@ -1430,7 +1430,7 @@ class tx_damfrontend_rendering extends tslib_pibase {
 
 		// Ralf Merz: Show error if no category is selected
 		if ($this->conf['doNotAllowUploadEmptyCategorySelection'] == 1 && $this->noCategorySelected === true) {
-			#t3lib_div::debug($this->conf, 'TS on line '.__LINE__.' in file '.__FILE__);
+			#t3lib_utility_Debug::debug($this->conf, 'TS on line '.__LINE__.' in file '.__FILE__);
 			$markerArray['###ERROR_NO_CAT###'] = $this->cObj->stdWrap($this->pi_getLL('ERROR_NO_CAT'), $this->conf['errorNoCat']);
 		} else {
 			$markerArray['###ERROR_NO_CAT###'] = '';
@@ -1576,8 +1576,8 @@ class tx_damfrontend_rendering extends tslib_pibase {
 			preg_match_all('/###LLL:.+?###/Ssm', $templCode, $aLLMarkerList);
 
 			if ($this->conf['debug'] == 1) {
-				t3lib_div::debug('in class.tx_damfrontend_rendering.php / Found language markers: //');
-				t3lib_div::debug($aLLMarkerList);
+				t3lib_utility_Debug::debug('in class.tx_damfrontend_rendering.php / Found language markers: //');
+				t3lib_utility_Debug::debug($aLLMarkerList);
 			}
 
 			foreach ($aLLMarkerList[0] as $LLMarker) {
@@ -1719,7 +1719,7 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		$markerArray['###VALUE_DESCRIPTION###'] = $record['description'];
 		$markerArray['###LABEL_LANGUAGE###'] = $this->pi_getLL('LANGUAGE_HEADER');
 		$markerArray['###LABEL_FEGROUPS###'] = $this->pi_getLL('LABEL_FEGROUPS');
-		// selected kommen aus Datenbank: t3lib_div::debug($record['tx_damfrontend_fegroup']);
+		// selected kommen aus Datenbank: t3lib_utility_Debug::debug($record['tx_damfrontend_fegroup']);
 		$selected = explode(',', $record['tx_damfrontend_fegroup']);
 		// Auswahl
 		$SELECT = 'uid, title';

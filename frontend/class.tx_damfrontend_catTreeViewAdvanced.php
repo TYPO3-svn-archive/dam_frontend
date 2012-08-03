@@ -1009,11 +1009,11 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 		}
 		else {
 			// render message
-			#t3lib_div::debug($this->renderer->conf);
+			#t3lib_utility_Debug::debug($this->renderer->conf);
 			if ($this->renderer->conf['explorerView.']['showEmptyMessage'] == 1) $content .= $this->renderer->cObj->stdWrap($this->renderer->get_LLLabel('noDocInCat'), $this->renderer->conf['explorerView.']['showEmptyMessage.']);
 		}
 		$content = $this->renderer->cObj->stdWrap($content, $this->renderer->conf['explorerView.']['filelist.']);
-		#t3lib_div::debug($content);
+		#t3lib_utility_Debug::debug($content);
 
 		return $content;
 	}

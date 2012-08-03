@@ -893,7 +893,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$this->catList->unsetAllCategories();
 				foreach ($this->internal['filter']['catgroups'] as $catgroupID => $cats) {
 					foreach($cats as $cat) {
-						#t3lib_div::debug($cat, 'Category ' . $cat . ' in ' . __LINE__ . ' in ' . __FILE__);
+						#t3lib_utility_Debug::debug($cat, 'Category ' . $cat . ' in ' . __LINE__ . ' in ' . __FILE__);
 						$this->catList->op_Plus($cat, $catgroupID*-1);
 					}
 				}
@@ -1133,8 +1133,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 
 		if ($this->conf['enableDebug'] == 1) {
-			if ($this->conf['debug.']['tx_damfrontend_pi1.']['fileList.']['showCatSelection'] == 1) t3lib_div::debug($cats);
-			if ($this->conf['debug.']['tx_damfrontend_pi1.']['fileList.']['showFilter'] == 1) t3lib_div::debug($this->internal['filter']);
+			if ($this->conf['debug.']['tx_damfrontend_pi1.']['fileList.']['showCatSelection'] == 1) t3lib_utility_Debug::debug($cats);
+			if ($this->conf['debug.']['tx_damfrontend_pi1.']['fileList.']['showFilter'] == 1) t3lib_utility_Debug::debug($this->internal['filter']);
 		}
 		if (count($cats)) {
 			foreach ($cats as $catList) {
@@ -1917,7 +1917,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 			// store cat selection in the user array
 			if (is_array($cats)) {
-				t3lib_div::debug($cats);
+				t3lib_utility_Debug::debug($cats);
 				$catarray[-1] = $cats;
 				$this->catList->setArrayToUser($catarray);
 				$cats = $this->catList->getCatSelection(-1, 0);

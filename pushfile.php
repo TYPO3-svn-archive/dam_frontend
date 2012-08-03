@@ -421,9 +421,6 @@ if (is_array($post) && count($post) > 0) {
 		$restrictedFolders = array();
 		$restrictedFolders = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.']['filelist.']['security_options.']['checkOutFolders.'];
 		if (empty($restrictedFolders)) return false;
-        t3lib_div::debug($path);
-        t3lib_div::debug($restrictedFolders);
-        die();
 		foreach ($restrictedFolders as $folder) {
 			if (strlen($path)>=strlen($folder)) {
 			 if ($path==substr($folder,0,strlen($path))) {
