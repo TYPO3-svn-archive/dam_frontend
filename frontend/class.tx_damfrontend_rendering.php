@@ -1123,6 +1123,11 @@ class tx_damfrontend_rendering extends tslib_pibase {
 			}
 		}
 		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
+
+		$markerArray = $this->replaceEmptyMarkers($formCode, $markerArray);
+
+		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
+
 		return $formCode;
 	}
 
@@ -2204,14 +2209,9 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		$markerArray = array_merge($markerArray, $this->substituteLangMarkers($record_Code));
 		$templCode = tslib_cObj::substituteMarkerArray($record_Code, $markerArray);
 
-		// get all remaining markers
-		preg_match_all('/###.+?###/Ssm', $templCode, $aLLMarkerList);
-		$markerArray = array();
-		// set all remaining marker to an empty string
-		foreach ($aLLMarkerList[0] as $key => $value) {
-			$markerArray[$value] = '';
+		// clear remaining not replaced markers
+		$markerArray = $this->replaceEmptyMarkers($templCode,$markerArray);
 
-		}
 		return tslib_cObj::substituteMarkerArray($templCode, $markerArray);
 	}
 	
@@ -2231,6 +2231,19 @@ class tx_damfrontend_rendering extends tslib_pibase {
         $content = $this->cObj->cObjGetSingle($this->conf['languageFilter.']['removeFilter'], $this->conf['languageFilter.']['removeFilter.']) . $content ;
 		#}
 		return   $this->cObj->stdWrap($content, $this->conf['languageFilter.']); 
+	}
+
+	public function replaceEmptyMarkers($templCode,$markerArray){
+		$aLLMarkerList = array();
+		// get all remaining markers
+		preg_match_all('/###.+?###/Ssm', $templCode, $aLLMarkerList);
+		$markerArray = array();
+		// set all remaining marker to an empty string
+		foreach ($aLLMarkerList[0] as $key => $value) {
+			$markerArray[$value] = '';
+
+		}
+		return $markerArray;
 	}
 }
 
