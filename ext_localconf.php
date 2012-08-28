@@ -39,6 +39,6 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_damfrontend_
 
 // S3 link remover on file upload
 require_once( t3lib_extMgm::extPath( $_EXTKEY ) . 'lib/class.tx_dam_frontend_s3.php' );
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['dam']['fileTriggerClasses'][] = 'tx_dam_frontend_s3';
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['dam']['processTriggerClasses'][] = 'tx_dam_frontend_s3';
 
 ?>
