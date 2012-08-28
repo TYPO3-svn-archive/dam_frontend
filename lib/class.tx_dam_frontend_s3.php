@@ -17,8 +17,6 @@ class tx_dam_frontend_s3 {
 			break;
 		}
 	}
-
-	return true;
 }
 
 ?>
