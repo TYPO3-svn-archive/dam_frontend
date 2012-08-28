@@ -7,10 +7,14 @@
 
 class tx_dam_frontend_s3 {
 	public function filePostTrigger( $action, $id = null ) {
+		// t3lib_div::devLog( $action, __FUNCTION__, 0, $id );	
 		$db						= $GLOBALS['TYPO3_DB'];
 
 		switch( $action ) {
 		case 'upload':
+			// FIXME doesn't work for changed file_names
+			// FIXME no versioning done
+
 			$target_file		= $id['target_file'];
 			$file_name			= basename( $target_file );
 			$file_path			= dirname( $target_file );
