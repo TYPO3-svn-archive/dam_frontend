@@ -11,6 +11,8 @@ class tx_dam_frontend_s3 {
 		$db						= $GLOBALS['TYPO3_DB'];
 
 		switch( $action ) {
+		case 'copyFile':
+		case 'moveFile':
 		case 'replaceFile':
 			// FIXME no versioning done
 
