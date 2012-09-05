@@ -1317,13 +1317,12 @@ require_once(PATH_tslib.'class.tslib_content.php');
 					return false;
 				}
 				return true;
-		}
+			}
 
 			$access = false;
 
 				// get all usergroups of the fe_user
 			$feuserGroups=$GLOBALS['TSFE']->fe_user->groupData['uid'];
-
 				// if fe_user is not assigned to group return false, because a fe_user has to be at least member of one group
 			if (!is_array($feuserGroups)) return false;
 

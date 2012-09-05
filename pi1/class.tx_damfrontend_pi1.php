@@ -270,6 +270,16 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$this->renderer->setFileRef($this->conf['templateFile']);
 		}
 
+
+		if  (t3lib_div::_GP('setFilter') ) {
+			// if a filter in the filterview want to be activated, we have to unset the piVar resetFilter
+			// otherwise the filter would be resetted in initFilter() and the filter would be lost
+			// also if the TS option categoryTree.resetFilterOnClick is active the a get param 'resetFilter' is rendered
+			// at most Links (all Links in CategoryTree and pageBrowser). Then if a filter is active
+			// and you want to browser thru the result, the filter would be deleted on the next click, even if you want
+			// to keep the result
+			unset($this->piVars['resetFilter']) ;
+		}
 		$this->renderer->piVars = $this->piVars;
 		$this->renderer->conf = $this->conf;
 		$this->renderer->cObj = $this->cObj;
@@ -289,14 +299,15 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @return	[void]		...
 	 */
 	function initFilter() {
-		if (t3lib_div::_GP('resetFilter')) {
-			$this->filterState->resetFilter();
-			$this->catList->clearCatSelection($this->internal['incomingtreeID']);
-		}
 
-		if ($this->piVars['resetFilter']) {
-			$this->filterState->resetFilter();
-		}
+			if (t3lib_div::_GP('resetFilter')) {
+				$this->filterState->resetFilter();
+				$this->catList->clearCatSelection($this->internal['incomingtreeID']);
+			}
+
+			if ($this->piVars['resetFilter']) {
+				$this->filterState->resetFilter();
+			}
 
 		//variables for setting filters for the current category selection
 

@@ -33,7 +33,7 @@ plugin.tx_damfrontend_pi1 {
 	categoryTree {
 		showRootCategory=0
 		
-		resetFilterOnClick = 1
+		resetFilterOnClick = 0
 		
 		showCategoriesControl {
 			plusIcon = 1
@@ -609,7 +609,7 @@ plugin.tx_damfrontend_pi1 {
 		security_options {
 			redirectToLoginPage=0
 			checkAllAsignedCategories=0
-			redirectToURL = http://localhost:8888/index.php?id=11&redirect_url=
+			redirectToURL = http://localhost:8888/dam_test/index.php?id=11&redirect_url=
 			showOnlyFilesWithPermission=0
 			deleteFilesOfDeletedRecords = 1
 			# how long is link with a hash valid (in seconds)

@@ -435,9 +435,9 @@ if (is_array($post) && count($post) > 0) {
 
 		$redirect=$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.']['filelist.']['security_options.']['redirectToLoginPage'];
 		$URL=$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.']['filelist.']['security_options.']['redirectToURL'];
-
 		if ($redirect) {
-			$redirectURL = urlencode('?id=7&eID=dam_frontend_push&docID='.$docID);
+			$redirectURL = urlencode('?id='.intval(t3lib_div::_GP('id')).'&eID=dam_frontend_push&docID='.$docID);
+			#$redirectURL = urlencode($redirect.$docID);
 			header('Location: '. $URL.$redirectURL);
 		}
 		else {
@@ -497,7 +497,6 @@ if (is_array($post) && count($post) > 0) {
 			noAccess('<h1>Error</h1><p>You have no access to this file.',$docID);
 		}
 	}
-
 	$filePath = PATH_site.$doc['file_path'].$doc['file_name'];
 
 	if (!sendFile($filePath, $doc['file_name'], $doc['file_mime_type'] . '/' . $doc['file_mime_subtype'])) {
