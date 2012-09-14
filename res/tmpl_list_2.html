@@ -1,0 +1,59 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>DAM Download List Template (New)</title>
+</head>
+<body>
+<!-- ###TEMPLATE_LIST### begin -->
+<!-- ###TEMPLATE_SUBHEADER### -->
+	<div class="subheader">###SUBHEADER###</div>
+<!-- ###TEMPLATE_SUBHEADER### -->
+
+<table class="file_list">
+
+	<!-- ###TEMPLATE_LIST_LINK### begin -->
+	<!-- ###TEMPLATE_LIST_LINK_ITEM### -->
+	<tr>
+		<td>###MARK_LINK_TITLE###</td>
+		<td colspan="2">###MARK_LINK_DESCRIPTION###</td>
+		<td><a href="?###MARK_LINK_HREF###">###MARK_LINK_TEXT###</a></td>
+	</tr>
+	<!-- ###TEMPLATE_LIST_LINK_ITEM### -->
+	<!-- ###TEMPLATE_LIST_LINK### end -->
+
+
+	<!-- ###TEMPLATE_LIST_ITEM### begin -->
+	<!-- ###TEMPLATE_LIST_ITEM_FILE### begin -->
+	<tr colspan="4">
+		<td>
+			<div class="title">###MARK_TITLE###</div>
+			<div class="description">###MARK_DESCRIPTION###</div>
+		</td>
+	</tr>
+	<tr>
+		<td><a href="###MARK_FILE_HREF###">###MARK_ICONTAG###</a></td>
+		<td><a href="###MARK_FILE_HREF###"
+			   title="[###MARK_FILE_MIME_TYPE###/###MARK_FILE_MIME_SUBTYPE###]">###MARK_FILE_NAME###</a> [###MARK_FILE_TYPE###] ###MARK_HIDDEN###
+		</td>
+		<td>###MARK_FILE_MTIME###</td>
+		<td>###MARK_FILE_SIZE###</td>
+	</tr>
+	<!-- ###TEMPLATE_LIST_ITEM_FILE### end -->
+	<!-- ###TEMPLATE_LIST_ITEM### end -->
+</table>
+
+<!-- ###TEMPLATE_LIST### end -->
+
+
+<!-- ###MESSAGE### begin-->
+<form action="###FORM_URL###" method="post" enctype="multipart/form-data">
+	<div class="dam_frontend_Message">
+		<h2 class="info">###LABEL_MESSAGE###</h2>
+
+		<p>###MESSAGE_TEXT###</p>
+
+		<p>###BUTTON_NEXT###</p>
+	</div>
+</form>
+<!-- ###MESSAGE### end-->
+</body>
+</html>

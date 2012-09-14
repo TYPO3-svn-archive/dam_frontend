@@ -13,12 +13,32 @@
             <label index="not_set">N/A1234</label>
             <label index="BUTTON_NEXT">Next</label>
             <label index="Error_damUidList">Sorry, no valid records found!</label>
-        </languageKey>
-        <languageKey index="dk" type="array">
+			<label index="ffSheetSettings">Settings</label>
+			<label index="ffSheetLinks">Addtional Links</label>
+			<label index="ffOptionLabelTemplateFile">Template file</label>
+			<label index="ffTemplateFile.I.0">Default</label>
+			<label index="ffOptionLabelDamUids">Select DAM files</label>
+			<label index="ffOptionLabelSubheader">Subheader</label>
+			<label index="ffOptionLabelLinks">Links</label>
+			<label index="ffOptionLabelLinkText">Linktext (one per line)</label>
+			<label index="ffOptionLabelLinkTitle">Linkheader (one per line)</label>
+			<label index="ffOptionLabelLinkDescription">Linkdescription (one per line)</label>
+		</languageKey>
+		<languageKey index="dk" type="array">
         </languageKey>
         <languageKey index="de" type="array">
             <label index="Error_damUidList">Entschuldigung, es wurden keine gültigen Datensätze gefunden!</label>
-        </languageKey>
+			<label index="ffSheetSettings">Einstellungen</label>
+			<label index="ffSheetLinks">Zusätzliche Links</label>
+			<label index="ffOptionLabelTemplateFile">Template-Datei</label>
+			<label index="ffTemplateFile.I.0">Standard</label>
+			<label index="ffOptionLabelDamUids">Dateien aus DAM auswählen</label>
+			<label index="ffOptionLabelSubheader">Unter-Überschrift</label>
+			<label index="ffOptionLabelLinks">Links</label>
+			<label index="ffOptionLabelLinkText">Linktext (einer je Zeile)</label>
+			<label index="ffOptionLabelLinkTitle">Link - "Überschrift" (eine je Zeile)</label>
+			<label index="ffOptionLabelLinkDescription">Linkbeschreibung (eine je Zeile)</label>
+		</languageKey>
         <languageKey index="no" type="array">
         </languageKey>
         <languageKey index="it" type="array">
@@ -288,5 +308,5 @@
         <languageKey index="hi" type="array">
         </languageKey>
     </orig_text>
-	
+
 </T3locallang>

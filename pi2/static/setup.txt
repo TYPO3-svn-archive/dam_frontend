@@ -1,79 +1,99 @@
 ## DAM Frontend Filelist
 #plugin.tx_damfrontend_pi2 = USER_INT
 plugin.tx_damfrontend_pi2 {
-  template = EXT:dam_frontend/res/tmpl_list.html
-  # path to additional langfile for static markers
-  langFile =
-  checkIfFileExist = 1
-  # set stdWrap config for each field
-  renderFields {
-  	#
-	title.typolink.parameter.data = TSFE:id
-  	title.typolink.additionalParams = &eID=dam_frontend_push&docID={field:uid}
-	title.typolink.additionalParams.insertData = 1
 
-	link_download.typolink.parameter.data = TSFE:id
-  	link_download.typolink.additionalParams = &eID=dam_frontend_push&docID={field:uid}
-	link_download.typolink.additionalParams.insertData = 1
-  	
-  	description {
-  		trim = 1
-	  	description.htmlSpecialChars = 1
-  		prepend = IMAGE
-		prepend.file {
-			import.dataWrap = {field:file_path}{field:file_name}|
-			width = 100m
-			height = 100m
+	# use multiple templates
+	# path to templates
+	templatePath = EXT:dam_frontend/res
+
+	# defaultTemplateFileName, other filenames are taken from the folder
+	defaultTemplateFileName = tmpl_list.html
+
+	# Old template file
+	template = EXT:dam_frontend/res/tmpl_list.html
+
+	# path to additional langfile for static markers
+	langFile =
+
+	# special renderFields definition possible for each template
+	templates {
+	# set stdWrap config for each field
+		default {
+			renderFields {
+				title.typolink.parameter.data = TSFE:id
+  				title.typolink.additionalParams = &eID=dam_frontend_push&docID={field:uid}
+				title.typolink.additionalParams.insertData = 1
+
+				link_download.typolink.parameter.data = TSFE:id
+  				link_download.typolink.additionalParams = &eID=dam_frontend_push&docID={field:uid}
+				link_download.typolink.additionalParams.insertData = 1
+
+				description {
+					trim = 1
+					description.htmlSpecialChars = 1
+					prepend = IMAGE
+					prepend.file {
+						import.dataWrap = {field:file_path}{field:file_name}|
+						width = 100m
+						height = 100m
+					}
+					# Only if the file could be rendered
+					prepend.stdWrap.if.isTrue.data = TSFE:lastImageInfo|0
+					prepend.stdWrap.wrap = |<br />
+				}
+
+				title.htmlSpecialChars = 1
+				title.case = upper
+
+				file_size {
+					setContentToCurrent = 1
+					if.isTrue.current = 1
+					bytes = 1
+					bytes.labels = Bytes| Kilobyte| Megabyte| Gigabyte
+				}
+
+				file_name {
+
+				}
+
+				file_mtime.strftime = %m/%d/%y
+
+				# typolink
+				file_href.parameter.data = TSFE:id
+				file_href.additionalParams = &eID=dam_frontend_push&docID={field:uid}
+				file_href.additionalParams.insertData = 1
+				file_href.returnLast = url
+			}
 		}
-		# Only if the file could be rendered
-		prepend.stdWrap.if.isTrue.data = TSFE:lastImageInfo|0
-		prepend.stdWrap.wrap = |<br />
+
+		# "tmpl_list" corresponds to the name of the html template without the file ending
+		tmpl_list < .default
 	}
-  	title.htmlSpecialChars = 1
-    title.case = upper
-	file_size {
-		setContentToCurrent = 1
-		if.isTrue.current = 1
-		bytes = 1
-		bytes.labels = Bytes| Kilobyte| Megabyte| Gigabyte
-	}
-	file_name {
 
-	}
-  	file_mtime.strftime = %m/%d/%y
-  	
-  	# typolink
-  	file_href.parameter.data = TSFE:id
-  	file_href.additionalParams = &eID=dam_frontend_push&docID={field:uid}
-	file_href.additionalParams.insertData = 1
-	file_href.returnLast = url
+	# date Format (example)
+	dateConf = d.m.Y
 
-  }
+	# html class attribute value:
+	iconCssClass = ddl_icon
 
-  # date Format (example)
-  dateConf = d.m.Y
+	# icon for hidden records:
+	iconHidden = hidden.png
 
-  # html class attribute value:
-  iconCssClass = ddl_icon
+	# icon base address ( Default: typo3conf/ext/dam_frontend/res/ico/ )
+	iconBaseAddress =
 
-  # icon for hidden records:
-  iconHidden = hidden.png
+	# Criterias for grouping of files (komma separeted)
+	groupCriteria = title,file_path
 
-  # icon base address ( Default: typo3conf/ext/dam_frontend/res/ico/ )
-  iconBaseAddress =
-
-  # Criterias for grouping of files (komma separeted)
-  groupCriteria = title,file_path
-
-  # Check if selected file still exists: If enabled every file is check, if it exists. Can cause performance trouble on heavy load. In this case you should keep your index via backend clean
-  checkIfFileExist=1
+	# Check if selected file still exists: If enabled every file is check, if it exists. Can cause performance trouble on heavy load. In this case you should keep your index via backend clean
+	checkIfFileExist=1
 
 	_CSS_DEFAULT_STYLE (
 		li.ddl_file_list_item {
-		list-style-type: none;
-		margin-left: 1em;
+			list-style-type: none;
+			margin-left: 1em;
 		}
-	
+
 		dt.ddl_title {
 			font-weight: bold;
 			display: block;
@@ -85,7 +105,7 @@ plugin.tx_damfrontend_pi2 {
 			background-x-position: 0%;
 			background-y-position: 0%;
 		}
-	
+
 		dd.ddl_description p {
 			margin-top: 0.2em;
 			margin-right: 0em;
@@ -96,14 +116,14 @@ plugin.tx_damfrontend_pi2 {
 			padding-bottom: 0pt;
 			padding-left: 1em;
 		}
-	
+
 		dd.ddl_description {
 			margin-top: 0.2em;
 			margin-right: 0em;
 			margin-bottom: 0.8em;
 			margin-left: 1em;
 		}
-	
+
 		div#content img {
 			padding-top: 5px;
 			padding-right: 5px;
@@ -128,7 +148,7 @@ plugin.tx_damfrontend_pi2 {
 			background-x-position: 0%;
 			background-y-position: 0%;
 		}
-	
+
 		﻿div.tx-damfrontend-pi2 a:link,
 		div.tx-damfrontend-pi2 a:visited {
 			color: #373535;
@@ -136,32 +156,31 @@ plugin.tx_damfrontend_pi2 {
 		}
 	)
 
-  # stdWrap properties:
-  # stdWrap {
-  #
-  # }
+	# stdWrap properties:
+	# stdWrap {
+	#
+	# }
 
-  # all files relative to extension's res/ico/ directory,
-  # or iconBaseAddress property.
-  mediaTypes {
+	# all files relative to extension's res/ico/ directory,
+	# or iconBaseAddress property.
+	mediaTypes {
+		DEFAULT {
+			DEFAULT = default.png
+		}
 
-    DEFAULT {
-      DEFAULT = default.png
-    }
+		text {
+			DEFAULT = text_default.png
+		}
 
-    text {
-      DEFAULT = text_default.png
-    }
+		image {
+			DEFAULT = image_default.png
+		}
 
-    image {
-      DEFAULT = image_default.png
-    }
-
-    application {
-      DEFAULT = application_default.png
-      pdf = application_pdf.png
-    }
-  }
+		application {
+			DEFAULT = application_default.png
+			pdf = application_pdf.png
+		}
+	}
 }
 
 
