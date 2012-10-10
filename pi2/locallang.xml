@@ -18,7 +18,7 @@
 			<label index="ffOptionLabelTemplateFile">Template file</label>
 			<label index="ffTemplateFile.I.0">Default</label>
 			<label index="ffOptionLabelDamUids">Select DAM files</label>
-			<label index="ffOptionLabelSubheader">Subheader</label>
+			<label index="ffOptionLabelSubheader">Description</label>
 			<label index="ffOptionLabelLinks">Links</label>
 			<label index="ffOptionLabelLinkText">Linktext (one per line)</label>
 			<label index="ffOptionLabelLinkTitle">Linkheader (one per line)</label>
@@ -33,7 +33,7 @@
 			<label index="ffOptionLabelTemplateFile">Template-Datei</label>
 			<label index="ffTemplateFile.I.0">Standard</label>
 			<label index="ffOptionLabelDamUids">Dateien aus DAM auswählen</label>
-			<label index="ffOptionLabelSubheader">Unter-Überschrift</label>
+			<label index="ffOptionLabelSubheader">Beschreibung</label>
 			<label index="ffOptionLabelLinks">Links</label>
 			<label index="ffOptionLabelLinkText">Linktext (einer je Zeile)</label>
 			<label index="ffOptionLabelLinkTitle">Link - "Überschrift" (eine je Zeile)</label>
