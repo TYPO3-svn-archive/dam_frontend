@@ -216,7 +216,7 @@ if (is_array($post) && count($post) > 0) {
 		require_once(PATH_t3lib.'class.t3lib_htmlmail.php');
 		$localCObj = t3lib_div::makeInstance('tslib_cObj');	// Local cObj.
 		$localCObj->start(array());
-		
+
 		// TODO load mailtemplate via configuration
 		$mailTemplate = str_replace( array("\r\n","\n","\r"), '<br>', $mailTemplate); // like nl2br() (sh 2010-03-28)
 		$mailTemplate = strip_tags($mailTemplate,'<table><tr><td><p><b><br>'); // allow b and br (sh 2010-03-28)
@@ -296,7 +296,8 @@ if (is_array($post) && count($post) > 0) {
 		}
 
 		$download = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.']['forceDownloadForFiles'];
-
+		ob_end_clean();
+		ob_start();
 		$stream = 0;
 		$stream =  intval($_GET['stream']);
 		if ($download==0 OR $stream==1) {
