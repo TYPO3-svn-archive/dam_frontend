@@ -56,9 +56,9 @@ plugin.tx_damfrontend_pi1 {
 			stdWrap.typolink.parameter.data = TSFE:id
 			stdWrap.typolink.additionalParams.insertData = 1
 			stdWrap.typolink.section  = treeroot
-			
+
 		}
-	
+
 		minusIcon < .plusIcon
 		minusIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}catminus.gif
 

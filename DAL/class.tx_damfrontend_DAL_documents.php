@@ -551,7 +551,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			//Debug statements
 		if ($this->conf['enableDebug']==1) {
 			if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['SQL']==1)		t3lib_utility_Debug::debug('SELECT ' . $select . ' FROM ' . $from . ' WHERE '. $where . ' ORDER BY '  .$this->orderBy . ' LIMIT '. $startRecord.','.$listLength,'SQL Statement');
-			if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['conf']==1)			t3lib_utility_Debug::debug($this->conf,'Configuration');
+			if ($this->conf['debug.']['tx_damfrontend_DAL_documents.']['getDocumentList.']['conf']==1)		t3lib_utility_Debug::debug($this->conf,'Configuration');
 		}
 
 		// do not select missing files
@@ -769,6 +769,9 @@ require_once(PATH_tslib.'class.tslib_content.php');
 					switch ($value['type']) {
 						case 'TEXT':
 							$this->additionalFilter .= $this->getCustomWhereString($value['field'],isset($value['value'])?$value['value']:$filterArray[$filter]);
+							break;
+						case 'BOOLEAN':
+							$this->additionalFilter .= ' AND '. $this->docTable.'.'.$value['field'].'='.intval($value['value']);
 							break;
 					}
 				}
