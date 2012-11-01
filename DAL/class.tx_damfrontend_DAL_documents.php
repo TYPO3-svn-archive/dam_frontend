@@ -499,6 +499,8 @@ require_once(PATH_tslib.'class.tslib_content.php');
 				$select='*';
 				$where.= ' 1=1 '.$filter;
 			}
+
+
 			$select = ' DISTINCT '.$this->docTable.'.*';
 			if ($this->conf['useLatestList']==1) {
 					// if latest days is set the
@@ -688,7 +690,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 	 */
 		function setFilter($filterArray) {
 			if (!is_array($filterArray)){
-				if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function setFilter: filterArray must be an array. Given value was:' .$this->categories, 'dam_frontend',3);
+				return array();
 			}
 			// searching in all Documents if filter is set
 			if ($filterArray['searchAllCats']===true) {

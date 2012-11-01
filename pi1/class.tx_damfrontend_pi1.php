@@ -2250,6 +2250,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 */
 	function latestView() {
 
+		// activate filters
+		$this->initFilter();
+
 		// prepare the latest mode
 		$this->docLogic->conf['useLatestList'] = true;
 		$this->docLogic->conf['latestField'] = ($this->conf['filelist.']['latestView.']['field']) ? $this->conf['filelist.']['latestView.']['field'] : 'crdate';
@@ -2282,6 +2285,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		else {
 			if ($this->internal['catMounts']) $this->addAllCategories($this->internal['catMounts'], $this->internal['treeID'], false);
 		}
+
 
 		// use the filelist to display the result
 		return $this->fileList(false);
