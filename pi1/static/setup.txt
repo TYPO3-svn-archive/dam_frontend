@@ -958,11 +958,6 @@ plugin.tx_damfrontend_pi1 {
 			margin: 0px;
 		}
 
-		a:link,
-		a:visited {
-			color: #373535;
-			text-decoration: none;
-		}
 		.cattree td a  {
 			border-width: 0px;
 			border-color: white;
