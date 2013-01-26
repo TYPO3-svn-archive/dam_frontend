@@ -79,12 +79,19 @@ $tempColumns = Array (
 			"MM" => "tx_dam_cat_uploadaccess_mm",
 		)
 	),
+    'tx_damfrontend_hidecatfe' => array(
+        'exclude' => 0,
+        'label' => 'LLL:EXT:dam_frontend/locallang_db.xml:tx_dam_cat.tx_damfrontend_hidecatfe',
+        'config' => array(
+            'type' => 'check',
+        )
+    ),
 );
 
 // adding the configuration to the dam - categorie table
 t3lib_div::loadTCA("tx_dam_cat");
 t3lib_extMgm::addTCAcolumns("tx_dam_cat",$tempColumns,1);
-t3lib_extMgm::addToAllTCAtypes("tx_dam_cat","tx_damtree_fe_groups_readaccess;;;;1-1-1, tx_damtree_fe_groups_downloadaccess, tx_damtree_fe_groups_uploadaccess");
+t3lib_extMgm::addToAllTCAtypes("tx_dam_cat","tx_damtree_fe_groups_readaccess;;;;1-1-1, tx_damtree_fe_groups_downloadaccess, tx_damtree_fe_groups_uploadaccess, tx_damfrontend_hidecatfe");
 
 
 

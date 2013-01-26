@@ -266,7 +266,7 @@ plugin.tx_damfrontend_pi1 {
 				pidInList = {$plugin.tx_damfrontend_pi1.mediafolder}
 				selectFields = *
 				join = tx_dam_mm_cat
-				where = tx_dam_cat.uid = tx_dam_mm_cat.uid_foreign
+				where = tx_dam_cat.uid = tx_dam_mm_cat.uid_foreign AND tx_damfrontend_hidecatfe = 0
 				andWhere (
 					 tx_dam_mm_cat.uid_local = {field:uid}
 				)

@@ -12,6 +12,7 @@
 			<label index="tx_dam_cat.downloadaccess">download access for:</label>
 			<label index="tx_dam_cat.uploadaccess">upload access for:</label>
 			<label index="tx_dam_cat.readaccess">read access for:</label>
+            <label index="tx_dam_cat.tx_damfrontend_hidecatfe">hide Category in Frontend</label>
 			<label index="tx_damtree_fe_groups_all">all groups have access</label>
 			<label index="tx_damtree_fe_groups_none">no group has access</label>
 			<label index="tx_damtree_fe_groups">----- > single groups --> choose below -----</label>		
@@ -33,6 +34,7 @@
 			<label index="tx_dam_cat.downloadaccess">Download Berechtigung im Frontend für:</label>
 			<label index="tx_dam_cat.uploadaccess">Upload Berechtigung für:</label>
 			<label index="tx_dam_cat.readaccess">Darstellung im Frontend für:</label>
+            <label index="tx_dam_cat.tx_damfrontend_hidecatfe">verstecke Kategorie im Frontend</label>
 			<label index="tx_damtree_fe_groups_all">alle Gruppen habe Zugriff</label>
 			<label index="tx_damtree_fe_groups_none">keine Gruppe hat Zugriff</label>
 			<label index="tx_damtree_fe_groups">----- > einzelne Gruppen --> bitte unten wählen -----</label>		
