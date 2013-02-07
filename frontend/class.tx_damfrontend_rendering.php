@@ -1063,6 +1063,24 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		//generating filetype list
 		$markerArray['###FILETYPE_LIST###'] = $this->renderFileTypeList($filterArray['filetype']);
 
+		// Hook for own filters
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_FILTERVIEW_FILTERS'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_FILTERVIEW_FILTERS'] as $_classRef) {
+				$_procObj = &t3lib_div::getUserObj($_classRef);
+				/**
+				 * $_procObj->render_filterview_filters($markerArray, $this,$filterArray, $errorArray );
+				 *
+				 * $markerArray contains all markers: The own marker has to be added here
+				 * $this reference to the current object
+				 * $filterArray Contanins the Array with filters
+				 * $errorArray Contains an Array with errors - f.e. if a filter value is out of range
+				 */
+
+				$_procObj->render_filterview_filters($markerArray, $this,$filterArray, $errorArray );
+			}
+		}
+
+
 		// inserting static markers
 		$this->pi_loadLL();
 		$markerArray['###SET_FILTER###'] = $this->pi_getLL('setFilter');
