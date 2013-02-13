@@ -270,6 +270,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$this->renderer->setFileRef($this->conf['templateFile']);
 		}
 
+		// moved setting template file to Sheet "sDEF"
+		if ($this->pi_getFFvalue($flexform, 'templateFile', 'sDEF')) {
+			$this->renderer->setFileRef($this->pi_getFFvalue($flexform, 'templateFile', 'sDEF'));
+		}
+
+
 
 		if  (t3lib_div::_GP('setFilter') ) {
 			// if a filter in the filterview want to be activated, we have to unset the piVar resetFilter
@@ -1928,7 +1934,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 			// store cat selection in the user array
 			if (is_array($cats)) {
-				t3lib_utility_Debug::debug($cats);
 				$catarray[-1] = $cats;
 				$this->catList->setArrayToUser($catarray);
 				$cats = $this->catList->getCatSelection(-1, 0);

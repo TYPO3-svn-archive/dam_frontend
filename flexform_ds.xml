@@ -13,7 +13,6 @@
      <viewID type="array">
       <TCEforms type="array">
        <label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_display_form</label>
-       <onChange>reload</onChange>
        <config type="array">
         <type>select</type>
         <items type="array">
@@ -69,8 +68,31 @@
         <maxitems>1</maxitems>
         <size>1</size>
        </config>
+		<onChange>reload</onChange>
       </TCEforms>
      </viewID>
+		<templateFile type="array">
+		      <TCEforms type="array">
+		       <label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_templateFile</label>
+		       <config type="array">
+		        <type_t3dev>link</type_t3dev>
+		        <type>input</type>
+		        <size type="integer">15</size>
+		        <max type="integer">255</max>
+		        <eval>trim</eval>
+		        <wizards type="array">
+		         <_PADDING type="integer">2</_PADDING>
+		         <link type="array">
+		          <type>popup</type>
+		          <title>Template Datei wählen</title>
+		          <icon>link_popup.gif</icon>
+		          <script>browse_links.php?mode=wizard</script>
+		          <JSopenParams>height=300,width=500,status=0,menubar=0,scrollbars=1</JSopenParams>
+		         </link>
+		        </wizards>
+		       </config>
+		      </TCEforms>
+		     </templateFile>
     </el>
    </ROOT>
   </sDEF>
@@ -78,6 +100,7 @@
    <ROOT type="array">
     <TCEforms type="array">
      <sheetTitle>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_selection_title</sheetTitle>
+	<displayCond>FIELD:sDEF.viewID:IN:1,2,5,6,8,9,10,11,12</displayCond>
     </TCEforms>
     <type>array</type>
     <el type="array">
@@ -102,7 +125,6 @@
      <treeName type="array">
       <TCEforms type="array">
        <label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_treeName</label>
-        <displayCond>FIELD:viewID:IN:2</displayCond>
        <config type="array">
         <type>input</type>
        </config>
@@ -115,13 +137,13 @@
    <ROOT type="array">
     <TCEforms type="array">
      <sheetTitle>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_option_title</sheetTitle>
+		<displayCond>FIELD:sDEF.viewID:IN:1,4,6,8,9,11,12</displayCond>
     </TCEforms>
     <type>array</type>
     <el type="array">
      <perPage type="array">
       <TCEforms type="array">
        <label>LLL:EXT:dam_frontend/locallang_db.xml:flexform_perPage</label>
-        <displayCond>FIELD:viewID:!IN:2,3,4,5,7,9,10,11,12</displayCond>
        <config type="array">
         <type>input</type>
         <size>10</size>
@@ -131,7 +153,6 @@
      <amountOfNewImages type="array">
       <TCEforms type="array">
        <label>LLL:EXT:dam_frontend/locallang_db.xml:flexform_amountOfNewImages</label>
-       <displayCond>FIELD:viewID:!IN:2,3,4,5,7,9,10,11,12</displayCond>
        <config type="array">
         <type>input</type>
         <size>10</size>
@@ -141,7 +162,6 @@
      <subLevels type="array">
       <TCEforms type="array">
        <label>LLL:EXT:dam_frontend/locallang_db.xml:flexform_amountOfExpandedLevels</label>
-       <displayCond>FIELD:viewID:!IN:2,3,4,5,7,9,10,11,12</displayCond>
        <config type="array">
         <type>input</type>
         <size>10</size>
@@ -151,7 +171,6 @@
      <useStaticCatSelection type="array">
       <TCEforms type="array">
        <label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_useStaticCatSelection</label>
-       <displayCond>FIELD:viewID:!IN:2,3,4,5,7,9,10,11,12</displayCond>
        <config type="array">
         <type>check</type>
        </config>
@@ -160,7 +179,6 @@
      <enableDeletions type="array">
       <TCEforms type="array">
        <label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_enableDeletions</label>
-       <displayCond>FIELD:viewID:!IN:2,3,4,5,7,9,10,11,12</displayCond>
        <config type="array">
         <type>check</type>
        </config>
@@ -169,7 +187,6 @@
      <enableEdits type="array">
       <TCEforms type="array">
        <label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_enableEdits</label>
-       <displayCond>FIELD:viewID:!IN:2,3,4,5,7,9,10,11,12</displayCond>
        <config type="array">
         <type>check</type>
        </config>
@@ -178,7 +195,6 @@
      <FilterUserGroup type="array">
       <TCEforms type="array">
        <label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_FilterUserGroup</label>
-       <displayCond>FIELD:viewID:!IN:2,3,4,5,7,9,10,11,12</displayCond>
        <config type="array">
         <type>select</type>
         <foreign_table>fe_groups</foreign_table>
@@ -193,7 +209,6 @@
      <feEditGroups type="array">
       <TCEforms type="array">
        <label>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_feEditGroups</label>
-       <displayCond>FIELD:viewID:!IN:2,3,4,5,7,9,10,11,12</displayCond>
        <config type="array">
         <type>select</type>
         <foreign_table>fe_groups</foreign_table>
@@ -225,7 +240,6 @@
          </link>
         </wizards>
        </config>
-
       </TCEforms>
      </templateFile>
     </el>
@@ -235,13 +249,13 @@
    <ROOT type="array">
     <TCEforms type="array">
      <sheetTitle>Upload Settings</sheetTitle>
+	<displayCond>FIELD:sDEF.viewID:=:7</displayCond>
     </TCEforms>
     <type>array</type>
     <el type="array">
      <uploadMounts type="array">
       <TCEforms type="array">
        <label>LLL:EXT:dam_frontend/locallang_tca.xml:upload_settings</label>
-       <displayCond>FIELD:viewID:=:7</displayCond>
        <config type="array">
         <type>select</type>
         <form_type>user</form_type>
@@ -259,7 +273,7 @@
      <uploadComment type="array">
       <TCEforms type="array">
        <label>No Settings for this view</label>
-       <displayCond>FIELD:viewID:!=:7</displayCond>
+		<displayCond>FIELD:viewID:!IN:7</displayCond>
        <config type="array">
         <type>none</type>
        </config>
@@ -272,6 +286,7 @@
    <ROOT type="array">
     <TCEforms type="array">
      <sheetTitle>Preselect Categories</sheetTitle>
+	<displayCond>FIELD:sDEF.viewID:IN:2,7</displayCond>
     </TCEforms>
     <type>array</type>
     <el type="array">

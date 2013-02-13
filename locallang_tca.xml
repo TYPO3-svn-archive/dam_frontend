@@ -48,9 +48,9 @@
 		<languageKey index="de" type="array">
 			<label index="flexform_display_title">Was soll angezeigt werden</label>
 			<label index="flexform_selection_title">Wählen Sie Ihre Kategorien</label>
-			<label index="flexform_catTree">Kategorien</label>
+			<label index="flexform_catTree">Kategorienbaum</label>
 			<label index="flexform_fileList">Dateiliste</label>
-			<label index="flexform_catSelection">Kategorien Auswahl</label>
+			<label index="flexform_catSelection">Kategorien Selektion</label>
 			<label index="flexform_singleView">Einzelansicht</label>
 			<label index="flexform_filterView">Suchbox</label>
 			<label index="flexform_filterList">Filter Liste</label>

@@ -1,4 +1,5 @@
 Version 1.0.0
+2013-02-07 Stefan Busemannn: Feature - new Hook for rendering of the filter view $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_FILTERVIEW_FILTERS']
 2012-07-26 Stefan Busemannn: Feature - filelist.securityOptions.allowServerRequest
 2012-07-23 Stefan Busemannn: Feature staticFilters - Filters can be defined via TS
 2012-06-22 Stefan Busemannn: new TS Option filelist.latestView.useGroupedFileList = 1 shows the latest view as a grouped file list
