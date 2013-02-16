@@ -762,6 +762,9 @@ require_once(PATH_tslib.'class.tslib_content.php');
 						case 'TEXT':
 							$this->additionalFilter .= $this->getCustomWhereString($value['field'],isset($value['value'])?$value['value']:$filterArray[$filter]);
 							break;
+                        case 'INT':
+                            $this->additionalFilter .= $this->getCustomWhereInt($value['field'],isset($value['value'])?$value['value']:$filterArray[$filter]);
+                            break;
 					}
 				}
 			}
@@ -1410,6 +1413,19 @@ require_once(PATH_tslib.'class.tslib_content.php');
 		return $result;
 	}
 
+    /**
+     * returns a searchword transfered to int
+     *
+     * @param	string		$column: colum which should be searched
+     * @param	int		$value: value for which it should be resctricted (int)
+     * @return	string		where clause, ready for adding it to the document array
+     */
+    function getCustomWhereInt($column, $value) {
+        if (intval($value>0)) {
+            $value = intval($value);
+            return " AND (" .  $this->docTable.'.'.$column. " LIKE '%,".$value.",%' OR " . $this->docTable.'.'.$column . " LIKE '".$value.",%' OR " . $this->docTable.'.'.$column . " LIKE '%,".$value."' OR " . $this->docTable.'.'.$column . "='".$value."')";
+        }
+    }
 
 	 /**
 	 * checks if a user has edit / delete rights

@@ -37,9 +37,9 @@ $EM_CONF[$_EXTKEY] = array(
 			'php' => '5.2.0-0.0.0',
 			'typo3' => '4.4.0-4.7.99',
 			'static_info_tables' => '2.1.0-0.0.0',
-			'dam' => '1.1.0-0.0.0',
-			'dam_catedit' => '1.1.0-0.0.0',
-			'dam_index' => '1.1.0-0.0.0',
+			'dam' => '1.1.0-1.9.9',
+			'dam_catedit' => '1.1.0-1.9.9',
+			'dam_index' => '1.1.0-1.9.9',
 			'fileupload' => '1.1.0-0.0.0',
 		),
 		'conflicts' => array(

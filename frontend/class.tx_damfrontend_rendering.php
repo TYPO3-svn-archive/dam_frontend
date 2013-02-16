@@ -1121,6 +1121,25 @@ class tx_damfrontend_rendering extends tslib_pibase {
 					case 'SELECTOR':
 						$markerArray['###' . strtoupper($value['marker']) . '###'] = $this->renderSelector($value['renderAs.'], $filterArray[$value['GP_Name']], $value['GP_Name']);
 						break;
+                    case 'SELECTOR_DB':
+                        $languid = $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'] ? $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'] : 0; // current language uid
+                        $sys_language_mode = $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_mode'] ? $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_mode'] : 0; // current language uid
+
+                        $select_fields ='*';
+                        $from_table=$value['renderAs.']['table'];
+                        $where_clause='sys_language_uid = 0';
+                        $groupBy = '';
+                        $orderBy = $value['renderAs.']['orderBy'];
+                        $optionsArray = array();
+                        $rows =$GLOBALS['TYPO3_DB']->exec_SELECTgetRows($select_fields,$from_table,$where_clause,$groupBy,$orderBy);
+                        foreach ($rows as $row) {
+                            // localization
+                            $tmpRow = $GLOBALS['TSFE']->sys_page->getRecordOverlay($from_table, array('pid' => $row['pid'], 'uid' => $row['uid'], 'title' => $row[$value['renderAs.']['label']]), $languid, ($sys_language_mode == 'strict' ? 'hideNonTranslated' : '')); // language overlay
+                            $row['title'] = $tmpRow[$value['renderAs.']['label']]; // overwrite addressgroup title with localized version
+                            $optionsArray[$row['uid']] = $row['title'];
+                        }
+						$markerArray['###' . strtoupper($value['marker']) . '###'] = $this->renderSelector($optionsArray, $filterArray[$value['GP_Name']], $value['GP_Name']);
+						break;
 					case 'TEXT':
 						$size = 30;
 						if ($value['renderAs.']['size'] > 0) $size = $value['renderAs.']['size'];

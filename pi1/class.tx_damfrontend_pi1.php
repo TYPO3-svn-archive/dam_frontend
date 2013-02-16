@@ -272,6 +272,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		// moved setting template file to Sheet "sDEF"
 		if ($this->pi_getFFvalue($flexform, 'templateFile', 'sDEF')) {
+            t3lib_utility_debug::debug($this->pi_getFFvalue($flexform, 'templateFile', 'sDEF'));
 			$this->renderer->setFileRef($this->pi_getFFvalue($flexform, 'templateFile', 'sDEF'));
 		}
 
@@ -334,7 +335,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				if (t3lib_div::_GP($value['GP_Name']) <> 'noselection') $this->internal['filter'][$value['marker']] = strip_tags(t3lib_div::_GP($value['GP_Name']));
 			}
 		}
-
 		// static filters
 		foreach ($this->conf['staticFilters.'] as $filter => $value){
 			if ($value) {
