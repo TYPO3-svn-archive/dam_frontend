@@ -485,7 +485,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			if (array_key_exists(substr($postvar, 5),$GLOBALS['TCA']['tx_dam']['columns'])) {
 	 			if ($postvalue == 'DESC' || $postvalue == 'ASC') {
 	 				if (substr($postvar, 0, 5) == 'sort_') {
-	 					$this->internal['list']['sorting'] = substr($postvar, 5).' '.$postvalue;
+                         // todo check if $postvar is a column of tx_dam
+	 					$this->internal['list']['sorting'] = 'tx_dam.' . substr($postvar, 5).' '.$postvalue;
 	 				}
 	 			}
  			}

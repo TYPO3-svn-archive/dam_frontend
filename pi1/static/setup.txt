@@ -501,12 +501,12 @@ plugin.tx_damfrontend_pi1 {
 			file_name.data = LLL:EXT:dam_frontend/pi1/locallang.xml:FILE_NAME_HEADER
 			language < .title
 			language.data = LLL:EXT:dam_frontend/pi1/locallang.xml:LANGUAGE_HEADER
-			
+
 			date_cr < .title
 			date_cr.data = LLL:EXT:dam_frontend/pi1/locallang.xml:CR_DATE_HEADER
 			tx_damfrontend_feuser_upload < .title
 			tx_damfrontend_feuser_upload.data = LLL:EXT:dam_frontend/pi1/locallang.xml:OWNER_HEADER
-			
+
 		}
 		
 		latestView {
