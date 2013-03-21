@@ -619,6 +619,9 @@ plugin.tx_damfrontend_pi1 {
 				#2 = fileadmin/user4
 			}
 			allowServerRequest=0
+
+			# Sorting is only allowed for originally columns in the TCA of tx_dam and columns that are added here:
+			allowedFields = tx_damfrontend_use_request_form,tx_damfrontend_feuser_upload,tx_damfrontend_fegroup,tx_damfrontend_version,tx_damfrontend_nonew,crdate
 		}
 		
 		browselink {
@@ -1197,5 +1200,4 @@ plugin.tx_damfrontend_pi1 {
 		title.typolink.additionalParams >
 	}
 }
-
 [end]

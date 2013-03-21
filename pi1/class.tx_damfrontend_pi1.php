@@ -154,8 +154,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		// Init FlexForm configuration for plugin
 		$this->pi_initPIflexForm();
+        $groups = explode(',',$GLOBALS['TSFE']->fe_user->user['usergroup']);
 
-		// Read extension configuration
+        // Read extension configuration
 		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
 		if (is_array($extConf)) {
 			$conf = t3lib_div::array_merge($extConf, $conf);
@@ -272,7 +273,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		// moved setting template file to Sheet "sDEF"
 		if ($this->pi_getFFvalue($flexform, 'templateFile', 'sDEF')) {
-            t3lib_utility_debug::debug($this->pi_getFFvalue($flexform, 'templateFile', 'sDEF'));
 			$this->renderer->setFileRef($this->pi_getFFvalue($flexform, 'templateFile', 'sDEF'));
 		}
 
@@ -477,21 +477,29 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 
 		// LOAD TCA to get all allowed fields for sorting	
-		t3lib_div::loadTCA("tx_dam");
-
-		// setting the internal values for sorting
-		foreach ($this->piVars as $postvar => $postvalue) {
- 			// allow only fields that are exist in the TCA
-			if (array_key_exists(substr($postvar, 5),$GLOBALS['TCA']['tx_dam']['columns'])) {
-	 			if ($postvalue == 'DESC' || $postvalue == 'ASC') {
-	 				if (substr($postvar, 0, 5) == 'sort_') {
-                         // todo check if $postvar is a column of tx_dam
-	 					$this->internal['list']['sorting'] = 'tx_dam.' . substr($postvar, 5).' '.$postvalue;
-	 				}
-	 			}
- 			}
-		}
-		#pre defined sorting is only used, as long a user did not sort by himself
+		#t3lib_div::loadTCA("tx_dam");
+        #t3lib_div::loadTCA("tx_dam_frontend");
+        $allowedColumns = array();
+        $tempArr = array();
+        $tempArr = explode(',',$this->conf['filelist.']['security_options.']['allowedFields']);
+        foreach($tempArr as $key => $value) {
+            $allowedColumns[$value] = $value;
+        }
+        unset ($tempArr);
+        $allowedColumns = array_merge($GLOBALS['TCA']['tx_dam']['columns'],$allowedColumns);
+        // setting the internal values for sorting
+        foreach ($this->piVars as $postvar => $postvalue) {
+            // allow only fields that are exist in the TCA
+            if (array_key_exists(substr($postvar, 5),$allowedColumns)) {
+                if ($postvalue == 'DESC' || $postvalue == 'ASC') {
+                    if (substr($postvar, 0, 5) == 'sort_') {
+                        // todo check if $postvar is a column of tx_dam
+                        $this->internal['list']['sorting'] = 'tx_dam.' . substr($postvar, 5).' '.$postvalue;
+                    }
+                }
+            }
+        }
+        #pre defined sorting is only used, as long a user did not sort by himself
 		if (!$this->internal['list']['sorting']) {
 			// CAB:SS - 23.04.10 change orderBy for the latest view (viewID 9)
 			if ($this->internal['viewID'] == 9) {
