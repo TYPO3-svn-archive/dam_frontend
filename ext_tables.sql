@@ -45,27 +45,6 @@ CREATE TABLE tx_dam_cat (
 	tx_damfrontend_hidecatfe tinyint(3) DEFAULT '0' NOT NULL
 );
 
-CREATE TABLE tx_damfrontend_filterStates (
-	uid int(11) NOT NULL auto_increment,
-	pid int(11) DEFAULT '0' NOT NULL,
-	tstamp int(11) DEFAULT '0' NOT NULL,
-	crdate int(11) DEFAULT '0' NOT NULL,
-	cruser_id int(11) DEFAULT '0' NOT NULL,
-	fe_user int(11) DEFAULT '0' NOT NULL,
-	deleted tinyint(4) DEFAULT '0' NOT NULL,
-	hidden tinyint(4) DEFAULT '0' NOT NULL,
-	title tinytext NOT NULL,
-	description text NOT NULL,
-	filter_from int(11) DEFAULT '0' NOT NULL,
-	filter_to int(11) DEFAULT '0' NOT NULL,
-	searchword tinytext NOT NULL,
-	filetypes mediumblob NOT NULL,
-	categories mediumblob NOT NULL,
-
-	PRIMARY KEY (uid),
-	KEY parent (pid)
-);
-
 #
 # fügt das Entscheidungsfeld ein, ob eine uid verwendet werden soll
 #

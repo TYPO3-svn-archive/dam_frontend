@@ -96,30 +96,7 @@ t3lib_extMgm::addToAllTCAtypes("tx_dam_cat","tx_damtree_fe_groups_readaccess;;;;
 
 
 
-/*********************************
- *
- * 	Adding the filter State table to the $TCA
- *
- **********************************/
-$TCA["tx_damfrontend_filterStates"] = Array (
-	"ctrl" => Array (
-		'title' => 'LLL:EXT:dam_frontend/locallang_db.xml:tx_damfrontend_filterStates',
-		'label' => 'uid',
-		'tstamp' => 'tstamp',
-		'crdate' => 'crdate',
-		'cruser_id' => 'cruser_id',
-		"default_sortby" => "ORDER BY crdate",
-		"delete" => "deleted",
-		"enablecolumns" => Array (
-			"disabled" => "hidden",
-		),
-		"dynamicConfigFile" => t3lib_extMgm::extPath($_EXTKEY)."tca.php",
-		"iconfile" => t3lib_extMgm::extRelPath($_EXTKEY)."icon_tx_damfrontend_filterStates.gif",
-	),
-	"feInterface" => Array (
-		"fe_admin_fieldList" => "hidden, title, description, from, to, searchword, filetypes, categories",
-	)
-);
+
 // FIXME Label for that field
 $TCA['tx_damfrontend_usage'] = array (
 	'ctrl' => array (
