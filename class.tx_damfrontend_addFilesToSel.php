@@ -95,9 +95,4 @@ class tx_damfrontend_addfilestosel {
 		}
 	}
 }
-
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/class.tx_damfrontend_addfilestosel.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tt_damfrontend/class.tx_damfrontend_addfilestosel.php']);
-}
-
 ?>

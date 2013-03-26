@@ -1,8 +1,6 @@
 <?php
 if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 
-include_once(t3lib_extMgm::extPath($_EXTKEY) . 'class.tx_damfrontend_addfilestosel.php');
-
 /**************************************
  *
  * Adding the category browser to the page - TCEForm
