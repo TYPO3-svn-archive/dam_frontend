@@ -209,46 +209,50 @@ class tx_damfrontend_pi3 extends tslib_pibase {
 
 			// create mail
 			if ($this->conf['sendMailAfterCheckout']==1) {
-				$this->sendMail($this->basketCase->listItems());
+				$this->sendMail();
 			}
 		return true;
 	}
 
 	/**
-	 * Inits this class and instanceates all nescessary classes
+	 * Sends an e-mail with the basket case content to the frontend user
 	 *
-	 * @return	[void]		...
+	 * @return	mixed	error if recipient address is missing, TRUE on success
 	 */
 	function sendMail() {
 
-		require_once(PATH_t3lib.'class.t3lib_htmlmail.php');
-		// get FE_USER data
+			// get FE_USER data
+		$recipient_name = '';
 		if (!$GLOBALS['TSFE']->fe_user->user['email']) {
-			if ($this->conf['showMailWarning']==1) {
+			if ($this->conf['showMailWarning'] == 1) {
 				return $this->renderer->renderError($this->pi_getLL('noMailAdress'));
 			}
-		}
-		else {
+		} else {
 			$recipient_email = $GLOBALS['TSFE']->fe_user->user['email'];
+			$recipient_name = $GLOBALS['TSFE']->fe_user->user['name'];
 		}
 
-
+		$maildata['fromName'] = '';
 		if (!$this->conf['mail.']['from']) {
-			$maildata['from']='noreply@'.t3lib_div::getIndpEnv('HTTP_HOST');
+			$maildata['from'] = 'noreply@' . t3lib_div::getIndpEnv('HTTP_HOST');
+		} else {
+			$maildata['from'] = $this->conf['mail.']['from'];
+			$maildata['fromName'] = $this->conf['mail.']['fromName'];
 		}
-		else {
-			$maildata['from']=$this->conf['mail.']['from'];
-		}
-		($this->conf['mail.']['subject']) ? $maildata['subject']= $this->cObj->cObjGetSingle($this->conf['mail.']['subject'],$this->conf['mail.']['subject.']) :$maildata['subject']='Your downloads' ;
+
+		($this->conf['mail.']['subject']) ? $maildata['subject'] = $this->cObj->cObjGetSingle($this->conf['mail.']['subject'], $this->conf['mail.']['subject.']) : $maildata['subject'] = 'Your downloads';
 		$maildata['htmlbody'] = $this->renderer->renderMail($this->basketCase->listItems());
-		$htmlMail = t3lib_div::makeInstance('t3lib_htmlmail');
-		$htmlMail->start();
-		$htmlMail->recipient =$recipient_email;
-		$htmlMail->subject =$maildata['subject'];
-		$htmlMail->from_email =$maildata['from'];
-		#$htmlMail->addPlain(strip_tags($maildata['body']));
-		$htmlMail->setHTML($htmlMail->encodeMsg($maildata['htmlbody']));
-		return $htmlMail->send();
+
+		/** @var $mail t3lib_mail_Message */
+		$mail = t3lib_div::makeInstance('t3lib_mail_Message');
+		$mail->setFrom(array($maildata['from'] => $maildata['fromName']));
+		$mail->setTo(array($recipient_email => $recipient_name));
+		$mail->setSubject($maildata['subject']);
+		$mail->setBody($maildata['htmlbody'], 'text/html');
+		$mail->send();
+
+		return TRUE;
+
 	}
 
 	function checkOutPossible() {
