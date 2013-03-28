@@ -86,19 +86,15 @@ $tempColumns = Array (
     ),
 );
 
-// adding the configuration to the dam - categorie table
+// adding the configuration to the dam - category table
 t3lib_div::loadTCA("tx_dam_cat");
 t3lib_extMgm::addTCAcolumns("tx_dam_cat",$tempColumns,1);
 t3lib_extMgm::addToAllTCAtypes("tx_dam_cat","tx_damtree_fe_groups_readaccess;;;;1-1-1, tx_damtree_fe_groups_downloadaccess, tx_damtree_fe_groups_uploadaccess, tx_damfrontend_hidecatfe");
 
 
-
-
-
-// FIXME Label for that field
 $TCA['tx_damfrontend_usage'] = array (
 	'ctrl' => array (
-		'title'     => 'Usage (Frantend)',
+		'title'     => 'LLL:EXT:dam_frontend/locallang_db.xml:tx_damfrontend_usage',
 		'label'     => 'uid',
 		'tstamp'    => 'tstamp',
 		'crdate'    => 'crdate',
@@ -118,6 +114,8 @@ $TCA['tx_damfrontend_usage'] = array (
 		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'icon_tx_damfrontend_usage.gif',
 	),
 );
+
+
 /**********************************************
 *
 * 	inclusion of classes for displaying of category tree in the backend
