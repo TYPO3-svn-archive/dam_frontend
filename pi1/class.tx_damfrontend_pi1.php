@@ -2048,7 +2048,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		if (!$where) return array();
 		$SELECT = '*';
 		$FROM = 'tx_dam_cat';
-		$WHERE = 'uid in (' . implode(',', $catMounts) . ')';
+		$WHERE = 'uid in (' . implode(',', $catMounts) . ') AND ' . tslib_cObj::enableFields($FROM);
 		if ($this->conf['filterView.']['categoriesOrderBy']) {
 			$ORDERBY = $this->conf['filterView.']['categoriesOrderBy'];
 		}
