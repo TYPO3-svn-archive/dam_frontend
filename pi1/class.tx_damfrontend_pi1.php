@@ -307,14 +307,17 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 */
 	function initFilter() {
 
-			if (t3lib_div::_GP('resetFilter')) {
-				$this->filterState->resetFilter();
-				$this->catList->clearCatSelection($this->internal['incomingtreeID']);
-			}
+		// Load current filter from the user session
+		$this->internal['filter'] = $this->filterState->getFilterFromSession();
 
-			if ($this->piVars['resetFilter']) {
-				$this->filterState->resetFilter();
-			}
+		if (t3lib_div::_GP('resetFilter')) {
+			$this->filterState->resetFilter();
+			$this->catList->clearCatSelection($this->internal['incomingtreeID']);
+		}
+
+		if ($this->piVars['resetFilter']) {
+			$this->filterState->resetFilter();
+		}
 
 		//variables for setting filters for the current category selection
 
@@ -326,16 +329,32 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->internal['filter']['to_month'] = intval(trim(t3lib_div::_GP('bis_monat')));
 		$this->internal['filter']['to_year'] = intval(trim(t3lib_div::_GP('bis_jahr')));
 
+
+		$this->internal['filter']['filetype'] = strip_tags(t3lib_div::_GP('filetype'));
+		$this->internal['filter']['searchword'] = strip_tags(t3lib_div::_GP('searchword'));
+
 		// adding custom filters
 		if ($this->conf['filterView.']['customFilters.']) {
 			foreach ($this->conf['filterView.']['customFilters.'] as $filter => $value) {
 				$this->internal['filter']['customFilters'][$value['marker']]['type'] = $value['type'];
 				$this->internal['filter']['customFilters'][$value['marker']]['field'] = $value['field'];
 				$this->internal['filter']['customFilters'][$value['marker']]['value'] = $this->cObj->stdWrap($value['value'], $value['value.']);
-				if (t3lib_div::_GP($value['GP_Name']) <> 'noselection') $this->internal['filter'][$value['marker']] = strip_tags(t3lib_div::_GP($value['GP_Name']));
+
+				# change the internal value of the custom filter, only if the user posted a value
+				if (t3lib_div::_GP($value['GP_Name'])) {
+
+					if (t3lib_div::_GP($value['GP_Name']) <> 'noselection') {
+						$this->internal['filter'][$value['marker']] = strip_tags(t3lib_div::_GP($value['GP_Name']));
+					}
+					else {
+						# reset the filter, because the user choose 'noselection'
+						$this->internal['filter'][$value['marker']]='';
+					}
+				}
 			}
 		}
-		// static filters
+
+		// load static filters from TS
 		foreach ($this->conf['staticFilters.'] as $filter => $value){
 			if ($value) {
 				$this->internal['filter']['staticFilters.'][$filter] = $value;
@@ -345,7 +364,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			// save the current filter in the session if a static filter is defined
 			$this->filterState->setFilter($this->internal['filter']);
 		}
-		
+
 		// clear all 0 - values - now they are not shown in the frontend form
 		foreach ($this->internal['filter'] as $key => $value) {
 			if ($value == '0') {
@@ -353,14 +372,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 		}
 
-		$this->internal['filter']['filetype'] = strip_tags(t3lib_div::_GP('filetype'));
-		$this->internal['filter']['searchword'] = strip_tags(t3lib_div::_GP('searchword'));
-
 
 		// if all categories should be searched
 		if (t3lib_div::_GP('dam_fe_allCats') == 'true') {
 			$this->internal['filter']['searchAllCats'] = true;
-
 		}
 		else {
 			$this->internal['filter']['searchAllCats'] = false;
@@ -424,6 +439,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 		// load the current filter
 		$this->internal['filter'] = $this->filterState->getFilterFromSession();
+
+
 		//These filter must set regardless the filter is resetet, because this setting is independ of the normal filters or filter view
 		if (is_array($catArr)) $this->internal['filter']['searchAllCats_allowedCats'] = $catArr;
 		$this->internal['filter']['listOfOwners'] = $this->get_FEUserList($this->conf['FilterUserGroup'], $this->internal['filter']['owner']);
@@ -433,6 +450,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		} else {
 			$this->internal['filter']['showOnlyFilesWithPermission'] = 0;
 		}
+
+
 		$this->docLogic->setFilter($this->internal['filter']);
 	}
 
@@ -1383,8 +1402,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 */
 	function singleView() {
 		$singleID = intval($this->internal['singleID']);
-		if ($this->docLogic->checkAccess($singleID, 1)) {
-			if (intval($singleID) && $singleID != 0) {
+		if (intval($singleID) && $singleID != 0) {
+			if ($this->docLogic->checkAccess($singleID, 1)) {
 				$record = $this->docLogic->getDocument($singleID);
 				if ($this->docLogic->checkDocumentAccess($record['fe_group'])) {
 					$record['backPid'] = $this->internal['backPid'];
@@ -1410,11 +1429,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				}
 			}
 			else {
-				return $this->renderer->renderError('noSingleID');
+				return $this->renderer->renderError('noDocAccess');
 			}
 		}
 		else {
-			return $this->renderer->renderError('noDocAccess');
+			return $this->renderer->renderError('noSingleID');
 		}
 
 	}
