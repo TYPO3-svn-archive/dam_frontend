@@ -84,6 +84,30 @@ class tx_damfrontend_DAL_categories {
 	var $mm_table_readaccess = ''; // mm Table which stores the groups, which have readaccess to a category
 	var $mm_table_downloadaccess = ''; // mm Table which stores the groups
 	var $debug = false;
+	var $cache;
+
+	function __construct() {
+		#if (TYPO3_UseCachingFramework) {
+		// Create the cache
+		try {
+			$GLOBALS['typo3CacheFactory']->create(
+				'tx_damfrontend',
+				't3lib_cache_frontend_VariableFrontend',
+				$GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_damfrontend']['backend'],
+				$GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_damfrontend']['options']
+			);
+		} catch(t3lib_cache_exception_DuplicateIdentifier $e) {
+			// do nothing, the cache already exists
+		}
+
+		// Initialize the cache
+		try {
+			$this->cache = $GLOBALS['typo3CacheManager']->getCache('tx_damfrontend');
+		} catch(t3lib_cache_exception_NoSuchCache $e) {
+			throw new Exception('Unable to load Cache! 1299942198');
+		}
+		#}
+	}
 
 	/**
 	 * returns th detail datea of a caegory
@@ -145,6 +169,86 @@ class tx_damfrontend_DAL_categories {
 			if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getSubCategories: for the catID only integer values are allowed. Given value was:' . $catID, 'dam_frontend', 3);
 		}
 		else {
+			if (TYPO3_UseCachingFramework) {
+				// check if $catID is availabe in cache
+				if ($this->cache->has($catID)) {
+					$recArray = $this->cache->get($catID);
+				} else {
+					// value is not in cache, so create a cache entry
+					$recArray = $this->getSubCategoriesRecursive($catID);
+					$this->cache->set($catID, $recArray, $tags=array(), '86400');
+				}
+			}
+			else {
+				$recArray = $this->getSubCategoriesRecursive($catID);
+			}
+			return $recArray;
+		}
+	}
+
+	/**
+	 * get all subcategories of the specified category
+	 *
+	 * @param	int		$catID: name of the category to fiond all subcategories
+	 * @param	int		$limit: how deep shall the call run
+	 * @return	array		list of all subcategory of an extension
+	 */
+	function getSubCategoriesRecursive($catID, $limit = 999) {
+
+		if (!intval($catID) && !$catID == 0) {
+			if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getSubCategories: for the catID only integer values are allowed. Given value was:' . $catID, 'dam_frontend', 3);
+		}
+		else {
+			//contains ids of subcategories
+			$subIDs = array();
+
+			// contains records of the categories
+			$recArray = array();
+			$recArray[] = $this->getCategory($catID);
+
+			// retrieving get all categories
+			$SELECT = 'uid, parent_id';
+			$FROM = $this->catTable;
+			$WHERE = 'sys_language_uid = 0 ';
+			$WHERE .= tslib_cObj::enableFields('tx_dam_cat');
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE);
+			$time_start = microtime(true);
+
+
+			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+				$parents[$row['parent_id']][$row['uid']] = $row['uid'];
+			}
+			$GLOBALS['TYPO3_DB']->sql_free_result($res);
+
+			$time =  microtime(true) - $time_start;
+
+			// start to build the cat array
+			$recArray = $this->revolveSubCategories($catID,$parents,999);
+			return $recArray;
+		}
+	}
+
+	function revolveSubCategories($catID, $catArray, $limit) {
+
+		$resultArray[] = $this->getCategory($catID);
+
+		if ($catArray[$catID] && $limit > 0) {
+			foreach ($catArray[$catID] as $childCategory => $value) {
+				$subcategories = $this->revolveSubCategories($childCategory,$catArray,$limit-1);
+				foreach ($subcategories as $subrow) {
+					$resultArray[] = $subrow;
+				}
+			}
+		}
+
+		return $resultArray;
+	}
+
+	function getSubCategoriesRecursive2($catID, $limit = 999) {
+		if (!intval($catID) && !$catID == 0) {
+			if (TYPO3_DLOG) t3lib_div::devLog('parameter error in function getSubCategories: for the catID only integer values are allowed. Given value was:' . $catID, 'dam_frontend', 3);
+		}
+		else {
 			//contains ids of subcategories
 			$subIDs = array();
 
@@ -168,7 +272,7 @@ class tx_damfrontend_DAL_categories {
 			// subcategories found -> get them - search them
 			if ($z > 0 && $limit > 0) {
 				foreach ($subIDs as $row) {
-					$subrows = $this->getSubCategories($row['uid']);
+					$subrows = $this->getSubCategoriesRecursive($row['uid'],$limit-1);
 					foreach ($subrows as $subrow) {
 						$recArray[] = $subrow;
 					}
@@ -178,6 +282,7 @@ class tx_damfrontend_DAL_categories {
 			return $recArray;
 		}
 	}
+
 
 	/**
 	 * gets all parent categories of an existing category
@@ -494,7 +599,7 @@ class tx_damfrontend_DAL_categories {
 		if (!empty($catWithChild)) {
 			// TODO not a clean way to check. Not permissions for that cat are checked
 			return true;
-			
+
 		}
 
 		// TODO: language field is not used at the moment, maybe should

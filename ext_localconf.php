@@ -27,5 +27,17 @@ $TYPO3_CONF_VARS['FE']['eID_include']['dam_frontend_push'] = t3lib_extMgm::extPa
 
 // add hook for pi3
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_DAM_RECORD'][]  = 'EXT:dam_frontend/pi3/class.tx_damfrontend_basketCaseRendering.php:tx_damfrontend_basketCaseRendering';
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_SINGLE_VIEW'][] = 'EXT:dam_frontend/pi3/class.tx_damfrontend_basketCaseRendering.php:tx_damfrontend_basketCaseRendering'; 
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_SINGLE_VIEW'][] = 'EXT:dam_frontend/pi3/class.tx_damfrontend_basketCaseRendering.php:tx_damfrontend_basketCaseRendering';
+
+// If cache is not already defined, define it
+if (!is_array($TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['tx_damfrontend'])) {
+	$TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['tx_damfrontend'] = array(
+		'backend' => 't3lib_cache_backend_DbBackend',
+		'options' => array(
+			'cacheTable' => 'tx_damfrontend_category_cache',
+			'tagsTable' => 'tx_damfrontend_category_cache_tags',
+		),
+	);
+}
+
 ?>
