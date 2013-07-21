@@ -44,6 +44,7 @@
 			<label index="flexform_Explorer">Explorer view (combined category tree with filelist)</label>		
 			<label index="tx_damfrontend_fegroup">File edit / delete rights for this groups</label>		
 			<label index="flexform_templateFile">Template file</label>
+			<label index="flexform_catlist">Categorylist</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="flexform_display_title">Was soll angezeigt werden</label>

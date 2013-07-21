@@ -170,6 +170,7 @@ class tx_damfrontend_DAL_categories {
 		}
 		else {
 			if (TYPO3_UseCachingFramework) {
+			#if (1==0) {
 				// check if $catID is availabe in cache
 				if ($this->cache->has($catID)) {
 					$recArray = $this->cache->get($catID);
@@ -182,6 +183,7 @@ class tx_damfrontend_DAL_categories {
 			else {
 				$recArray = $this->getSubCategoriesRecursive($catID);
 			}
+			#t3lib_utility_Debug::debug($recArray, __FILE__ . __LINE__);
 			return $recArray;
 		}
 	}
@@ -204,42 +206,53 @@ class tx_damfrontend_DAL_categories {
 
 			// contains records of the categories
 			$recArray = array();
-			$recArray[] = $this->getCategory($catID);
 
-			// retrieving get all categories
-			$SELECT = 'uid, parent_id';
+			// retrieving get all categories from the database
+			$SELECT = '*';
 			$FROM = $this->catTable;
 			$WHERE = 'sys_language_uid = 0 ';
 			$WHERE .= tslib_cObj::enableFields('tx_dam_cat');
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE);
 			$time_start = microtime(true);
 
+			$parents = array();
 
+			$parentsIndex = array();
+			// create an array, nested by parent_id
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				$parents[$row['parent_id']][$row['uid']] = $row['uid'];
+				$parents[$row['parent_id']][$row['uid']] = $row;
+				$parentsIndex[$row['uid']]= $row['parent_id'];
 			}
 			$GLOBALS['TYPO3_DB']->sql_free_result($res);
+			#t3lib_utility_Debug::debug($this->getCategory($catID), __FILE__ . __LINE__);
 
+			#t3lib_utility_Debug::debug('#####', __FILE__ . __LINE__);
 			$time =  microtime(true) - $time_start;
 
 			// start to build the cat array
-			$recArray = $this->revolveSubCategories($catID,$parents,999);
+
+			$recArray = $this->revolveSubCategories($catID,$parents, $parentsIndex,999);
+			#t3lib_utility_Debug::debug($recArray, __FILE__ . __LINE__);
+
 			return $recArray;
 		}
 	}
 
-	function revolveSubCategories($catID, $catArray, $limit) {
-
-		$resultArray[] = $this->getCategory($catID);
+	function revolveSubCategories($catID, $catArray, $parentsIndex, $limit) {
 
 		if ($catArray[$catID] && $limit > 0) {
 			foreach ($catArray[$catID] as $childCategory => $value) {
-				$subcategories = $this->revolveSubCategories($childCategory,$catArray,$limit-1);
+				$subcategories = $this->revolveSubCategories($childCategory,$catArray,$parentsIndex,$limit-1);
 				foreach ($subcategories as $subrow) {
 					$resultArray[] = $subrow;
 				}
 			}
 		}
+		$curentCategoryParentID = 0;
+		$currentCategoryParentID = $parentsIndex[$catID];
+		$resultArray[] = $catArray[$currentCategoryParentID][$catID];
+
+		// add current category to the result array
 
 		return $resultArray;
 	}

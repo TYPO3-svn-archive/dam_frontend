@@ -791,6 +791,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				break;
 			case 12:
 				$content .= $this->explorerView();
+			case 13:
+				$content .= $this->catlist();
 				break;
 			default:
 				$content .= 'no view selected - nothing is displayed';
@@ -2471,7 +2473,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		return $this->cObj->stdWrap($tree->getBrowsableTree(), $this->conf['categoryTree.']['stdWrap.']);
 
-		return $content;
 	}
 
 	function getCurrentCategory() {
@@ -2504,6 +2505,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$catsSorted[] = $cats[$key];
 		}
 		return $catsSorted;
+	}
+
+	function catlist() {
+		$filterArray = array();
+		$categoryResultArray = array();
+
+		return $this->renderer->renderCatlist($filterArray,$categoryResultArray);
 	}
 
 }

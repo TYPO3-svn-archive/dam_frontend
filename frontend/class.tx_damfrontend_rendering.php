@@ -870,6 +870,7 @@ class tx_damfrontend_rendering extends tslib_pibase {
 
 		// adding static user definded markers
 		$markerArray = $markerArray + $this->substituteLangMarkers($single_Code);
+
 		if (!is_null($this->staticInfoObj)) {
 			$markerArray['###LANGUAGE###'] = $this->staticInfoObj->getStaticInfoName('LANGUAGES', $record['language'], '', '', false);
 		}
@@ -2281,6 +2282,29 @@ class tx_damfrontend_rendering extends tslib_pibase {
 
 		}
 		return $markerArray;
+	}
+
+	/**
+	 * renders the category list view
+	 *
+	 * @param  $filterArray array() contains the current filter like $filterArray['searchword']
+	 * @param  $categoryResultArray array() contains the resultlist of the categories
+	 * @return string HTML
+	 */
+	public function renderCatlist($filterArray = array(),$categoryResultArray = array()) {
+		$template = tslib_CObj::getSubpart($this->fileContent, '###CATLIST_VIEW###');
+
+		$this->pi_loadLL();
+
+		$markerArray = array();
+
+		// adding static user definded markers
+		$markerArray = $markerArray + $this->substituteLangMarkers($template);
+
+
+		$content = tslib_cObj::substituteMarkerArray($template, $markerArray);
+
+		return $this->cObj->stdWrap($content, $this->conf['catList.']['stdWrap.']);
 	}
 }
 

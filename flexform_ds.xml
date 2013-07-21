@@ -64,6 +64,10 @@
           <numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_Explorer</numIndex>
           <numIndex index="1">12</numIndex>
          </numIndex>
+         <numIndex index="13" type="array">
+          <numIndex index="0">LLL:EXT:dam_frontend/locallang_tca.xml:flexform_catlist</numIndex>
+          <numIndex index="1">13</numIndex>
+         </numIndex>
         </items>
         <maxitems>1</maxitems>
         <size>1</size>
