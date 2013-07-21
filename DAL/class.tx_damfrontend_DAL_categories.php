@@ -644,6 +644,29 @@ class tx_damfrontend_DAL_categories {
 		}
 	}
 
+	public function findCategoriesByTitle($searchWord, $parentCategories) {
+
+
+		if ($searchWord) {
+			$SELECT = '*';
+			$FROM = $this->catTable;
+			$WHERE = 'title like "%'.$GLOBALS['TYPO3_DB']->quoteStr(trim($searchWord), $this->catTable).'%"';
+
+			if (array_count_values($parentCategories)>0) {
+				$WHERE .= ' AND parent_id in (' . implode(',',$parentCategories) .')';
+			}
+
+			$WHERE .= tslib_cObj::enableFields('tx_dam_cat');
+			$rows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows($SELECT, $FROM, $WHERE);
+			$GLOBALS['TYPO3_DB']->sql_free_result($res);
+			return $rows;
+		}
+		else {
+			return array();
+		}
+
+	}
+
 }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/dam_frontend/DAL/class.tx_damfrontend_DAL_categories.php']) {

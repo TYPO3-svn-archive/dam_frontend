@@ -774,6 +774,14 @@ plugin.tx_damfrontend_pi1 {
 		form_url.addQueryString = 1
 	}
 
+	catlist {
+		# typolink : formurl action
+		form_url.parameter.data = TSFE:id
+		form_url.addQueryString = 1
+		categoryWrap.
+	}
+
+
 
 	mediaTypes {
 		DEFAULT {

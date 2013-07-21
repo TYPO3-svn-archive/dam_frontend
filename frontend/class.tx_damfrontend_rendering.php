@@ -2296,13 +2296,48 @@ class tx_damfrontend_rendering extends tslib_pibase {
 
 		$this->pi_loadLL();
 
+		$this->conf['catlist.']['form_url.']['returnLast'] = 'url';
+
 		$markerArray = array();
+		$markerArray['###CATLIST_LABEL_VIEWSEARCH_SEARCHWORD###'] =  $filterArray['searchword'];
+		$markerArray['###SEARCHWORD###'] =  $filterArray['catlist_searchword'];
+		$markerArray['###FORM_URL###'] = $this->cObj->typolink('', $this->conf['catlist.']['form_url.']);
+		$markerArray['###CATLIST_LABEL_VIEWSEARCH_SUBMIT###'] =  $this->pi_getLL('CATLIST_LABEL_VIEWSEARCH_SUBMIT');
+
+		$rowTemplate = tslib_CObj::getSubpart($template, '###CATLIST_RESULT_ROW###');
+		$row = '';
+		foreach ($categoryResultArray as $idx=>$category) {
+			$rowMarkerArray = array();
+			$rowMarkerArray = $rowMarkerArray + $this->substituteLangMarkers($rowTemplate);
+
+			$id = (int)t3lib_div::_GET('id');
+
+			$param_array = array(
+				'tx_damfrontend_pi1[catPlus]' => null,
+				'tx_damfrontend_pi1[catEquals]' => null,
+				'tx_damfrontend_pi1[catMinus]' => null,
+				'tx_damfrontend_pi1[catPlus_Rec]' => $category['uid'],
+				'tx_damfrontend_pi1[catMinus_Rec]' => null,
+				'tx_damfrontend_pi1[treeID]' =>  $this->cObj->data['uid']
+			);
+			if ($id > 0) {
+				$param_array['tx_damfrontend_pi1[id]'] = $id;
+			}
+			$typoLinkConf['parameter'] = $GLOBALS['TSFE']->id;
+			$typoLinkConf['additionalParams'] .= t3lib_div::implodeArrayForUrl('', $param_array);
+			$rowMarkerArray['###CATLIST_VIEWSEARCH_CATEGORY###']=$this->cObj->typoLink($category['title'], $typoLinkConf);
+
+			$row .= 	tslib_cObj::substituteMarkerArray($rowTemplate, $rowMarkerArray);
+		}
 
 		// adding static user definded markers
 		$markerArray = $markerArray + $this->substituteLangMarkers($template);
-
-
 		$content = tslib_cObj::substituteMarkerArray($template, $markerArray);
+
+		$content = tslib_CObj::substituteSubpart($content, '###CATLIST_RESULT_ROW###', $row);
+
+
+
 
 		return $this->cObj->stdWrap($content, $this->conf['catList.']['stdWrap.']);
 	}

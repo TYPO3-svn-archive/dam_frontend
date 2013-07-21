@@ -107,7 +107,9 @@
 			<label index="FILELIST_BATCH_SENDZIPPEDFILELINK">send zipped filelink in mail</label>
 			<label index="FILELIST_BATCH_GO">go</label>
 			<label index="FILELIST_BATCH_SELECT">please select:</label>
-			
+
+            <label index="CATLIST_LABEL_VIEWSEARCH_SUBMIT">Submit</label>
+
 			<label index="FROM">from</label>
 			<label index="TO">to</label>
 			<label index="SUBJECT">subject</label>

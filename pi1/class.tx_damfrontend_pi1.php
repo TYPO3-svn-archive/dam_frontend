@@ -331,7 +331,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 
 		$this->internal['filter']['filetype'] = strip_tags(t3lib_div::_GP('filetype'));
+
 		$this->internal['filter']['searchword'] = strip_tags(t3lib_div::_GP('searchword'));
+
+		$this->internal['filter']['catlist_searchword'] = strip_tags($this->piVars['catlist_searchword']);
 
 		// adding custom filters
 		if ($this->conf['filterView.']['customFilters.']) {
@@ -425,7 +428,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 			}
 		}
-
 		// delete all filters, if no filter is present
 		if (!count($this->filterState->getFilterFromSession())) {
 			$emptyArray = $this->internal['filter'];
@@ -439,7 +441,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 		// load the current filter
 		$this->internal['filter'] = $this->filterState->getFilterFromSession();
-
 
 		//These filter must set regardless the filter is resetet, because this setting is independ of the normal filters or filter view
 		if (is_array($catArr)) $this->internal['filter']['searchAllCats_allowedCats'] = $catArr;
@@ -591,6 +592,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->internal['catAll'] = intval($this->piVars['catAll']);
 		$this->internal['catClear'] = intval($this->piVars['catClear']);
 
+		$this->internal['catlist_searchword'] = strip_tags($this->piVars['catlist_searchword']);
+
 		// call for the singleView
 		$this->internal['singleID'] = intval($this->piVars['showUid']);
 
@@ -663,7 +666,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		// values for searching
 
-		if ($this->internal['viewID'] == 5 OR $this->internal['viewID'] == 10) {
+		if ($this->internal['viewID'] == 5 OR $this->internal['viewID'] == 10 ) {
 			// searchbox
 			$this->initFilter();
 		}
@@ -791,6 +794,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				break;
 			case 12:
 				$content .= $this->explorerView();
+				break;
 			case 13:
 				$content .= $this->catlist();
 				break;
@@ -2508,10 +2512,23 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	}
 
 	function catlist() {
+
+		$this->initFilter();
+
 		$filterArray = array();
 		$categoryResultArray = array();
 
+
+		// get all categories if a filter is present
+		if ($this->internal['filter']['catlist_searchword']) {
+			$categoryResultArray=  $this->catLogic->findCategoriesByTitle($this->internal['filter']['catlist_searchword'],$this->internal['catMounts']);
+		}
+		// check incoming get / post var
+
+		$filterArray['catlist_searchword'] = $this->internal['filter']['catlist_searchword'];
+
 		return $this->renderer->renderCatlist($filterArray,$categoryResultArray);
+
 	}
 
 }
