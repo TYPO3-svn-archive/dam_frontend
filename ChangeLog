@@ -1,7 +1,7 @@
 Version 1.0.0
-
-2031-07-16 Stefan Busemannn: Feature - Caching for Subcategories
-2031-07-16 Stefan Busemannn: Bug #48281 (Resolved): Browselinks not working in filelist
+2013-07-16 Stefan Busemannn: Bug #49408 (resvolved): mediaTypes does not work with MIME types that contain periods
+2013-07-16 Stefan Busemannn: Feature - Caching for Subcategories
+2013-07-16 Stefan Busemannn: Bug #48281 (Resolved): Browselinks not working in filelist
 2013-02-07 Stefan Busemannn: Feature - new Hook for rendering of the filter view $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['DAM_FRONTEND']['RENDER_FILTERVIEW_FILTERS']
 2012-07-26 Stefan Busemannn: Feature - filelist.securityOptions.allowServerRequest
 2012-07-23 Stefan Busemannn: Feature staticFilters - Filters can be defined via TS
