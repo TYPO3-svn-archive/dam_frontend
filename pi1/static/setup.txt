@@ -778,7 +778,7 @@ plugin.tx_damfrontend_pi1 {
 		# typolink : formurl action
 		form_url.parameter.data = TSFE:id
 		form_url.addQueryString = 1
-		categoryWrap.
+		categoryWrap =
 	}
 
 
@@ -801,6 +801,8 @@ plugin.tx_damfrontend_pi1 {
 		  msexcel = image_default.png
 		  msword = doc.gif
 		  DEFAULT = application_default.png
+		  vnd_oasis_opendocument_presentation = image_default.png
+		  vnd = image_default.png
 		}
   	}
   	
