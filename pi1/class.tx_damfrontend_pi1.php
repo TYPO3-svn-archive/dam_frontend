@@ -307,17 +307,17 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 */
 	function initFilter() {
 
-		// Load current filter from the user session
-		$this->internal['filter'] = $this->filterState->getFilterFromSession();
 
-		if (t3lib_div::_GP('resetFilter')) {
+
+		if (t3lib_div::_GP('resetFilter') or $this->piVars['resetFilter'] ) {
 			$this->filterState->resetFilter();
 			$this->catList->clearCatSelection($this->internal['incomingtreeID']);
 		}
-
-		if ($this->piVars['resetFilter']) {
-			$this->filterState->resetFilter();
+		else {
+			$this->internal['filter'] = $this->filterState->getFilterFromSession();
 		}
+
+
 
 		//variables for setting filters for the current category selection
 
@@ -328,13 +328,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->internal['filter']['to_day'] = intval(trim(t3lib_div::_GP('bis_tag')));
 		$this->internal['filter']['to_month'] = intval(trim(t3lib_div::_GP('bis_monat')));
 		$this->internal['filter']['to_year'] = intval(trim(t3lib_div::_GP('bis_jahr')));
-
-
-		$this->internal['filter']['filetype'] = strip_tags(t3lib_div::_GP('filetype'));
-
-		$this->internal['filter']['searchword'] = strip_tags(t3lib_div::_GP('searchword'));
-
-		$this->internal['filter']['catlist_searchword'] = strip_tags($this->piVars['catlist_searchword']);
 
 		// adding custom filters
 		if ($this->conf['filterView.']['customFilters.']) {
@@ -357,7 +350,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 		}
 
-		// load static filters from TS
+		// static filters
 		foreach ($this->conf['staticFilters.'] as $filter => $value){
 			if ($value) {
 				$this->internal['filter']['staticFilters.'][$filter] = $value;
@@ -375,10 +368,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 		}
 
+		$this->internal['filter']['filetype'] = strip_tags(t3lib_div::_GP('filetype'));
+		$this->internal['filter']['searchword'] = strip_tags(t3lib_div::_GP('searchword'));
 
 		// if all categories should be searched
 		if (t3lib_div::_GP('dam_fe_allCats') == 'true') {
 			$this->internal['filter']['searchAllCats'] = true;
+
 		}
 		else {
 			$this->internal['filter']['searchAllCats'] = false;
@@ -428,6 +424,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 			}
 		}
+
 		// delete all filters, if no filter is present
 		if (!count($this->filterState->getFilterFromSession())) {
 			$emptyArray = $this->internal['filter'];
@@ -441,6 +438,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 		// load the current filter
 		$this->internal['filter'] = $this->filterState->getFilterFromSession();
+
 
 		//These filter must set regardless the filter is resetet, because this setting is independ of the normal filters or filter view
 		if (is_array($catArr)) $this->internal['filter']['searchAllCats_allowedCats'] = $catArr;
