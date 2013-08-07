@@ -329,6 +329,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->internal['filter']['to_month'] = intval(trim(t3lib_div::_GP('bis_monat')));
 		$this->internal['filter']['to_year'] = intval(trim(t3lib_div::_GP('bis_jahr')));
 
+
+		$this->internal['filter']['filetype'] = strip_tags(t3lib_div::_GP('filetype'));
+
+		$this->internal['filter']['searchword'] = strip_tags(t3lib_div::_GP('searchword'));
+
+		$this->internal['filter']['catlist_searchword'] = strip_tags($this->piVars['catlist_searchword']);
+
 		// adding custom filters
 		if ($this->conf['filterView.']['customFilters.']) {
 			foreach ($this->conf['filterView.']['customFilters.'] as $filter => $value) {
@@ -368,8 +375,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 		}
 
-		$this->internal['filter']['filetype'] = strip_tags(t3lib_div::_GP('filetype'));
-		$this->internal['filter']['searchword'] = strip_tags(t3lib_div::_GP('searchword'));
 
 		// if all categories should be searched
 		if (t3lib_div::_GP('dam_fe_allCats') == 'true') {
@@ -2522,7 +2527,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$categoryResultArray=  $this->catLogic->findCategoriesByTitle($this->internal['filter']['catlist_searchword'],$this->internal['catMounts']);
 		}
 		// check incoming get / post var
-
 		$filterArray['catlist_searchword'] = $this->internal['filter']['catlist_searchword'];
 
 		return $this->renderer->renderCatlist($filterArray,$categoryResultArray);
