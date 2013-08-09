@@ -1325,7 +1325,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 */
 	function filterView() {
 		$this->internal['filter']['categories'] = $this->get_CategoryList($this->internal['catMounts'], $this->internal['filter']['categoryMount']);
-
 		if ($this->conf['filterView.']['use_category_groups']==1){
 			// delete category settings: it is only possible to use one kind of category selection
 			unset($this->internal['filter']['categories']);
@@ -2074,9 +2073,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	function get_CategoryList($catMounts, $currentCategory = '') {
 		$where = implode(',', $catMounts);
 		if (!$where) return array();
+		
 		$SELECT = '*';
 		$FROM = 'tx_dam_cat';
-		$WHERE = 'uid in (' . implode(',', $catMounts) . ') AND ' . tslib_cObj::enableFields($FROM);
+		$WHERE = 'uid in (' . implode(',', $catMounts) . ')' . tslib_cObj::enableFields($FROM);
 		if ($this->conf['filterView.']['categoriesOrderBy']) {
 			$ORDERBY = $this->conf['filterView.']['categoriesOrderBy'];
 		}
