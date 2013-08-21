@@ -594,6 +594,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->internal['catMinus_Rec'] = intval($this->piVars['catMinus_Rec']);
 		$this->internal['catAll'] = intval($this->piVars['catAll']);
 		$this->internal['catClear'] = intval($this->piVars['catClear']);
+		$this->internal['catClearOnClick'] = intval($this->piVars['catClearOnClick']);
 
 		$this->internal['catlist_searchword'] = strip_tags($this->piVars['catlist_searchword']);
 
@@ -821,6 +822,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * @return	[type]		...
 	 */
 	function getInputTree() {
+		if ($this->internal['catClearOnClick']) {
+			$this->catList->clearCatSelection($this->internal['incomingtreeID']);
+		}
+
 
 		if ($this->internal['catAll'] AND ($this->internal['viewID'] == 2 OR $this->internal['viewID'] == 7)) {
 			// do catAll only, if the current element is a treeElement
@@ -2521,15 +2526,16 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$filterArray = array();
 		$categoryResultArray = array();
 
-
+		// get selection of current categories
+		$selCats = $this->catList->getCatSelection($this->internal['treeID']);
 		// get all categories if a filter is present
 		if ($this->internal['filter']['catlist_searchword']) {
-			$categoryResultArray=  $this->catLogic->findCategoriesByTitle($this->internal['filter']['catlist_searchword'],$this->internal['catMounts']);
+			$categoryResultArray = $this->catLogic->findCategoriesByTitle($this->internal['filter']['catlist_searchword'],$this->internal['catMounts']);
 		}
 		// check incoming get / post var
 		$filterArray['catlist_searchword'] = $this->internal['filter']['catlist_searchword'];
 
-		return $this->renderer->renderCatlist($filterArray,$categoryResultArray);
+		return $this->renderer->renderCatlist($filterArray,$categoryResultArray, $selCats[$this->internal['treeID']]);
 
 	}
 

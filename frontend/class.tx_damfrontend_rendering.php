@@ -2292,13 +2292,15 @@ class tx_damfrontend_rendering extends tslib_pibase {
 	 *
 	 * @param  $filterArray array() contains the current filter like $filterArray['searchword']
 	 * @param  $categoryResultArray array() contains the resultlist of the categories
+	 * @param $selectedCategories array() contains the currently selected categories
 	 * @return string HTML
 	 */
-	public function renderCatlist($filterArray = array(),$categoryResultArray = array()) {
+	public function renderCatlist($filterArray = array(),$categoryResultArray = array(), $selectedCategories = array() )  {
 		$template = tslib_CObj::getSubpart($this->fileContent, '###CATLIST_VIEW###');
 
 		$this->pi_loadLL();
 
+		// prepare static TS Setup
 		$this->conf['catlist.']['form_url.']['returnLast'] = 'url';
 
 		$markerArray = array();
@@ -2309,11 +2311,15 @@ class tx_damfrontend_rendering extends tslib_pibase {
 
 		$rowTemplate = tslib_CObj::getSubpart($template, '###CATLIST_RESULT_ROW###');
 		$row = '';
+
 		foreach ($categoryResultArray as $idx=>$category) {
+			$typoLinkConf = array();
 			$rowMarkerArray = array();
 			$rowMarkerArray = $rowMarkerArray + $this->substituteLangMarkers($rowTemplate);
 
+			// build typolink to select categories
 			$id = (int)t3lib_div::_GET('id');
+			$typoLinkConf = $this->conf['catlist.']['categoryLink.'];
 
 			$param_array = array(
 				'tx_damfrontend_pi1[catPlus]' => null,
@@ -2321,18 +2327,23 @@ class tx_damfrontend_rendering extends tslib_pibase {
 				'tx_damfrontend_pi1[catMinus]' => null,
 				'tx_damfrontend_pi1[catPlus_Rec]' => $category['uid'],
 				'tx_damfrontend_pi1[catMinus_Rec]' => null,
-				'tx_damfrontend_pi1[treeID]' =>  $this->cObj->data['uid']
+				'tx_damfrontend_pi1[treeID]' =>  $this->cObj->data['uid'],
+				'tx_damfrontend_pi1[catClearOnClick]' => 1
 			);
 			if ($id > 0) {
 				$param_array['tx_damfrontend_pi1[id]'] = $id;
 			}
 			$typoLinkConf['parameter'] = $GLOBALS['TSFE']->id;
 			$typoLinkConf['additionalParams'] .= t3lib_div::implodeArrayForUrl('', $param_array);
-			$rowMarkerArray['###CATLIST_VIEWSEARCH_CATEGORY###']=$this->cObj->typoLink($category['title'], $typoLinkConf);
 
+			// check if the category which should get renderec, is currently selected
+			if (in_array($category['uid'], $selectedCategories)) {
+				$typoLinkConf['ATagParams']=$this->conf['catlist.']['selectCategoryATagParams'];
+                $rowMarkerArray['###CATLIST_VIEW_SELECTED_CLASS###'] =  'class="' . $this->conf['catlist.']['selectCategoryTdClass'] . '"'; // selected
+			}
+			$rowMarkerArray['###CATLIST_VIEWSEARCH_CATEGORY###']=$this->cObj->stdWrap($this->cObj->typoLink($category['title'], $typoLinkConf),$this->conf['catlist.']['categoryWrap']) ;
 			$row .= 	tslib_cObj::substituteMarkerArray($rowTemplate, $rowMarkerArray);
 		}
-
 		// adding static user definded markers
 		$markerArray = $markerArray + $this->substituteLangMarkers($template);
 		$content = tslib_cObj::substituteMarkerArray($template, $markerArray);

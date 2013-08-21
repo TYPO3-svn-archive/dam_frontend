@@ -85,7 +85,7 @@ plugin.tx_damfrontend_pi1 {
 		stdWrapControl.wrap = <div class="control" >|</div>
 		
 		# TypoLink for categoryTitle
-		categoryTitle.ATagParams = class="titlewrap"		
+		categoryTitle.ATagParams = class="titlewrap"
 		categoryTitle.wrap = |
 		categoryTitle.length = 30
 		categoryTitle.section =
@@ -779,6 +779,9 @@ plugin.tx_damfrontend_pi1 {
 		form_url.parameter.data = TSFE:id
 		form_url.addQueryString = 1
 		categoryWrap =
+		selectCategoryTdClass = tree_selectedCats
+		selectCategoryATagParams = name="tree_catAnchor"
+^
 	}
 
 
