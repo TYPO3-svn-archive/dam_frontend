@@ -1188,8 +1188,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		// to do add static selection
 		$cats = $this->catList->getCatSelection(0, $this->pid);
-		#$this->catList->getCatSelection();
-
 
 		if ($this->conf['enableDebug'] == 1) {
 			if ($this->conf['debug.']['tx_damfrontend_pi1.']['fileList.']['showCatSelection'] == 1) t3lib_utility_Debug::debug($cats);
