@@ -1045,7 +1045,9 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		}
 		else {
 			$formCode = tslib_cObj::substituteSubpartArray($formCode,array('###CATEGORY_GROUP###'=>''));
-			if (is_array($filterArray['categories'])) {
+
+			# show dropdown categories only, if there are some categories defined
+			if (!empty($filterArray['categories'])) {
 				$markerArray['###TREEID###'] = $this->cObj->data['uid'];
 				$markerArray['###DROPDOWN_CATEGORIES_HEADER###'] = $this->cObj->stdWrap($this->pi_getLL('DROPDOWN_CATEGORIES_HEADER'), $this->conf['filterview.']['dropdown_categories_header.']);
 				$markerArray['###DROPDOWN_CATEGORIES###'] = $this->renderCatgoryList($filterArray['categories']);
