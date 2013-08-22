@@ -781,7 +781,11 @@ plugin.tx_damfrontend_pi1 {
 		categoryWrap =
 		selectCategoryTdClass = tree_selectedCats
 		selectCategoryATagParams = name="tree_catAnchor"
-^
+    	categoryLink = TYPOLINK
+    	categoryLink {
+    		# additionalParams, parameter, ATagParams (only for selected cat) are set by tx_damfrontend_rendering->renderCatlist
+    		section = tree_catAnchor
+    	}
 	}
 
 
