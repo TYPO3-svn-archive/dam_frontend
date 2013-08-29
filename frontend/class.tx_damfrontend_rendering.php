@@ -1314,12 +1314,13 @@ class tx_damfrontend_rendering extends tslib_pibase {
 	 */
 	function getFileIconHref($mimeType, $mimeSubType) {
 		$rootKey = 'mediaTypes.';
-		$filename = '';
+
 		$mimeType .= '.';
 
 		$mimeTypesConf = $this->conf[$rootKey];
 
 		$mimeSubType = str_replace('.','_',$mimeSubType);
+		$mimeSubType = str_replace('-','_',$mimeSubType);
 
 		if (!array_key_exists($rootKey, $this->conf)) {
 			return "#";

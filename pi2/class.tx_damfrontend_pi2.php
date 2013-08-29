@@ -434,16 +434,18 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 	 * @return    [string]        href attribute value, pointing to an image file.
 	 */
 	function getFileIconHref($mimeType, $mimeSubType) {
-
 		$rootKey = 'mediaTypes.';
+
 		$mimeType .= '.';
+
+		$mimeTypesConf = $this->conf[$rootKey];
+
+		$mimeSubType = str_replace('.','_',$mimeSubType);
+		$mimeSubType = str_replace('-','_',$mimeSubType);
 
 		if (!array_key_exists($rootKey, $this->conf)) {
 			return "#";
 		}
-
-		$mimeTypesConf = $this->conf[$rootKey];
-
 		if (!array_key_exists($mimeType, $mimeTypesConf)) {
 			$mimeType = 'DEFAULT.';
 		}
@@ -454,7 +456,6 @@ class tx_damfrontend_pi2 extends tslib_pibase {
 
 		$relPath = $this->getIconBaseAddress();
 		$relPath .= $mimeTypesConf[$mimeType][$mimeSubType];
-
 		return $relPath;
 	}
 

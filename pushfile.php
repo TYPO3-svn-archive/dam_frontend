@@ -30,16 +30,33 @@ error_reporting(E_ERROR);
 
 require_once(t3lib_extMgm::extPath('dam_frontend').'/DAL/class.tx_damfrontend_DAL_documents.php');
 require_once(PATH_t3lib.'class.t3lib_stdgraphic.php');
-require_once (PATH_tslib.'class.tslib_content.php');
+require_once(PATH_tslib.'class.tslib_content.php');
 require_once(PATH_t3lib.'class.t3lib_page.php');
 require_once(PATH_t3lib.'class.t3lib_div.php');
 require_once(PATH_tslib.'class.tslib_gifbuilder.php');
+require_once(PATH_tslib.'class.tslib_fe.php');
+require_once(PATH_t3lib.'class.t3lib_page.php');
 
-$userObj = tslib_eidtools::initFeUser(); // Initialize FE user object
-$userObj->fetchGroupData();
-$GLOBALS['TSFE']->fe_user = $userObj;
 
 tslib_eidtools::connectDB();
+
+
+// initialize TSFE
+$pid = intval(t3lib_div::_GP('id'));
+$temp_TSFEclassName = t3lib_div::makeInstance('tslib_fe');
+$GLOBALS['TSFE'] = new $temp_TSFEclassName($TYPO3_CONF_VARS, $pid, 0, true);
+$GLOBALS['TSFE']->connectToDB();
+$GLOBALS['TSFE']->initFEuser();
+$GLOBALS['TSFE']->determineId();
+$GLOBALS['TSFE']->getCompressedTCarray();
+$GLOBALS['TSFE']->initTemplate();
+$GLOBALS['TSFE']->getConfigArray();
+
+
+// Initialize FE user object
+$userObj = tslib_eidtools::initFeUser();
+$userObj->fetchGroupData();
+$GLOBALS['TSFE']->fe_user = $userObj;
 
 if (t3lib_div::int_from_ver(TYPO3_version)>=4003000 ){
 	// use init Language only, if version is greater than 4.3
@@ -49,20 +66,6 @@ if (t3lib_div::int_from_ver(TYPO3_version)>=4003000 ){
 
 $docLogic = t3lib_div::makeInstance('tx_damfrontend_DAL_documents');
 $docLogic->feuser = $userObj;
-
-
-$pid = intval(t3lib_div::_GP('id'));
-// initialize TSFE
-require_once(PATH_tslib.'class.tslib_fe.php');
-require_once(PATH_t3lib.'class.t3lib_page.php');
-$temp_TSFEclassName = t3lib_div::makeInstance('tslib_fe');
-$GLOBALS['TSFE'] = new $temp_TSFEclassName($TYPO3_CONF_VARS, $pid, 0, true);
-$GLOBALS['TSFE']->connectToDB();
-$GLOBALS['TSFE']->initFEuser();
-$GLOBALS['TSFE']->determineId();
-$GLOBALS['TSFE']->getCompressedTCarray();
-$GLOBALS['TSFE']->initTemplate();
-$GLOBALS['TSFE']->getConfigArray();
 $docLogic->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_damfrontend_pi1.'];
 if (count($docLogic->conf)< 3) {
 	die('no ts template found');
