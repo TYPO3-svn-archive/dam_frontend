@@ -2130,6 +2130,29 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->docLogic->orderBy = $this->internal['list']['sorting'];
 		$this->docLogic->limit = $this->internal['list']['limit'];
 		$this->docLogic->selectionMode = $this->internal['selectionMode'];
+
+		#http://forge.typo3.org/issues/40349
+		$hasCats = false;
+		$files = array();
+		$resCountAlt = 0;
+		$cats = $this->catList->getCatSelection(0, $this->pid);
+		$cats[$this->internal['treeID']]= $this->internal['filter']['searchAllCats_allowedCats'];
+
+		if (count($cats)) {
+			$oldCats=$cats;
+			foreach ($oldCats as $catList) {
+				if (count($catList))
+					$hasCats = true;
+					foreach($catList as $cat){
+						$cats[][]=$cat;
+					}
+			}
+		}
+		if($hasCats){
+			$this->docLogic->categories = $cats;
+		}
+
+
 		$files = $this->docLogic->getDocumentList($this->userUID);
 		if (is_array($files)) {
 			//get the html from the renderer
