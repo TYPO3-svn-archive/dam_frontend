@@ -123,6 +123,9 @@ plugin.tx_damfrontend_pi1 {
 	categorisationTree < .categoryTree
 	categorisationTree {
 		categoryTitleNoAccess.wrap = <span style="color: #aaa">|</span>
+		# possibilities for catTitle.actions.selectCat =>  catPlus // catPlus_Rec // catEquals
+		catTitle.actions.selectCat = catPlus
+
 	}
 	
 	

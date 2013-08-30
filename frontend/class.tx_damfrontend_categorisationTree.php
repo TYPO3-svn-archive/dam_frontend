@@ -134,7 +134,14 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 		if (isset($plugin)) $this->plugin = $plugin;
 		$this->cObj = $this->plugin->cObj;
 		$this->conf = $this->plugin->conf;
- 	}
+	    // 2012-05-21 Esteban Marin
+	    // added custom sorting of categories
+	    if(isset($this->conf['categorisationTree.'],$this->conf['categorisationTree.']['sorting']))
+	    {
+		    $this->orderByFields = $this->conf['categorisationTree.']['sorting'];
+	    }
+
+    }
 
 	/**
 	 * expands the category tree
@@ -213,7 +220,7 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 		if ($this->catLogic->checkCategoryUploadAccess($GLOBALS['TSFE']->fe_user->user['uid'],$row['uid'])) {
 			$id = t3lib_div::_GET('id');
 			$param_array = array (
-				'tx_damfrontend_pi1[catPlus]' => $row['uid'],
+				'tx_damfrontend_pi1[catPlus]' => null,
 				'tx_damfrontend_pi1[catEquals]' => null,
 				'tx_damfrontend_pi1[catMinus]' => null,
 				'tx_damfrontend_pi1[catPlus_Rec]' => null,
@@ -221,6 +228,24 @@ class tx_damfrontend_categorisationTree extends tx_dam_selectionCategory {
 				'tx_damfrontend_pi1[treeID]' => $this->treeID,
 				'tx_damfrontend_pi1[catEditUID]' => $row['uid']
 			);
+
+			// 2012-05-21 Esteban Marin
+			// Added possibility to select link action
+			switch ($this->conf['categorisationTree.']['catTitle.']['actions.']['selectCat']) {
+				case 'catEquals':
+					$param_array['tx_damfrontend_pi1[catEquals]']=$row['uid'];
+					break;
+				case 'catPlus':
+					$param_array['tx_damfrontend_pi1[catPlus]']=$row['uid'];
+					break;
+				case 'catPlus_Rec':
+					$param_array['tx_damfrontend_pi1[catPlus_Rec]']=$row['uid'];
+					break;
+				default:
+					$param_array['tx_damfrontend_pi1[catPlus]']=$row['uid'];
+					break;
+			}
+
 			$param_array =array_unique(array_merge($param_array, $this->piVars));
 			$this->conf['categorisationTree.']['categoryTitle.']['parameter'] = $GLOBALS['TSFE']->id;
 			$this->conf['categorisationTree.']['categoryTitle.']['additionalParams'].= t3lib_div::implodeArrayForUrl('',$param_array);
