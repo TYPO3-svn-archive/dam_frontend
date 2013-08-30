@@ -395,12 +395,15 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			$select = $this->docTable.'.uid';
 			$from = $this->docTable.' INNER JOIN '.$this->mm_Table.' ON '.$this->mm_Table.'.uid_local  = '.$this->docTable.
 			'.uid INNER JOIN '.$this->catTable.' ON '.$this->mm_Table.'.uid_foreign = '.$this->catTable.'.uid';
-
+			t3lib_utility_Debug::debug($this->additionalFilter, __FILE__ . __LINE__);
 			if ($this->conf['searchCategoryAttributes'] == 1 AND $this->searchword) {
 				if ($this->conf['searchCategoryAttributes.']['fields']) {
+					$catSearchString = '';
 					foreach(explode(',',$this->conf['searchCategoryAttributes.']['fields']) as $field) {
-						$this->additionalFilter .= ' OR ('.$this->catTable.'.'.$field.' LIKE "%'.$GLOBALS['TYPO3_DB']->quoteStr(trim($this->searchword), $this->catTable).'%")';
+						$catSearchString .=  ' OR ('.$this->catTable.'.'.$field.' LIKE "%'.$GLOBALS['TYPO3_DB']->quoteStr(trim($this->searchword), $this->catTable).'%")';
 					}
+					t3lib_utility_Debug::debug($catSearchString, __FILE__ . __LINE__);
+					$this->additionalFilter = str_replace('###CATMARKER###', $catSearchString ,$this->additionalFilter);
 				}
 			}
 
@@ -469,7 +472,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 				}
 
 				if  ($this->conf['useTreeAndSelection'] == 0) {
-					$where = '('.$where.')'. $filter;
+					$where = '('. $where .')'. $filter;
 				}
 
 				// adding access information for categories
@@ -543,6 +546,8 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			$where .=  $this->getOnlyFilesWithPermissionSQL();
 		}
 
+		// replace a maybe existing marker, if still there
+		$where= str_replace('###CATMARKER###', '' ,$where);
 			// is defnied as: $this->internal['list']['limit'] = $this->internal['list']['pointer'].','. ($this->internal['list']['listLength']);
 			// limit = "pointer,counter"
 		list($pointer, $listLength) = explode (',',$this->limit);
@@ -740,7 +745,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 
 			if ($filterArray['searchword'] != '' && $filterArray['searchword'] != ' ') {
 				$this->searchword = $filterArray['searchword'];
-				$this->additionalFilter .= $this->getSearchwordWhereString($filterArray['searchword']);
+				$this->additionalFilter .= $this->getSearchwordWhereString($filterArray['searchword'],'',true);
 			}
 			else {
 				$this->searchword = false;
@@ -794,7 +799,7 @@ require_once(PATH_tslib.'class.tslib_content.php');
 	 *
 	 * @return	string		where clause, ready for adding it to the document array
 	 */
-		function getSearchwordWhereString($searchword,$searchField='') {
+		function getSearchwordWhereString($searchword,$searchField='',$addCatMarker=false) {
 			if ($searchField) {
 				$searchFields[] = $searchField;
 			}
@@ -840,7 +845,15 @@ require_once(PATH_tslib.'class.tslib_content.php');
 					if ($searchSQL_AND<>'' AND $searchSQL_OR<>'') $result = $searchSQL_AND . ' AND ' . $searchSQL_OR;
 					$queryPart[]=$result;
 				}
-				return ' AND ('.implode(' OR ', $queryPart).') ';
+
+				# Catmarker: in some case the name of categories should be searched too. But when the funktion
+				# "setFilter" is executed, we do not know, if the query has categories or not. So we add a marker
+				# which is replaced later
+				$catMarker = '';
+				if ($addCatMarker){
+					$catMarker = ' ###CATMARKER###';
+				}
+				return ' AND (' . implode(' OR ', $queryPart) . $catMarker . ' ) ';
 			}
 		}
 
