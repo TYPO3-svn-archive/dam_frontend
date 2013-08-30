@@ -870,6 +870,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$this->catList->clearCatSelection($this->internal['incomingtreeID']);
 		}
 
+		if (t3lib_div::_GP('resetFilter')) {
+			$this->catList->unsetAllCategories();
+		}
 
 		if ($this->internal['catPreSelection']) {
 			$currentCats = $this->catList->getCatSelection($this->internal['treeID']);
@@ -909,9 +912,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 		}
 
-		if (t3lib_div::_GP('resetFilter')) {
-			$this->catList->unsetAllCategories();
-		}
 
 		// easySearch
 		if (t3lib_div::_GP('easySearchSetFilter') OR t3lib_div::_GP('setFilter')) {

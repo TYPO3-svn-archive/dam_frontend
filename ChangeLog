@@ -1,4 +1,5 @@
 Version 1.0.0
+2013-08-30 Stefan Busemann: Bug #35326 searchbox: reset the searchform should restore the default page status - thanks to  Thomas Scholze
 2013-08-30 Stefan Busemann: Feature #37501 Improove Category Selector - thanks to Esteban Marín
 2013-08-30 Stefan Busemann: Feature #40349 my Files - the list of files should be created using the selected categorys (thanks to Manuel Link)
 2013-08-30 Stefan Busemann: Bug #49491 ((resolved) Deleted documents are found if the search term matches the category

@@ -395,7 +395,6 @@ require_once(PATH_tslib.'class.tslib_content.php');
 			$select = $this->docTable.'.uid';
 			$from = $this->docTable.' INNER JOIN '.$this->mm_Table.' ON '.$this->mm_Table.'.uid_local  = '.$this->docTable.
 			'.uid INNER JOIN '.$this->catTable.' ON '.$this->mm_Table.'.uid_foreign = '.$this->catTable.'.uid';
-			t3lib_utility_Debug::debug($this->additionalFilter, __FILE__ . __LINE__);
 			if ($this->conf['searchCategoryAttributes'] == 1 AND $this->searchword) {
 				if ($this->conf['searchCategoryAttributes.']['fields']) {
 					$catSearchString = '';
