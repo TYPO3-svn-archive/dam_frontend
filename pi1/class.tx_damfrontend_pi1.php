@@ -438,7 +438,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 
 		// save the filters to the session, if the user clicks "search"
-		if (t3lib_div::_GP('setFilter') || t3lib_div::_GP('easySearchSetFilter')) {
+		if (t3lib_div::_GP('setFilter') || t3lib_div::_GP('easySearchSetFilter') || (t3lib_div::_GP('searchword') && !t3lib_div::_GP('resetFilter'))) {
 			$this->filterState->setFilter($this->internal['filter']);
 		}
 		// load the current filter

@@ -1,5 +1,6 @@
 Version 1.0.0
 2013-08-30 Stefan Busemann: Bug #49491 ((resolved) Deleted documents are found if the search term matches the category
+2013-08-30 Stefan Busemann: Bug #49491 ((resolved) marker wrong?: upload step 3 - thanks to thomas
 2013-08-29 Stefan Busemann: Bug #51214 (resolved) PHP Warning: Creating default object from empty value indam_frontend/pushfile.php line 40 (thanks to Christophe Neria)
 2013-07-16 Stefan Busemann: Bug #49408 (resvolved): mediaTypes does not work with MIME types that contain periods
 2013-07-16 Stefan Busemann: Feature - Caching for Subcategories
