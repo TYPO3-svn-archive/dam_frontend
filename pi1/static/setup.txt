@@ -102,7 +102,7 @@ plugin.tx_damfrontend_pi1 {
 		treeRootIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}catfolder.gif
 		treeCatIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}cat.gif
 		treeOpenCatIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}folder_open.png
-		treeRootOpenIcon < .treeOpenCatIcon  
+		treeRootOpenIcon < .treeOpenCatIcon
 		treeNavIcons {
 			# default objects are IMAGE
 			line.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}line.gif
@@ -152,12 +152,17 @@ plugin.tx_damfrontend_pi1 {
 		# mark categories which a user has no download right (set visual stylse via selectionStatus.no_access)
 		markNotAllowedCategories = 1 
 		categoryTitle.treePlus.wrap =  <span class="tree_open">|</span>
+		categoryTitle.treePlus.aTagClass = class="tree_open"
 		categoryTitle.treeMinus.wrap =  <span class="tree_close">|</span>
+		categoryTitle.treeMinus.aTagClass =  class="tree_close"
+		categoryTitle.treeRoot.wrap =  <span class="tree_noControl">|</span>
+
 		categoryTitle.treeNoControl.wrap =  <span class="tree_noControl">|</span>
 		categoryTitle.no_cat_access.wrap =  <span class="tree_noControl">|</span>
 		categoryTitle.length = 30
 		categoryTitle.wrap = |
-		
+
+		enableIconControl = 1
 		
 		categorySelection {
 			selected.wrap = |
@@ -789,6 +794,7 @@ plugin.tx_damfrontend_pi1 {
     		# additionalParams, parameter, ATagParams (only for selected cat) are set by tx_damfrontend_rendering->renderCatlist
     		section = tree_catAnchor
     	}
+    	useTreeView = 1
 	}
 
 

@@ -421,12 +421,17 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			$cmd = $this->bank . '_' . ($exp ? '0_' : '1_') . $row['uid'] . '_' . $this->treeName;
 
 			$bMark = ($this->bank . '_' . $row['uid']);
+
 			$wrapItem = $this->PM_ATagWrap($wrapItem, $cmd, $bMark, $row);
 			if ($exp) {
 				$wrapItem = $this->cObj->stdWrap($wrapItem, $this->conf['categoryTreeAdvanced.']['categoryTitle.']['treeMinus.']);
 			}
 			else {
 				$wrapItem = $this->cObj->stdWrap($wrapItem, $this->conf['categoryTreeAdvanced.']['categoryTitle.']['treePlus.']);
+			}
+
+			if ($this->conf['categoryTreeAdvanced.']['enableIconControl']==1) {
+				$wrapItem = $this->PM_ATagWrap($wrapItem, $cmd, '');
 			}
 		}
 		else {
@@ -642,12 +647,16 @@ class tx_damfrontend_catTreeViewAdvanced extends tx_dam_selectionCategory {
 			else {
 				$firstHtml = $this->PM_ATagWrap($this->getTitleStr($rootRec, $titleLen), $cmd, '', $rootRec);
 				if ($isOpen) {
-
 					$firstHtml = $this->cObj->stdWrap($firstHtml, $this->conf['categoryTreeAdvanced.']['categoryTitle.']['treeMinus.']);
+					if ($this->conf['categoryTreeAdvanced.']['enableIconControl']==1) {
+						$firstHtml = $this->PM_ATagWrap($firstHtml, $cmd, '');
+					}
 				}
 				else {
-
 					$firstHtml = $this->cObj->stdWrap($firstHtml, $this->conf['categoryTreeAdvanced.']['categoryTitle.']['treePlus.']);
+					if ($this->conf['categoryTreeAdvanced.']['enableIconControl']==1) {
+						$firstHtml = $this->PM_ATagWrap($firstHtml, $cmd, '');
+					}
 				}
 			}
 

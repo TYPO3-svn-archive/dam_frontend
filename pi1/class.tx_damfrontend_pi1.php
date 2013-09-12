@@ -597,6 +597,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->internal['catClearOnClick'] = intval($this->piVars['catClearOnClick']);
 
 		$this->internal['catlist_searchword'] = strip_tags($this->piVars['catlist_searchword']);
+		if ($this->internal['catlist_searchword'] AND $GLOBALS['TSFE']->fe_user->getKey("ses", $this->treeID . 'expandTreeLevel')==1) {
+			t3lib_utility_Debug::debug('true', __FILE__ . __LINE__);
+			$GLOBALS['TSFE']->fe_user->setKey("ses", $this->treeID . 'expandTreeLevel',1);
+		}
 
 		// call for the singleView
 		$this->internal['singleID'] = intval($this->piVars['showUid']);
@@ -2475,7 +2479,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
      * @return	[string] html of the content
 	 */
 	function explorerView() {
-		
 		// 2012-05-21 Esteban Marin
 		// added edit / deletion features in explorer view
 		$result = $this->fileListBasicFuncionality();
@@ -2486,8 +2489,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		// 2012-05-21 Esteban Marin
 		// renderer->piVars gets checked instead of internal in class.tx_damfrontend_catTreeViewAdvanced.php:wrapCatSelection()
 		$this->renderer->piVars['catEditUID'] = $this->internal['catEditUID'];
-		
-		
 		
 		$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeViewAdvanced');
 		$tree->renderer = $this->renderer;
@@ -2505,7 +2506,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$tree->additionalTreeConf['docLogic'] = $this->docLogic;
 
 		return $this->cObj->stdWrap($tree->getBrowsableTree(), $this->conf['categoryTree.']['stdWrap.']);
-
 	}
 
 	function getCurrentCategory() {
@@ -2556,10 +2556,42 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		// check incoming get / post var
 		$filterArray['catlist_searchword'] = $this->internal['filter']['catlist_searchword'];
 
-		return $this->renderer->renderCatlist($filterArray,$categoryResultArray, $selCats[$this->internal['treeID']]);
+		if ($this->conf['catlist.']['useTreeView']==1) {
+			$content = $this->renderer->renderCatlist($filterArray,$categoryResultArray, $selCats[$this->internal['treeID']],$useTree=true);
+			$treeContent = '';
+			if ($this->internal['filter']['catlist_searchword']) {
+				$this->getInputTree();
+				$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeViewAdvanced');
+				$tree->renderer = $this->renderer;
+				$tree->catLogic = $this->catLogic;
 
+				$tree->init($this->internal['treeID'], $this);
+				$tree->title = $this->internal['treeName'];
+
+				$tree->selectedCats = $selCats[$this->internal['treeID']];
+
+				$resultMounts = array();
+				if (!empty($categoryResultArray)) {
+					foreach ($categoryResultArray as $key=>$category) {
+						$resultMounts[] = $category['uid'];
+					}
+					$tree->MOUNTS = $resultMounts;
+				}
+				if (intval($this->conf['subLevels']) > 0) {
+					$tree->expandTreeLevel($this->conf['subLevels']);
+				}
+				else {
+					$tree->expandTreeLevel($this->conf['categoryTree.']['expandTreeLevel']);
+				}
+				$treeContent =  $this->cObj->stdWrap($tree->getBrowsableTree(), $this->conf['categoryTree.']['stdWrap.']);
+			}
+			$content = tslib_CObj::substituteMarker($content, '###CATLIST_RESULT_TREE###', $treeContent);
+		}
+		else {
+			$content = $this->renderer->renderCatlist($filterArray,$categoryResultArray, $selCats[$this->internal['treeID']],$useTree=false);
+		}
+		return $content;
 	}
-
 }
 
 
