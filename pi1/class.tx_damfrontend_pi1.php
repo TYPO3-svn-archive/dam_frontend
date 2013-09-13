@@ -2552,6 +2552,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		// get all categories if a filter is present
 		if ($this->internal['filter']['catlist_searchword']) {
 			$categoryResultArray = $this->catLogic->findCategoriesByTitle($this->internal['filter']['catlist_searchword'],$this->internal['catMounts']);
+
 		}
 		// check incoming get / post var
 		$filterArray['catlist_searchword'] = $this->internal['filter']['catlist_searchword'];
