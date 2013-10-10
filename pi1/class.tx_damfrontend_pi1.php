@@ -50,8 +50,8 @@ require_once(t3lib_extMgm::extPath('dam_frontend') . '/frontend/class.tx_damfron
  * @author Martin Baum, Stefan Busemann, Martin Holtz <typo3@in2form.com>
  *
  * @todo add stdWrap functions
- * Some scripts that use this class:	--
- * Depends on:		--
+ * Some scripts that use this class:    --
+ * Depends on:        --
  */
 /**
  * [CLASS/FUNCTION INDEX of SCRIPT]
@@ -59,50 +59,51 @@ require_once(t3lib_extMgm::extPath('dam_frontend') . '/frontend/class.tx_damfron
  *
  *
  *  108: class tx_damfrontend_pi1 extends tslib_pibase
- *  144:	 function init($conf)
- *  245:	 function initFilter()
- *  347:	 function initList()
- *  424:	 function initUpload()
- *  433:	 function convertPiVars()
- *  541:	 function main($content,$conf)
- *  617:	 function getInputTree()
- *  749:	 function catTree()
- *  778:	 function fileListBasicFuncionality ()
- *  901:	 function fileList($useRequestForm)
- *  979:	 function filterView()
- *  995:	 function catSelection()
- * 1025:	 function singleView()
- * 1063:	 function filterList()
+ *  144:     function init($conf)
+ *  245:     function initFilter()
+ *  347:     function initList()
+ *  424:     function initUpload()
+ *  433:     function convertPiVars()
+ *  541:     function main($content,$conf)
+ *  617:     function getInputTree()
+ *  749:     function catTree()
+ *  778:     function fileListBasicFuncionality ()
+ *  901:     function fileList($useRequestForm)
+ *  979:     function filterView()
+ *  995:     function catSelection()
+ * 1025:     function singleView()
+ * 1063:     function filterList()
  *
- *			  SECTION: FILE UPLOAD AND CATEGORISATION
- * 1102:	 function uploadForm()
- * 1357:	 function versioningForm()
- * 1377:	 function handleUpload()
- * 1554:	 function loadFileUploadTS()
- * 1570:	 function getIncomingDocData()
- * 1611:	 function categoriseForm($docData='')
- * 1671:	 function saveCategories($docID,$upload=true)
- * 1702:	 function get_FEUserList ($fe_group=0,$currentUser ='')
- * 1745:	 function get_CategoryList ($catMounts,$currentCategory ='')
- * 1772:	 function myFiles ()
- * 1817:	 function handleVersioning($code)
- * 1845:	 function editForm ($uid=0)
- * 1882:	 function overRide2()
- * 1896:	 function overRide()
- * 1923:	 function getTreeMap()
- * 1983:	 function getTree($mount= '')
- * 1998:	 function saveMetaData ($saveUID)
- * 2029:	 function handleOneStepUpload ($newID)
- * 2049:	 function storeDocument ($docID)
- * 2067:	 function latestView()
- * 2087:	 function easySearch()
- * 2101:	 function addAllCategories($catMounts, $treeID, $addChilds = false)
+ *              SECTION: FILE UPLOAD AND CATEGORISATION
+ * 1102:     function uploadForm()
+ * 1357:     function versioningForm()
+ * 1377:     function handleUpload()
+ * 1554:     function loadFileUploadTS()
+ * 1570:     function getIncomingDocData()
+ * 1611:     function categoriseForm($docData='')
+ * 1671:     function saveCategories($docID,$upload=true)
+ * 1702:     function get_FEUserList ($fe_group=0,$currentUser ='')
+ * 1745:     function get_CategoryList ($catMounts,$currentCategory ='')
+ * 1772:     function myFiles ()
+ * 1817:     function handleVersioning($code)
+ * 1845:     function editForm ($uid=0)
+ * 1882:     function overRide2()
+ * 1896:     function overRide()
+ * 1923:     function getTreeMap()
+ * 1983:     function getTree($mount= '')
+ * 1998:     function saveMetaData ($saveUID)
+ * 2029:     function handleOneStepUpload ($newID)
+ * 2049:     function storeDocument ($docID)
+ * 2067:     function latestView()
+ * 2087:     function easySearch()
+ * 2101:     function addAllCategories($catMounts, $treeID, $addChilds = false)
  *
  * TOTAL FUNCTIONS: 41
  * (This index is automatically created/updated by the extension "extdeveval")
  *
  */
-class tx_damfrontend_pi1 extends tslib_pibase {
+class tx_damfrontend_pi1 extends tslib_pibase
+{
 	var $prefixId = 'tx_damfrontend_pi1'; // Same as class name
 	var $scriptRelPath = 'pi1/class.tx_damfrontend_pi1.php'; // Path to this script relative to the extension dir.
 	var $extKey = 'dam_frontend'; // The extension key.
@@ -114,7 +115,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * Category Logic object
 	 *
-	 * @var	tx_damfrontend_DAL_categories
+	 * @var    tx_damfrontend_DAL_categories
 	 */
 	var $catLogic; // handling of categories
 
@@ -122,7 +123,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * Category Logic object
 	 *
-	 * @var	tx_damfrontend_catList
+	 * @var    tx_damfrontend_catList
 	 */
 	var $catList; // stores the category selection in the session
 	var $renderer; // handeles the frontend rendering
@@ -147,16 +148,17 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * Inits this class and instanceates all nescessary classes
 	 *
-	 * @param	[type]		$conf: ...
-	 * @return	[void]		...
+	 * @param    [type]        $conf: ...
+	 * @return    [void]        ...
 	 */
-	function init($conf) {
+	function init($conf)
+	{
 
 		// Init FlexForm configuration for plugin
 		$this->pi_initPIflexForm();
-        $groups = explode(',',$GLOBALS['TSFE']->fe_user->user['usergroup']);
+		$groups = explode(',', $GLOBALS['TSFE']->fe_user->user['usergroup']);
 
-        // Read extension configuration
+		// Read extension configuration
 		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
 		if (is_array($extConf)) {
 			$conf = t3lib_div::array_merge($extConf, $conf);
@@ -188,8 +190,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		foreach ($conf as $key => $data) {
 			if (substr($key, -1) == '.') {
 				$this->conf[substr($key, 0, -1)] = $this->cObj->stdWrap($conf[substr($key, 0, -1)], $conf[$key]);
-			}
-			elseif (!isset($conf[$key . '.'])) {
+			} elseif (!isset($conf[$key . '.'])) {
 				$this->conf[$key] = $conf[$key];
 			}
 		}
@@ -224,8 +225,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			// load the flexform value, if there is no ts setting
 			$this->internal['catMounts'] = array();
 			$this->internal['catMounts'] = explode(',', $this->pi_getFFvalue($flexform, 'catMounts', 'sSelection'));
-		}
-		else {
+		} else {
 			$this->internal['catMounts'] = explode(',', $this->conf['catMounts']);
 		}
 
@@ -236,14 +236,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$uploadMounts = strip_tags($this->pi_getFFvalue($flexform, 'uploadMounts', 'sUploadSettings'));
 		if (!$this->conf['uploadMounts']) {
 			$this->internal['uploadCatSelection'] = strip_tags($this->pi_getFFvalue($flexform, 'uploadMounts', 'sUploadSettings'));
-		}
-		else {
+		} else {
 			$this->internal['uploadCatSelection'] = $this->conf['uploadMounts'];
 		}
 		if (!$this->conf['catPreSelection']) {
 			$this->internal['catPreSelection'] = strip_tags($this->pi_getFFvalue($flexform, 'catPreSelection', 'sPreSelectSettings'));
-		}
-		else {
+		} else {
 			$this->internal['catPreSelection'] = explode(',', $this->conf['catPreSelection']);
 		}
 
@@ -258,12 +256,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->renderer = t3lib_div::makeInstance('tx_damfrontend_rendering');
 
 
-				/*
-		 *
-		 *  switch to read in the new flexform-value "templateFile" if it exists
-		 *  FMEY: 04.11.2010
-		 *
-		 *  */
+		/*
+ *
+ *  switch to read in the new flexform-value "templateFile" if it exists
+ *  FMEY: 04.11.2010
+ *
+ *  */
 
 		if ($this->pi_getFFvalue($flexform, 'templateFile', 'sOptions')) {
 			$this->renderer->setFileRef($this->pi_getFFvalue($flexform, 'templateFile', 'sOptions'));
@@ -277,15 +275,14 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 
 
-
-		if  (t3lib_div::_GP('setFilter') ) {
+		if (t3lib_div::_GP('setFilter')) {
 			// if a filter in the filterview want to be activated, we have to unset the piVar resetFilter
 			// otherwise the filter would be resetted in initFilter() and the filter would be lost
 			// also if the TS option categoryTree.resetFilterOnClick is active the a get param 'resetFilter' is rendered
 			// at most Links (all Links in CategoryTree and pageBrowser). Then if a filter is active
 			// and you want to browser thru the result, the filter would be deleted on the next click, even if you want
 			// to keep the result
-			unset($this->piVars['resetFilter']) ;
+			unset($this->piVars['resetFilter']);
 		}
 		$this->renderer->piVars = $this->piVars;
 		$this->renderer->conf = $this->conf;
@@ -303,70 +300,92 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * Receiving filter information from the pluging view "filter_list"
 	 *
-	 * @return	[void]		...
+	 * @return    [void]        ...
 	 */
-	function initFilter() {
+	function initFilter()
+	{
 
 
-
-		if (t3lib_div::_GP('resetFilter') or $this->piVars['resetFilter'] ) {
+		if (t3lib_div::_GP('resetFilter') or $this->piVars['resetFilter']) {
 			$this->filterState->resetFilter();
 			$this->catList->clearCatSelection($this->internal['incomingtreeID']);
-		}
-		else {
+		} else {
 			$this->internal['filter'] = $this->filterState->getFilterFromSession();
 		}
 
 
+		// save the filters to the session, if the user clicks "search"
+		if (t3lib_div::_GP('setFilter') || t3lib_div::_GP('easySearchSetFilter') || (t3lib_div::_GP('searchword') && !t3lib_div::_GP('resetFilter'))) {
 
-		//variables for setting filters for the current category selection
+			//variables for setting filters for the current category selection
+			$this->internal['filter']['from_day'] = intval(trim(t3lib_div::_GP('von_tag')));
+			$this->internal['filter']['from_month'] = intval(trim(t3lib_div::_GP('von_monat')));
+			$this->internal['filter']['from_year'] = intval(trim(t3lib_div::_GP('von_jahr')));
 
-		$this->internal['filter']['from_day'] = intval(trim(t3lib_div::_GP('von_tag')));
-		$this->internal['filter']['from_month'] =intval(trim(t3lib_div::_GP('von_monat')));
-		$this->internal['filter']['from_year'] = intval(trim(t3lib_div::_GP('von_jahr')));
-
-		$this->internal['filter']['to_day'] = intval(trim(t3lib_div::_GP('bis_tag')));
-		$this->internal['filter']['to_month'] = intval(trim(t3lib_div::_GP('bis_monat')));
-		$this->internal['filter']['to_year'] = intval(trim(t3lib_div::_GP('bis_jahr')));
+			$this->internal['filter']['to_day'] = intval(trim(t3lib_div::_GP('bis_tag')));
+			$this->internal['filter']['to_month'] = intval(trim(t3lib_div::_GP('bis_monat')));
+			$this->internal['filter']['to_year'] = intval(trim(t3lib_div::_GP('bis_jahr')));
 
 
-		$this->internal['filter']['filetype'] = strip_tags(t3lib_div::_GP('filetype'));
+			$this->internal['filter']['filetype'] = strip_tags(t3lib_div::_GP('filetype'));
 
-		$this->internal['filter']['searchword'] = strip_tags(t3lib_div::_GP('searchword'));
+			$this->internal['filter']['searchword'] = strip_tags(t3lib_div::_GP('searchword'));
 
-		$this->internal['filter']['catlist_searchword'] = strip_tags($this->piVars['catlist_searchword']);
+			$this->internal['filter']['catlist_searchword'] = strip_tags($this->piVars['catlist_searchword']);
 
-		// adding custom filters
-		if ($this->conf['filterView.']['customFilters.']) {
-			foreach ($this->conf['filterView.']['customFilters.'] as $filter => $value) {
-				$this->internal['filter']['customFilters'][$value['marker']]['type'] = $value['type'];
-				$this->internal['filter']['customFilters'][$value['marker']]['field'] = $value['field'];
-				$this->internal['filter']['customFilters'][$value['marker']]['value'] = $this->cObj->stdWrap($value['value'], $value['value.']);
+			// adding custom filters
+			if ($this->conf['filterView.']['customFilters.']) {
+				foreach ($this->conf['filterView.']['customFilters.'] as $filter => $value) {
+					$this->internal['filter']['customFilters'][$value['marker']]['type'] = $value['type'];
+					$this->internal['filter']['customFilters'][$value['marker']]['field'] = $value['field'];
+					$this->internal['filter']['customFilters'][$value['marker']]['value'] = $this->cObj->stdWrap($value['value'], $value['value.']);
 
-				# change the internal value of the custom filter, only if the user posted a value
-				if (t3lib_div::_GP($value['GP_Name'])) {
+					# change the internal value of the custom filter, only if the user posted a value
+					if (t3lib_div::_GP($value['GP_Name'])) {
 
-					if (t3lib_div::_GP($value['GP_Name']) <> 'noselection') {
-						$this->internal['filter'][$value['marker']] = strip_tags(t3lib_div::_GP($value['GP_Name']));
-					}
-					else {
-						# reset the filter, because the user choose 'noselection'
-						$this->internal['filter'][$value['marker']]='';
+						if (t3lib_div::_GP($value['GP_Name']) <> 'noselection') {
+							$this->internal['filter'][$value['marker']] = strip_tags(t3lib_div::_GP($value['GP_Name']));
+						} else {
+							# reset the filter, because the user choose 'noselection'
+							$this->internal['filter'][$value['marker']] = '';
+						}
 					}
 				}
 			}
+
+			$this->internal['filter']['LanguageSelector'] = strip_tags(t3lib_div::_GP('LanguageSelector'));
+
+			if ($this->piVars['language']) {
+				$this->internal['filter']['LanguageSelector'] = $this->piVars['language'];
+				$this->filterState->setFilter($this->internal['filter']);
+			}
+			$this->internal['filter']['creator'] = strip_tags(t3lib_div::_GP('creator'));
+			$this->internal['filter']['owner'] = strip_tags(t3lib_div::_GP('owner'));
+			$this->internal['filter']['categoryMount'] = strip_tags(t3lib_div::_GP('categoryMount'));
+
+			// if all categories should be searched
+			if (t3lib_div::_GP('dam_fe_allCats') == 'true') {
+				$this->internal['filter']['searchAllCats'] = true;
+
+			} else {
+				$this->internal['filter']['searchAllCats'] = false;
+			}
+
+			$this->filterState->setFilter($this->internal['filter']);
 		}
 
+
 		// static filters
-		foreach ($this->conf['staticFilters.'] as $filter => $value){
+		foreach ($this->conf['staticFilters.'] as $filter => $value) {
 			if ($value) {
 				$this->internal['filter']['staticFilters.'][$filter] = $value;
 			}
 		}
-		if ($this->conf['staticFilters.']){
+		if ($this->conf['staticFilters.']) {
 			// save the current filter in the session if a static filter is defined
 			$this->filterState->setFilter($this->internal['filter']);
 		}
+
 
 		// clear all 0 - values - now they are not shown in the frontend form
 		foreach ($this->internal['filter'] as $key => $value) {
@@ -375,15 +394,6 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 		}
 
-
-		// if all categories should be searched
-		if (t3lib_div::_GP('dam_fe_allCats') == 'true') {
-			$this->internal['filter']['searchAllCats'] = true;
-
-		}
-		else {
-			$this->internal['filter']['searchAllCats'] = false;
-		}
 
 		if ($this->conf['filterView.']['searchCatsAsMounts'] == 1) {
 			$catArr = array();
@@ -398,6 +408,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					}
 				}
 			}
+			$this->filterState->setFilter($this->internal['filter']);
 		}
 
 		if ($this->conf['filterView.']['searchCatsAsMounts'] == 0) {
@@ -410,25 +421,21 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				}
 			}
 			$this->internal['filter']['searchAllCats_allowedCats'] = $catArr;
-		}
-		$this->internal['filter']['LanguageSelector'] = strip_tags(t3lib_div::_GP('LanguageSelector'));
-		if ($this->piVars['language']) {
-			$this->internal['filter']['LanguageSelector'] = $this->piVars['language'];
 			$this->filterState->setFilter($this->internal['filter']);
 		}
-		$this->internal['filter']['creator'] = strip_tags(t3lib_div::_GP('creator'));
-		$this->internal['filter']['owner'] = strip_tags(t3lib_div::_GP('owner'));
-		$this->internal['filter']['categoryMount'] = strip_tags(t3lib_div::_GP('categoryMount'));
+
 
 		// check for incomming values for grouped categories
 		if ($this->piVars['catgroup']) {
-			foreach ($this->piVars['catgroup'] as $key=>$value) {
+			foreach ($this->piVars['catgroup'] as $key => $value) {
 				foreach ($value as $catID) {
-					$this->internal['filter']['catgroups'][intval($key)][]=intval($catID);
+					$this->internal['filter']['catgroups'][intval($key)][] = intval($catID);
 				}
 
 			}
+			$this->filterState->setFilter($this->internal['filter']);
 		}
+
 
 		// delete all filters, if no filter is present
 		if (!count($this->filterState->getFilterFromSession())) {
@@ -437,12 +444,18 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$this->filterState->setFilter($emptyArray);
 		}
 
-		// save the filters to the session, if the user clicks "search"
-		if (t3lib_div::_GP('setFilter') || t3lib_div::_GP('easySearchSetFilter') || (t3lib_div::_GP('searchword') && !t3lib_div::_GP('resetFilter'))) {
-			$this->filterState->setFilter($this->internal['filter']);
+
+		if ($GLOBALS['TSFE']->beUserLogin) {
+
+			#t3lib_utility_Debug::debug($this->internal['filter'], __FILE__ . __LINE__);
 		}
+
 		// load the current filter
 		$this->internal['filter'] = $this->filterState->getFilterFromSession();
+		if ($GLOBALS['TSFE']->beUserLogin) {
+			#t3lib_utility_Debug::debug($this->internal['filter'], __FILE__ . __LINE__);
+
+		}
 
 
 		//These filter must set regardless the filter is resetet, because this setting is independ of the normal filters or filter view
@@ -462,9 +475,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * this function is preparing the listview
 	 *
-	 * @return	[void]		...
+	 * @return    [void]        ...
 	 */
-	function initList() {
+	function initList()
+	{
 
 		// setting internal values for pagebrowsing from the incoming request
 		$this->internal['list']['pointer'] = $this->piVars['pointer'] != null ? intval($this->piVars['pointer']) : 0;
@@ -487,48 +501,44 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			// CAB - SS:23.4.10 - perPage can be configured also per flexform
 			if (!empty($this->conf['perPage'])) {
 				$this->internal['list']['listLength'] = (int)$this->conf['perPage'];
-			}
-			elseif ($this->conf['filelist.']['defaultLength']) {
+			} elseif ($this->conf['filelist.']['defaultLength']) {
 				$this->internal['list']['listLength'] = $this->conf['filelist.']['defaultLength'];
-			}
-			else {
+			} else {
 				$this->internal['list']['listLength'] = 10;
 			}
-		}
-		else {
+		} else {
 			if ($this->internal['list']['listLength'] == 0) $this->internal['list']['listLength'] = 10;
 		}
 
 		// LOAD TCA to get all allowed fields for sorting	
 		#t3lib_div::loadTCA("tx_dam");
-        #t3lib_div::loadTCA("tx_dam_frontend");
-        $allowedColumns = array();
-        $tempArr = array();
-        $tempArr = explode(',',$this->conf['filelist.']['security_options.']['allowedFields']);
-        foreach($tempArr as $key => $value) {
-            $allowedColumns[$value] = $value;
-        }
-        unset ($tempArr);
-        $allowedColumns = array_merge($GLOBALS['TCA']['tx_dam']['columns'],$allowedColumns);
-        // setting the internal values for sorting
-        foreach ($this->piVars as $postvar => $postvalue) {
-            // allow only fields that are exist in the TCA
-            if (array_key_exists(substr($postvar, 5),$allowedColumns)) {
-                if ($postvalue == 'DESC' || $postvalue == 'ASC') {
-                    if (substr($postvar, 0, 5) == 'sort_') {
-                        // todo check if $postvar is a column of tx_dam
-                        $this->internal['list']['sorting'] = 'tx_dam.' . substr($postvar, 5).' '.$postvalue;
-                    }
-                }
-            }
-        }
-        #pre defined sorting is only used, as long a user did not sort by himself
+		#t3lib_div::loadTCA("tx_dam_frontend");
+		$allowedColumns = array();
+		$tempArr = array();
+		$tempArr = explode(',', $this->conf['filelist.']['security_options.']['allowedFields']);
+		foreach ($tempArr as $key => $value) {
+			$allowedColumns[$value] = $value;
+		}
+		unset ($tempArr);
+		$allowedColumns = array_merge($GLOBALS['TCA']['tx_dam']['columns'], $allowedColumns);
+		// setting the internal values for sorting
+		foreach ($this->piVars as $postvar => $postvalue) {
+			// allow only fields that are exist in the TCA
+			if (array_key_exists(substr($postvar, 5), $allowedColumns)) {
+				if ($postvalue == 'DESC' || $postvalue == 'ASC') {
+					if (substr($postvar, 0, 5) == 'sort_') {
+						// todo check if $postvar is a column of tx_dam
+						$this->internal['list']['sorting'] = 'tx_dam.' . substr($postvar, 5) . ' ' . $postvalue;
+					}
+				}
+			}
+		}
+		#pre defined sorting is only used, as long a user did not sort by himself
 		if (!$this->internal['list']['sorting']) {
 			// CAB:SS - 23.04.10 change orderBy for the latest view (viewID 9)
 			if ($this->internal['viewID'] == 9) {
 				$this->internal['list']['sorting'] = $this->conf['filelist.']['newFilesViewOrderBy'];
-			}
-			else {
+			} else {
 				if ($this->conf['filelist.']['orderBy']) {
 					$this->internal['list']['sorting'] = $this->conf['filelist.']['orderBy']; # example ['filelist.']['orderBy'] = crdate DESC
 				}
@@ -556,35 +566,37 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 		$this->internal['list']['limit'] = $this->internal['list']['pointer'] . ',' . ($this->internal['list']['listLength']);
 		$this->listState->setListState($this->internal['list']);
-		
-		
+
+
 		if (t3lib_div::_GP('PM')) {
 			// PM is the command to open or close a tree
 			// we have to store the first element of the command for the later use in the filelist
 			$a = explode('_', t3lib_div::_GP('PM'));
 			if (array_key_exists(0, $a)) {
-				$GLOBALS['TSFE']->fe_user->setKey('ses','dam_fe_PM', intval($a[0]) );
+				$GLOBALS['TSFE']->fe_user->setKey('ses', 'dam_fe_PM', intval($a[0]));
 			}
-			
+
 		}
 	}
 
 	/**
 	 * this function is providing the fileupload to the ter
 	 *
-	 * @return	[void]		...
+	 * @return    [void]        ...
 	 * @todo finish this functionality
 	 */
-	function initUpload() {
+	function initUpload()
+	{
 		$fileContent = t3lib_div::_GP('fiel');
 	}
 
 	/**
 	 * reads the incoming piVars from the request and copies them to the internal array
 	 *
-	 * @return	void
+	 * @return    void
 	 */
-	function convertPiVars() {
+	function convertPiVars()
+	{
 
 		// variables for category selection
 		$this->internal['catPlus'] = intval($this->piVars['catPlus']);
@@ -597,9 +609,9 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$this->internal['catClearOnClick'] = intval($this->piVars['catClearOnClick']);
 
 		$this->internal['catlist_searchword'] = strip_tags($this->piVars['catlist_searchword']);
-		if ($this->internal['catlist_searchword'] AND $GLOBALS['TSFE']->fe_user->getKey("ses", $this->treeID . 'expandTreeLevel')==1) {
+		if ($this->internal['catlist_searchword'] AND $GLOBALS['TSFE']->fe_user->getKey("ses", $this->treeID . 'expandTreeLevel') == 1) {
 			t3lib_utility_Debug::debug('true', __FILE__ . __LINE__);
-			$GLOBALS['TSFE']->fe_user->setKey("ses", $this->treeID . 'expandTreeLevel',1);
+			$GLOBALS['TSFE']->fe_user->setKey("ses", $this->treeID . 'expandTreeLevel', 1);
 		}
 
 		// call for the singleView
@@ -615,19 +627,17 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			// so the commands to select or deselect a category are getting processed
 			if ($this->internal['viewID'] == 2) {
 				$this->internal['incomingtreeID'] = $this->cObj->data['uid'];
-			}
-			else {
+			} else {
 				$this->internal['incomingtreeID'] = 0;
 			}
-		}
-		else {
+		} else {
 			$this->internal['incomingtreeID'] = intval($this->piVars['treeID']);
 		}
 
 		// loading post values from the drilldown view
 
 		if ($this->piVars['level0']) {
-			if ($this->piVars['level0']=='noselection') $this->internal['drilldown']['level0']=0;
+			if ($this->piVars['level0'] == 'noselection') $this->internal['drilldown']['level0'] = 0;
 			do {
 				if (intval($this->piVars['level' . intval($i)]) == 0) {
 					break;
@@ -674,7 +684,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		// values for searching
 
-		if ($this->internal['viewID'] == 5 OR $this->internal['viewID'] == 10 ) {
+		if ($this->internal['viewID'] == 5 OR $this->internal['viewID'] == 10) {
 			// searchbox
 			$this->initFilter();
 		}
@@ -692,8 +702,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		if (t3lib_div::_POST('cancel_versioning')) {
 			$GLOBALS['TSFE']->fe_user->setKey('ses', 'saveID', '');
 			$GLOBALS['TSFE']->fe_user->setKey('ses', 'overWriteID', '');
-		}
-		else {
+		} else {
 			// iniitalisation of an Upload
 			if (t3lib_div::_POST('upload_file')) {
 				$this->upload = true;
@@ -731,11 +740,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * The main method of the PlugIn
 	 *
-	 * @param	string		$content: The PlugIn content
-	 * @param	array		$conf: The PlugIn configuration
-	 * @return	string		The html content that is displayed on the website
+	 * @param    string $content: The PlugIn content
+	 * @param    array $conf: The PlugIn configuration
+	 * @return    string        The html content that is displayed on the website
 	 */
-	function main($content, $conf) {
+	function main($content, $conf)
+	{
 		$this->conf = $conf;
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
@@ -752,8 +762,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		if (is_array($user->user)) {
 			$this->userLoggedIn = true;
 			$this->userUID = $user->user['uid'];
-		}
-		else {
+		} else {
 			$this->userLoggedIn = false;
 		}
 
@@ -811,8 +820,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				break;
 		}
 		// select the view to be created
-		
-		if($this->conf['noBCWrap']==1) {
+
+		if ($this->conf['noBCWrap'] == 1) {
 			$returnvalue = $content;
 		} else {
 			$returnvalue = $this->pi_wrapInBaseClass($content);
@@ -823,9 +832,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * handles the incoming data from the treeview (plus, minus, equals) operation
 	 *
-	 * @return	[type]		...
+	 * @return    [type]        ...
 	 */
-	function getInputTree() {
+	function getInputTree()
+	{
 		if ($this->internal['catClearOnClick']) {
 			$this->catList->clearCatSelection($this->internal['incomingtreeID']);
 		}
@@ -850,23 +860,19 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		if ($this->internal['catPlus']) {
 			$this->catList->op_Plus($this->internal['catPlus'], $this->internal['incomingtreeID']);
-		}
-		else if ($this->internal['catMinus']) {
+		} else if ($this->internal['catMinus']) {
 			$this->catList->op_Minus($this->internal['catMinus'], $this->internal['incomingtreeID']);
-		}
-		else if ($this->internal['catEquals']) {
+		} else if ($this->internal['catEquals']) {
 			$this->catList->op_Equals($this->internal['catEquals'], $this->internal['incomingtreeID']);
 			$GLOBALS['TSFE']->fe_user->setKey('ses', 'currentCategory', $this->internal['catEquals']);
-		}
-		else if ($this->internal['catMinus_Rec']) {
+		} else if ($this->internal['catMinus_Rec']) {
 			$catID = $this->internal['catMinus_Rec'];
 			if ($catID == -1) $catID = 0;
 			$subs = $this->catLogic->getSubCategories($catID);
 			foreach ($subs as $sub) {
 				$this->catList->op_Minus($sub['uid'], $this->internal['incomingtreeID']);
 			}
-		}
-		else if ($this->internal['catPlus_Rec']) {
+		} else if ($this->internal['catPlus_Rec']) {
 			$this->catList->op_PlusRec($this->internal['catPlus_Rec'], $this->internal['incomingtreeID']);
 		}
 
@@ -892,8 +898,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 								foreach ($subs as $sub) {
 									$this->catList->op_Plus($sub['uid'], $this->internal['treeID']);
 								}
-							}
-							else {
+							} else {
 								$this->catList->op_Plus($catMount, $this->internal['treeID']);
 							}
 						}
@@ -936,8 +941,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				// getting values from flexform ==> it's possible to overwrite flexform values with ts setttings
 				$this->internal['catMounts'] = explode(',', $this->pi_getFFvalue($cObj->data['pi_flexform'], 'catMounts', 'sSelection'));
 				$this->addAllCategories($this->internal['catMounts'], $this->internal['incomingtreeID'], true);
-			}
-			else {
+			} else {
 				// restrict for the given category, which is used in the selectorbox of the easysearch form
 				$catID = $this->internal['catPlus_Rec'];
 				if (intval(t3lib_div::_GP('categoryMount')) > 0 AND $this->internal['viewID'] == 10) {
@@ -955,29 +959,29 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			if ($this->internal['filter']['catgroups']) {
 				$this->catList->unsetAllCategories();
 				foreach ($this->internal['filter']['catgroups'] as $catgroupID => $cats) {
-					foreach($cats as $cat) {
+					foreach ($cats as $cat) {
 						#t3lib_utility_Debug::debug($cat, 'Category ' . $cat . ' in ' . __LINE__ . ' in ' . __FILE__);
-						$this->catList->op_Plus($cat, $catgroupID*-1);
+						$this->catList->op_Plus($cat, $catgroupID * -1);
 					}
 				}
 
 			}
 			if (t3lib_div::_GP('categoryMount') AND t3lib_div::_GP('setFilter')) {
 				// if a category restriction is used in the search form
-				
-				if (($this->internal['viewID'] == 2 OR ($this->conf['filterView.']['allow_category_restriction_by_filterView'] == 1 AND $this->internal['viewID'] == 5)) 
-					AND intval(t3lib_div::_GP('categoryMount')) > 0) {
+
+				if (($this->internal['viewID'] == 2 OR ($this->conf['filterView.']['allow_category_restriction_by_filterView'] == 1 AND $this->internal['viewID'] == 5))
+					AND intval(t3lib_div::_GP('categoryMount')) > 0
+				) {
 					// add the restriction to all category tree content elements
 					$this->catList->clearCatSelection($this->internal['treeID']);
 					if ($this->conf['filterView.']['searchCatsAsMounts'] == 1) {
 						$this->catList->op_PlusRec(t3lib_div::_GP('categoryMount'), $this->internal['treeID']);
-					}
-					else {
+					} else {
 						$this->catList->op_Equals(t3lib_div::_GP('categoryMount'), $this->internal['treeID']);
 					}
 				}
-				
-				
+
+
 			}
 		}
 
@@ -999,8 +1003,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 			if ($rootID > 0) {
 				$catID = $rootID;
-			}
-			else {
+			} else {
 				end($this->internal['drilldown']);
 				#while (! current($this->internal['drilldown']) && !current($this->internal['drilldown']) === FALSE) prev($this->internal['drilldown']);
 				$catID = current($this->internal['drilldown']);
@@ -1023,9 +1026,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * renderes an category tree
 	 *
-	 * @return	html		category tree - ready for display
+	 * @return    html        category tree - ready for display
 	 */
-	function catTree() {
+	function catTree()
+	{
 
 		##### Adding a treeview to the output
 
@@ -1033,8 +1037,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeViewAdvanced');
 			$tree->renderer = $this->renderer;
 			$tree->catLogic = $this->catLogic;
-		}
-		else {
+		} else {
 			$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeView');
 		}
 
@@ -1053,8 +1056,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		 */
 		if (intval($this->conf['subLevels']) > 0) {
 			$tree->expandTreeLevel($this->conf['subLevels']);
-		}
-		else {
+		} else {
 			$tree->expandTreeLevel($this->conf['categoryTree.']['expandTreeLevel']);
 		}
 		return $this->cObj->stdWrap($tree->getBrowsableTree(), $this->conf['categoryTree.']['stdWrap.']);
@@ -1062,10 +1064,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 
 	/**
-	 * @return	[type]		...
+	 * @return    [type]        ...
 	 * @author stefan
 	 */
-	function fileListBasicFuncionality() {
+	function fileListBasicFuncionality()
+	{
 
 		if ($this->conf['enableDeletions'] == 1) {
 			if ($this->userLoggedIn == true) {
@@ -1113,12 +1116,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 						$this->internal['editUID'] = null;
 						if ($returnCode <> true) {
 							return $returnCode;
-						}
-						else {
+						} else {
 							#clear session data
 						}
-					}
-					else {
+					} else {
 						return $this->renderer->renderError('custom', 'You are not allowed to edit this file!');
 					}
 
@@ -1144,8 +1145,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					if ($this->docLogic->checkEditRights($docData) === TRUE) {
 						$this->saveCategories($this->internal['catEditUID'], false);
 						$this->internal['catEditUID'] = null;
-					}
-					else {
+					} else {
 						return $this->renderer->renderError('custom', 'You are not allowed to edit this file!');
 					}
 				}
@@ -1160,8 +1160,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 					if ($this->docLogic->checkEditRights($docData) === TRUE) {
 						return $this->categoriseForm($docData);
-					}
-					else {
+					} else {
 						return $this->renderer->renderError('custom', 'You are not allowed to edit this file!');
 					}
 				}
@@ -1179,10 +1178,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * all documents are contained, which nat filtered and the user has
 	 * After that, the list is converted to an html view, rendered by the renderer instance
 	 *
-	 * @param	[type]		$useRequestForm: ...
-	 * @return	html		HTML - list of all selected documents
+	 * @param    [type]        $useRequestForm: ...
+	 * @return    html        HTML - list of all selected documents
 	 */
-	function fileList($useRequestForm) {
+	function fileList($useRequestForm)
+	{
 
 		$result = $this->fileListBasicFuncionality();
 		if ($result <> 1) {
@@ -1203,15 +1203,15 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 		}
 
-		if ($this->conf['filterView.']['searchAutomaticallyInAllowedCategories']==1) {
+		if ($this->conf['filterView.']['searchAutomaticallyInAllowedCategories'] == 1) {
 			if ($this->internal['filter']['searchAllCats_allowedCats'] AND $this->internal['filter']['searchword']) {
-				$hasCats= true;
+				$hasCats = true;
 			}
 		}
 		if ($hasCats === true || $this->internal['filter']['searchAllCats'] === true || $this->internal['viewID'] == 9) {
 			/***************************
 			 *
-			 *	search and sorting values are transfered to the user
+			 *    search and sorting values are transfered to the user
 			 *
 			 ***************************/
 			if (is_array($this->internal['filter'])) {
@@ -1224,8 +1224,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			if ($this->internal['viewID'] == 8) {
 				$this->docLogic->conf['useGroupedView'] = 1;
 			}
-			if ($this->conf['filterView.']['showOnlyFilesOfAllowedCategories']==1 AND $this->conf['useTreeAndSelection'] == 1) {
-				$cats[$this->internal['treeID']]= $this->internal['filter']['searchAllCats_allowedCats'];
+			if ($this->conf['filterView.']['showOnlyFilesOfAllowedCategories'] == 1 AND $this->conf['useTreeAndSelection'] == 1) {
+				$cats[$this->internal['treeID']] = $this->internal['filter']['searchAllCats_allowedCats'];
 			}
 
 			if ($this->internal['viewID'] == 8 AND $this->conf['filelist.']['groupedFileListUseBackEndSorting'] == 1) {
@@ -1239,30 +1239,28 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 						$files = array_merge($files, $currentFiles);
 					}
 				}
-			}
-		else {
-			if ($this->conf['filelist.']['groupedFileListGroupByTreeID']) {
-				// check if a category is selected of this tree. If not, take all cats.
-				if ($cats[$this->conf['filelist.']['groupedFileListGroupByTreeID']]) {
-					// re-arrange the category array, because the cattitles (that are needed for the grouped filelist) are fetched from the last and criteria
-					$tempCats = $cats[$this->conf['filelist.']['groupedFileListGroupByTreeID']];
-					unset($cats[$this->conf['filelist.']['groupedFileListGroupByTreeID']]);
-					$cats[$this->conf['filelist.']['groupedFileListGroupByTreeID']]=$tempCats;
-				}
-				else {
-					// add all subcategories to the selection
-					$subs = $this->catLogic->getSubCategories(abs($this->conf['filelist.']['groupedFileListGroupByTreeID']));
-					if (is_array($subs)) {
-						foreach ($subs as $sub) {
-							$cats[$this->conf['filelist.']['groupedFileListGroupByTreeID']][]=$sub['uid'];
+			} else {
+				if ($this->conf['filelist.']['groupedFileListGroupByTreeID']) {
+					// check if a category is selected of this tree. If not, take all cats.
+					if ($cats[$this->conf['filelist.']['groupedFileListGroupByTreeID']]) {
+						// re-arrange the category array, because the cattitles (that are needed for the grouped filelist) are fetched from the last and criteria
+						$tempCats = $cats[$this->conf['filelist.']['groupedFileListGroupByTreeID']];
+						unset($cats[$this->conf['filelist.']['groupedFileListGroupByTreeID']]);
+						$cats[$this->conf['filelist.']['groupedFileListGroupByTreeID']] = $tempCats;
+					} else {
+						// add all subcategories to the selection
+						$subs = $this->catLogic->getSubCategories(abs($this->conf['filelist.']['groupedFileListGroupByTreeID']));
+						if (is_array($subs)) {
+							foreach ($subs as $sub) {
+								$cats[$this->conf['filelist.']['groupedFileListGroupByTreeID']][] = $sub['uid'];
+							}
 						}
 					}
 				}
-			}
 
-			$this->docLogic->categories = $cats;
-			$files = $this->docLogic->getDocumentList($this->userUID);
-		}
+				$this->docLogic->categories = $cats;
+				$files = $this->docLogic->getDocumentList($this->userUID);
+			}
 
 			if (count($files) > 0) {
 
@@ -1291,36 +1289,30 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				}
 
 				//get the html from the renderer
-				if ($this->internal['viewID'] == 8 OR $this->conf['filelist.']['latestView.']['useGroupedFileList']==1) {
+				if ($this->internal['viewID'] == 8 OR $this->conf['filelist.']['latestView.']['useGroupedFileList'] == 1) {
 					$content = $this->renderer->renderFileGroupedList($files, $rescount, $this->internal['list']['pointer'], $this->internal['list']['listLength'], false, $this->fileListConf);
-				}
-				else {
+				} else {
 					$content = $this->renderer->renderFileList($files, $rescount, $this->internal['list']['pointer'], $this->internal['list']['listLength'], $useRequestForm, $this->fileListConf);
 				}
-			}
-			else {
+			} else {
 				// render message
 				if ($this->conf['filelist.']['showSubCategoriesInFilelist'] == 1) {
 					$content = $this->renderer->renderEmptyFileList($this->getCategoriesForFileList());
-				}
-				else {
-					if ($this->conf['filelist.']['showErrorIfListIsEmpty']==1) {
+				} else {
+					if ($this->conf['filelist.']['showErrorIfListIsEmpty'] == 1) {
 						$content = $this->renderer->renderError('noDocInCat');
-					}
-					else {
+					} else {
 						$content = $this->renderer->renderEmptyFileList();
 					}
 				}
 			}
-		}
-		else {
+		} else {
 			//render error
-			if ($this->conf['filelist.']['showErrorIfListIsEmpty']==1) {
+			if ($this->conf['filelist.']['showErrorIfListIsEmpty'] == 1) {
 				$content = $this->renderer->renderError('noCatSelected');
-			}
-			else {
+			} else {
 				$content = $this->renderer->renderEmptyFileList();
-			}	
+			}
 		}
 		return $content;
 	}
@@ -1328,23 +1320,24 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * Renders the search box
 	 *
-	 * @return	[string]		$content html auf filterview
+	 * @return    [string]        $content html auf filterview
 	 */
-	function filterView() {
+	function filterView()
+	{
 		$this->internal['filter']['categories'] = $this->get_CategoryList($this->internal['catMounts'], $this->internal['filter']['categoryMount']);
-		if ($this->conf['filterView.']['use_category_groups']==1){
+		if ($this->conf['filterView.']['use_category_groups'] == 1) {
 			// delete category settings: it is only possible to use one kind of category selection
 			unset($this->internal['filter']['categories']);
 			$selectedCats = array();
 			// prepare cats which where send via post
 			if (is_array($this->internal['filter']['catgroups'])) {
-				foreach($this->internal['filter']['catgroups'] as $key =>$value ) {
-					foreach($value as $cat) {
+				foreach ($this->internal['filter']['catgroups'] as $key => $value) {
+					foreach ($value as $cat) {
 						$selectedCats[] = $cat;
 					}
 				}
 			}
-			$mounts = explode(',',$this->conf['catMounts']);
+			$mounts = explode(',', $this->conf['catMounts']);
 			foreach ($mounts as $mount) {
 				// check if the current mount has childs, if not, the category is not taken to the selection
 				$childs = $this->catLogic->getChildCategories($mount);
@@ -1352,18 +1345,18 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					$childCats = array();
 					foreach ($childs as $child) {
 						// if in current selection, checkit
-						$child['selected']=0;
-						if (in_array($child['uid'], $selectedCats) ) {
-							$child['selected']=1;
+						$child['selected'] = 0;
+						if (in_array($child['uid'], $selectedCats)) {
+							$child['selected'] = 1;
 						}
 						$childCats[] = $child;
 					}
 					// get the category information for the parent category
-					$categories[$mount] =  $this->catLogic->getCategory($mount);
-					$categories[$mount]['childs'] =  $childCats;
+					$categories[$mount] = $this->catLogic->getCategory($mount);
+					$categories[$mount]['childs'] = $childCats;
 				}
 			}
-			$this->internal['filter']['categories']=$categories;
+			$this->internal['filter']['categories'] = $categories;
 		}
 		$content = $this->renderer->renderFilterView($this->internal['filter'], $this->internal['filterError']);
 		if ($this->internal['filter']['searchAllCats'] == true) {
@@ -1378,9 +1371,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * by this list. After that, this list is given to the frontend - renderer to render a list of all
 	 * selected categories
 	 *
-	 * @return	html		rendered list, ready for display, of selected categories
+	 * @return    html        rendered list, ready for display, of selected categories
 	 */
-	function catSelection() {
+	function catSelection()
+	{
 		// getting the complete category selection
 		$selection = $this->catList->getCatSelection(0, $GLOBALS['TSFE']->id);
 		if (is_array($selection)) {
@@ -1396,13 +1390,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 			if (!empty($cats)) {
 				$content = $this->renderer->renderCatSelection($cats);
-			}
-			else {
+			} else {
 				$content = $this->renderer->renderError('noCatSelected');
 			}
 
-		}
-		else {
+		} else {
 			$content = $this->renderer->renderError('noCatSelected');
 		}
 		return $content;
@@ -1413,9 +1405,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * controller function dor the rendering of the single view
 	 * the internal singleID must be set
 	 *
-	 * @return	html		rendered content
+	 * @return    html        rendered content
 	 */
-	function singleView() {
+	function singleView()
+	{
 		$singleID = intval($this->internal['singleID']);
 		if (intval($singleID) && $singleID != 0) {
 			if ($this->docLogic->checkAccess($singleID, 1)) {
@@ -1428,8 +1421,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					}
 					if ($this->docLogic->checkAccess($record['uid'], 2)) {
 						$record['allowDownload'] = 1;
-					}
-					else {
+					} else {
 						$record['allowDownload'] = 0;
 					}
 					$content = $this->renderer->renderSingleView($record);
@@ -1438,16 +1430,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 						$_SESSION['fileRef'] = $record['file_path'] . $record['file_name'];
 					}
 					return $content;
-				}
-				else {
+				} else {
 					return $this->renderer->renderError('noDocAccess');
 				}
-			}
-			else {
+			} else {
 				return $this->renderer->renderError('noDocAccess');
 			}
-		}
-		else {
+		} else {
 			return $this->renderer->renderError('noSingleID');
 		}
 
@@ -1457,26 +1446,24 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * function is responsible for rendering of a list with all availible filters
 	 *
-	 * @return	string		html list of all availible filters
+	 * @return    string        html list of all availible filters
 	 */
-	function filterList() {
+	function filterList()
+	{
 		if (is_array($GLOBALS['TSFE']->fe_user->user)) {
 			$filterList = $this->filterState->getFilterList($GLOBALS['TSFE']->fe_user->user['uid']);
 			if (is_array($filterList) && count($filterList)) {
 				$content = $this->renderer->renderFilterList($filterList);
-			}
-			else {
+			} else {
 				$content = $this->renderer->renderError('noFilterStates');
 			}
 
 			if ($this->internal['newFilter'] != '') {
 				$content .= $this->renderer->renderFilterCreationForm();
-			}
-			else {
+			} else {
 				$content .= $this->renderer->renderFilterCreationLink();
 			}
-		}
-		else {
+		} else {
 			$content = $this->renderer->renderError('noUserLoggedIn');
 		}
 		return $content;
@@ -1486,7 +1473,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/*********************************
 	 *
 	 *
-	 *	 FILE UPLOAD AND CATEGORISATION
+	 *     FILE UPLOAD AND CATEGORISATION
 	 *
 	 *
 	 *********************************/
@@ -1495,9 +1482,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * Shows the upload form
 	 *
-	 * @return	[string]		$content the html code of the form
+	 * @return    [string]        $content the html code of the form
 	 */
-	function uploadForm() {
+	function uploadForm()
+	{
 
 		$step = 1;
 
@@ -1548,8 +1536,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					// File exists - show versioning options
 					if ($this->versionate) {
 						return $this->versioningForm();
-					}
-					else {
+					} else {
 						if (!$this->handleOneStepUpload($newID)) $returnCode = $this->pi_getLL('ERROR_STORE_FILE');
 						$this->getIncomingDocData();
 						$step = 2;
@@ -1570,8 +1557,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$returnCode = $this->saveMetaData($this->internal['saveUID']);
 				if ($returnCode <> true) {
 					return $returnCode;
-				}
-				else {
+				} else {
 					#if saving of the metadata was successful, next step for upload form must be prepared
 					#first check, if the saved id is the id of the uploaded file
 					if ($this->internal['saveUID'] == $GLOBALS['TSFE']->fe_user->getKey('ses', 'saveID')) {
@@ -1602,7 +1588,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 
 			// Ralf Merz: do not go on if no category is selected and step is submitted
-			if($this->conf['doNotAllowUploadEmptyCategorySelection'] == 1 && t3lib_div::_GP('catOK')) {
+			if ($this->conf['doNotAllowUploadEmptyCategorySelection'] == 1 && t3lib_div::_GP('catOK')) {
 				$catArrayUser = $this->catList->getCatSelection(-1, 0);
 			} else {
 				// generate a dummy array
@@ -1614,15 +1600,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$this->saveCategories($docID);
 				if ($this->storeDocument($docID) == false) {
 					$step = 'uploadError';
-				}
-				else {
+				} else {
 					$this->categorise = false;
 					$step = 4;
 				}
 			}
 
-		}
-		else {
+		} else {
 			// no user currently logged in - upload feature is disabled
 			return $this->renderer->renderError('noUserLoggedIn');
 		}
@@ -1636,8 +1620,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			case 2:
 				if ($GLOBALS['TSFE']->fe_user->getKey('ses', 'overWriteID') > 0 && $this->versioning == '') {
 					return $this->versioningForm();
-				}
-				else {
+				} else {
 					return $this->editForm(intval($GLOBALS['TSFE']->fe_user->getKey('ses', 'uploadID')));
 				}
 				break;
@@ -1660,9 +1643,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * renders a form for versioning of a file
 	 *
-	 * @return	[type]		...
+	 * @return    [type]        ...
 	 */
-	function versioningForm() {
+	function versioningForm()
+	{
 		$allowedVersioningMethods = array();
 		// get the ID of the overwrite document
 		$document = $this->docLogic->getDocument($GLOBALS['TSFE']->fe_user->getKey('ses', 'overWriteID'));
@@ -1677,15 +1661,15 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 * ******************
 	 * calls the handle Upload Extension and outputs the error messages to the frontend
 	 *
-	 * @return	int		the ID of uploaded file in the dam table, if there is an error, the error message is returned
+	 * @return    int        the ID of uploaded file in the dam table, if there is an error, the error message is returned
 	 */
-	function handleUpload() {
+	function handleUpload()
+	{
 		global $TYPO3_CONF_VARS;
 		// make Instance of the class for fileupload handling
 		if (!t3lib_extMgm::isLoaded('fileupload')) {
 			return $this->renderer->renderError('uploadExtensionNotInstalled');
-		}
-		else {
+		} else {
 			// creating the Object of the upload handler
 			// getting TS for the Extension
 			// creating an instance
@@ -1699,13 +1683,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			}
 			if (is_dir($path)) {
 				$uploaddir = $path;
-			}
-			else {
+			} else {
 				// try to get default path of the BE
 				if (is_dir($TYPO3_CONF_VARS['BE']['fileadminDir'])) {
 					$uploaddir = $TYPO3_CONF_VARS['BE']['fileadminDir'];
-				}
-				else {
+				} else {
 					return $this->pi_getLL('upload_path_error');
 				}
 
@@ -1725,14 +1707,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			if ($fileUploadTS['FEuserHomePath'] == 1) {
 				if ($fileUploadTS['FEuserHomePath.']['field']) {
 					$feuploaddir = $GLOBALS["TSFE"]->fe_user->user[$fileUploadTS['FEuserHomePath.']['field']] . '/';
-				}
-				else {
+				} else {
 					$feuploaddir = $GLOBALS["TSFE"]->fe_user->user["uid"] . '/';
 				}
 				// disable FEuserHomePath of fileupload, because dam_fe handles itself
 				$fileUploadTS['FEuserHomePath'] = 0;
-			}
-			else {
+			} else {
 				$feuploaddir = '';
 			}
 
@@ -1831,8 +1811,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 									foreach ($subs as $sub) {
 										$catArr[] = $sub['uid'];
 									}
-								}
-								else {
+								} else {
 									$catArr[] = $catMount;
 								}
 							}
@@ -1843,8 +1822,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$GLOBALS['TSFE']->fe_user->setKey('ses', 'uploadID', $newID);
 				$GLOBALS['TSFE']->fe_user->setKey('ses', 'saveID', $newID);
 				return $newID;
-			}
-			else {
+			} else {
 				$errorContent = '';
 				foreach ($uploadHandler->status as $error) {
 					$errorContent .= $error;
@@ -1859,9 +1837,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * [load the default typoscript of the upload extension]
 	 *
-	 * @return	[type]		...
+	 * @return    [type]        ...
 	 */
-	function loadFileUploadTS() {
+	function loadFileUploadTS()
+	{
 		$sysPageObj = t3lib_div::makeInstance('t3lib_pageSelect');
 		$rootLine = $sysPageObj->getRootLine($this->cObj->data['pid']);
 		$TSObj = t3lib_div::makeInstance('t3lib_tsparser_ext');
@@ -1875,9 +1854,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * get the data of the upload form and validate them
 	 *
-	 * @return	[string]		errormessage / TRUE if there was no error
+	 * @return    [string]        errormessage / TRUE if there was no error
 	 */
-	function getIncomingDocData() {
+	function getIncomingDocData()
+	{
 
 		// conversion of incoming data from the creation of an new document
 		$this->documentData['title'] = strip_tags(t3lib_div::_POST('title'));
@@ -1893,8 +1873,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			foreach ($tempArr as $value) {
 				$newArr[] = intval($value);
 			}
-		}
-		else {
+		} else {
 			if (intval(t3lib_div::_POST('FEGROUPS') > 0)) $newArr[] = intval(t3lib_div::_POST('FEGROUPS'));
 		}
 		// add groups that are defined via typoscript
@@ -1943,15 +1922,15 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * Show the categoriseform
 	 *
-	 * @param	array		$docData if set: an existing document is categorized new
-	 * @return	[html]		...
+	 * @param    array $docData if set: an existing document is categorized new
+	 * @return    [html]        ...
 	 */
-	function categoriseForm($docData = '') {
+	function categoriseForm($docData = '')
+	{
 		if (is_array($docData)) {
 			$docID = $docData['uid'];
 			$versioning = 'editCats';
-		}
-		else {
+		} else {
 			$docID = intval($GLOBALS['TSFE']->fe_user->getKey('ses', 'categoriseID'));
 			$docData = $this->docLogic->getDocument($docID);
 			$versioning = t3lib_div::_GP('version_method');
@@ -1990,8 +1969,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$catData[] = $this->catLogic->getCategory($cat);
 			}
 			$content = $this->renderer->renderCategorisationForm($docData, $catData, $uploadCats, $versioning);
-		}
-		else {
+		} else {
 			$content = $this->renderer->renderCategorisationForm($docData, '', $uploadCats, $versioning);
 		}
 		return $content;
@@ -2000,11 +1978,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * Save the categories of a uploaded file
 	 *
-	 * @param	int		$docID id of the dam record that should be categorized / saved
-	 * @param	[type]		$upload: if true the function is called while the upload process, then some keys are deleted to set end for the upload process
-	 * @return	[boolean]		true if saving was sucessful
+	 * @param    int $docID id of the dam record that should be categorized / saved
+	 * @param    [type]        $upload: if true the function is called while the upload process, then some keys are deleted to set end for the upload process
+	 * @return    [boolean]        true if saving was sucessful
 	 */
-	function saveCategories($docID, $upload = true) {
+	function saveCategories($docID, $upload = true)
+	{
 		if ($this->userLoggedIn == true) {
 			if ($this->docLogic->checkOwnerRights($docID, $this->userUID) == true) {
 
@@ -2017,12 +1996,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				$GLOBALS['TSFE']->fe_user->setKey('ses', 'categoriseID', '');
 				// set record to visible
 				return $returnID;
-			}
-			else {
+			} else {
 				return $this->renderer->renderError('no_access');
 			}
-		}
-		else {
+		} else {
 			return $this->renderer->renderError('noUser');
 		}
 	}
@@ -2030,12 +2007,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * returns an array of users, if current user is given the user is selected in this array
 	 *
-	 * @param	int		$fe_group uid of the fe_group
-	 * @param	string		$currentUser Username or name of the user
-	 * @return	array		all fe_users which shoud be selected
+	 * @param    int $fe_group uid of the fe_group
+	 * @param    string $currentUser Username or name of the user
+	 * @return    array        all fe_users which shoud be selected
 	 * @author stefan
 	 */
-	function get_FEUserList($fe_group = 0, $currentUser = '') {
+	function get_FEUserList($fe_group = 0, $currentUser = '')
+	{
 		if ($fe_group > 0) {
 			#get uid of the given fe_user_group
 			$SELECT = 'recuid';
@@ -2059,8 +2037,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			if ($currentUser <> '' AND ($currentUser == $row['name'] or $currentUser == $row['username'] or $currentUser == $row['uid'])) {
 				$row['selected'] = 1;
-			}
-			else {
+			} else {
 				$row['selected'] = 0;
 			}
 			$feUserList[] = $row;
@@ -2072,30 +2049,29 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * returns an array of categories
 	 *
-	 * @param	string		$currentCategory ID of the current selected category
-	 * @param	[type]		$currentCategory: ...
-	 * @return	array		all fe_users which shoud be selected
+	 * @param    string $currentCategory ID of the current selected category
+	 * @param    [type]        $currentCategory: ...
+	 * @return    array        all fe_users which shoud be selected
 	 * @author stefan
 	 */
-	function get_CategoryList($catMounts, $currentCategory = '') {
+	function get_CategoryList($catMounts, $currentCategory = '')
+	{
 		$where = implode(',', $catMounts);
 		if (!$where) return array();
-		
+
 		$SELECT = '*';
 		$FROM = 'tx_dam_cat';
 		$WHERE = 'uid in (' . implode(',', $catMounts) . ')' . tslib_cObj::enableFields($FROM);
 		if ($this->conf['filterView.']['categoriesOrderBy']) {
 			$ORDERBY = $this->conf['filterView.']['categoriesOrderBy'];
-		}
-		else {
+		} else {
 			$ORDERBY = 'title';
 		}
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($SELECT, $FROM, $WHERE, $ORDERBY);
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			if ($row['uid'] == $currentCategory) {
 				$row['selected'] = 1;
-			}
-			else {
+			} else {
 				$row['selected'] = 0;
 			}
 			$catList[] = $row;
@@ -2107,10 +2083,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * Renders the myFile view
 	 *
-	 * @return	html		the list of files of a user or an error string
+	 * @return    html        the list of files of a user or an error string
 	 * @author stefan
 	 */
-	function myFiles() {
+	function myFiles()
+	{
 		$this->renderer->piVars = $this->piVars;
 		if ($this->userLoggedIn == false) {
 			return $this->renderer->renderError('noUserLoggedIn');
@@ -2124,7 +2101,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 		/***************************
 		 *
-		 *	search and sorting values are transfered to the user
+		 *    search and sorting values are transfered to the user
 		 *
 		 ***************************/
 		$this->internal['filter']['owner'] = $this->userUID;
@@ -2140,19 +2117,19 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$files = array();
 		$resCountAlt = 0;
 		$cats = $this->catList->getCatSelection(0, $this->pid);
-		$cats[$this->internal['treeID']]= $this->internal['filter']['searchAllCats_allowedCats'];
+		$cats[$this->internal['treeID']] = $this->internal['filter']['searchAllCats_allowedCats'];
 
 		if (count($cats)) {
-			$oldCats=$cats;
+			$oldCats = $cats;
 			foreach ($oldCats as $catList) {
 				if (count($catList))
 					$hasCats = true;
-					foreach($catList as $cat){
-						$cats[][]=$cat;
-					}
+				foreach ($catList as $cat) {
+					$cats[][] = $cat;
+				}
 			}
 		}
-		if($hasCats){
+		if ($hasCats) {
 			$this->docLogic->categories = $cats;
 		}
 
@@ -2164,8 +2141,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			# if a request form should be rendered
 			$useRequestForm = false;
 			$content = $this->renderer->renderFileList($files, $rescount, $this->internal['list']['pointer'], $this->internal['list']['listLength'], $useRequestForm, $this->fileListConf);
-		}
-		else {
+		} else {
 			// render error
 			$content = $this->renderer->renderError('noDocInCat');
 		}
@@ -2175,10 +2151,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * takes care of the versioning
 	 *
-	 * @param	[type]		$code: deprecated- not used anymore
-	 * @return	[int]		ID of the versionized record
+	 * @param    [type]        $code: deprecated- not used anymore
+	 * @return    [int]        ID of the versionized record
 	 */
-	function handleVersioning($code) {
+	function handleVersioning($code)
+	{
 		$trigger = t3lib_div::_GP('version_method');
 		$docID = $GLOBALS['TSFE']->fe_user->getKey('ses', 'uploadID');
 		if (!isset($trigger)) die('call of this function (handleversioning) without url - parameter');
@@ -2201,12 +2178,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	}
 
 	/**
-	 * @param	int		$uid UID of the DAM record which should be edited
-	 * @param	boolean		$checkAccess if true, access is check with categories
-	 * @return	string		html of the editing form
+	 * @param    int $uid UID of the DAM record which should be edited
+	 * @param    boolean $checkAccess if true, access is check with categories
+	 * @return    string        html of the editing form
 	 * @author stefan
 	 */
-	function editForm($uid = 0) {
+	function editForm($uid = 0)
+	{
 		if (intval($uid) > 0) {
 			if ($this->versioning != '') {
 				if ($this->docLogic->checkOwnerRights($uid, $this->userUID) === TRUE) {
@@ -2215,8 +2193,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 					if (!$uid) return $this->renderer->renderError('ERROR_STORE_FILE');
 					$GLOBALS['TSFE']->fe_user->setKey('ses', 'saveID', $uid);
 					$GLOBALS['TSFE']->fe_user->setKey('ses', 'uploadID', $uid);
-				}
-				else {
+				} else {
 					return $this->renderer->renderError('no_access');
 				}
 			}
@@ -2228,8 +2205,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 			} else {
 				return $this->renderer->renderError('no_access');
 			}
-		}
-		else {
+		} else {
 			$GLOBALS['TSFE']->fe_user->setKey('ses', 'saveID', Null);
 			return $this->renderer->renderError('custom', 'No ID given. ', 'Edit DAM Metadata (editForm): Please take care, that an uid is given to this function');
 		}
@@ -2240,11 +2216,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	 *
 	 * saves the meta data of a document
 	 *
-	 * @param	[int]		$saveUID:ID of the dam record which should be saved
-	 * @return	[type]		...
+	 * @param    [int]        $saveUID:ID of the dam record which should be saved
+	 * @return    [type]        ...
 	 * @author stefan
 	 */
-	function saveMetaData($saveUID) {
+	function saveMetaData($saveUID)
+	{
 		if ($this->userLoggedIn == true) {
 			if ($this->docLogic->checkOwnerRights($saveUID, $this->userUID) == true) {
 				#set edit UID to zero, so the edit form isnot shown anymore
@@ -2255,16 +2232,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 				if ($returnCode == true) {
 					$this->docLogic->saveMetaData($saveUID, $this->documentData);
 					return true;
-				}
-				else {
+				} else {
 					return $returnCode;
 				}
-			}
-			else {
+			} else {
 				return $this->renderer->renderError('no_access');
 			}
-		}
-		else {
+		} else {
 			return $this->renderer->renderError('noUser');
 		}
 	}
@@ -2272,11 +2246,12 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * uploads of publish a document in a single step
 	 *
-	 * @param	[int]		$newID: ID of the new dam_record
+	 * @param    [int]        $newID: ID of the new dam_record
 	 * @return
 	 * @author stefan
 	 */
-	function handleOneStepUpload($newID) {
+	function handleOneStepUpload($newID)
+	{
 		if ($this->conf['upload.']['useOneStepUpload'] == 1) {
 			// load the default categories
 			$this->saveCategories($newID, true);
@@ -2295,10 +2270,11 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * saves an uploaded document in the datastore and cleans all session values
 	 *
-	 * @param	[int]		$docID:
-	 * @return	[int]		ID of the uploaded file...
+	 * @param    [int]        $docID:
+	 * @return    [int]        ID of the uploaded file...
 	 */
-	function storeDocument($docID) {
+	function storeDocument($docID)
+	{
 		$returnID = $this->docLogic->storeDocument($docID);
 
 		if ($returnID == false) {
@@ -2318,9 +2294,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * returns the latest view: display recently changed documents a user has access to
 	 *
-	 * @return	html
+	 * @return    html
 	 */
-	function latestView() {
+	function latestView()
+	{
 
 		// activate filters
 		$this->initFilter();
@@ -2332,15 +2309,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		// CAB:SS 23.4.10 - first try to use the setting by flexform
 		if ($this->conf['amountOfNewImages']) {
 			$this->docLogic->conf['latestLimit'] = (int)$this->conf['amountOfNewImages'];
-		}
-		elseif ($this->conf['filelist.']['latestView.']['limit']) {
+		} elseif ($this->conf['filelist.']['latestView.']['limit']) {
 			$this->docLogic->conf['latestLimit'] = $this->conf['filelist.']['latestView.']['limit'];
-		}
-		else {
+		} else {
 			$this->docLogic->conf['latestLimit'] = 20;
 		}
 
-		if ($this->conf['filelist.']['latestView.']['useGroupedFileList']==1) {
+		if ($this->conf['filelist.']['latestView.']['useGroupedFileList'] == 1) {
 			$this->docLogic->conf['useGroupedView'] = 1;
 		}
 
@@ -2353,8 +2328,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		}
 		if ($this->conf['filelist.']['latestView.']['useCatsAsMounts'] == 1) {
 			if ($this->internal['catMounts']) $this->addAllCategories($this->internal['catMounts'], $this->internal['treeID'], true);
-		}
-		else {
+		} else {
 			if ($this->internal['catMounts']) $this->addAllCategories($this->internal['catMounts'], $this->internal['treeID'], false);
 		}
 
@@ -2367,9 +2341,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * Renders the eay search box
 	 *
-	 * @return	[string]		$content html auf filterview
+	 * @return    [string]        $content html auf filterview
 	 */
-	function easySearch() {
+	function easySearch()
+	{
 		$this->internal['filter']['categories'] = $this->get_CategoryList($this->internal['catMounts'], $this->internal['filter']['categoryMount']);
 		$content = $this->renderer->renderEasySearch($this->internal['filter'], $this->internal['filterError']);
 		return $content;
@@ -2378,12 +2353,13 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * adds all categories of the given catmounts to the category selection
 	 *
-	 * @param	[array]		$catMounts: ...
-	 * @param	[int]		$treeID: ...
-	 * @param	[booldean]	$addChilds: ...
-	 * @return	[void]		no return valut
+	 * @param    [array]        $catMounts: ...
+	 * @param    [int]        $treeID: ...
+	 * @param    [booldean]    $addChilds: ...
+	 * @return    [void]        no return valut
 	 */
-	function addAllCategories($catMounts, $treeID, $addChilds = false) {
+	function addAllCategories($catMounts, $treeID, $addChilds = false)
+	{
 		foreach ($catMounts as $catMount) {
 			if (strlen($catMount)) {
 				$this->catList->op_Plus($catMount, $treeID);
@@ -2404,9 +2380,10 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * shows the drill down search view
 	 *
-	 * @return	[void]		no return valut
+	 * @return    [void]        no return valut
 	 */
-	function drillDown() {
+	function drillDown()
+	{
 
 		// check if there are selected categories for the drilldown view
 		if ($this->internal['drilldown']) {
@@ -2419,8 +2396,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		if (!is_array($selected)) {
 			// try to get the selected categories of the session
 			$selected = $GLOBALS['TSFE']->fe_user->getKey('ses', 'tx_damfrontend_pi1[drillDown]');
-		}
-		else {
+		} else {
 			// store the selected cats in the session for later usage
 			$GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_damfrontend_pi1[drillDown]', $selected);
 		}
@@ -2437,13 +2413,14 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	/**
 	 * build the availalbe categories for the drilldown view
 	 *
-	 * @return	[array]
+	 * @return    [array]
 	 */
-	function drillDown_getCategories($cats, $selected) {
+	function drillDown_getCategories($cats, $selected)
+	{
 
 		foreach ($cats as $catID) {
 			$categoryTitle = $this->catLogic->getCategoryTitleLocalized($this->catLogic->getCategory($catID));
-			if ($categoryTitle)	$returnCats[$catID] = $categoryTitle;
+			if ($categoryTitle) $returnCats[$catID] = $categoryTitle;
 		}
 
 		// order categories
@@ -2455,8 +2432,7 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		if (is_array($selected)) {
 			foreach ($cats as $catID) {
 				if (array_search($catID, $selected) === false) {
-				}
-				else {
+				} else {
 					// look for children if the current category is selected
 					$childs = $this->catLogic->getChildCategories($catID);
 					if ($childs) {
@@ -2473,23 +2449,24 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 	}
 
 
-    /**
-     * shows the explorerView
-     *
-     * @return	[string] html of the content
+	/**
+	 * shows the explorerView
+	 *
+	 * @return    [string] html of the content
 	 */
-	function explorerView() {
+	function explorerView()
+	{
 		// 2012-05-21 Esteban Marin
 		// added edit / deletion features in explorer view
 		$result = $this->fileListBasicFuncionality();
 		if ($result != 1) {
 			return $result;
 		}
-		
+
 		// 2012-05-21 Esteban Marin
 		// renderer->piVars gets checked instead of internal in class.tx_damfrontend_catTreeViewAdvanced.php:wrapCatSelection()
 		$this->renderer->piVars['catEditUID'] = $this->internal['catEditUID'];
-		
+
 		$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeViewAdvanced');
 		$tree->renderer = $this->renderer;
 		$tree->catLogic = $this->catLogic;
@@ -2508,25 +2485,27 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		return $this->cObj->stdWrap($tree->getBrowsableTree(), $this->conf['categoryTree.']['stdWrap.']);
 	}
 
-	function getCurrentCategory() {
+	function getCurrentCategory()
+	{
 		return intval($GLOBALS['TSFE']->fe_user->getKey('ses', 'currentCategory'));
 	}
 
-	function getCategoriesForFileList() {
+	function getCategoriesForFileList()
+	{
 		// add categories to the top of the filelist
 		require_once(t3lib_extMgm::extPath('dam_frontend') . '/frontend/class.tx_damfrontend_catTreeView.php');
 		$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeView');
 		$tree->init();
-			// get all subcategories of the current category
+		// get all subcategories of the current category
 		$cats = $tree->get_subCategories($this->getCurrentCategory());
 		if (empty($cats)) return $cats;
-		
+
 		// get only the titles from the categories, also sort them
 		foreach ($cats as $cat => $catRow) {
-			
+
 			// show only the catgories, if the user has access to.
 			if ($this->conf['categoryTree.']['doNotShowNotAllowedCategories'] == 1) {
-				if (!$this->catLogic->checkCategoryAccess($GLOBALS['TSFE']->fe_user->user['uid'],$catRow['uid'], 1)) {
+				if (!$this->catLogic->checkCategoryAccess($GLOBALS['TSFE']->fe_user->user['uid'], $catRow['uid'], 1)) {
 					continue;
 				}
 			}
@@ -2540,7 +2519,8 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		return $catsSorted;
 	}
 
-	function catlist() {
+	function catlist()
+	{
 
 		$this->initFilter();
 
@@ -2551,14 +2531,14 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 		$selCats = $this->catList->getCatSelection($this->internal['treeID']);
 		// get all categories if a filter is present
 		if ($this->internal['filter']['catlist_searchword']) {
-			$categoryResultArray = $this->catLogic->findCategoriesByTitle($this->internal['filter']['catlist_searchword'],$this->internal['catMounts']);
+			$categoryResultArray = $this->catLogic->findCategoriesByTitle($this->internal['filter']['catlist_searchword'], $this->internal['catMounts']);
 
 		}
 		// check incoming get / post var
 		$filterArray['catlist_searchword'] = $this->internal['filter']['catlist_searchword'];
 
-		if ($this->conf['catlist.']['useTreeView']==1) {
-			$content = $this->renderer->renderCatlist($filterArray,$categoryResultArray, $selCats[$this->internal['treeID']],$useTree=true);
+		if ($this->conf['catlist.']['useTreeView'] == 1) {
+			$content = $this->renderer->renderCatlist($filterArray, $categoryResultArray, $selCats[$this->internal['treeID']], $useTree = true);
 			$treeContent = '';
 			if ($this->internal['filter']['catlist_searchword']) {
 				$this->getInputTree();
@@ -2573,23 +2553,23 @@ class tx_damfrontend_pi1 extends tslib_pibase {
 
 				$resultMounts = array();
 				if (!empty($categoryResultArray)) {
-					foreach ($categoryResultArray as $key=>$category) {
+					foreach ($categoryResultArray as $key => $category) {
 						$resultMounts[] = $category['uid'];
 					}
 					$tree->MOUNTS = $resultMounts;
+					if (intval($this->conf['subLevels']) > 0) {
+						$tree->expandTreeLevel($this->conf['subLevels']);
+					} else {
+						$tree->expandTreeLevel($this->conf['categoryTree.']['expandTreeLevel']);
+					}
+					$treeContent = $this->cObj->stdWrap($tree->getBrowsableTree(), $this->conf['categoryTree.']['stdWrap.']);
+				} else {
+					$treeContent = '';
 				}
-				if (intval($this->conf['subLevels']) > 0) {
-					$tree->expandTreeLevel($this->conf['subLevels']);
-				}
-				else {
-					$tree->expandTreeLevel($this->conf['categoryTree.']['expandTreeLevel']);
-				}
-				$treeContent =  $this->cObj->stdWrap($tree->getBrowsableTree(), $this->conf['categoryTree.']['stdWrap.']);
 			}
 			$content = tslib_CObj::substituteMarker($content, '###CATLIST_RESULT_TREE###', $treeContent);
-		}
-		else {
-			$content = $this->renderer->renderCatlist($filterArray,$categoryResultArray, $selCats[$this->internal['treeID']],$useTree=false);
+		} else {
+			$content = $this->renderer->renderCatlist($filterArray, $categoryResultArray, $selCats[$this->internal['treeID']], $useTree = false);
 		}
 		return $content;
 	}
