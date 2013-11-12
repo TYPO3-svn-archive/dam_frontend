@@ -11,8 +11,7 @@ dt.ddl_title {
 	background-image: none;
 	background-repeat: repeat;
 	background-attachment: scroll
-	background-x-position: 0%;
-	background-y-position: 0%;
+    background-position: 0 0;
 }
 
 dd.ddl_description p {
