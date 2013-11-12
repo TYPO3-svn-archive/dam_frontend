@@ -54,8 +54,7 @@ div#content img {
 	background-image: none;
 	background-repeat: repeat;
 	background-attachment: scroll;
-	background-x-position: 0%;
-	background-y-position: 0%;
+    background-position: 0 0;
 	}
 
 div .tx-damfrontend-pi2 a:link, a:visited {
