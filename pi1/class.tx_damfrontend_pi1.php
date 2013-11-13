@@ -560,7 +560,8 @@ class tx_damfrontend_pi1 extends tslib_pibase
 			!empty($this->internal['catEquals']) ||
 			!empty($this->internal['catPlus_Rec']) ||
 			!empty($this->internal['catMinus_Rec']) ||
-			t3lib_div::_GP('listLength')
+			t3lib_div::_GP('listLength') ||
+			$this->internal['drilldown']
 		) {
 			$this->internal['list']['pointer'] = 0;
 		}
@@ -610,7 +611,6 @@ class tx_damfrontend_pi1 extends tslib_pibase
 
 		$this->internal['catlist_searchword'] = strip_tags($this->piVars['catlist_searchword']);
 		if ($this->internal['catlist_searchword'] AND $GLOBALS['TSFE']->fe_user->getKey("ses", $this->treeID . 'expandTreeLevel') == 1) {
-			t3lib_utility_Debug::debug('true', __FILE__ . __LINE__);
 			$GLOBALS['TSFE']->fe_user->setKey("ses", $this->treeID . 'expandTreeLevel', 1);
 		}
 
@@ -2400,11 +2400,10 @@ class tx_damfrontend_pi1 extends tslib_pibase
 			// store the selected cats in the session for later usage
 			$GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_damfrontend_pi1[drillDown]', $selected);
 		}
-
 		$rootCats = explode(',', $this->conf['catMounts']);
 		$catArray = array();
 		$catArray = $this->drillDown_getCategories($rootCats, $selected);
-
+		#t3lib_utility_Debug::debug($catArray, __FILE__ . __LINE__);
 		return $this->renderer->renderDrillDown($catArray, $selected);
 
 	}
@@ -2529,11 +2528,12 @@ class tx_damfrontend_pi1 extends tslib_pibase
 
 		// get selection of current categories
 		$selCats = $this->catList->getCatSelection($this->internal['treeID']);
+
 		// get all categories if a filter is present
 		if ($this->internal['filter']['catlist_searchword']) {
 			$categoryResultArray = $this->catLogic->findCategoriesByTitle($this->internal['filter']['catlist_searchword'], $this->internal['catMounts']);
-
 		}
+
 		// check incoming get / post var
 		$filterArray['catlist_searchword'] = $this->internal['filter']['catlist_searchword'];
 
@@ -2542,7 +2542,7 @@ class tx_damfrontend_pi1 extends tslib_pibase
 			$treeContent = '';
 			if ($this->internal['filter']['catlist_searchword']) {
 				$this->getInputTree();
-				$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeViewAdvanced');
+				$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeView');
 				$tree->renderer = $this->renderer;
 				$tree->catLogic = $this->catLogic;
 
@@ -2557,11 +2557,11 @@ class tx_damfrontend_pi1 extends tslib_pibase
 						$resultMounts[] = $category['uid'];
 					}
 					$tree->MOUNTS = $resultMounts;
-					if (intval($this->conf['subLevels']) > 0) {
-						$tree->expandTreeLevel($this->conf['subLevels']);
-					} else {
-						$tree->expandTreeLevel($this->conf['categoryTree.']['expandTreeLevel']);
-					}
+					#if (intval($this->conf['subLevels']) > 0) {
+					#	$tree->expandTreeLevel($this->conf['subLevels']);
+					#} else {
+						#$tree->expandTreeLevel($this->conf['categoryTree.']['expandTreeLevel']);
+					#}
 					$treeContent = $this->cObj->stdWrap($tree->getBrowsableTree(), $this->conf['categoryTree.']['stdWrap.']);
 				} else {
 					$treeContent = '';

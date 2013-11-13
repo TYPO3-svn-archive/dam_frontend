@@ -224,15 +224,9 @@ class tx_damfrontend_DAL_categories {
 				$parentsIndex[$row['uid']]= $row['parent_id'];
 			}
 			$GLOBALS['TYPO3_DB']->sql_free_result($res);
-			#t3lib_utility_Debug::debug($this->getCategory($catID), __FILE__ . __LINE__);
-
-			#t3lib_utility_Debug::debug('#####', __FILE__ . __LINE__);
-			$time =  microtime(true) - $time_start;
 
 			// start to build the cat array
-
 			$recArray = $this->revolveSubCategories($catID,$parents, $parentsIndex,999);
-			#t3lib_utility_Debug::debug($recArray, __FILE__ . __LINE__);
 
 			return $recArray;
 		}

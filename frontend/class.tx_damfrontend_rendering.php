@@ -2062,6 +2062,9 @@ class tx_damfrontend_rendering extends tslib_pibase {
 	 * @return	[string]		...
 	 */
 	function renderDrillDown($catArray, $selected) {
+		if ($catArray[0]==null) {
+			return '<div style="background: red;color:white">Error: No Category is selected (dam_frontend:drilldown view)</div>';
+		}
 		$content = '
 
    			<script type="text/javascript">

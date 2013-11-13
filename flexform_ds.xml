@@ -104,7 +104,7 @@
    <ROOT type="array">
     <TCEforms type="array">
      <sheetTitle>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_selection_title</sheetTitle>
-	<displayCond>FIELD:sDEF.viewID:IN:1,2,5,6,8,9,10,11,12</displayCond>
+	<displayCond>FIELD:sDEF.viewID:IN:1,2,5,6,8,9,10,11,12,13</displayCond>
     </TCEforms>
     <type>array</type>
     <el type="array">
@@ -140,7 +140,7 @@
    <ROOT type="array">
     <TCEforms type="array">
      <sheetTitle>LLL:EXT:dam_frontend/locallang_tca.xml:flexform_option_title</sheetTitle>
-		<displayCond>FIELD:sDEF.viewID:IN:1,4,6,8,9,11,12</displayCond>
+		<displayCond>FIELD:sDEF.viewID:IN:1,4,6,8,9,11,12,13</displayCond>
     </TCEforms>
     <type>array</type>
     <el type="array">

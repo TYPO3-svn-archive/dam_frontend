@@ -34,7 +34,9 @@ plugin.tx_damfrontend_pi1 {
 		showRootCategory=0
 		
 		resetFilterOnClick = 0
-		
+
+		openWholeSubTreeOnClick = 1
+
 		showCategoriesControl {
 			plusIcon = 1
 			minusIcon = 1
@@ -78,7 +80,7 @@ plugin.tx_damfrontend_pi1 {
 		# wrap for the whole category line
 		category.wrap = |
 		currentCatWrap.wrap = |
-		expandTreeLevel = 1
+		expandTreeLevel = 0
 
 
 		wrap = <div class="cattree">|</div>
