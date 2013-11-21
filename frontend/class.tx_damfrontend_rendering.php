@@ -2301,10 +2301,9 @@ class tx_damfrontend_rendering extends tslib_pibase {
 	 * @param $selectedCategories array() contains the currently selected categories
 	 * @return string HTML
 	 */
-	public function renderCatlist($filterArray = array(),$categoryResultArray = array(), $selectedCategories = array(), $useTree=false )  {
+	public function renderCatlist($filterArray = array(),$categoryResultArray = array(), $selectedCategories = array(), $treeContent )  {
 		$template = tslib_CObj::getSubpart($this->fileContent, '###CATLIST_VIEW###');
 		$this->pi_loadLL();
-
 		// prepare static TS Setup
 		$this->conf['catlist.']['form_url.']['returnLast'] = 'url';
 
@@ -2316,8 +2315,8 @@ class tx_damfrontend_rendering extends tslib_pibase {
 
 		$rowTemplate = tslib_CObj::getSubpart($template, '###CATLIST_RESULT_ROW###');
 		$row = '';
-		if ($useTree===true) {
-			$row = '###CATLIST_RESULT_TREE###';
+		if ($treeContent) {
+			$row = $treeContent;
 		}
 		else {
 			foreach ($categoryResultArray as $idx=>$category) {
@@ -2330,13 +2329,10 @@ class tx_damfrontend_rendering extends tslib_pibase {
 				$typoLinkConf = $this->conf['catlist.']['categoryLink.'];
 
 				$param_array = array(
-					'tx_damfrontend_pi1[catPlus]' => null,
-					'tx_damfrontend_pi1[catEquals]' => null,
-					'tx_damfrontend_pi1[catMinus]' => null,
+					'tx_damfrontend_pi1[catOpen]' => $category['uid'],
 					'tx_damfrontend_pi1[catPlus_Rec]' => $category['uid'],
-					'tx_damfrontend_pi1[catMinus_Rec]' => null,
 					'tx_damfrontend_pi1[treeID]' =>  $this->cObj->data['uid'],
-					'tx_damfrontend_pi1[catClearOnClick]' => 1
+					'PM' => '0_1_'.$category['uid'].'_txdamCat#treeroot'
 				);
 				if ($id > 0) {
 					$param_array['tx_damfrontend_pi1[id]'] = $id;
@@ -2353,11 +2349,11 @@ class tx_damfrontend_rendering extends tslib_pibase {
 				$row .= 	tslib_cObj::substituteMarkerArray($rowTemplate, $rowMarkerArray);
 			}
 		}
+
 		// adding static user definded markers
 		$markerArray = $markerArray + $this->substituteLangMarkers($template);
 		$content = tslib_cObj::substituteMarkerArray($template, $markerArray);
 		$content = tslib_CObj::substituteSubpart($content, '###CATLIST_RESULT_ROW###', $row);
-
 		return $this->cObj->stdWrap($content, $this->conf['catList.']['stdWrap.']);
 	}
 }

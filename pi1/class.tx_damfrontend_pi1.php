@@ -479,7 +479,6 @@ class tx_damfrontend_pi1 extends tslib_pibase
 	 */
 	function initList()
 	{
-
 		// setting internal values for pagebrowsing from the incoming request
 		$this->internal['list']['pointer'] = $this->piVars['pointer'] != null ? intval($this->piVars['pointer']) : 0;
 
@@ -611,7 +610,7 @@ class tx_damfrontend_pi1 extends tslib_pibase
 
 		$this->internal['catlist_searchword'] = strip_tags($this->piVars['catlist_searchword']);
 		if ($this->internal['catlist_searchword'] AND $GLOBALS['TSFE']->fe_user->getKey("ses", $this->treeID . 'expandTreeLevel') == 1) {
-			$GLOBALS['TSFE']->fe_user->setKey("ses", $this->treeID . 'expandTreeLevel', 1);
+			#$GLOBALS['TSFE']->fe_user->setKey("ses", $this->treeID . 'expandTreeLevel', 0);
 		}
 
 		// call for the singleView
@@ -2529,48 +2528,60 @@ class tx_damfrontend_pi1 extends tslib_pibase
 		// get selection of current categories
 		$selCats = $this->catList->getCatSelection($this->internal['treeID']);
 
-		// get all categories if a filter is present
-		if ($this->internal['filter']['catlist_searchword']) {
-			$categoryResultArray = $this->catLogic->findCategoriesByTitle($this->internal['filter']['catlist_searchword'], $this->internal['catMounts']);
+
+		if ($this->piVars['catOpen']>0) {
+				$GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_dam_frontend_catList'. $GLOBALS['TSFE']->config['config']['language'],$this->piVars['catOpen']);
 		}
+
+
+		$catOpen = $GLOBALS['TSFE']->fe_user->getKey('ses', 'tx_dam_frontend_catList'. $GLOBALS['TSFE']->config['config']['language']);
+
+
+		// get all categories if a filter is present
+		#if ($this->internal['filter']['catlist_searchword']) {
+			$categoryResultArray = $this->catLogic->findCategoriesByTitle($this->internal['filter']['catlist_searchword'], $this->internal['catMounts']);
+		#}
+
 
 		// check incoming get / post var
 		$filterArray['catlist_searchword'] = $this->internal['filter']['catlist_searchword'];
-
-		if ($this->conf['catlist.']['useTreeView'] == 1) {
-			$content = $this->renderer->renderCatlist($filterArray, $categoryResultArray, $selCats[$this->internal['treeID']], $useTree = true);
+		$renderer =  $this->renderer;
+		if ($this->piVars['catlist_searchword']){
+			$this->catList->clearCatSelection($this->internal['treeID']);
+			$GLOBALS['TSFE']->fe_user->setKey("ses",$this->internal['treeID'] . 'expandTreeLevel', 0);
 			$treeContent = '';
-			if ($this->internal['filter']['catlist_searchword']) {
-				$this->getInputTree();
-				$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeView');
-				$tree->renderer = $this->renderer;
-				$tree->catLogic = $this->catLogic;
+			$selCats = array();
+		} else {
+			if ($catOpen) {
+				$treeContent = '';
+				if ($this->internal['filter']['catlist_searchword']) {
+					$this->getInputTree();
+					$tree = t3lib_div::makeInstance('tx_damfrontend_catTreeView');
+					$tree->renderer = $renderer;
+					$tree->catLogic = $this->catLogic;
 
-				$tree->init($this->internal['treeID'], $this);
-				$tree->title = $this->internal['treeName'];
+					$tree->init($this->internal['treeID'], $this);
+					$tree->title = $this->internal['treeName'];
 
-				$tree->selectedCats = $selCats[$this->internal['treeID']];
+					$tree->selectedCats = $selCats[$this->internal['treeID']];
 
-				$resultMounts = array();
-				if (!empty($categoryResultArray)) {
-					foreach ($categoryResultArray as $key => $category) {
-						$resultMounts[] = $category['uid'];
-					}
+					$resultMounts = array();
+					$resultMounts[] = $catOpen;
+
 					$tree->MOUNTS = $resultMounts;
-					#if (intval($this->conf['subLevels']) > 0) {
-					#	$tree->expandTreeLevel($this->conf['subLevels']);
-					#} else {
-						#$tree->expandTreeLevel($this->conf['categoryTree.']['expandTreeLevel']);
-					#}
+
+					$tree->expandTreeLevel(10);
 					$treeContent = $this->cObj->stdWrap($tree->getBrowsableTree(), $this->conf['categoryTree.']['stdWrap.']);
 				} else {
 					$treeContent = '';
 				}
+
 			}
-			$content = tslib_CObj::substituteMarker($content, '###CATLIST_RESULT_TREE###', $treeContent);
-		} else {
-			$content = $this->renderer->renderCatlist($filterArray, $categoryResultArray, $selCats[$this->internal['treeID']], $useTree = false);
 		}
+
+
+		$content = $this->renderer->renderCatlist($filterArray, $categoryResultArray, $selCats[$this->internal['treeID']], $treeContent);
+
 		return $content;
 	}
 }

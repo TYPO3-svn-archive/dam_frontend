@@ -149,12 +149,7 @@ class tx_damfrontend_catTreeView extends tx_dam_selectionCategory {
 	 */
  	function expandNext($id)
  	{
- 	    if ($this->conf['openWholeSubTreeOnClick']==1){
-		    return 1;
-	    }
-        else {
-		    return ($this->stored[$this->bank][$id] || $this->expandAll)? 1 : 0;
-        }
+	    return ($this->stored[$this->bank][$id] || $this->expandAll)? 1 : 0;
  	}
 
 	/**
