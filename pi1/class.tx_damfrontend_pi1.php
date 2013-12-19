@@ -522,12 +522,17 @@ class tx_damfrontend_pi1 extends tslib_pibase
 		$allowedColumns = array_merge($GLOBALS['TCA']['tx_dam']['columns'], $allowedColumns);
 		// setting the internal values for sorting
 		foreach ($this->piVars as $postvar => $postvalue) {
-			// allow only fields that are exist in the TCA
-			if (array_key_exists(substr($postvar, 5), $allowedColumns)) {
-				if ($postvalue == 'DESC' || $postvalue == 'ASC') {
-					if (substr($postvar, 0, 5) == 'sort_') {
-						// todo check if $postvar is a column of tx_dam
-						$this->internal['list']['sorting'] = 'tx_dam.' . substr($postvar, 5) . ' ' . $postvalue;
+			# the get var for sorting is built that way: &tx_damfrontend_pi1[sort_title]=DESC ; so the piVar is sort_title and the value = DESC
+			# now we check, which column is behind the string "sort_" , in that case: title
+
+				// do this only if there is a string, otherwise skip this block
+			if (substr($postvar, 5)) {
+				if (array_key_exists(substr($postvar, 5), $allowedColumns)) {
+					if ($postvalue == 'DESC' || $postvalue == 'ASC') {
+						if (substr($postvar, 0, 5) == 'sort_') {
+							// allow only fields that are exist in the TCA
+							$this->internal['list']['sorting'] = 'tx_dam.' . substr($postvar, 5) . ' ' . $postvalue;
+						}
 					}
 				}
 			}
