@@ -313,9 +313,15 @@ class tx_damfrontend_pi1 extends tslib_pibase
 			$this->internal['filter'] = $this->filterState->getFilterFromSession();
 		}
 
+        // save the filters to the session, if the user clicks "search"
+        if (t3lib_div::_GP('setCatListFilter'))  {
+            $this->internal['filter']['catlist_searchword'] = strip_tags($this->piVars['catlist_searchword']);
+            $this->filterState->setFilter($this->internal['filter']);
+        }
 
-		// save the filters to the session, if the user clicks "search"
-		if (t3lib_div::_GP('setFilter') || t3lib_div::_GP('easySearchSetFilter') || (t3lib_div::_GP('searchword') && !t3lib_div::_GP('resetFilter'))) {
+
+            // save the filters to the session, if the user clicks "search"
+		if (t3lib_div::_GP('setFilter') || t3lib_div::_GP('setCatListFilter') || t3lib_div::_GP('easySearchSetFilter') || (t3lib_div::_GP('searchword') && !t3lib_div::_GP('resetFilter'))) {
 
 			//variables for setting filters for the current category selection
 			$this->internal['filter']['from_day'] = intval(trim(t3lib_div::_GP('von_tag')));
@@ -331,7 +337,7 @@ class tx_damfrontend_pi1 extends tslib_pibase
 
 			$this->internal['filter']['searchword'] = strip_tags(t3lib_div::_GP('searchword'));
 
-			$this->internal['filter']['catlist_searchword'] = strip_tags($this->piVars['catlist_searchword']);
+
 
 			// adding custom filters
 			if ($this->conf['filterView.']['customFilters.']) {
