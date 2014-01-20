@@ -2062,17 +2062,20 @@ class tx_damfrontend_rendering extends tslib_pibase {
 	 * @return	[string]		...
 	 */
 	function renderDrillDown($catArray, $selected) {
-		if ($catArray[0]==null) {
+        $curPage = $this->pi_getPageLink($GLOBALS['TSFE']->id);
+
+
+        if ($catArray[0]==null) {
 			return '<div style="background: red;color:white">Error: No Category is selected (dam_frontend:drilldown view)</div>';
 		}
-		$content = '
+        $content = '
 
    			<script type="text/javascript">
    				function doSubmit() {
 					document.frm.submit();
    				}
 			</script>
-			<form action="" method="post" name="frm">
+			<form action="' . $curPage . '" method="post" name="frm">
 			<input type="hidden" name="tx_damfrontend_pi1[treeID]" value="' . $this->cObj->data['uid'] . '">
 			<input type="hidden" name="setFilter"/>
 			';
