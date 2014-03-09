@@ -10,24 +10,26 @@ plugin.tx_damfrontend_pi1 {
 	singleID = {$plugin.tx_damfrontend_pi1.singleID}
 	#TODO move to search box
 	allowedLanguages = EN,DE
+
 	filter {
 		errorWrap = {$plugin.tx_damfrontend_pi1.filter.errorWrap}
 	}
+
 	useAdvancedCategoryTree = 0
 	
-		#if more than one tree element at a page is use, then a AND selection is used between the trees
+	#if more than one tree element at a page is use, then a AND selection is used between the trees
 	useTreeAndSelection = 0 
 	
-		# force download or display in file in the browser
+	# force download or display in file in the browser
 	forceDownloadForFiles=1
 
-		# Do not allow to not select a category on upload
+	# Do not allow to not select a category on upload
 	doNotAllowUploadEmptyCategorySelection = 1
 
 	#errorNoCat = TEXT
 	errorNoCat.wrap = <span class="error">|</span>
 
-		# flag to disable to show empty categories
+	# flag to disable to show empty categories
 	doNotShowEmptyCategories = 0
 	
 	categoryTree {
@@ -105,6 +107,7 @@ plugin.tx_damfrontend_pi1 {
 		treeCatIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}cat.gif
 		treeOpenCatIcon.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}folder_open.png
 		treeRootOpenIcon < .treeOpenCatIcon
+
 		treeNavIcons {
 			# default objects are IMAGE
 			line.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}line.gif
@@ -113,6 +116,7 @@ plugin.tx_damfrontend_pi1 {
 			blank < .line
 			blank.file = {$plugin.tx_damfrontend_pi1.renderCategoryTree.iconPath}blank.gif
 		}
+
 		#tree root stdWrap
 		treeRoot.wrap = |
 		fileicon.wrap = |
@@ -127,18 +131,19 @@ plugin.tx_damfrontend_pi1 {
 		categoryTitleNoAccess.wrap = <span style="color: #aaa">|</span>
 		# possibilities for catTitle.actions.selectCat =>  catPlus // catPlus_Rec // catEquals
 		catTitle.actions.selectCat = catPlus
-
 	}
-	
 	
 	categoryTreeAdvanced {
 		templateFile = EXT:dam_frontend/pi1/template_tree.html
 		showHiddenCategories = 0
 		useLanguageOverlay = 1
+
 		# if = 1 then a second subpart (TREE_ELEMENT_2) is used to render the even rows
 		category.useAlternatingSubpart = 1
+
 		#option split, if you want to use different markers for each row of a tree
-		category.marker =  ###TREE_ELEMENT### |*| ###TREE_ELEMENT_2### || ###TREE_ELEMENT### |*|		
+		category.marker =  ###TREE_ELEMENT### |*| ###TREE_ELEMENT_2### || ###TREE_ELEMENT### |*|
+
 		#marker if you want don't want to use alternating rows for the tree 
 		category.marker_single =  ###TREE_ELEMENT###
 		
@@ -223,7 +228,7 @@ plugin.tx_damfrontend_pi1 {
 		crdate.prepend =CASE
 		crdate.prepend.key.field = tx_damfrontend_nonew
 		crdate.prepend.default = TEXT
-		crdate.prepend.default{
+		crdate.prepend.default {
 		  value = (new)
 		  lang.de = (neu)
 		  if.isLessThan.data = date:U
@@ -242,7 +247,10 @@ plugin.tx_damfrontend_pi1 {
 		title.typolink.parameter.if.equals.field=allowDownload
   		title.typolink.additionalParams = &eID=dam_frontend_push&docID={field:uid}
 		title.typolink.additionalParams.insertData = 1
-		
+
+        #		title.stdWrap.wrap = | <h2>no download</h2>
+        #		title.stdWrap.wrap.if.value=0
+        #		title.stdWrap.wrap.if.equals.field=allowDownload
 		link_download.typolink.parameter.data = TSFE:id
 		link_download.typolink.parameter.if.value=1
 		link_download.typolink.parameter.if.equals.field=allowDownload
@@ -396,19 +404,39 @@ plugin.tx_damfrontend_pi1 {
 		# custom Filters allowed filtertype: TEXT, TIMESTAMP, INT (for custom columns in the dam table)
 		customFilters {
 			# Example for a custom filter
-			#tx_sh_damext1_literaturetype {
-			#	type = TEXT
-			#	field = tx_sh_damext1_literaturetype 
+			# tx_sh_damext1_literaturetype {
+			#	type = TEXT (TEXT, INT or CATEGORY)
+			#
+			#	field = tx_sh_damext1_literaturetype
 			#	# name of the post value 
 			#	GP_Name = literatureType
 			#	marker = literatureType
-			
+
 			#	renderAs = SELECTOR
+			#   renderAs.additional_where = AND uid in (1,2,3)
+			#   renderAs.table = tx_dam_category
+			#   renderAs.label = title
+			#   renderAs.orderBy = title
 			#	renderAs.HELLO1 = HELLO1
 			#	renderAs.HELLO2 = HELLO2
-			#	renderAs.HELLO3 = HELLO2
-			
-			#}  
+			#   renderAs.HELLO3 = HELLO2
+
+            # Example for category filter
+            #cat1 {
+              #  type = CATEGORY
+              #  GP_Name = MYCAT1
+              #  treeID = 99997 (must be unique)
+              #  marker = MYCAT1 (name for the marker
+              #  renderAs = SELECTOR_DB
+              #  renderAs {
+              #      additional_where = AND uid in (1,2,3)
+              #      table = tx_dam_cat
+              #      label = title
+              #      orderBy = title
+              #  }
+             #}
+
+
 		}
 		
 		multipleSearchWords {
