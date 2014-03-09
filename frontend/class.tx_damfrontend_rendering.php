@@ -1008,7 +1008,7 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		// filling fields with url - vars
 		$markerArray = $this->recordToMarkerArray($filterArray);
 		$markerArray = $markerArray + $this->substituteLangMarkers($formCode);
-		#t3lib_utility_Debug::debug($filterArray);
+
 		$markerArray['###DROPDOWN_CATEGORIES###'] = '';
 		$markerArray['###TREEID###'] = '';
 		$markerArray['###DROPDOWN_CATEGORIES_HEADER###'] = '';
@@ -1128,26 +1128,27 @@ class tx_damfrontend_rendering extends tslib_pibase {
                         $languid = $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'] ? $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'] : 0; // current language uid
                         $sys_language_mode = $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_mode'] ? $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_mode'] : 0; // current language uid
 
-                        $select_fields ='*';
-                        $from_table=$value['renderAs.']['table'];
-                        $where_clause='sys_language_uid = 0';
+                        $select_fields = '*';
+                        $from_table = $value['renderAs.']['table'];
+                        $where_clause = 'sys_language_uid = 0';
+                        $additional_where = $value['renderAs.']['additional_where'];
                         $groupBy = '';
                         $orderBy = $value['renderAs.']['orderBy'];
                         $optionsArray = array();
-                        $rows =$GLOBALS['TYPO3_DB']->exec_SELECTgetRows($select_fields,$from_table,$where_clause,$groupBy,$orderBy);
+                        $rows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows($select_fields,$from_table,$where_clause . ' ' . $additional_where,$groupBy,$orderBy);
                         foreach ($rows as $row) {
                             // localization
                             $tmpRow = $GLOBALS['TSFE']->sys_page->getRecordOverlay($from_table, array('pid' => $row['pid'], 'uid' => $row['uid'], 'title' => $row[$value['renderAs.']['label']]), $languid, ($sys_language_mode == 'strict' ? 'hideNonTranslated' : '')); // language overlay
                             $row['title'] = $tmpRow[$value['renderAs.']['label']]; // overwrite addressgroup title with localized version
                             $optionsArray[$row['uid']] = $row['title'];
                         }
-						$markerArray['###' . strtoupper($value['marker']) . '###'] = $this->renderSelector($optionsArray, $filterArray[$value['GP_Name']], $value['GP_Name']);
+
+						$markerArray['###' . strtoupper($value['marker']) . '###'] = $this->renderSelector($optionsArray, $filterArray[$value['marker']], $value['GP_Name']);
 						break;
 					case 'TEXT':
 						$size = 30;
 						if ($value['renderAs.']['size'] > 0) $size = $value['renderAs.']['size'];
 						$markerArray['###' . strtoupper($value['marker']) . '###'] = '<input name="' . $value['GP_Name'] . '" type="text" size="' . $size . '" value="' . $filterArray[$value['GP_Name']] . '" >';
-						$this->renderSelector($value['renderAs.'], $filterArray[$value['GP_Name']]);
 						break;
 					case 'TEXTAREA':
 						$cols = 50;

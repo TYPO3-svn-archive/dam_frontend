@@ -346,7 +346,7 @@ class tx_damfrontend_pi1 extends tslib_pibase
 					$this->internal['filter']['customFilters'][$value['marker']]['field'] = $value['field'];
 					$this->internal['filter']['customFilters'][$value['marker']]['value'] = $this->cObj->stdWrap($value['value'], $value['value.']);
 
-					# change the internal value of the custom filter, only if the user posted a value
+					# change the internal value of the custom filter, only if the user has posted a value
 					if (t3lib_div::_GP($value['GP_Name'])) {
 
 						if (t3lib_div::_GP($value['GP_Name']) <> 'noselection') {
@@ -932,12 +932,30 @@ class tx_damfrontend_pi1 extends tslib_pibase
 		}
 
 
-		// easySearch
+		// easySearch or Searchbox is used
 		if (t3lib_div::_GP('easySearchSetFilter') OR t3lib_div::_GP('setFilter')) {
 			//unset only if the current content element is the search box
 			if ($this->internal['viewID'] == 10) {
 				$this->catList->unsetAllCategories();
 			}
+
+
+            // adding custom filters
+            if ($this->conf['filterView.']['customFilters.']) {
+                foreach ($this->conf['filterView.']['customFilters.'] as $key => $filter) {
+                    if ($filter['type']=='CATEGORY') {
+                        if (intval($this->internal['filter'][$filter['marker']])>0) {
+                            $this->catList->op_Equals($this->internal['filter'][$filter['marker']], $filter['treeID']);
+                        }
+                        else {
+                            $this->catList->clearCatSelection($filter['treeID']);
+                        }
+                    }
+                }
+            }
+
+
+
 
 
 			if ($this->internal['filter']['categoryMount'] == 'noselection' && ($this->internal['incomingtreeID'] <> $this->internal['treeID']) AND $this->internal['viewID'] == 10) {
@@ -976,6 +994,7 @@ class tx_damfrontend_pi1 extends tslib_pibase
 				}
 
 			}
+
 			if (t3lib_div::_GP('categoryMount') AND t3lib_div::_GP('setFilter')) {
 				// if a category restriction is used in the search form
 
