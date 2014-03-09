@@ -756,12 +756,13 @@ plugin.tx_damfrontend_pi1 {
 			value = show all Languages
 			wrap = <li>|</li>
 			typolink.parameter.data = TSFE:id
-			typolink.additionalParams = &tx_damfrontend_pi1[language]=
+			typolink.additionalParams = &tx_damfrontend_pi1[language]=*
 			typolink.addQueryString = 1 
 		}
 		
 		wrap = <ul class="tx_dam_fe_LANGSELECTOR">|</ul>
 		currentWrap = <li class="currentLang">|</li>
+		setCurLangAsDefault = 1
 	}
 	explorerView < .categoryTreeAdvanced
 	explorerView {

@@ -306,6 +306,28 @@ class tx_damfrontend_pi1 extends tslib_pibase
 	{
 
 
+        if ($this->piVars['language']) {
+            $this->internal['filter']['LanguageSelector'] = $this->piVars['language'];
+            $this->filterState->setFilter($this->internal['filter']);
+        }
+        else {
+            if ($this->conf['languageFilter.']['setCurLangAsDefault'] == 1) {
+                # if the feature is enabled
+
+                # check if there is lang filter already active
+                $this->internal['filter'] = $this->filterState->getFilterFromSession();
+
+                if (!$this->internal['filter']['LanguageSelector']) {
+                    # get the current fe lang
+                    $this->internal['filter']['LanguageSelector'] = $GLOBALS['TSFE']->config['config']['language'];
+
+                    # write the lang into our filter
+                    $this->filterState->setFilter($this->internal['filter']);
+                }
+
+            }
+        }
+
 		if (t3lib_div::_GP('resetFilter') or $this->piVars['resetFilter']) {
 			$this->filterState->resetFilter();
 			$this->catList->clearCatSelection($this->internal['incomingtreeID']);
@@ -361,10 +383,8 @@ class tx_damfrontend_pi1 extends tslib_pibase
 
 			$this->internal['filter']['LanguageSelector'] = strip_tags(t3lib_div::_GP('LanguageSelector'));
 
-			if ($this->piVars['language']) {
-				$this->internal['filter']['LanguageSelector'] = $this->piVars['language'];
-				$this->filterState->setFilter($this->internal['filter']);
-			}
+
+
 			$this->internal['filter']['creator'] = strip_tags(t3lib_div::_GP('creator'));
 			$this->internal['filter']['owner'] = strip_tags(t3lib_div::_GP('owner'));
 			$this->internal['filter']['categoryMount'] = strip_tags(t3lib_div::_GP('categoryMount'));

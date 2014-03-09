@@ -159,7 +159,7 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		$markerArray['###LANGUAGE_HEADER###'] = $this->pi_getLL('LANGUAGE_HEADER');
 		$markerArray['###OWNER_HEADER###'] = $this->pi_getLL('OWNER_HEADER');
 		$markerArray['###CREATOR_HEADER###'] = $this->pi_getLL('CREATOR_HEADER');
-		$markerArray['###LANGUAGE_SELECTOR###'] =  $this->languageFilter('de');
+		$markerArray['###LANGUAGE_SELECTOR###'] =  $this->languageFilter();
 		$sortlinks = array();
 
 		// substitute Links for Sorting
