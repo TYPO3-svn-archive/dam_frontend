@@ -1341,7 +1341,7 @@ class tx_damfrontend_pi1 extends tslib_pibase
 				if ($this->internal['viewID'] == 8 OR $this->conf['filelist.']['latestView.']['useGroupedFileList'] == 1) {
 					$content = $this->renderer->renderFileGroupedList($files, $rescount, $this->internal['list']['pointer'], $this->internal['list']['listLength'], false, $this->fileListConf);
 				} else {
-					$content = $this->renderer->renderFileList($files, $rescount, $this->internal['list']['pointer'], $this->internal['list']['listLength'], $useRequestForm, $this->fileListConf);
+					$content = $this->renderer->renderFileList($files, $rescount, $this->internal['list']['pointer'], $this->internal['list']['listLength'], $useRequestForm, $this->fileListConf, $this->internal['filter']);
 				}
 			} else {
 				// render message

@@ -9,10 +9,29 @@ Allowed Markers:
 
 <!-- ###FILELIST### begin -->
 
-	<form action="###DOWNLOAD_FORM_URL###" method="post">
-	
+
+
 	###LANGUAGE_SELECTOR###
-	
+<script type="text/javascript">
+    function doSubmit() {
+        alert('hello');
+
+        document.frm.submit();
+    }
+</script>
+
+    <form action="" method="post" name="frm">
+
+        ###MYCAT1###
+
+
+
+        <input type="hidden" value="SET_FILTER" name="setFilter" class="button" />
+
+
+            </form>
+
+
 	<table class="filelist" border="1">
 		<tr>
 			<th>&nbsp;</th>
