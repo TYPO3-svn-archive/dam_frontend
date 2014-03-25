@@ -359,8 +359,6 @@ class tx_damfrontend_pi1 extends tslib_pibase
 
 			$this->internal['filter']['searchword'] = strip_tags(t3lib_div::_GP('searchword'));
 
-
-
 			// adding custom filters
 			if ($this->conf['filterView.']['customFilters.']) {
 				foreach ($this->conf['filterView.']['customFilters.'] as $filter => $value) {
@@ -381,6 +379,24 @@ class tx_damfrontend_pi1 extends tslib_pibase
 				}
 			}
 
+            if ($this->conf['filelist.']['customFilters.']) {
+				foreach ($this->conf['filelist.']['customFilters.'] as $filter => $value) {
+					$this->internal['filter']['customFilters'][$value['marker']]['type'] = $value['type'];
+					$this->internal['filter']['customFilters'][$value['marker']]['field'] = $value['field'];
+					$this->internal['filter']['customFilters'][$value['marker']]['value'] = $this->cObj->stdWrap($value['value'], $value['value.']);
+
+					# change the internal value of the custom filter, only if the user has posted a value
+					if (t3lib_div::_GP($value['GP_Name'])) {
+
+						if (t3lib_div::_GP($value['GP_Name']) <> 'noselection') {
+							$this->internal['filter'][$value['marker']] = strip_tags(t3lib_div::_GP($value['GP_Name']));
+						} else {
+							# reset the filter, because the user choose 'noselection'
+							$this->internal['filter'][$value['marker']] = '';
+						}
+					}
+				}
+			}
 			$this->internal['filter']['LanguageSelector'] = strip_tags(t3lib_div::_GP('LanguageSelector'));
 
 
@@ -471,17 +487,9 @@ class tx_damfrontend_pi1 extends tslib_pibase
 		}
 
 
-		if ($GLOBALS['TSFE']->beUserLogin) {
-
-			#t3lib_utility_Debug::debug($this->internal['filter'], __FILE__ . __LINE__);
-		}
 
 		// load the current filter
 		$this->internal['filter'] = $this->filterState->getFilterFromSession();
-		if ($GLOBALS['TSFE']->beUserLogin) {
-			#t3lib_utility_Debug::debug($this->internal['filter'], __FILE__ . __LINE__);
-
-		}
 
 
 		//These filter must set regardless the filter is resetet, because this setting is independ of the normal filters or filter view
@@ -974,7 +982,19 @@ class tx_damfrontend_pi1 extends tslib_pibase
                 }
             }
 
-
+            // adding custom filters
+            if ($this->conf['filelist.']['customFilters.']) {
+                foreach ($this->conf['filelist.']['customFilters.'] as $key => $filter) {
+                    if ($filter['type']=='CATEGORY') {
+                        if (intval($this->internal['filter'][$filter['marker']])>0) {
+                            $this->catList->op_Equals($this->internal['filter'][$filter['marker']], $filter['treeID']);
+                        }
+                        else {
+                            $this->catList->clearCatSelection($filter['treeID']);
+                        }
+                    }
+                }
+            }
 
 
 
@@ -1008,7 +1028,6 @@ class tx_damfrontend_pi1 extends tslib_pibase
 				$this->catList->unsetAllCategories();
 				foreach ($this->internal['filter']['catgroups'] as $catgroupID => $cats) {
 					foreach ($cats as $cat) {
-						#t3lib_utility_Debug::debug($cat, 'Category ' . $cat . ' in ' . __LINE__ . ' in ' . __FILE__);
 						$this->catList->op_Plus($cat, $catgroupID * -1);
 					}
 				}
@@ -1257,6 +1276,7 @@ class tx_damfrontend_pi1 extends tslib_pibase
 				$hasCats = true;
 			}
 		}
+
 		if ($hasCats === true || $this->internal['filter']['searchAllCats'] === true || $this->internal['viewID'] == 9) {
 			/***************************
 			 *
@@ -1306,7 +1326,6 @@ class tx_damfrontend_pi1 extends tslib_pibase
 						}
 					}
 				}
-
 				$this->docLogic->categories = $cats;
 				$files = $this->docLogic->getDocumentList($this->userUID);
 			}
@@ -2452,7 +2471,6 @@ class tx_damfrontend_pi1 extends tslib_pibase
 		$rootCats = explode(',', $this->conf['catMounts']);
 		$catArray = array();
 		$catArray = $this->drillDown_getCategories($rootCats, $selected);
-		#t3lib_utility_Debug::debug($catArray, __FILE__ . __LINE__);
 		return $this->renderer->renderDrillDown($catArray, $selected);
 
 	}

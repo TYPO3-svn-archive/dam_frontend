@@ -371,7 +371,6 @@ class tx_damfrontend_rendering extends tslib_pibase {
 			$content = tsLib_CObj::substituteMarker($content, '###' . $label . '###', $this->pi_getLL($label, $label));
 		}
 
-        t3lib_utility_Debug::debug($this->conf['filelist.']['customFilters.']);
         if (is_array($this->conf['filelist.']['customFilters.'])) {
             foreach ($this->conf['filelist.']['customFilters.'] as $filter => $value) {
                 switch ($value['renderAs']) {
@@ -417,7 +416,6 @@ class tx_damfrontend_rendering extends tslib_pibase {
                 }
             }
         }
-        t3lib_utility_Debug::debug($markerArray);
 		$markerArray['###FILELIST_BACK_PID###'] = $GLOBALS['TSFE']->id;
 		$markerArray['###COMMENT_DEFAULT###'] = $this->pi_getLL('COMMENT_DEFAULT');
 		$markerArray['###COMMENT###'] = $this->pi_getLL('COMMENT');

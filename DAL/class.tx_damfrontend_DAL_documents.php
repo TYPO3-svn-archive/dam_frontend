@@ -401,7 +401,6 @@ require_once(PATH_tslib.'class.tslib_content.php');
 					foreach(explode(',',$this->conf['searchCategoryAttributes.']['fields']) as $field) {
 						$catSearchString .=  ' OR ('.$this->catTable.'.'.$field.' LIKE "%'.$GLOBALS['TYPO3_DB']->quoteStr(trim($this->searchword), $this->catTable).'%")';
 					}
-					t3lib_utility_Debug::debug($catSearchString, __FILE__ . __LINE__);
 					$this->additionalFilter = str_replace('###CATMARKER###', $catSearchString ,$this->additionalFilter);
 				}
 			}

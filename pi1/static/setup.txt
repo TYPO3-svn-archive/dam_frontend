@@ -762,7 +762,8 @@ plugin.tx_damfrontend_pi1 {
 		
 		wrap = <ul class="tx_dam_fe_LANGSELECTOR">|</ul>
 		currentWrap = <li class="currentLang">|</li>
-		setCurLangAsDefault = 1
+		setCurLangAsDefault = 0
+		setCurLangAsDefault = 0
 	}
 	explorerView < .categoryTreeAdvanced
 	explorerView {
