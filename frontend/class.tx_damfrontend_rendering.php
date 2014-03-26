@@ -396,7 +396,7 @@ class tx_damfrontend_rendering extends tslib_pibase {
                             $optionsArray[$row['uid']] = $row['title'];
                         }
 
-                        $markerArray['###' . strtoupper($value['marker']) . '###'] = $this->renderSelector($optionsArray, $filterArray[$value['marker']], $value['GP_Name'],1,0,0,' onchange="doSubmit()" ');
+                        $markerArray['###' . strtoupper($value['marker']) . '###'] = $this->renderSelector($optionsArray, $filterArray[$value['marker']], $value['GP_Name'],1,true,false,' onchange="doSubmit()" ');
                         break;
                     case 'TEXT':
                         $size = 30;
@@ -2089,6 +2089,7 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		} else {
 			$sel = '';
 		}
+
 		if ($no_selecetion === true) {
 			$content = '<option value="noselection"' . $sel . '>' . $noSelectionLabel . '</option>' . $content;
 		}
