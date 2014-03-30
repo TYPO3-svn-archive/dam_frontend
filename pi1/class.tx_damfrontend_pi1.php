@@ -379,24 +379,7 @@ class tx_damfrontend_pi1 extends tslib_pibase
 				}
 			}
 
-            if ($this->conf['filelist.']['customFilters.']) {
-				foreach ($this->conf['filelist.']['customFilters.'] as $filter => $value) {
-					$this->internal['filter']['customFilters'][$value['marker']]['type'] = $value['type'];
-					$this->internal['filter']['customFilters'][$value['marker']]['field'] = $value['field'];
-					$this->internal['filter']['customFilters'][$value['marker']]['value'] = $this->cObj->stdWrap($value['value'], $value['value.']);
 
-					# change the internal value of the custom filter, only if the user has posted a value
-					if (t3lib_div::_GP($value['GP_Name'])) {
-
-						if (t3lib_div::_GP($value['GP_Name']) <> 'noselection') {
-							$this->internal['filter'][$value['marker']] = strip_tags(t3lib_div::_GP($value['GP_Name']));
-						} else {
-							# reset the filter, because the user choose 'noselection'
-							$this->internal['filter'][$value['marker']] = '';
-						}
-					}
-				}
-			}
 			$this->internal['filter']['LanguageSelector'] = strip_tags(t3lib_div::_GP('LanguageSelector'));
 
 
@@ -982,19 +965,7 @@ class tx_damfrontend_pi1 extends tslib_pibase
                 }
             }
 
-            // adding custom filters
-            if ($this->conf['filelist.']['customFilters.']) {
-                foreach ($this->conf['filelist.']['customFilters.'] as $key => $filter) {
-                    if ($filter['type']=='CATEGORY') {
-                        if (intval($this->internal['filter'][$filter['marker']])>0) {
-                            $this->catList->op_Equals($this->internal['filter'][$filter['marker']], $filter['treeID']);
-                        }
-                        else {
-                            $this->catList->clearCatSelection($filter['treeID']);
-                        }
-                    }
-                }
-            }
+
 
 
 

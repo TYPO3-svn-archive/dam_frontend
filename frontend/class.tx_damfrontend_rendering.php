@@ -371,51 +371,8 @@ class tx_damfrontend_rendering extends tslib_pibase {
 			$content = tsLib_CObj::substituteMarker($content, '###' . $label . '###', $this->pi_getLL($label, $label));
 		}
 
-        if (is_array($this->conf['filelist.']['customFilters.'])) {
-            foreach ($this->conf['filelist.']['customFilters.'] as $filter => $value) {
-                switch ($value['renderAs']) {
-                    case 'SELECTOR':
-                        $markerArray['###' . strtoupper($value['marker']) . '###'] = $this->renderSelector($value['renderAs.'], $filterArray[$value['GP_Name']], $value['GP_Name']);
-                        break;
-                    case 'SELECTOR_DB':
-                        $languid = $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'] ? $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'] : 0; // current language uid
-                        $sys_language_mode = $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_mode'] ? $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_mode'] : 0; // current language uid
 
-                        $select_fields = '*';
-                        $from_table = $value['renderAs.']['table'];
-                        $where_clause = 'sys_language_uid = 0';
-                        $additional_where = $value['renderAs.']['additional_where'];
-                        $groupBy = '';
-                        $orderBy = $value['renderAs.']['orderBy'];
-                        $optionsArray = array();
-                        $rows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows($select_fields,$from_table,$where_clause . ' ' . $additional_where,$groupBy,$orderBy);
-                        foreach ($rows as $row) {
-                            // localization
-                            $tmpRow = $GLOBALS['TSFE']->sys_page->getRecordOverlay($from_table, array('pid' => $row['pid'], 'uid' => $row['uid'], 'title' => $row[$value['renderAs.']['label']]), $languid, ($sys_language_mode == 'strict' ? 'hideNonTranslated' : '')); // language overlay
-                            $row['title'] = $tmpRow[$value['renderAs.']['label']]; // overwrite addressgroup title with localized version
-                            $optionsArray[$row['uid']] = $row['title'];
-                        }
 
-                        $markerArray['###' . strtoupper($value['marker']) . '###'] = $this->renderSelector($optionsArray, $filterArray[$value['marker']], $value['GP_Name'],1,true,false,' onchange="doSubmit()" ');
-                        break;
-                    case 'TEXT':
-                        $size = 30;
-                        if ($value['renderAs.']['size'] > 0) $size = $value['renderAs.']['size'];
-                        $markerArray['###' . strtoupper($value['marker']) . '###'] = '<input name="' . $value['GP_Name'] . '" type="text" size="' . $size . '" value="' . $filterArray[$value['GP_Name']] . '" >';
-                        break;
-                    case 'TEXTAREA':
-                        $cols = 50;
-                        $rows = 10;
-                        if ($value['renderAs.']['cols'] > 0) $cols = $value['renderAs.']['cols'];
-                        if ($value['renderAs.']['rows'] > 0) $rows = $value['renderAs.']['rows'];
-                        $markerArray['###' . strtoupper($value['marker']) . '###'] = '<textarea name="' . $value['GP_Name'] . '" cols="' . $cols . '" rows="' . $rows . '">' . $filterArray[$value['GP_Name']] . '</textarea>';
-                        break;
-                    default:
-                        $markerArray['###' . strtoupper($value['marker']) . '###'] = '<p color="red">No typoscript Definition "renderAs" for marker ' . $value['marker'] . '. Please add the typoscript in plugin.tx_damfrontend_pi1.filterView.customFilters</p>';
-                        break;
-                }
-            }
-        }
 		$markerArray['###FILELIST_BACK_PID###'] = $GLOBALS['TSFE']->id;
 		$markerArray['###COMMENT_DEFAULT###'] = $this->pi_getLL('COMMENT_DEFAULT');
 		$markerArray['###COMMENT###'] = $this->pi_getLL('COMMENT');
@@ -1163,7 +1120,7 @@ class tx_damfrontend_rendering extends tslib_pibase {
 		}
 		$this->conf['filterview.']['form_url.']['returnLast'] = 'url';
 		$markerArray['###FORM_URL###'] = $this->cObj->typolink('', $this->conf['filterview.']['form_url.']);
-		if (is_array($this->conf['filterView.']['customFilters.'])) {
+        if (is_array($this->conf['filterView.']['customFilters.'])) {
 			foreach ($this->conf['filterView.']['customFilters.'] as $filter => $value) {
 				switch ($value['renderAs']) {
 					case 'SELECTOR':
@@ -1208,6 +1165,8 @@ class tx_damfrontend_rendering extends tslib_pibase {
 				}
 			}
 		}
+
+
 		$formCode = tslib_cObj::substituteMarkerArray($formCode, $markerArray);
 
 		$markerArray = $this->replaceEmptyMarkers($formCode, $markerArray);
@@ -2324,10 +2283,10 @@ class tx_damfrontend_rendering extends tslib_pibase {
 					
 			}
 		}
-		#if ($current) {
+
         $content = $this->cObj->cObjGetSingle($this->conf['languageFilter.']['removeFilter'], $this->conf['languageFilter.']['removeFilter.']) . $content ;
-		#}
-		return   $this->cObj->stdWrap($content, $this->conf['languageFilter.']); 
+
+		return   $this->cObj->stdWrap($content, $this->conf['languageFilter.']);
 	}
 
 	public function replaceEmptyMarkers($templCode,$markerArray){

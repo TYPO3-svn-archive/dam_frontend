@@ -1,35 +1,4 @@
-$(document).ready(function() {
-    $('div.productBox').each(function() {
-        if($(this).hasClass('paediatric,')) {
-            $(this).removeClass('paediatric,');
-            $(this).addClass('paediatric');
-        }
-        if($(this).hasClass('mri,')) {
-            $(this).removeClass('mri,');
-            $(this).addClass('mri');
-        }
-        if($(this).hasClass('neonatal,')) {
-            $(this).removeClass('neonatal,');
-            $(this).addClass('neonatal');
-        }
-        if($(this).hasClass('clinical-icu,')) {
-            $(this).removeClass('clinical-icu,');
-            $(this).addClass('clinical-icu');
-        }
-        if($(this).hasClass('mobile-icu,')) {
-            $(this).removeClass('mobile-icu,');
-            $(this).addClass('mobile-icu');
-        }
-        if($(this).hasClass('subacute-care,')) {
-            $(this).removeClass('subacute-care,');
-            $(this).addClass('subacute-care');
-        }
-        if($(this).hasClass('adult,')) {
-            $(this).removeClass('adult,');
-            $(this).addClass('adult');
-        }
-    });
-});
+
 
 $(document).ready(function() {
     $('.tx_dam_fe_LANGSELECTOR li a').click(function() {
