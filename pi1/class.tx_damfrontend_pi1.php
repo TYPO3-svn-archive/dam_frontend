@@ -956,7 +956,7 @@ class tx_damfrontend_pi1 extends tslib_pibase
                 foreach ($this->conf['filterView.']['customFilters.'] as $key => $filter) {
                     if ($filter['type']=='CATEGORY') {
                         if (intval($this->internal['filter'][$filter['marker']])>0) {
-                            $this->catList->op_Equals($this->internal['filter'][$filter['marker']], $filter['treeID']);
+                            $this->catList->op_PlusRec($this->internal['filter'][$filter['marker']], $filter['treeID']);
                         }
                         else {
                             $this->catList->clearCatSelection($filter['treeID']);
